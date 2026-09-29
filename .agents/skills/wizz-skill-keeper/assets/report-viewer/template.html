@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none';">
-  <title>Wise Skill Keeper 审查报告</title>
+  <title>Wizz Skill Keeper 审查报告</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -20,6 +20,7 @@
       --primary: light-dark(#173f66, #8fc5f2);
       --primary-strong: light-dark(#0e3152, #b7dcfa);
       --primary-soft: light-dark(#eaf2f9, #172c3d);
+      --flow-accent: light-dark(#74b8b4, #3f7779);
       --safe: light-dark(#166342, #6fd6a6);
       --safe-soft: light-dark(#e9f5ef, #153227);
       --warn: light-dark(#875600, #f3bd60);
@@ -42,11 +43,6 @@
       font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
     }
     * { box-sizing: border-box; }
-    @property --border-flow-angle {
-      syntax: "<angle>";
-      initial-value: 0deg;
-      inherits: false;
-    }
     [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
     body { min-width: 540px; margin: 0; background: var(--bg); color: var(--text); }
@@ -187,22 +183,35 @@
       width: calc(100% - 32px); min-height: 44px; margin: 0 16px 16px; padding: 8px 16px;
       border-color: transparent; border-radius: 2px; background: var(--primary);
       color: light-dark(#fff, #0e1a24); font-size: 12px; font-weight: 750;
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 12%, transparent);
     }
     .analysis-trigger::before {
-      content: ""; position: absolute; inset: 0; z-index: 0; padding: 1px; border-radius: 2px;
-      background: conic-gradient(from var(--border-flow-angle), transparent 0deg 252deg, color-mix(in srgb, currentColor 16%, transparent) 278deg, color-mix(in srgb, currentColor 72%, transparent) 310deg, transparent 342deg 360deg);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
-      animation: analysis-border-flow 5.6s linear infinite;
+      content: ""; position: absolute; top: 50%; left: -50%; z-index: 0;
+      width: 200%; aspect-ratio: 1; pointer-events: none;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg 38deg,
+        color-mix(in srgb, var(--flow-accent) 36%, transparent) 62deg,
+        var(--flow-accent) 88deg,
+        color-mix(in srgb, var(--flow-accent) 36%, transparent) 114deg,
+        transparent 138deg 218deg,
+        color-mix(in srgb, var(--flow-accent) 36%, transparent) 242deg,
+        var(--flow-accent) 268deg,
+        color-mix(in srgb, var(--flow-accent) 36%, transparent) 294deg,
+        transparent 318deg 360deg
+      );
+      transform: translateY(-50%) rotate(0turn); transform-origin: center;
+      animation: analysis-border-flow 7.2s linear infinite;
+    }
+    .analysis-trigger::after {
+      content: ""; position: absolute; inset: 2px; z-index: 1; border-radius: 1px;
+      background: var(--primary); pointer-events: none;
     }
     .skill-card.is-active .analysis-trigger { display: flex; }
-    .analysis-trigger:hover { filter: brightness(1.08); }
-    .analysis-trigger span, .analysis-trigger svg { position: relative; z-index: 1; }
+    .analysis-trigger span, .analysis-trigger svg { position: relative; z-index: 2; }
     .analysis-trigger svg { width: 16px; height: 16px; transition: transform 160ms ease; }
     .analysis-trigger:hover svg { transform: translateX(4px); }
     @keyframes analysis-border-flow {
-      to { --border-flow-angle: 360deg; }
+      to { transform: translateY(-50%) rotate(1turn); }
     }
     .status-badge {
       display: inline-flex; align-items: center; gap: 8px; width: fit-content; min-height: 24px;
@@ -239,7 +248,7 @@
     .drawer-scrim.is-open { opacity: 1; visibility: visible; pointer-events: auto; }
     .analysis-drawer {
       position: fixed; top: 0; right: 0; bottom: 0; z-index: 50; height: 100vh; height: 100dvh;
-      display: grid; grid-template-rows: auto minmax(0, 1fr); width: min(480px, 100vw);
+      display: grid; grid-template-rows: auto minmax(0, 1fr) auto; width: min(480px, 100vw);
       border-left: 1px solid var(--line); background: var(--surface); box-shadow: -16px 0 40px rgba(5, 13, 20, .18);
       transform: translateX(100%); visibility: hidden;
       transition: transform 240ms cubic-bezier(.2, .8, .2, 1), visibility 240ms ease;
@@ -299,18 +308,29 @@
     .external-site dt { color: var(--text-faint); font-size: 11px; }
     .external-site dd { margin: 0; font-size: 12px; overflow-wrap: anywhere; }
     .external-site-note { margin: 0 !important; color: var(--text-soft); font-size: 12px !important; }
-    .action { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-    .action button {
+    .drawer-action {
+      padding: 16px 24px 24px; border-top: 1px solid var(--line); background: var(--surface);
+    }
+    .drawer-action button {
       width: 100%; min-height: 40px; padding: 8px 16px; border-color: var(--primary);
       background: var(--primary); color: light-dark(#fff, #0e1a24); font-weight: 700;
       transition: filter 160ms ease;
     }
-    .action button:hover { filter: brightness(1.08); }
-    .agent-prompt {
-      display: none; margin-top: 8px; padding: 8px; border-radius: 2px;
-      background: var(--surface-strong); font-size: 11px; line-height: 1.55; overflow-wrap: anywhere;
+    .drawer-action button:hover { filter: brightness(1.08); }
+    .copy-toast {
+      position: absolute; top: 50%; left: 50%; z-index: 5; width: min(calc(100% - 32px), 360px);
+      display: flex; align-items: flex-start; gap: 8px; padding: 12px 16px;
+      border: 1px solid color-mix(in srgb, var(--safe) 48%, var(--line)); border-radius: 2px;
+      background: var(--surface); box-shadow: var(--shadow); color: var(--text);
+      opacity: 0; transform: translate(-50%, calc(-50% + 8px)); pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
     }
-    .agent-prompt.visible { display: block; }
+    .copy-toast.is-visible { opacity: 1; transform: translate(-50%, -50%); }
+    .copy-toast svg { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 1px; color: var(--safe); }
+    .copy-toast strong { display: block; margin-bottom: 2px; color: var(--safe); font-size: 12px; }
+    .copy-toast span { display: block; color: var(--text-soft); font-size: 12px; line-height: 1.55; }
+    .copy-toast.is-error { border-color: color-mix(in srgb, var(--warn) 48%, var(--line)); }
+    .copy-toast.is-error svg, .copy-toast.is-error strong { color: var(--warn); }
     .relationship { margin-top: 16px; overflow: hidden; }
     .relationship-controls { display: flex; align-items: center; gap: 8px; }
     .relationship-controls label { color: var(--text-faint); font-size: 11px; }
@@ -370,8 +390,9 @@
       .analysis-drawer { width: 100vw; }
       .drawer-close { width: 44px; height: 44px; }
       .detail { padding: 16px; }
+      .drawer-action { padding: 16px; }
       .detail-description, .finding p { font-size: 14px; }
-      .action button { min-height: 44px; }
+      .drawer-action button { min-height: 44px; }
     }
     @media (min-width: 540px) and (max-height: 560px) and (orientation: landscape) {
       .app-header { position: static; }
@@ -381,7 +402,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
-      .analysis-trigger::before { animation: none !important; background: color-mix(in srgb, currentColor 24%, transparent); }
+      .analysis-trigger::before { animation: none !important; background: color-mix(in srgb, var(--flow-accent) 48%, transparent); }
     }
   </style>
 </head>
@@ -395,7 +416,7 @@
             <path d="m8.7 12 2.1 2.1 4.6-4.6"/>
           </svg>
         </span>
-        <h1>Wise Skill Keeper</h1>
+        <h1>Wizz Skill Keeper</h1>
       </div>
     </header>
     <main>
@@ -489,10 +510,15 @@
       </button>
     </div>
     <div class="detail" id="detail" aria-live="polite"><div class="detail-empty">选择一个 Skill 查看分析</div></div>
+    <div class="drawer-action" id="drawer-action" hidden></div>
+    <div class="copy-toast" id="copy-toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+      <div><strong id="copy-toast-title">复核请求已复制</strong><span id="copy-toast-message">请回到对话窗口，粘贴并发送给 Agent 继续复核。</span></div>
+    </div>
   </aside>
   <script>
     "use strict";
-    const report = __WISE_SKILL_KEEPER_REPORT__;
+    const report = __WIZZ_SKILL_KEEPER_REPORT__;
     const severityRank = {pending: -1, info: 0, low: 1, medium: 2, high: 3, critical: 4};
     const recommendationText = {
       keep: "可以继续使用，无需额外调整。",
@@ -544,6 +570,9 @@
     const drawer = document.getElementById("analysis-drawer");
     const drawerScrim = document.getElementById("drawer-scrim");
     const drawerClose = document.getElementById("drawer-close");
+    const drawerAction = document.getElementById("drawer-action");
+    const copyToast = document.getElementById("copy-toast");
+    let copyToastTimer = 0;
     const severitySelect = setupCustomSelect(document.getElementById("severity-select"), function(value) {
       state.severity = value; applyFilters();
     });
@@ -561,6 +590,21 @@
       nodeTypeSelect.setDisabled(true, "当前 Skill 之间没有直接关联");
     }
     let simulationToken = 0;
+
+    function showCopyToast(title, message, isError) {
+      window.clearTimeout(copyToastTimer);
+      copyToast.classList.toggle("is-error", Boolean(isError));
+      document.getElementById("copy-toast-title").textContent = title;
+      document.getElementById("copy-toast-message").textContent = message;
+      copyToast.hidden = false;
+      window.requestAnimationFrame(function() { copyToast.classList.add("is-visible"); });
+      copyToastTimer = window.setTimeout(function() {
+        copyToast.classList.remove("is-visible");
+        window.setTimeout(function() {
+          if (!copyToast.classList.contains("is-visible")) copyToast.hidden = true;
+        }, 180);
+      }, 5000);
+    }
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, function(char) {
@@ -768,6 +812,8 @@
         state.selected = null;
         if (drawerWasOpen) closeDrawer(false);
         else renderList();
+        drawerAction.hidden = true;
+        drawerAction.innerHTML = "";
         document.getElementById("detail").innerHTML = skills.length
           ? '<div class="detail-empty">选择一个 Skill 查看分析</div>'
           : '<div class="detail-empty">没有符合当前筛选条件的 Skill</div>';
@@ -796,7 +842,7 @@
           (finding.destination ? '<span>目标：' + escapeHtml(finding.destination) + '</span>' : '') +
           '</div>' + renderExternalSite(finding.externalSite) + '</article>';
       }).join("") : '<p class="detail-description">在当前分析范围内未发现需要展开的风险项。</p>';
-      const prompt = "请使用 $wise-skill-keeper，针对报告中的 Skill " + skill.name +
+      const prompt = "请使用 $wizz-skill-keeper，针对报告中的 Skill " + skill.name +
         "（ID: " + skill.id + "）执行 Agent 证据复核。请读取本报告旁的 evidence.json，" +
         "逐条核验候选信号的上下文、实际代码路径、提示词语用和文档冲突；不要执行目标 Skill，" +
         "不要把扫描器候选标签直接当成风险结论。先输出非技术结论；只有我明确要求时才展开源码位置和技术证据。";
@@ -810,21 +856,22 @@
           '<div class="review-status is-pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><strong>等待 Agent 核验</strong><small>当前仅为扫描候选，尚未形成风险结论</small></span></div>') + '</div>' +
         '<div class="conclusion">' + escapeHtml(reviewed ? (skill.reviewedConclusion || "Agent 已完成证据复核。") : "等待 Agent 结合证据进行复核。") + '</div>' +
         '<div class="detail-section-title">风险维度</div>' + renderTaxonomy(skill.riskTags || skill.candidateTags || [], "detail-taxonomy") +
-        '<div class="detail-section-title">具体发现</div>' + findings +
-        '<div class="action"><button type="button" id="ask-agent">' + (reviewed ? "重新请求 Agent 复核" : "通过 Agent 请求复核") + '</button>' +
-        '<div class="agent-prompt" id="agent-prompt">' + escapeHtml(prompt) + '</div></div>';
+        '<div class="detail-section-title">具体发现</div>' + findings;
+      drawerAction.hidden = false;
+      drawerAction.innerHTML = '<button type="button" id="ask-agent">' + (reviewed ? "重新请求 Agent 复核" : "通过 Agent 请求复核") + '</button>';
       document.getElementById("ask-agent").addEventListener("click", async function() {
         if (window.openai && typeof window.openai.sendFollowUpMessage === "function") {
           await window.openai.sendFollowUpMessage({prompt: prompt, title: "分析 " + skill.name});
+          showCopyToast("复核请求已发送", "请回到对话窗口继续与 Agent 对话。", false);
           return;
         }
-        const box = document.getElementById("agent-prompt");
-        box.classList.add("visible");
         try {
           await navigator.clipboard.writeText(prompt);
-          document.getElementById("ask-agent").textContent = "已复制 Agent 复核请求";
+          document.getElementById("ask-agent").textContent = "复核请求已复制";
+          showCopyToast("复核请求已复制", "请回到对话窗口，粘贴并发送给 Agent 继续复核。", false);
         } catch (error) {
-          document.getElementById("ask-agent").textContent = "请复制下方复核请求";
+          document.getElementById("ask-agent").textContent = "复制失败，请重试";
+          showCopyToast("未能自动复制", "请再次尝试；若仍失败，请回到对话窗口直接请求 Agent 复核。", true);
         }
       });
       renderList();

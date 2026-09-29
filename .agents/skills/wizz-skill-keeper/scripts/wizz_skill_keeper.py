@@ -1053,7 +1053,7 @@ def render_html(
     template = template_path.read_text(encoding="utf-8")
     encoded = json.dumps(public_report, ensure_ascii=False).replace("</", "<\\/")
     output_path.write_text(
-        template.replace("__WISE_SKILL_KEEPER_REPORT__", encoded), encoding="utf-8"
+        template.replace("__WIZZ_SKILL_KEEPER_REPORT__", encoded), encoding="utf-8"
     )
 
 
@@ -1506,7 +1506,7 @@ def main() -> int:
             return scan(args)
         return review_command(args)
     except (OSError, ValueError) as exc:
-        print(f"wise-skill-keeper: {exc}", file=sys.stderr)
+        print(f"wizz-skill-keeper: {exc}", file=sys.stderr)
         return 1
 
 

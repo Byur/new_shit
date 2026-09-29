@@ -204,6 +204,6 @@ Keep this proof in the private review evidence. If any field cannot be establish
 Every graph node with `type: "skill"` must include the reviewed report's exact `skillId`.
 The graph node's own `id` may remain a short graph-local identifier used by edges.
 
-Use `python3 scripts/wise_skill_keeper.py review --input <scan-dir> --review <review.json> --output <reviewed-dir>`
+Use `python3 scripts/wizz_skill_keeper.py review --input <scan-dir> --review <review.json> --output <reviewed-dir>`
 to render the Agent-verified report and graph. The reviewed public report must still omit raw source
 excerpts, absolute paths, credential identifiers, and real endpoint names.

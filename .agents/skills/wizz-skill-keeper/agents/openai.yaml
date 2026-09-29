@@ -1,0 +1,7 @@
+interface:
+  display_name: "Wizz Skill Keeper"
+  short_description: "审查 Skill 风险并生成 Agent 核验报告 / Audit Skills with Agent review"
+  default_prompt: "请使用 $wizz-skill-keeper 审查我选定的 Skill 范围；必须由 Agent 复核全部证据后，才能用我的语言生成正式安全结论。"
+
+policy:
+  allow_implicit_invocation: true
