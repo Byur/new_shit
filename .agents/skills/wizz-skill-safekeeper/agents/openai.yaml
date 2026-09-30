@@ -1,0 +1,7 @@
+interface:
+  display_name: "Wizz Skill Safekeeper"
+  short_description: "Remote review and local audits / 远程审查、推荐与本地体系审计"
+  default_prompt: "请使用 $wizz-skill-safekeeper 判断这是远程单 Skill、远程品类推荐还是本地 Skill 体系审计，并按对应模式分析。"
+
+policy:
+  allow_implicit_invocation: true

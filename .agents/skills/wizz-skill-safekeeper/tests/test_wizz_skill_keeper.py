@@ -69,7 +69,7 @@ class SkillKeeperTests(unittest.TestCase):
         self.assertNotIn('<select', template)
         self.assertNotIn('实际耗时', template)
         self.assertNotIn('id="scope"', template)
-        self.assertIn('Wizz Skill Keeper', template)
+        self.assertIn('Wizz Skill Safekeeper', template)
         self.assertIn('severityRank[displaySeverity] >= severityRank.medium', template)
         self.assertIn('grid-template-columns: minmax(220px, .9fr) minmax(270px, 1.2fr) minmax(184px, .72fr);', template)
         self.assertIn('fullLabel.slice(0, 27) + "…"', template)

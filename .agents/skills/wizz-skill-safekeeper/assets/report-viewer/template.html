@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none';">
-  <title>Wizz Skill Keeper 审查报告</title>
+  <title>Wizz Skill Safekeeper 安全审查报告</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -416,7 +416,7 @@
             <path d="m8.7 12 2.1 2.1 4.6-4.6"/>
           </svg>
         </span>
-        <h1>Wizz Skill Keeper</h1>
+        <h1>Wizz Skill Safekeeper</h1>
       </div>
     </header>
     <main>
@@ -842,7 +842,7 @@
           (finding.destination ? '<span>目标：' + escapeHtml(finding.destination) + '</span>' : '') +
           '</div>' + renderExternalSite(finding.externalSite) + '</article>';
       }).join("") : '<p class="detail-description">在当前分析范围内未发现需要展开的风险项。</p>';
-      const prompt = "请使用 $wizz-skill-keeper，针对报告中的 Skill " + skill.name +
+      const prompt = "请使用 $wizz-skill-safekeeper，针对报告中的 Skill " + skill.name +
         "（ID: " + skill.id + "）执行 Agent 证据复核。请读取本报告旁的 evidence.json，" +
         "逐条核验候选信号的上下文、实际代码路径、提示词语用和文档冲突；不要执行目标 Skill，" +
         "不要把扫描器候选标签直接当成风险结论。先输出非技术结论；只有我明确要求时才展开源码位置和技术证据。";

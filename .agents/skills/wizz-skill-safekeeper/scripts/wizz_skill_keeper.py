@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only static auditor and local report generator for Codex Skills."""
+"""Read-only local/remote static auditor and report generator for Agent Skills."""
 
 from __future__ import annotations
 
@@ -1474,7 +1474,7 @@ def review_command(args: argparse.Namespace) -> int:
 
 
 def parser() -> argparse.ArgumentParser:
-    root = argparse.ArgumentParser(description="Read-only local Skill safety auditor")
+    root = argparse.ArgumentParser(description="Read-only local and remote Skill safety auditor")
     subparsers = root.add_subparsers(dest="command", required=True)
     for command in ("estimate", "scan"):
         sub = subparsers.add_parser(command)
@@ -1494,6 +1494,47 @@ def parser() -> argparse.ArgumentParser:
     review.add_argument("--input", required=True, help="Directory produced by scan")
     review.add_argument("--review", required=True, help="Agent-produced review JSON")
     review.add_argument("--output", required=True, help="Directory for the reviewed report")
+
+    remote_search = subparsers.add_parser(
+        "remote-search", help="Search public SkillHub skills without authentication",
+    )
+    remote_search.add_argument("--query", required=True)
+    remote_search.add_argument("--limit", type=int, default=10)
+    remote_search.add_argument("--timeout", type=int, default=20)
+
+    remote_list = subparsers.add_parser(
+        "remote-list", help="List public SkillHub skills with marketplace filters",
+    )
+    remote_list.add_argument("--page", type=int, default=1)
+    remote_list.add_argument("--page-size", type=int, default=20)
+    remote_list.add_argument("--sort-by", default="score")
+    remote_list.add_argument("--order", choices=("asc", "desc"), default="desc")
+    remote_list.add_argument("--keyword", default="")
+    remote_list.add_argument("--category", default="")
+    remote_list.add_argument("--source", default="")
+    remote_list.add_argument("--labels", default="")
+    remote_list.add_argument("--timeout", type=int, default=20)
+
+    remote_detail = subparsers.add_parser(
+        "remote-detail", help="Get public SkillHub metadata and optional file inventory",
+    )
+    remote_detail.add_argument("slug")
+    remote_detail.add_argument("--namespace", default="")
+    remote_detail.add_argument("--version", default="")
+    remote_detail.add_argument("--include-files", action="store_true")
+    remote_detail.add_argument("--timeout", type=int, default=20)
+
+    remote_fetch = subparsers.add_parser(
+        "remote-fetch", help="Fetch an inert SkillHub source snapshot for static review",
+    )
+    remote_fetch.add_argument("slug")
+    remote_fetch.add_argument("--namespace", default="")
+    remote_fetch.add_argument("--version", default="")
+    remote_fetch.add_argument("--output", required=True)
+    remote_fetch.add_argument("--max-files", type=int, default=300)
+    remote_fetch.add_argument("--max-file-bytes", type=int, default=1_500_000)
+    remote_fetch.add_argument("--max-total-bytes", type=int, default=20_000_000)
+    remote_fetch.add_argument("--timeout", type=int, default=20)
     return root
 
 
@@ -1504,9 +1545,13 @@ def main() -> int:
             return estimate_command(args)
         if args.command == "scan":
             return scan(args)
+        if args.command.startswith("remote-"):
+            from skillhub_client import execute as execute_skillhub_command
+
+            return execute_skillhub_command(args)
         return review_command(args)
     except (OSError, ValueError) as exc:
-        print(f"wizz-skill-keeper: {exc}", file=sys.stderr)
+        print(f"wizz-skill-safekeeper: {exc}", file=sys.stderr)
         return 1
 
 
