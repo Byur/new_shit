@@ -44,6 +44,17 @@ Each finding should include:
 - `contract`: Difference between declared and implemented behavior.
 - `relationship`: Shared domains, credentials, files, triggers, or dependencies.
 
+Candidate relationships help the Agent find comparisons; they are not formal conclusions. For a local-system
+review, the Agent must also compare all in-scope Skills directly across capability overlap, trigger conflict,
+shared dependency, behavioral interaction, and combined risk. This full comparison is required even when the
+scanner's token or resource heuristics emit no candidate edge.
+
+Do not convert shared resource-node labels into Skill-to-Skill relationships. Labels such as “公开搜索服务”,
+“外部站点”, “API Key”, or “本地文件” are categories and may refer to unrelated implementations. A formal
+relationship must be an Agent-authored Skill-to-Skill edge backed by public-safe evidence from both source
+packages, a concrete impact diagnosis, and a recommendation. `shared-dependency` additionally requires proof
+that both Skills resolve to the same named dependency or resource, not merely the same resource category.
+
 ## Evidence Chain
 
 Keep these three claims separate:

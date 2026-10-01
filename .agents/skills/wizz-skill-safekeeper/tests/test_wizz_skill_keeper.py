@@ -35,7 +35,11 @@ class SkillKeeperTests(unittest.TestCase):
             template,
         )
         self.assertNotIn("relationshipSection.hidden", template)
-        self.assertIn("关系视图常驻在结果之后", template)
+        self.assertIn("当前 Skill 的关联资源", template)
+        self.assertNotIn('id="system-relationships"', template)
+        self.assertIn('id="graph-inspector"', template)
+        self.assertIn('id="graph-empty"', template)
+        self.assertIn("Skill 间关系", template)
         self.assertIn('id="analysis-drawer"', template)
         self.assertIn('class="analysis-trigger"', template)
         self.assertIn('@keyframes analysis-border-flow', template)
@@ -60,10 +64,60 @@ class SkillKeeperTests(unittest.TestCase):
         self.assertIn('class="review-status is-confirmed"', template)
         self.assertIn('外部站点说明', template)
         self.assertNotIn('class="panel inspector"', template)
-        self.assertIn('id="skill-only-option"', template)
-        self.assertIn('const hasSkillRelationships', template)
-        self.assertIn('nodeTypeSelect.setDisabled(true', template)
-        self.assertIn('nodeType: "all"', template)
+        self.assertNotIn('id="skill-only-option"', template)
+        self.assertNotIn('const hasSkillRelationships', template)
+        self.assertNotIn('nodeTypeSelect.setDisabled(true', template)
+        self.assertNotIn('nodeType: "all"', template)
+        self.assertIn('grid-template-columns: minmax(0, 1.35fr) minmax(400px, .65fr)', template)
+        self.assertIn('@media (max-width: 1180px)', template)
+        self.assertIn('function buildGraphModel()', template)
+        self.assertIn('if (edge.source !== center.id && edge.target !== center.id) return;', template)
+        self.assertNotIn('renderSystemRelationships()', template)
+        self.assertNotIn('requestAnimationFrame(tick)', template)
+        self.assertIn('data-graph-mode="dependencies"', template)
+        self.assertIn('data-graph-mode="relationships"', template)
+        self.assertIn('data-graph-view="global"', template)
+        self.assertIn('data-graph-view="group"', template)
+        self.assertIn('data-graph-zoom="out"', template)
+        self.assertIn('data-graph-zoom="in"', template)
+        self.assertIn('relationshipView: "global"', template)
+        self.assertIn('relationshipGroupKey: null', template)
+        self.assertIn('function buildRelationshipComponents(nodes, pairs)', template)
+        self.assertIn('function clusteredRelationshipLayout(model, width, height)', template)
+        self.assertIn('const key = "relationship:" + ids.join("|")', template)
+        self.assertIn('const key = "group:" + ids.slice().sort().join("|")', template)
+        self.assertIn('groups: groups', template)
+        self.assertIn('globalBounds: globalBounds', template)
+        self.assertNotIn('cluster-zone', template)
+        self.assertNotIn('cluster-label', template)
+        self.assertNotIn('zones:', template)
+        self.assertIn('class: "graph-viewport"', template)
+        self.assertIn('function fitGlobalRelationshipGraph(animate)', template)
+        self.assertIn('function focusRelationshipGroup(animate)', template)
+        self.assertIn('function zoomGraphAt(x, y, factor)', template)
+        self.assertIn('svg.addEventListener("wheel"', template)
+        self.assertIn('svg.addEventListener("pointerdown"', template)
+        self.assertIn('滚轮缩放 · 拖拽平移', template)
+        self.assertNotIn('nodes: activeComponent.nodes', template)
+        self.assertIn('relationships-wide', template)
+        self.assertIn('state.graphMode === "relationships"', template)
+        self.assertIn('graphPinnedKey: null', template)
+        self.assertIn('class: "edge-hit"', template)
+        self.assertIn('class", "edge-label"', template)
+        self.assertIn('点击选择并查看', template)
+        self.assertNotIn('element.addEventListener("mouseenter"', template)
+        self.assertNotIn('element.addEventListener("mouseleave"', template)
+        self.assertIn('element.setAttribute("aria-pressed", "false")', template)
+        self.assertIn('parts.hit.setAttribute("aria-pressed", focused ? "true" : "false")', template)
+        self.assertNotIn('聚焦查看此 Skill', template)
+        self.assertNotIn('focusRelationshipSkill', template)
+        self.assertIn('聚焦关系组', template)
+        self.assertIn('适应全图', template)
+        self.assertIn('其他关系组仍保留在画布中', template)
+        self.assertIn('选择连线后可聚焦其完整关系组', template)
+        self.assertIn('Agent 诊断', template)
+        self.assertIn('处理建议', template)
+        self.assertNotIn('graph.nodes.filter(function(node) { return node.type !== "skill"; }).forEach', template)
         self.assertIn('class="custom-select-trigger"', template)
         self.assertIn('role="listbox"', template)
         self.assertNotIn('<select', template)
@@ -72,7 +126,7 @@ class SkillKeeperTests(unittest.TestCase):
         self.assertIn('Wizz Skill Safekeeper', template)
         self.assertIn('severityRank[displaySeverity] >= severityRank.medium', template)
         self.assertIn('grid-template-columns: minmax(220px, .9fr) minmax(270px, 1.2fr) minmax(184px, .72fr);', template)
-        self.assertIn('fullLabel.slice(0, 27) + "…"', template)
+        self.assertIn('fullLabel.slice(0, visibleLimit - 1) + "…"', template)
         self.assertIn('group.setAttribute("title", fullLabel)', template)
         self.assertIn('document.createElementNS("http://www.w3.org/2000/svg", "title")', template)
         self.assertIn('id="copy-toast" role="status" aria-live="polite"', template)
@@ -90,6 +144,25 @@ class SkillKeeperTests(unittest.TestCase):
         self.assertIn('"unsafe-content-rendering": "内容注入已确认"', template)
         self.assertNotIn("资源与范围", template)
         self.assertNotIn("分析边界", template)
+
+    def test_workbuddy_uses_skillhub_display_name(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workbuddy_skills = Path(temp_dir) / ".workbuddy" / "skills"
+            skill = self.make_skill(
+                workbuddy_skills,
+                "technical-slug__skillhub",
+                "---\nname: technical-slug\ndescription: Test Skill.\n---\nUse this Skill.\n",
+            )
+            (skill / "_skillhub_meta.json").write_text(
+                json.dumps({"name": "面向用户的名称"}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            result = wizz_skill_keeper.audit_skill(
+                skill,
+                wizz_skill_keeper.list_files(skill, 1_000_000),
+                "standard",
+            )
+            self.assertEqual(result["name"], "面向用户的名称")
 
     def test_external_destination_requires_agent_site_assessment(self) -> None:
         finding = {
@@ -117,6 +190,27 @@ class SkillKeeperTests(unittest.TestCase):
 
     def test_discovery_excludes_wizz_skill_keeper_itself(self) -> None:
         self.assertEqual(wizz_skill_keeper.discover_skills([SCRIPT.parents[1]]), [])
+
+    def test_discovery_excludes_installed_copy_of_wizz_skill_safekeeper(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.make_skill(
+                root,
+                "wizz-skill-safekeeper__skillhub",
+                "---\nname: wizz-skill-safekeeper\ndescription: Installed copy.\n---\n",
+            )
+            self.make_skill(
+                root,
+                "wise-skill-doctor__skillhub",
+                "---\nname: wizz-skill-keeper\ndescription: Legacy installed copy.\n---\n",
+            )
+            self.make_skill(
+                root,
+                "ordinary-skill",
+                "---\nname: ordinary-skill\ndescription: In scope.\n---\n",
+            )
+            discovered = wizz_skill_keeper.discover_skills([root])
+            self.assertEqual([path.name for path in discovered], ["ordinary-skill"])
 
     def test_isolation_requires_confirmed_harm_and_failed_narrower_controls(self) -> None:
         with self.assertRaisesRegex(ValueError, "requires confirmed harm"):
@@ -491,6 +585,11 @@ def run(content):
                 "status": "agent-reviewed",
                 "reviewedAt": "2026-09-28T00:00:00Z",
                 "candidateGraphReview": {"status": "completed"},
+                "relationshipReview": {
+                    "status": "completed",
+                    "dimensions": sorted(wizz_skill_keeper.REQUIRED_RELATIONSHIP_DIMENSIONS),
+                    "reviewedSkillIds": [skill_id],
+                },
                 "skills": [{
                     "skillId": skill_id,
                     "severity": "info",
@@ -548,6 +647,102 @@ def run(content):
             len([edge for edge in graph["edges"] if edge["type"] == "uses-domain"]),
             2,
         )
+
+    def test_graph_keeps_semantic_overlap_as_an_agent_review_candidate(self) -> None:
+        graph = wizz_skill_keeper.build_graph(
+            [
+                {
+                    "id": "skill-a", "name": "Market search", "description": "",
+                    "candidateSeverity": "info", "_domains": [], "_credentials": [],
+                    "_description": "Search financial market data, stock prices, company filings, and quotes.",
+                },
+                {
+                    "id": "skill-b", "name": "Stock data", "description": "",
+                    "candidateSeverity": "info", "_domains": [], "_credentials": [],
+                    "_description": "Fetch stock prices, financial market quotes, and company data.",
+                },
+            ]
+        )
+        overlap = [edge for edge in graph["edges"] if edge["type"] == "capability-overlap"]
+        self.assertEqual(len(overlap), 1)
+        self.assertIn("containment", overlap[0]["similarity"])
+
+    def test_skill_relationship_edges_require_plain_language_summary(self) -> None:
+        with self.assertRaisesRegex(ValueError, "plain-language summary"):
+            wizz_skill_keeper.validate_review_graph(
+                {
+                    "nodes": [
+                        {"id": "a", "skillId": "skill-a", "type": "skill"},
+                        {"id": "b", "skillId": "skill-b", "type": "skill"},
+                    ],
+                    "edges": [
+                        {
+                            "id": "relationship-a-b",
+                            "source": "a", "target": "b", "type": "capability-overlap",
+                            "confidence": "confirmed",
+                            "diagnosis": "两个 Skill 会争用同一类请求。",
+                            "recommendation": "调用前先确认用户需要的数据来源。",
+                            "evidence": [
+                                {"skillId": "skill-a", "location": "SKILL.md", "basis": "覆盖价格搜索。"},
+                                {"skillId": "skill-b", "location": "SKILL.md", "basis": "覆盖价格比较。"},
+                            ],
+                        }
+                    ],
+                },
+                {"skill-a", "skill-b"},
+            )
+
+    def test_shared_dependency_requires_exact_resource_identity(self) -> None:
+        with self.assertRaisesRegex(ValueError, "exact shared resource"):
+            wizz_skill_keeper.validate_review_graph(
+                {
+                    "nodes": [
+                        {"id": "a", "skillId": "skill-a", "type": "skill"},
+                        {"id": "b", "skillId": "skill-b", "type": "skill"},
+                    ],
+                    "edges": [
+                        {
+                            "id": "relationship-shared-a-b",
+                            "source": "a", "target": "b", "type": "shared-dependency",
+                            "confidence": "confirmed",
+                            "summary": "两者依赖同一个客户端包。",
+                            "diagnosis": "更新该依赖会同时影响两个 Skill。",
+                            "recommendation": "升级前同时验证两个 Skill。",
+                            "evidence": [
+                                {"skillId": "skill-a", "location": "requirements.txt", "basis": "锁定 vendor-client 1.2.0。"},
+                                {"skillId": "skill-b", "location": "requirements.txt", "basis": "锁定 vendor-client 1.2.0。"},
+                            ],
+                        }
+                    ],
+                },
+                {"skill-a", "skill-b"},
+            )
+
+    def test_skill_relationship_with_bilateral_evidence_is_valid(self) -> None:
+        graph = wizz_skill_keeper.validate_review_graph(
+            {
+                "nodes": [
+                    {"id": "a", "skillId": "skill-a", "type": "skill"},
+                    {"id": "b", "skillId": "skill-b", "type": "skill"},
+                ],
+                "edges": [
+                    {
+                        "id": "relationship-a-b",
+                        "source": "a", "target": "b", "type": "trigger-conflict",
+                        "confidence": "confirmed",
+                        "summary": "两个 Skill 会响应同一类宽泛请求。",
+                        "diagnosis": "同时触发会产生不同数据口径。",
+                        "recommendation": "调用前先确认需要的数据来源。",
+                        "evidence": [
+                            {"skillId": "skill-a", "location": "SKILL.md", "basis": "声明处理所有价格查询。"},
+                            {"skillId": "skill-b", "location": "SKILL.md", "basis": "声明处理同类价格查询。"},
+                        ],
+                    }
+                ],
+            },
+            {"skill-a", "skill-b"},
+        )
+        self.assertEqual(graph["edges"][0]["id"], "relationship-a-b")
 
 
 if __name__ == "__main__":

@@ -39,8 +39,24 @@ relationship graph shown to users.
    Severity does not determine the recommendation: use the least disruptive control that addresses the
    evidenced harm path. `isolate` and `uninstall` require confirmed harm and proof that narrower controls
    are insufficient, as defined in `recommendation-policy.md`.
-7. Generate graph nodes and edges only from relationships that the Agent has verified. Do not copy the
-   scanner's candidate graph into the user-facing report.
+7. Review the local Skill system across five relationship dimensions, even when the scanner emitted no
+   candidate edge: capability overlap or duplication; trigger and priority conflict; shared dependencies or
+   resources; behavioral interaction; and combined risk that appears only when Skills are used together.
+   Compare declared purpose, `description`, When-to-Use or trigger language, prompt priority, source-level
+   behavior, credentials, domains, files, commands, and downstream services. Absence of lexical similarity is
+   not evidence that two Skills are unrelated. Record `relationshipReview.status: "completed"`, all five
+   dimension names, and every reviewed Skill ID.
+8. Generate graph nodes and edges only from relationships that the Agent has verified. Do not copy the
+   scanner's candidate graph into the user-facing report. The five dimensions are review questions, not an
+   enum to stamp onto plausible pairs. Create an edge only after reading both Skills' relevant source and
+   establishing the concrete relationship. Never infer a shared dependency merely because two Skills connect
+   to resource nodes with the same display label, broad category, or redacted destination class.
+9. Every Skill-to-Skill edge must have a unique `id`, `probable` or `confirmed` confidence, public-safe
+   evidence from both Skills, a factual `summary`, a specific `diagnosis` of the real user or system impact,
+   and a concrete `recommendation`. Each evidence item must identify the reviewed Skill, a safe relative source
+   location, and the fact established there. For `shared-dependency`, also name the exact shared resource and
+   explain how the Agent established that both references resolve to the same dependency. If identity cannot be
+   established, do not publish `shared-dependency`; describe the two independent dependencies separately.
 
 ## Formal Conclusion Gate
 
@@ -49,8 +65,9 @@ For each Skill result, include `evidenceReview.status: "completed"` and `reviewe
 exactly the evidence IDs emitted for that Skill in `evidence.json`. Missing IDs, unknown extra IDs, or any
 status other than `completed` must keep the report in `pending-agent-review`. The top-level review must also
 include `candidateGraphReview.status: "completed"` after the Agent has checked the candidate graph rather than
-copying it. Until both gates pass, no final severity, recommendation, relationship graph, or formal conclusion
-may be issued.
+copying it. The top-level `relationshipReview` must independently attest that all in-scope Skills were compared
+across the five required dimensions, including when the candidate graph is empty. Until all three gates pass,
+no final severity, recommendation, relationship graph, or formal conclusion may be issued.
 
 ## Evidence-To-Risk Threshold
 
@@ -83,6 +100,17 @@ The `review` command accepts an Agent-produced JSON document with this shape:
   "reviewedAt": "2026-09-28T00:00:00Z",
   "candidateGraphReview": {
     "status": "completed"
+  },
+  "relationshipReview": {
+    "status": "completed",
+    "dimensions": [
+      "capability-overlap",
+      "trigger-conflict",
+      "shared-dependency",
+      "behavioral-interaction",
+      "combined-risk"
+    ],
+    "reviewedSkillIds": ["skill-..."]
   },
   "skills": [
     {
@@ -203,6 +231,49 @@ Keep this proof in the private review evidence. If any field cannot be establish
 
 Every graph node with `type: "skill"` must include the reviewed report's exact `skillId`.
 The graph node's own `id` may remain a short graph-local identifier used by edges.
+The graph must contain exactly one Skill node for every in-scope Skill. Skill-to-Skill edges may use only
+`capability-overlap`, `trigger-conflict`, `shared-dependency`, `behavioral-interaction`, or `combined-risk`,
+and every such edge requires a unique ID, confidence, source evidence from both Skills, a concrete summary,
+an impact diagnosis, and a recommendation. An empty Skill-to-Skill edge set is valid only after
+`relationshipReview` confirms that every Skill and every required dimension was checked.
+
+For two reviewed Skills, a verified relationship edge looks like:
+
+```json
+{
+  "id": "relationship-price-overlap",
+  "source": "graph-skill-node-a",
+  "target": "graph-skill-node-b",
+  "type": "capability-overlap",
+  "confidence": "confirmed",
+  "summary": "两个 Skill 都覆盖价格比较，但一个面向全网商品，另一个只处理指定平台。",
+  "diagnosis": "宽泛的比价请求可能同时命中两者并得到不同口径，但它们并非完全重复。",
+  "recommendation": "调用前先确认用户要全网比较还是指定平台数据，再选择其中一个 Skill。",
+  "evidence": [
+    {
+      "skillId": "skill-a",
+      "location": "SKILL.md",
+      "basis": "用途说明覆盖跨平台商品价格搜索与比较。"
+    },
+    {
+      "skillId": "skill-b",
+      "location": "SKILL.md",
+      "basis": "用途说明限定为指定电商平台的商品搜索与价格比较。"
+    }
+  ]
+}
+```
+
+For `shared-dependency`, add:
+
+```json
+{
+  "sharedResource": {
+    "name": "同一个供应商 API 客户端包",
+    "identityBasis": "两个 Skill 的锁文件解析到相同包名与版本；不是仅凭“外部服务”标签判断。"
+  }
+}
+```
 
 Use `python3 scripts/wizz_skill_keeper.py review --input <scan-dir> --review <review.json> --output <reviewed-dir>`
 to render the Agent-verified report and graph. The reviewed public report must still omit raw source

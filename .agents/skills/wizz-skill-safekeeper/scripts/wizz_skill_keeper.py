@@ -18,8 +18,14 @@ from typing import Iterable
 from urllib.parse import urlparse
 
 
-VERSION = "0.9.0"
+VERSION = "0.11.0"
 SELF_SKILL_ROOT = Path(__file__).resolve().parents[1]
+SELF_SKILL_NAMES = {
+    "skill-doctor",
+    "wise-skill-doctor",
+    "wizz-skill-keeper",
+    "wizz-skill-safekeeper",
+}
 TEXT_SUFFIXES = {
     ".md", ".txt", ".py", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx",
     ".json", ".yaml", ".yml", ".toml", ".sh", ".zsh", ".bash", ".ps1",
@@ -30,7 +36,16 @@ SEVERITY_RANK = {"info": 0, "low": 1, "medium": 2, "high": 3, "critical": 4}
 CONFIDENCE_RANK = {"heuristic": 0, "probable": 1, "confirmed": 2}
 COMMON_TOKENS = {
     "skill", "skills", "use", "using", "with", "from", "when", "this", "that",
+    "the", "and", "for", "your", "you", "into", "about", "helps", "provides",
     "用户", "使用", "进行", "支持", "用于", "需要", "内容", "分析", "生成", "处理",
+    "可以", "能够", "以及", "一个", "这个", "通过", "帮助", "提供", "相关", "场景",
+}
+REQUIRED_RELATIONSHIP_DIMENSIONS = {
+    "capability-overlap",
+    "trigger-conflict",
+    "shared-dependency",
+    "behavioral-interaction",
+    "combined-risk",
 }
 
 
@@ -153,8 +168,15 @@ def discover_skills(scopes: Iterable[Path]) -> list[Path]:
 
     def remember(root: Path) -> None:
         resolved = root.resolve()
-        if resolved != SELF_SKILL_ROOT:
-            found[str(resolved)] = resolved
+        if resolved == SELF_SKILL_ROOT:
+            return
+        try:
+            metadata, _, _ = split_frontmatter((resolved / "SKILL.md").read_text(encoding="utf-8"))
+        except (OSError, UnicodeError):
+            metadata = {}
+        if str(metadata.get("name", "")).strip().lower() in SELF_SKILL_NAMES:
+            return
+        found[str(resolved)] = resolved
 
     for raw_scope in scopes:
         scope = raw_scope.expanduser().resolve()
@@ -649,11 +671,29 @@ def unique_findings(findings: list[Finding]) -> list[Finding]:
     )
 
 
+def workbuddy_display_name(root: Path, fallback: str) -> str:
+    """Return WorkBuddy's installed display name when its local metadata provides one."""
+    if root.parent.name != "skills" or root.parent.parent.name != ".workbuddy":
+        return fallback
+    for filename in ("_skill_hub.meta", "_skill_hub.meta.json", "_skillhub_meta.json"):
+        path = root / filename
+        if not path.is_file():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        name = payload.get("name") if isinstance(payload, dict) else None
+        if isinstance(name, str) and name.strip():
+            return name.strip()
+    return fallback
+
+
 def audit_skill(root: Path, files: list[FileRecord], mode: str) -> dict[str, object]:
     skill_file = next((record for record in files if record.path == "SKILL.md"), None)
     skill_text = skill_file.text if skill_file and skill_file.text else ""
     frontmatter, body, body_line = split_frontmatter(skill_text)
-    name = str(frontmatter.get("name") or root.name)
+    name = workbuddy_display_name(root, str(frontmatter.get("name") or root.name))
     description = str(frontmatter.get("description") or "")
     skill_id = stable_id("skill", str(root))
     findings: list[Finding] = []
@@ -981,12 +1021,23 @@ def build_graph(skills: list[dict[str, object]]) -> dict[str, object]:
                 pair_common[(left, right)] += 1
     for (left, right), common in pair_common.most_common(1000):
         union = len(token_sets[left] | token_sets[right]) or 1
-        score = common / union
-        if common >= 3 and score >= 0.12:
+        smaller = min(len(token_sets[left]), len(token_sets[right])) or 1
+        jaccard = common / union
+        containment = common / smaller
+        # Candidate recall is intentionally broader than a final verdict. Chinese descriptions
+        # often express the same capability with different surrounding wording, so Jaccard alone
+        # misses obvious overlap. The Agent must still inspect both Skills before publishing an edge.
+        if common >= 4 and (jaccard >= 0.08 or containment >= 0.12):
             edges.append(
                 {
                     "source": skills[left]["id"], "target": skills[right]["id"],
-                    "type": "capability-overlap", "weight": round(score, 3),
+                    "type": "capability-overlap",
+                    "weight": round(max(jaccard, containment), 3),
+                    "similarity": {
+                        "sharedTokens": common,
+                        "jaccard": round(jaccard, 3),
+                        "containment": round(containment, 3),
+                    },
                 }
             )
     return {"nodes": nodes, "edges": edges}
@@ -1193,6 +1244,7 @@ def estimate_command(args: argparse.Namespace) -> int:
 
 FINAL_SEVERITIES = {"info", "low", "medium", "high", "critical"}
 FINAL_CONFIDENCES = {"heuristic", "probable", "confirmed"}
+FINAL_RELATIONSHIP_CONFIDENCES = {"probable", "confirmed"}
 FINAL_RECOMMENDATIONS = {
     "keep", "keep-with-notice", "require-confirmation", "restrict",
     "explicit-only", "isolate", "uninstall",
@@ -1365,6 +1417,130 @@ def validate_evidence_review(
         )
 
 
+def validate_relationship_review(
+    review: dict[str, object], expected_skill_ids: set[str]
+) -> None:
+    relationship_review = review.get("relationshipReview")
+    if not isinstance(relationship_review, dict) or relationship_review.get("status") != "completed":
+        raise ValueError("Agent review must complete relationshipReview before final output")
+    dimensions = relationship_review.get("dimensions")
+    if not isinstance(dimensions, list) or any(not isinstance(item, str) for item in dimensions):
+        raise ValueError("relationshipReview must list reviewed dimensions")
+    missing_dimensions = REQUIRED_RELATIONSHIP_DIMENSIONS - set(dimensions)
+    if missing_dimensions:
+        raise ValueError(
+            "relationshipReview is missing dimensions: "
+            f"{sorted(missing_dimensions)}"
+        )
+    reviewed_skill_ids = relationship_review.get("reviewedSkillIds")
+    if (
+        not isinstance(reviewed_skill_ids, list)
+        or any(not isinstance(item, str) for item in reviewed_skill_ids)
+        or set(reviewed_skill_ids) != expected_skill_ids
+        or len(reviewed_skill_ids) != len(expected_skill_ids)
+    ):
+        raise ValueError("relationshipReview must cover every in-scope Skill exactly once")
+
+
+def validate_review_graph(
+    graph: object, expected_skill_ids: set[str]
+) -> dict[str, list[object]]:
+    if not isinstance(graph, dict) or not isinstance(graph.get("nodes"), list) or not isinstance(graph.get("edges"), list):
+        raise ValueError("Agent review must provide graph nodes and edges")
+    nodes = graph["nodes"]
+    edges = graph["edges"]
+    node_by_id: dict[str, dict[str, object]] = {}
+    graph_skill_ids: list[str] = []
+    relationship_ids: set[str] = set()
+    for index, raw_node in enumerate(nodes):
+        if not isinstance(raw_node, dict):
+            raise ValueError(f"Graph node at index {index} must be an object")
+        node_id = str(raw_node.get("id", "")).strip()
+        if not node_id or node_id in node_by_id:
+            raise ValueError(f"Graph node requires a unique id at index {index}")
+        node_by_id[node_id] = raw_node
+        if raw_node.get("type") == "skill":
+            skill_id = str(raw_node.get("skillId", "")).strip()
+            if skill_id not in expected_skill_ids:
+                raise ValueError(f"Graph Skill node references an unknown Skill: {skill_id}")
+            graph_skill_ids.append(skill_id)
+    if set(graph_skill_ids) != expected_skill_ids or len(graph_skill_ids) != len(expected_skill_ids):
+        raise ValueError("Graph must contain exactly one Skill node for every reviewed Skill")
+    for index, raw_edge in enumerate(edges):
+        if not isinstance(raw_edge, dict):
+            raise ValueError(f"Graph edge at index {index} must be an object")
+        source = str(raw_edge.get("source", ""))
+        target = str(raw_edge.get("target", ""))
+        if source not in node_by_id or target not in node_by_id:
+            raise ValueError(f"Graph edge at index {index} references an unknown node")
+        if source == target:
+            raise ValueError(f"Graph edge at index {index} cannot connect a node to itself")
+        source_node = node_by_id[source]
+        target_node = node_by_id[target]
+        both_skills = source_node.get("type") == "skill" and target_node.get("type") == "skill"
+        edge_type = str(raw_edge.get("type", ""))
+        if both_skills:
+            if edge_type not in REQUIRED_RELATIONSHIP_DIMENSIONS:
+                raise ValueError(f"Unsupported Skill relationship type: {edge_type}")
+            relationship_id = str(raw_edge.get("id", "")).strip()
+            if not relationship_id or relationship_id in relationship_ids:
+                raise ValueError("Every Skill-to-Skill relationship requires a unique id")
+            relationship_ids.add(relationship_id)
+            for field_name in ("summary", "diagnosis", "recommendation"):
+                if not str(raw_edge.get(field_name, "")).strip():
+                    raise ValueError(
+                        "Every Skill-to-Skill relationship requires a plain-language "
+                        f"{field_name}"
+                    )
+            if raw_edge.get("confidence") not in FINAL_RELATIONSHIP_CONFIDENCES:
+                raise ValueError(
+                    "Every Skill-to-Skill relationship requires probable or confirmed confidence"
+                )
+            evidence_items = raw_edge.get("evidence")
+            if not isinstance(evidence_items, list) or len(evidence_items) < 2:
+                raise ValueError(
+                    "Every Skill-to-Skill relationship requires evidence from both Skills"
+                )
+            expected_pair_skill_ids = {
+                str(source_node.get("skillId", "")),
+                str(target_node.get("skillId", "")),
+            }
+            evidenced_skill_ids: set[str] = set()
+            for evidence_index, evidence_item in enumerate(evidence_items):
+                if not isinstance(evidence_item, dict):
+                    raise ValueError(
+                        f"Relationship evidence at index {evidence_index} must be an object"
+                    )
+                evidence_skill_id = str(evidence_item.get("skillId", "")).strip()
+                location = str(evidence_item.get("location", "")).strip()
+                basis = str(evidence_item.get("basis", "")).strip()
+                if evidence_skill_id not in expected_pair_skill_ids:
+                    raise ValueError("Relationship evidence must reference one of the related Skills")
+                if not location or Path(location).is_absolute() or ".." in Path(location).parts:
+                    raise ValueError("Relationship evidence requires a safe relative source location")
+                if not basis:
+                    raise ValueError("Relationship evidence requires a concrete basis")
+                evidenced_skill_ids.add(evidence_skill_id)
+            if evidenced_skill_ids != expected_pair_skill_ids:
+                raise ValueError(
+                    "Every Skill-to-Skill relationship requires evidence from both Skills"
+                )
+            if edge_type == "shared-dependency":
+                shared_resource = raw_edge.get("sharedResource")
+                if (
+                    not isinstance(shared_resource, dict)
+                    or not str(shared_resource.get("name", "")).strip()
+                    or not str(shared_resource.get("identityBasis", "")).strip()
+                ):
+                    raise ValueError(
+                        "A shared-dependency relationship requires the exact shared resource "
+                        "and its identity basis"
+                    )
+        elif edge_type in REQUIRED_RELATIONSHIP_DIMENSIONS:
+            raise ValueError(f"Relationship type {edge_type} must connect two Skill nodes")
+    return {"nodes": nodes, "edges": edges}
+
+
 def review_command(args: argparse.Namespace) -> int:
     input_dir = Path(args.input).expanduser().resolve()
     review_path = Path(args.review).expanduser().resolve()
@@ -1390,6 +1566,7 @@ def review_command(args: argparse.Namespace) -> int:
     graph_review = review.get("candidateGraphReview")
     if not isinstance(graph_review, dict) or graph_review.get("status") != "completed":
         raise ValueError("Agent review must complete candidateGraphReview before final output")
+    validate_relationship_review(review, base_skill_ids)
     review_skills = {
         str(item.get("skillId")): item
         for item in review.get("skills", [])
@@ -1435,6 +1612,7 @@ def review_command(args: argparse.Namespace) -> int:
     base["review"] = {
         "status": "agent-reviewed",
         "evidenceCoverage": "complete",
+        "relationshipCoverage": "complete",
         "owner": "agent",
         "reviewedAt": review.get("reviewedAt"),
     }
@@ -1450,9 +1628,7 @@ def review_command(args: argparse.Namespace) -> int:
         ],
         "verificationStatus": "agent-reviewed",
     }
-    graph = review.get("graph")
-    if not isinstance(graph, dict) or not isinstance(graph.get("nodes"), list) or not isinstance(graph.get("edges"), list):
-        raise ValueError("Agent review must provide graph nodes and edges")
+    graph = validate_review_graph(review.get("graph"), base_skill_ids)
     base["graph"] = {
         "status": "agent-reviewed",
         "nodes": graph["nodes"],

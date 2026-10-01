@@ -113,7 +113,13 @@
     }
     .panel-title { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
     .count { color: var(--text-faint); font-size: 12px; white-space: nowrap; }
-    .results-layout { display: block; }
+    .results-layout {
+      display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(400px, .65fr);
+      gap: 16px; align-items: start;
+    }
+    .results-layout.showing-relationships { grid-template-columns: minmax(400px, .8fr) minmax(600px, 1.2fr); }
+    .results-layout.relationships-wide { grid-template-columns: 1fr; }
+    .results-layout.relationships-wide > * { grid-column: 1 / -1; }
     .results-panel { overflow: visible; }
     .toolbar {
       display: grid; grid-template-columns: minmax(220px, 1fr) minmax(170px, .35fr);
@@ -331,31 +337,119 @@
     .copy-toast span { display: block; color: var(--text-soft); font-size: 12px; line-height: 1.55; }
     .copy-toast.is-error { border-color: color-mix(in srgb, var(--warn) 48%, var(--line)); }
     .copy-toast.is-error svg, .copy-toast.is-error strong { color: var(--warn); }
-    .relationship { margin-top: 16px; overflow: hidden; }
-    .relationship-controls { display: flex; align-items: center; gap: 8px; }
-    .relationship-controls label { color: var(--text-faint); font-size: 11px; }
-    .relationship-controls .custom-select { min-width: 184px; }
-    .relationship-body { display: grid; grid-template-columns: minmax(0, 1fr) 256px; min-height: 472px; }
-    #graph { display: block; width: 100%; height: 520px; touch-action: none; }
-    .edge { stroke: var(--line-strong); stroke-width: 1; opacity: .68; }
-    .edge.active { stroke: var(--primary); stroke-width: 2; opacity: 1; }
-    .node { cursor: grab; }
-    .node:active { cursor: grabbing; }
+    .relationship { overflow: hidden; }
+    .graph-mode {
+      display: inline-grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 2px;
+      border: 1px solid var(--line); border-radius: 2px; background: var(--surface-soft);
+    }
+    .graph-mode button {
+      min-height: 32px; padding: 4px 8px; border: 0; border-radius: 1px;
+      background: transparent; color: var(--text-soft); font-size: 11px; font-weight: 700;
+    }
+    .graph-mode button:hover { color: var(--text); background: var(--surface); }
+    .graph-mode button[aria-selected="true"] { color: var(--primary); background: var(--surface); box-shadow: 0 1px 4px rgba(23, 33, 43, .08); }
+    .graph-view-actions {
+      position: absolute; top: 16px; right: 16px; z-index: 2;
+      display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--line);
+      border-radius: 2px; background: color-mix(in srgb, var(--surface) 94%, transparent);
+      box-shadow: 0 4px 16px light-dark(rgba(23, 33, 43, .08), rgba(0, 0, 0, .18));
+      backdrop-filter: blur(8px);
+    }
+    .graph-view-actions button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      min-width: 28px; min-height: 28px; padding: 4px 8px; border: 0; border-radius: 1px;
+      background: transparent; color: var(--text-soft); font-size: 10px; font-weight: 700;
+    }
+    .graph-view-actions svg { width: 14px; height: 14px; flex: 0 0 auto; }
+    .graph-view-actions button:hover:not(:disabled) { color: var(--text); background: var(--surface-soft); }
+    .graph-view-actions button[aria-pressed="true"] { color: var(--primary); background: var(--primary-soft); }
+    .graph-view-actions button:disabled { opacity: .42; cursor: not-allowed; }
+    .relationship-body { display: grid; grid-template-rows: minmax(352px, 1fr) auto auto; min-height: 560px; }
+    .graph-stage { position: relative; display: grid; min-width: 0; overflow: hidden; background: var(--surface); }
+    #graph { display: block; width: 100%; height: 456px; touch-action: none; cursor: grab; }
+    #graph.is-panning { cursor: grabbing; }
+    .graph-pan-hint {
+      position: absolute; right: 16px; bottom: 12px; z-index: 2; padding: 4px 8px;
+      border: 1px solid var(--line); border-radius: 2px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      color: var(--text-faint); font-size: 9px; pointer-events: none;
+    }
+    .edge { fill: none; stroke: var(--line-strong); stroke-width: 1.25; opacity: .68; pointer-events: none; }
+    .edge.active, .edge.is-focused { stroke: var(--primary); stroke-width: 2.25; opacity: 1; }
+    .edge.dim { opacity: .12; }
+    .edge-hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
+    .edge-label {
+      fill: var(--text-faint); font-size: 9px; font-weight: 700; paint-order: stroke;
+      stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; pointer-events: none;
+    }
+    .edge-hit:hover + .edge-label, .edge-hit:focus-visible + .edge-label { fill: var(--text); }
+    .edge-label.is-focused { fill: var(--primary); }
+    .node { cursor: pointer; transition: opacity 160ms ease; }
     .node circle { stroke: var(--surface); stroke-width: 2; }
+    .node:hover text, .node:focus-visible text { fill: var(--primary); }
+    .node .selection-ring { fill: none; stroke: var(--primary); stroke-width: 2; opacity: .9; }
     .node text {
       fill: var(--text); font-size: 11px; paint-order: stroke;
       stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: all;
     }
     .node .hit-area { fill: transparent; stroke: none; pointer-events: all; }
-    .node.dim { opacity: .14; }
-    .node.selected circle { stroke: var(--primary); stroke-width: 4; }
-    .legend {
-      display: grid; align-content: start; gap: 16px; padding: 16px;
-      border-left: 1px solid var(--line); background: var(--surface-soft);
+    .node.dim { opacity: .16; }
+    .node.selected > circle:not(.hit-area):not(.selection-ring) { stroke: var(--primary); stroke-width: 4; }
+    .node.is-focused > circle:not(.hit-area):not(.selection-ring) { stroke: var(--flow-accent); stroke-width: 4; }
+    .node:focus-visible .hit-area { stroke: var(--primary); stroke-width: 2; }
+    .graph-empty {
+      position: absolute; inset: 0; display: grid; place-items: center; padding: 32px;
+      color: var(--text-faint); text-align: center; font-size: 12px; line-height: 1.6; pointer-events: none;
     }
-    .legend-title { margin-bottom: 0; color: var(--text-faint); font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+    .graph-inspector {
+      min-height: 152px; max-height: 360px; padding: 16px; overflow: auto;
+      border-top: 1px solid var(--line); background: var(--surface-soft); outline: none;
+    }
+    .graph-inspector-head {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px;
+    }
+    .graph-inspector-kicker {
+      display: block; margin-bottom: 4px; color: var(--primary); font-size: 10px;
+      font-weight: 750; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .graph-inspector h3 { margin: 0; font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }
+    .graph-inspector-note { margin: 0; color: var(--text-soft); font-size: 12px; line-height: 1.6; }
+    .graph-inspector-hint { color: var(--text-faint); font-size: 10px; white-space: nowrap; }
+    .graph-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .graph-tag {
+      display: inline-flex; align-items: center; min-height: 24px; padding: 2px 8px;
+      border: 1px solid var(--line-strong); border-radius: 2px; background: var(--surface);
+      color: var(--text-soft); font-size: 10px; font-weight: 700;
+    }
+    .graph-relation-stack { display: grid; gap: 12px; }
+    .graph-pair { display: grid; gap: 8px; }
+    .graph-pair + .graph-pair { padding-top: 12px; border-top: 1px solid var(--line); }
+    .graph-pair > h4 { margin: 0; color: var(--text); font-size: 12px; line-height: 1.5; }
+    .graph-relation-card { padding: 12px; border-left: 2px solid var(--primary); background: var(--surface); }
+    .graph-relation-card h4 { margin: 0 0 6px; color: var(--primary); font-size: 11px; }
+    .graph-relation-card p { margin: 0; color: var(--text-soft); font-size: 11px; line-height: 1.6; }
+    .graph-relation-card dl {
+      display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 6px 12px;
+      margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line);
+    }
+    .graph-relation-card dt { color: var(--text-faint); font-size: 10px; font-weight: 700; }
+    .graph-relation-card dd { margin: 0; color: var(--text); font-size: 11px; line-height: 1.55; }
+    .graph-evidence { margin-top: 10px; }
+    .graph-evidence summary { width: fit-content; color: var(--primary); cursor: pointer; font-size: 10px; font-weight: 700; }
+    .graph-evidence ul { display: grid; gap: 6px; margin: 8px 0 0; padding-left: 18px; }
+    .graph-evidence li { color: var(--text-soft); font-size: 10px; line-height: 1.55; }
+    .legend {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: start;
+      gap: 8px 16px; padding: 16px; border-top: 1px solid var(--line); background: var(--surface-soft);
+    }
+    .legend-title { grid-column: 1 / -1; margin-bottom: 0; color: var(--text-faint); font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+    .legend #graph-legend-items { display: contents; }
     .legend span { display: inline-flex; align-items: center; gap: 8px; color: var(--text-soft); font-size: 12px; }
     .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: 0 0 auto; }
+    @media (max-width: 1180px) {
+      .results-layout, .results-layout.showing-relationships { grid-template-columns: 1fr; }
+      #graph { height: 456px; }
+    }
     @media (max-width: 1080px) {
       .skill-card-main { grid-template-columns: minmax(190px, .8fr) minmax(240px, 1.2fr); }
       .skill-card-main.has-recommendation { grid-template-columns: minmax(190px, .8fr) minmax(240px, 1.2fr); }
@@ -364,10 +458,7 @@
     @media (max-width: 860px) {
       .report-intro { display: block; }
       .intro-note { margin-top: 16px; }
-      .relationship-body { grid-template-columns: 1fr; }
-      .legend { grid-template-columns: repeat(3, minmax(0, 1fr)); border-left: 0; border-top: 1px solid var(--line); }
-      .legend-title { grid-column: 1 / -1; }
-      #graph { height: 432px; }
+      #graph { height: 384px; }
     }
     @media (min-width: 540px) and (max-width: 640px) {
       .app-header { position: static; padding: 8px 16px; }
@@ -384,9 +475,16 @@
       .taxonomy-group { grid-template-columns: 80px minmax(0, 1fr); }
       .relationship .panel-head { align-items: stretch; flex-direction: column; }
       .relationship .panel-title { flex-wrap: wrap; }
-      .relationship-controls { display: grid; grid-template-columns: 72px minmax(0, 1fr); align-items: center; }
+      .graph-mode { width: 100%; }
+      .graph-view-actions { top: 8px; right: 8px; }
+      .graph-view-actions .button-label { display: none; }
+      .graph-pan-hint { right: 8px; bottom: 8px; }
       .legend { grid-template-columns: 1fr 1fr; }
-      #graph { height: 368px; }
+      #graph { height: 416px; }
+      .graph-inspector { min-height: 176px; }
+      .graph-inspector-head { display: block; }
+      .graph-inspector-hint { display: block; margin-top: 8px; white-space: normal; }
+      .graph-relation-card dl { grid-template-columns: 1fr; gap: 4px; }
       .analysis-drawer { width: 100vw; }
       .drawer-close { width: 44px; height: 44px; }
       .detail { padding: 16px; }
@@ -425,7 +523,7 @@
           <div class="eyebrow">扫描报告</div>
           <h2 id="report-title">正在整理检查结果</h2>
         </div>
-        <p class="intro-note" id="intro-note">先查看每个 Skill 的结论与建议；关系视图常驻在结果之后，用于理解共享资源和风险连接。</p>
+        <p class="intro-note" id="intro-note">选择一个 Skill 查看它的依赖，也可切换到 Skill 间关系图；点击 Skill 聚焦局部，点击连线查看已复核诊断。</p>
       </section>
 
       <section class="stats" aria-label="扫描摘要">
@@ -462,38 +560,44 @@
           </div>
           <div class="skill-list" id="skill-list"></div>
         </section>
-      </div>
-
-      <section class="panel relationship" id="relationship-section" aria-labelledby="relationship-title">
-        <div class="panel-head">
-          <div class="panel-title"><h2 id="relationship-title">关系视图</h2><span class="count">用于理解风险之间的共享资源</span></div>
-          <div class="relationship-controls">
-            <label id="node-type-label" for="node-type">显示范围</label>
-            <div class="custom-select" id="node-type-select" data-value="all">
-              <button type="button" class="custom-select-trigger" id="node-type" aria-haspopup="listbox" aria-expanded="false" aria-controls="node-type-menu" aria-labelledby="node-type-label node-type-value">
-                <span id="node-type-value">Skill 与关联资源</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg>
-              </button>
-              <div class="custom-select-menu" id="node-type-menu" role="listbox" aria-labelledby="node-type-label" hidden>
-                <button type="button" class="custom-select-option" role="option" data-value="all" aria-selected="true"><span>Skill 与关联资源</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
-                <button type="button" class="custom-select-option" id="skill-only-option" role="option" data-value="skill" aria-selected="false"><span>仅 Skill</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
-              </div>
+        <section class="panel relationship" id="relationship-section" aria-labelledby="relationship-title">
+          <div class="panel-head">
+            <div class="panel-title"><h2 id="relationship-title">当前 Skill 的关联资源</h2><span class="count" id="graph-skill-name">随选择同步更新</span></div>
+            <div class="graph-mode" role="tablist" aria-label="关系图显示方式">
+              <button type="button" role="tab" id="graph-mode-dependencies" data-graph-mode="dependencies" aria-selected="true" aria-controls="graph">当前 Skill 依赖</button>
+              <button type="button" role="tab" id="graph-mode-relationships" data-graph-mode="relationships" aria-selected="false" aria-controls="graph">Skill 间关系</button>
             </div>
           </div>
-        </div>
-        <div class="relationship-body">
-          <svg id="graph" role="img" aria-label="Skill、外部站点、账号密钥与能力重叠关系图"></svg>
-          <div class="legend" aria-label="图例">
-            <div class="legend-title">图例</div>
-            <span><i class="dot" style="background:var(--safe)"></i>低风险</span>
-            <span><i class="dot" style="background:var(--warn)"></i>中风险</span>
-            <span><i class="dot" style="background:var(--high)"></i>高风险</span>
-            <span><i class="dot" style="background:var(--critical)"></i>严重风险</span>
-            <span><i class="dot" style="background:var(--data)"></i>外部站点</span>
-            <span><i class="dot" style="background:var(--human)"></i>账号密钥</span>
+          <div class="relationship-body">
+            <div class="graph-stage">
+              <div class="graph-view-actions" id="graph-view-actions" aria-label="Skill 关系视角" hidden>
+                <button type="button" data-graph-zoom="out" aria-label="缩小关系图" title="缩小">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/></svg>
+                </button>
+                <button type="button" data-graph-zoom="in" aria-label="放大关系图" title="放大">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+                <button type="button" data-graph-view="global" aria-pressed="true" aria-label="适应全部关系组">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M3 16v5h5"/></svg>
+                  <span class="button-label">适应全图</span>
+                </button>
+                <button type="button" data-graph-view="group" aria-pressed="false" aria-label="聚焦当前选中的完整关系组">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                  <span class="button-label">聚焦关系组</span>
+                </button>
+              </div>
+              <svg id="graph" role="img" aria-label="当前 Skill 与其关联资源图"></svg>
+              <div class="graph-pan-hint" id="graph-pan-hint" hidden>滚轮缩放 · 拖拽平移</div>
+              <div class="graph-empty" id="graph-empty" hidden></div>
+            </div>
+            <aside class="graph-inspector" id="graph-inspector" aria-live="polite" aria-label="关系诊断"></aside>
+            <div class="legend" aria-label="图例">
+              <div class="legend-title">图例</div>
+              <div id="graph-legend-items"></div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   </div>
   <button type="button" class="drawer-scrim" id="drawer-scrim" aria-label="关闭 Skill 详细分析" tabindex="-1"></button>
@@ -562,10 +666,18 @@
       {key: "human", label: "提示与交互", tags: new Set(["scope-hijack", "priority-escalation", "instruction-conflict", "authorization-overreach", "disclosure-suppression", "delayed-disclosure", "authority-imitation", "manipulative-commerce", "policy-evasion", "cognitive-overload"])},
       {key: "commerce", label: "费用与承诺", tags: new Set(["paid-operation", "unverified-claims"])},
     ];
-    const state = {selected: null, query: "", severity: "pending", nodeType: "all", drawerOpen: false};
+    const state = {
+      selected: null, query: "", severity: "pending", graphMode: "dependencies",
+      relationshipView: "global", relationshipGroupKey: null, graphPinnedKey: null, drawerOpen: false
+    };
     const byId = new Map(report.skills.map(function(skill) { return [skill.id, skill]; }));
     const graph = report.graph || {status: "pending-agent-review", nodes: [], edges: []};
     const svg = document.getElementById("graph");
+    const graphPanHint = document.getElementById("graph-pan-hint");
+    const graphCamera = {x: 0, y: 0, k: 1, min: .42, max: 2.8, dragging: false, pointerId: null};
+    let graphViewport = null;
+    let graphLayoutState = null;
+    let graphCameraFrame = 0;
     const shell = document.querySelector(".shell");
     const drawer = document.getElementById("analysis-drawer");
     const drawerScrim = document.getElementById("drawer-scrim");
@@ -576,20 +688,72 @@
     const severitySelect = setupCustomSelect(document.getElementById("severity-select"), function(value) {
       state.severity = value; applyFilters();
     });
-    const nodeTypeSelect = setupCustomSelect(document.getElementById("node-type-select"), function(value) {
-      state.nodeType = value; drawGraph();
+    document.querySelectorAll("[data-graph-mode]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        state.graphMode = button.dataset.graphMode;
+        if (state.graphMode === "relationships") {
+          state.relationshipView = "global";
+          state.relationshipGroupKey = null;
+        }
+        state.graphPinnedKey = null;
+        document.querySelectorAll("[data-graph-mode]").forEach(function(item) {
+          item.setAttribute("aria-selected", item === button ? "true" : "false");
+        });
+        drawGraph();
+      });
     });
-    const graphSkillNodeIds = new Set(graph.nodes.filter(function(node) {
-      return node.type === "skill";
-    }).map(function(node) { return node.id; }));
-    const hasSkillRelationships = graph.edges.some(function(edge) {
-      return graphSkillNodeIds.has(edge.source) && graphSkillNodeIds.has(edge.target);
+    document.querySelectorAll("[data-graph-view]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        if (button.disabled) return;
+        if (button.dataset.graphView === "group") focusRelationshipGroup(true);
+        else fitGlobalRelationshipGraph(true);
+      });
     });
-    if (!hasSkillRelationships) {
-      nodeTypeSelect.removeOption("skill");
-      nodeTypeSelect.setDisabled(true, "当前 Skill 之间没有直接关联");
+    document.querySelectorAll("[data-graph-zoom]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        if (button.disabled || state.graphMode !== "relationships") return;
+        zoomGraphAt(svg.clientWidth / 2, svg.clientHeight / 2, button.dataset.graphZoom === "in" ? 1.22 : 1 / 1.22);
+      });
+    });
+    svg.addEventListener("wheel", function(event) {
+      if (state.graphMode !== "relationships" || !graphViewport) return;
+      event.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      zoomGraphAt(event.clientX - rect.left, event.clientY - rect.top, Math.exp(-event.deltaY * .0015));
+    }, {passive: false});
+    svg.addEventListener("pointerdown", function(event) {
+      if (state.graphMode !== "relationships" || !graphViewport || event.button !== 0) return;
+      if (event.target.closest(".node, .edge-hit")) return;
+      window.cancelAnimationFrame(graphCameraFrame);
+      graphCamera.dragging = true;
+      graphCamera.pointerId = event.pointerId;
+      graphCamera.startClientX = event.clientX;
+      graphCamera.startClientY = event.clientY;
+      graphCamera.startX = graphCamera.x;
+      graphCamera.startY = graphCamera.y;
+      svg.setPointerCapture(event.pointerId);
+      svg.classList.add("is-panning");
+    });
+    svg.addEventListener("pointermove", function(event) {
+      if (!graphCamera.dragging || graphCamera.pointerId !== event.pointerId) return;
+      const rect = svg.getBoundingClientRect();
+      const scaleX = svg.viewBox.baseVal.width / Math.max(1, rect.width);
+      const scaleY = svg.viewBox.baseVal.height / Math.max(1, rect.height);
+      graphCamera.x = graphCamera.startX + (event.clientX - graphCamera.startClientX) * scaleX;
+      graphCamera.y = graphCamera.startY + (event.clientY - graphCamera.startClientY) * scaleY;
+      state.relationshipView = "custom";
+      applyGraphCamera();
+    });
+    function stopGraphPan(event) {
+      if (!graphCamera.dragging || (event && graphCamera.pointerId !== event.pointerId)) return;
+      graphCamera.dragging = false;
+      if (svg.hasPointerCapture(graphCamera.pointerId)) svg.releasePointerCapture(graphCamera.pointerId);
+      graphCamera.pointerId = null;
+      svg.classList.remove("is-panning");
+      updateGraphViewControls();
     }
-    let simulationToken = 0;
+    svg.addEventListener("pointerup", stopGraphPan);
+    svg.addEventListener("pointercancel", stopGraphPan);
 
     function showCopyToast(title, message, isError) {
       window.clearTimeout(copyToastTimer);
@@ -823,6 +987,10 @@
     function selectSkill(id) {
       const skill = byId.get(id);
       if (!skill) return;
+      if (state.selected !== id) {
+        state.graphPinnedKey = null;
+        state.relationshipGroupKey = null;
+      }
       state.selected = id;
       const reviewed = skill.verificationStatus === "agent-reviewed";
       const displaySeverity = reviewed ? skill.severity : "pending";
@@ -912,142 +1080,593 @@
     function graphSkillId(node) {
       return node.type === "skill" ? (node.skillId || node.id) : null;
     }
-    function drawGraph() {
-      simulationToken += 1;
-      const token = simulationToken;
-      const allowedSkills = new Set(filteredSkills().map(function(skill) { return skill.id; }));
-      const allowedGraphSkillIds = new Set(graph.nodes.filter(function(node) {
-        return node.type === "skill" && allowedSkills.has(graphSkillId(node));
-      }).map(function(node) { return node.id; }));
-      let nodes = graph.nodes.filter(function(node) {
-        if (node.type === "skill") return allowedGraphSkillIds.has(node.id);
-        if (state.nodeType === "skill") return false;
-        return graph.edges.some(function(edge) { return allowedGraphSkillIds.has(edge.source) && edge.target === node.id; });
+    const relationshipTypeText = {
+      "capability-overlap": "能力相似",
+      "trigger-conflict": "触发冲突",
+      "shared-dependency": "共享依赖",
+      "behavioral-interaction": "行为交互",
+      "combined-risk": "组合风险"
+    };
+    function graphNodeLabel(node) {
+      if (!node) return "未知对象";
+      const skill = node.type === "skill" ? byId.get(graphSkillId(node)) : null;
+      return skill ? skill.name : String(node.label || node.id);
+    }
+    function isCompleteRelationshipEdge(edge, source, target) {
+      if (!edge || !source || !target || source.type !== "skill" || target.type !== "skill") return false;
+      if (!relationshipTypeText[edge.type] || !edge.id || !edge.summary || !edge.diagnosis || !edge.recommendation) return false;
+      if (edge.confidence !== "probable" && edge.confidence !== "confirmed") return false;
+      if (!Array.isArray(edge.evidence) || edge.evidence.length < 2) return false;
+      const expectedSkillIds = new Set([graphSkillId(source), graphSkillId(target)]);
+      const evidencedSkillIds = new Set(edge.evidence.map(function(item) { return item && item.skillId; }).filter(Boolean));
+      if ([...expectedSkillIds].some(function(skillId) { return !evidencedSkillIds.has(skillId); })) return false;
+      if (edge.type === "shared-dependency") {
+        return Boolean(edge.sharedResource && edge.sharedResource.name && edge.sharedResource.identityBasis);
+      }
+      return true;
+    }
+    const dependencyTypeText = {
+      "uses-domain": "使用外部站点",
+      "accesses-credential": "访问账号密钥",
+      "reads-file": "读取本地文件",
+      "writes-file": "写入本地文件"
+    };
+    const resourceTypeText = {domain: "外部站点", credential: "账号密钥", file: "本地文件"};
+    const graphInspector = document.getElementById("graph-inspector");
+    const graphEmpty = document.getElementById("graph-empty");
+
+    function buildRelationshipPairs(nodeMap) {
+      const grouped = new Map();
+      graph.edges.forEach(function(edge) {
+        const source = nodeMap.get(edge.source), target = nodeMap.get(edge.target);
+        if (!isCompleteRelationshipEdge(edge, source, target)) return;
+        const ids = [source.id, target.id].sort();
+        const key = "relationship:" + ids.join("|");
+        if (!grouped.has(key)) {
+          grouped.set(key, {key: key, kind: "relationship", source: nodeMap.get(ids[0]), target: nodeMap.get(ids[1]), edges: []});
+        }
+        grouped.get(key).edges.push(edge);
       });
-      nodes = nodes.filter(function(node) { return node.type === "skill"; })
-        .concat(nodes.filter(function(node) { return node.type !== "skill"; }))
-        .slice(0, 250).map(function(node) { return Object.assign({}, node); });
+      return Array.from(grouped.values()).sort(function(a, b) {
+        return (graphNodeLabel(a.source) + graphNodeLabel(a.target)).localeCompare(graphNodeLabel(b.source) + graphNodeLabel(b.target), "zh-CN");
+      });
+    }
+
+    function buildRelationshipComponents(nodes, pairs) {
       const nodeMap = new Map(nodes.map(function(node) { return [node.id, node]; }));
-      const edges = graph.edges.filter(function(edge) {
-        return nodeMap.has(edge.source) && nodeMap.has(edge.target);
-      }).map(function(edge) { return Object.assign({}, edge); });
-      svg.innerHTML = "";
-      const width = Math.max(320, svg.clientWidth);
-      const height = Math.max(320, svg.clientHeight);
-      svg.setAttribute("viewBox", "0 0 " + width + " " + height);
-      if (!nodes.length) {
-        svg.innerHTML = '<text x="' + width / 2 + '" y="' + height / 2 + '" text-anchor="middle" fill="var(--text-faint)">当前没有可展示的关联资源</text>';
+      const adjacency = new Map(nodes.map(function(node) { return [node.id, new Set()]; }));
+      pairs.forEach(function(pair) {
+        adjacency.get(pair.source.id).add(pair.target.id);
+        adjacency.get(pair.target.id).add(pair.source.id);
+      });
+      const visited = new Set();
+      const components = [];
+      nodes.forEach(function(node) {
+        if (visited.has(node.id)) return;
+        const queue = [node.id], ids = [];
+        visited.add(node.id);
+        while (queue.length) {
+          const id = queue.shift(); ids.push(id);
+          adjacency.get(id).forEach(function(next) {
+            if (!visited.has(next)) { visited.add(next); queue.push(next); }
+          });
+        }
+        const idSet = new Set(ids);
+        const componentPairs = pairs.filter(function(pair) { return idSet.has(pair.source.id) && idSet.has(pair.target.id); });
+        const key = "group:" + ids.slice().sort().join("|");
+        components.push({key: key, nodes: ids.map(function(id) { return nodeMap.get(id); }), pairs: componentPairs});
+      });
+      components.sort(function(a, b) {
+        const aSelected = a.nodes.some(function(node) { return graphSkillId(node) === state.selected; });
+        const bSelected = b.nodes.some(function(node) { return graphSkillId(node) === state.selected; });
+        if (aSelected !== bSelected) return aSelected ? -1 : 1;
+        if (a.nodes.length !== b.nodes.length) return b.nodes.length - a.nodes.length;
+        return graphNodeLabel(a.nodes[0]).localeCompare(graphNodeLabel(b.nodes[0]), "zh-CN");
+      });
+      return components;
+    }
+
+    function buildGraphModel() {
+      const nodeMap = new Map(graph.nodes.map(function(node) { return [node.id, node]; }));
+      const center = graph.nodes.find(function(node) {
+        return node.type === "skill" && graphSkillId(node) === state.selected;
+      });
+      if (state.graphMode === "relationships") {
+        const allPairs = buildRelationshipPairs(nodeMap);
+        const relatedIds = new Set();
+        allPairs.forEach(function(pair) { relatedIds.add(pair.source.id); relatedIds.add(pair.target.id); });
+        const allNodes = Array.from(relatedIds).map(function(id) { return nodeMap.get(id); }).filter(Boolean);
+        const components = buildRelationshipComponents(allNodes, allPairs);
+        components.forEach(function(component) {
+          component.pairs.forEach(function(pair) { pair.groupKey = component.key; });
+        });
+        const selectedComponent = center ? components.find(function(component) {
+          return component.nodes.some(function(node) { return node.id === center.id; });
+        }) : null;
+        const requestedComponent = components.find(function(component) { return component.key === state.relationshipGroupKey; });
+        const activeComponent = requestedComponent || selectedComponent || components[0] || null;
+        if (activeComponent && !state.relationshipGroupKey) state.relationshipGroupKey = activeComponent.key;
+        return {
+          mode: "relationships", view: state.relationshipView, center: center || null, nodes: allNodes, items: allPairs,
+          components: components, activeComponent: activeComponent, totalGroupCount: components.length,
+          relationshipCount: allPairs.reduce(function(total, item) { return total + item.edges.length; }, 0)
+        };
+      }
+      if (!center) return {mode: "dependencies", center: null, nodes: [], items: []};
+      const items = [];
+      graph.edges.forEach(function(edge, index) {
+        if (edge.source !== center.id && edge.target !== center.id) return;
+        const neighborId = edge.source === center.id ? edge.target : edge.source;
+        const neighbor = nodeMap.get(neighborId);
+        if (!neighbor || neighbor.type === "skill") return;
+        items.push({key: "dependency:" + neighborId + ":" + index, kind: "dependency", source: center, target: neighbor, neighbor: neighbor, edge: edge});
+      });
+      items.sort(function(a, b) { return graphNodeLabel(a.neighbor).localeCompare(graphNodeLabel(b.neighbor), "zh-CN"); });
+      return {mode: "dependencies", center: center, nodes: [center].concat(items.map(function(item) { return item.neighbor; })), items: items};
+    }
+
+    function renderGraphOverview(model) {
+      const selectedSkill = state.selected ? byId.get(state.selected) : null;
+      const selectedName = selectedSkill ? selectedSkill.name : "当前 Skill";
+      if (model.mode === "dependencies" && !model.center) {
+        graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">关系诊断</span>' +
+          '<h3>请先从扫描结果中选择一个 Skill</h3></div></div>' +
+          '<p class="graph-inspector-note">选择后，这里会随图中的节点和连线展示关联资源或 Agent 已复核的 Skill 间关系。</p>';
         return;
       }
-      nodes.forEach(function(node, index) {
-        const angle = index / nodes.length * Math.PI * 2;
-        const radius = Math.min(width, height) * (node.type === "skill" ? .23 : .37);
-        node.x = width / 2 + Math.cos(angle) * radius;
-        node.y = height / 2 + Math.sin(angle) * radius;
-        node.vx = 0; node.vy = 0;
+      if (model.mode === "relationships") {
+        const heading = model.view === "group" ? "已聚焦当前关系组" : "全部已复核关系";
+        const summary = "一个连续关系网络呈现 " + model.totalGroupCount + " 个关系组、" + model.nodes.length + " 个 Skill、" + model.items.length +
+          " 对关联和 " + model.relationshipCount + " 条 Agent 已复核关系。" +
+          (model.view === "group" ? " 当前镜头聚焦整个关系组，其他关系组仍保留在画布中。" : " 可滚轮缩放、拖拽平移，或选择连线后聚焦其所属关系组。");
+        graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">Skill 间关系</span>' +
+          '<h3>' + escapeHtml(heading) + '</h3></div><span class="graph-inspector-hint">点击选择并查看</span></div>' +
+          '<p class="graph-inspector-note">' + summary + ' 点击节点或连线只会更新这里的关系诊断，不会切换主图。</p>';
+      } else {
+        graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">当前 Skill 依赖</span>' +
+          '<h3>' + escapeHtml(selectedName) + '</h3></div><span class="graph-inspector-hint">点击选择并查看</span></div>' +
+          '<p class="graph-inspector-note">当前显示 ' + model.items.length +
+          ' 个直接关联资源。选择节点或连线可查看资源类型与连接方式。</p>';
+      }
+    }
+
+    function renderGraphInspector(model, item, pinned) {
+      if (!item) { renderGraphOverview(model); return; }
+      const selectedSkill = byId.get(state.selected);
+      const selectedName = selectedSkill ? selectedSkill.name : (model.center ? graphNodeLabel(model.center) : "当前 Skill");
+      const neighborName = item.neighbor ? graphNodeLabel(item.neighbor) : "关联对象";
+      if (model.mode === "dependencies") {
+        const connection = dependencyTypeText[item.edge.type] || item.edge.type.replace(/-/g, " ");
+        const resourceType = resourceTypeText[item.neighbor.type] || "关联资源";
+        graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">' + escapeHtml(resourceType) + '</span>' +
+          '<h3>' + escapeHtml(neighborName) + '</h3></div><span class="graph-inspector-hint">' + (pinned ? "已固定" : "点击查看") + '</span></div>' +
+          '<div class="graph-tags"><span class="graph-tag">' + escapeHtml(connection) + '</span></div>' +
+          '<p class="graph-inspector-note">' + escapeHtml(selectedName) + ' 会通过“' + escapeHtml(connection) + '”与此资源发生连接。' +
+          (pinned ? "再次选择其他节点或连线可切换详情。" : "点击节点或连线可将此说明固定在这里。") + '</p>';
+        return;
+      }
+      if (item.kind === "relationship-node") {
+        const relationTypes = Array.from(new Set(item.incident.reduce(function(types, pair) {
+          return types.concat(pair.edges.map(function(edge) { return relationshipTypeText[edge.type]; }));
+        }, [])));
+        const relationshipCards = item.incident.map(function(pair) {
+          return renderRelationshipPair(pair, true);
+        }).join("");
+        graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">Skill 节点</span>' +
+          '<h3>' + escapeHtml(graphNodeLabel(item.node)) + '</h3></div><span class="graph-inspector-hint">' + item.incident.length + ' 对直接关系</span></div>' +
+          '<div class="graph-tags">' + relationTypes.map(function(type) { return '<span class="graph-tag">' + escapeHtml(type) + '</span>'; }).join("") + '</div>' +
+          '<p class="graph-inspector-note">以下是该 Skill 已完成 Agent 复核的直接关系。主图保持当前视角，仅更新本区域。</p>' +
+          '<div class="graph-relation-stack">' + relationshipCards + '</div>';
+        return;
+      }
+      graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">Skill 间关系</span>' +
+        '<h3>' + escapeHtml(graphNodeLabel(item.source)) + ' ↔ ' + escapeHtml(graphNodeLabel(item.target)) + '</h3></div><span class="graph-inspector-hint">' +
+        (pinned ? "已固定" : "点击查看") + '</span></div><div class="graph-tags">' +
+        item.edges.map(function(edge) { return '<span class="graph-tag">' + escapeHtml(relationshipTypeText[edge.type]) + '</span>'; }).join("") +
+        '</div><div class="graph-relation-stack">' + renderRelationshipPair(item, false) + '</div>';
+    }
+
+    function renderRelationshipPair(pair, includeHeading) {
+      const sourceName = graphNodeLabel(pair.source);
+      const targetName = graphNodeLabel(pair.target);
+      const cards = pair.edges.map(function(edge) {
+        const evidence = edge.evidence.map(function(entry) {
+          const skill = byId.get(entry.skillId);
+          const owner = skill ? skill.name : "关联 Skill";
+          const location = entry.location ? " · " + entry.location : "";
+          return '<li><strong>' + escapeHtml(owner) + '</strong>' + escapeHtml(location) + '：' + escapeHtml(entry.basis) + '</li>';
+        }).join("");
+        return '<article class="graph-relation-card"><h4>' + escapeHtml(relationshipTypeText[edge.type]) + ' · ' +
+          escapeHtml(confidenceText[edge.confidence] || edge.confidence) + '</h4><p>' + escapeHtml(edge.summary) + '</p>' +
+          '<dl><dt>Agent 诊断</dt><dd>' + escapeHtml(edge.diagnosis) + '</dd>' +
+          '<dt>处理建议</dt><dd>' + escapeHtml(edge.recommendation) + '</dd></dl>' +
+          '<details class="graph-evidence"><summary>查看双方复核依据（' + edge.evidence.length + '）</summary><ul>' + evidence + '</ul></details></article>';
+      }).join("");
+      const heading = includeHeading
+        ? '<h4>' + escapeHtml(sourceName) + ' ↔ ' + escapeHtml(targetName) + '</h4>'
+        : "";
+      return '<section class="graph-pair">' + heading + cards + '</section>';
+    }
+
+    function svgElement(name, attributes) {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.keys(attributes || {}).forEach(function(key) { element.setAttribute(key, attributes[key]); });
+      return element;
+    }
+
+    function updateGraphViewControls() {
+      document.querySelectorAll("[data-graph-view]").forEach(function(button) {
+        button.setAttribute("aria-pressed", button.dataset.graphView === state.relationshipView ? "true" : "false");
+        button.disabled = button.dataset.graphView === "group" && (!graphLayoutState || !graphLayoutState.groups.some(function(group) {
+          return group.key === state.relationshipGroupKey;
+        }));
       });
+      document.querySelectorAll("[data-graph-zoom]").forEach(function(button) {
+        button.disabled = !graphViewport || (button.dataset.graphZoom === "in" ? graphCamera.k >= graphCamera.max - .01 : graphCamera.k <= graphCamera.min + .01);
+      });
+    }
+
+    function applyGraphCamera() {
+      if (!graphViewport) return;
+      graphViewport.setAttribute("transform", "translate(" + graphCamera.x + " " + graphCamera.y + ") scale(" + graphCamera.k + ")");
+      updateGraphViewControls();
+    }
+
+    function cameraForBounds(bounds, maxScale) {
+      const width = Math.max(320, svg.clientWidth), height = Math.max(320, svg.clientHeight);
+      const padding = 48;
+      const scale = Math.max(graphCamera.min, Math.min(graphCamera.max, maxScale,
+        Math.min((width - padding * 2) / Math.max(1, bounds.width), (height - padding * 2) / Math.max(1, bounds.height))));
+      return {
+        x: width / 2 - (bounds.x + bounds.width / 2) * scale,
+        y: height / 2 - (bounds.y + bounds.height / 2) * scale,
+        k: scale
+      };
+    }
+
+    function moveGraphCamera(target, animate) {
+      window.cancelAnimationFrame(graphCameraFrame);
+      const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!animate || reducedMotion) {
+        graphCamera.x = target.x; graphCamera.y = target.y; graphCamera.k = target.k;
+        applyGraphCamera(); return;
+      }
+      const start = {x: graphCamera.x, y: graphCamera.y, k: graphCamera.k};
+      const startedAt = performance.now();
+      function step(now) {
+        const progress = Math.min(1, (now - startedAt) / 280);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        graphCamera.x = start.x + (target.x - start.x) * eased;
+        graphCamera.y = start.y + (target.y - start.y) * eased;
+        graphCamera.k = start.k + (target.k - start.k) * eased;
+        applyGraphCamera();
+        if (progress < 1) graphCameraFrame = window.requestAnimationFrame(step);
+      }
+      graphCameraFrame = window.requestAnimationFrame(step);
+    }
+
+    function fitGlobalRelationshipGraph(animate) {
+      if (!graphLayoutState) return;
+      state.relationshipView = "global";
+      moveGraphCamera(cameraForBounds(graphLayoutState.globalBounds, 1), animate);
+    }
+
+    function focusRelationshipGroup(animate) {
+      if (!graphLayoutState) return;
+      const group = graphLayoutState.groups.find(function(item) { return item.key === state.relationshipGroupKey; });
+      if (!group) return;
+      state.relationshipView = "group";
+      moveGraphCamera(cameraForBounds(group.bounds, 1.75), animate);
+    }
+
+    function zoomGraphAt(x, y, factor) {
+      if (!graphViewport) return;
+      window.cancelAnimationFrame(graphCameraFrame);
+      const nextScale = Math.max(graphCamera.min, Math.min(graphCamera.max, graphCamera.k * factor));
+      const worldX = (x - graphCamera.x) / graphCamera.k;
+      const worldY = (y - graphCamera.y) / graphCamera.k;
+      graphCamera.x = x - worldX * nextScale;
+      graphCamera.y = y - worldY * nextScale;
+      graphCamera.k = nextScale;
+      state.relationshipView = "custom";
+      applyGraphCamera();
+    }
+
+    function clusteredRelationshipLayout(model, width, height) {
+      const positions = new Map(), paths = new Map(), labelPoints = new Map(), groups = [];
+      const canvasCenter = {x: width / 2, y: height / 2};
+      const satelliteCount = Math.max(0, model.components.length - 1);
+      model.components.forEach(function(component, componentIndex) {
+        const featured = componentIndex === 0;
+        let centerX = canvasCenter.x, centerY = canvasCenter.y;
+        if (!featured) {
+          const angle = -Math.PI / 2 + Math.PI * 2 * (componentIndex - 1) / Math.max(1, satelliteCount);
+          centerX += Math.cos(angle) * width * .34;
+          centerY += Math.sin(angle) * height * .32;
+        }
+        const degrees = new Map(component.nodes.map(function(node) { return [node.id, 0]; }));
+        component.pairs.forEach(function(pair) { degrees.set(pair.source.id, degrees.get(pair.source.id) + 1); degrees.set(pair.target.id, degrees.get(pair.target.id) + 1); });
+        const selected = component.nodes.find(function(node) { return graphSkillId(node) === state.selected; });
+        const anchor = selected || component.nodes.slice().sort(function(a, b) {
+          return degrees.get(b.id) - degrees.get(a.id) || graphNodeLabel(a).localeCompare(graphNodeLabel(b), "zh-CN");
+        })[0];
+        const others = component.nodes.filter(function(node) { return node.id !== anchor.id; });
+        positions.set(anchor.id, {x: centerX, y: centerY, anchor: true});
+        const radiusX = featured ? Math.min(180, width * .15) : Math.min(104, width * .085);
+        const radiusY = featured ? Math.min(132, height * .19) : Math.min(76, height * .11);
+        if (others.length === 1) {
+          positions.set(anchor.id, {x: centerX - radiusX * .62, y: centerY, anchor: true});
+          positions.set(others[0].id, {x: centerX + radiusX * .62, y: centerY, anchor: false});
+        } else {
+          others.forEach(function(node, index) {
+            const angle = -Math.PI / 2 + (Math.PI * 2 * index / Math.max(1, others.length));
+            positions.set(node.id, {x: centerX + Math.cos(angle) * radiusX, y: centerY + Math.sin(angle) * radiusY, anchor: false});
+          });
+        }
+        const componentPositions = component.nodes.map(function(node) { return positions.get(node.id); });
+        const minX = Math.min.apply(null, componentPositions.map(function(position) { return position.x; }));
+        const maxX = Math.max.apply(null, componentPositions.map(function(position) { return position.x; }));
+        const minY = Math.min.apply(null, componentPositions.map(function(position) { return position.y; }));
+        const maxY = Math.max.apply(null, componentPositions.map(function(position) { return position.y; }));
+        const padX = featured ? 112 : 88, padY = featured ? 88 : 72;
+        groups.push({
+          key: component.key, count: component.nodes.length,
+          bounds: {x: minX - padX, y: minY - padY, width: maxX - minX + padX * 2, height: maxY - minY + padY * 2}
+        });
+        component.pairs.forEach(function(pair) {
+          const source = positions.get(pair.source.id), target = positions.get(pair.target.id);
+          if (pair.source.id === anchor.id || pair.target.id === anchor.id || component.nodes.length <= 2) {
+            paths.set(pair.key, "M " + source.x + " " + source.y + " L " + target.x + " " + target.y);
+            const dx = target.x - source.x, dy = target.y - source.y;
+            const length = Math.hypot(dx, dy) || 1;
+            labelPoints.set(pair.key, {
+              x: (source.x + target.x) / 2 - dy / length * 12,
+              y: (source.y + target.y) / 2 + dx / length * 12 - 4
+            });
+            return;
+          }
+          const midX = (source.x + target.x) / 2, midY = (source.y + target.y) / 2;
+          let vectorX = midX - centerX, vectorY = midY - centerY;
+          const length = Math.hypot(vectorX, vectorY) || 1;
+          if (length < 10) { vectorX = -(target.y - source.y); vectorY = target.x - source.x; }
+          const vectorLength = Math.hypot(vectorX, vectorY) || 1;
+          const controlX = midX + vectorX / vectorLength * 40, controlY = midY + vectorY / vectorLength * 32;
+          paths.set(pair.key, "M " + source.x + " " + source.y + " Q " + controlX + " " + controlY + " " + target.x + " " + target.y);
+          labelPoints.set(pair.key, {x: (source.x + 2 * controlX + target.x) / 4, y: (source.y + 2 * controlY + target.y) / 4 - 6});
+        });
+      });
+      const minGroupX = Math.min.apply(null, groups.map(function(group) { return group.bounds.x; }));
+      const minGroupY = Math.min.apply(null, groups.map(function(group) { return group.bounds.y; }));
+      const maxGroupX = Math.max.apply(null, groups.map(function(group) { return group.bounds.x + group.bounds.width; }));
+      const maxGroupY = Math.max.apply(null, groups.map(function(group) { return group.bounds.y + group.bounds.height; }));
+      return {
+        positions: positions, paths: paths, labelPoints: labelPoints, groups: groups,
+        globalBounds: {x: minGroupX, y: minGroupY, width: maxGroupX - minGroupX, height: maxGroupY - minGroupY}
+      };
+    }
+
+    function drawGraph() {
+      const model = buildGraphModel();
+      const relationshipViewActions = document.getElementById("graph-view-actions");
+      const resultsLayout = document.querySelector(".results-layout");
+      const showingRelationships = model.mode === "relationships";
+      relationshipViewActions.hidden = !showingRelationships;
+      graphPanHint.hidden = !showingRelationships;
+      resultsLayout.classList.toggle("showing-relationships", showingRelationships);
+      resultsLayout.classList.toggle("relationships-wide", showingRelationships && model.totalGroupCount > 3);
+      const width = Math.max(320, svg.clientWidth);
+      if (model.mode === "relationships") {
+        const relationshipHeight = model.totalGroupCount > 3 ? 640 : 560;
+        svg.style.height = relationshipHeight + "px";
+      } else {
+        svg.style.height = "456px";
+      }
+      const height = Math.max(320, svg.clientHeight);
+      svg.innerHTML = "";
+      svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+      graphViewport = null;
+      graphLayoutState = null;
+      const selectedSkill = state.selected ? byId.get(state.selected) : null;
+      if (model.mode === "relationships") {
+        document.getElementById("relationship-title").textContent = "Skill 间关系";
+        document.getElementById("graph-skill-name").textContent = model.totalGroupCount + " 个关系组 · " + model.nodes.length + " 个 Skill · " + model.items.length + " 对关联";
+        document.getElementById("graph-legend-items").innerHTML =
+          '<span><i class="dot" style="background:var(--safe)"></i>当前选中</span>' +
+          '<span><i class="dot" style="background:var(--primary)"></i>Skill 节点</span>' +
+          '<span><i class="dot" style="background:var(--line-strong)"></i>一对或多种已复核关系</span>';
+        svg.setAttribute("aria-label", "可缩放、拖拽的全部 Agent 已复核 Skill 关系图");
+      } else {
+        document.getElementById("relationship-title").textContent = "当前 Skill 的关联资源";
+        document.getElementById("graph-skill-name").textContent = selectedSkill ? selectedSkill.name : "请先选择一个 Skill";
+        document.getElementById("graph-legend-items").innerHTML =
+          '<span><i class="dot" style="background:var(--safe)"></i>当前 Skill</span>' +
+          '<span><i class="dot" style="background:var(--data)"></i>外部站点</span>' +
+          '<span><i class="dot" style="background:var(--human)"></i>账号密钥</span>';
+        svg.setAttribute("aria-label", selectedSkill ? selectedSkill.name + " 与其关联资源图" : "当前 Skill 与其关联资源图");
+      }
+      const missingCenter = model.mode === "dependencies" && !model.center;
+      if (missingCenter || !model.items.length) {
+        graphEmpty.hidden = false;
+        graphEmpty.textContent = missingCenter ? "请从左侧选择一个 Skill" :
+          (model.mode === "relationships" ? "当前没有 Agent 已复核的 Skill 间关系" : "当前 Skill 没有已确认的关联资源");
+        state.graphPinnedKey = null;
+        updateGraphViewControls();
+        renderGraphOverview(model);
+        return;
+      }
+      graphEmpty.hidden = true;
+      let positions = new Map(), paths = new Map(), labelPoints = new Map(), groups = [];
+      let layoutWidth = width, layoutHeight = height;
+      let globalBounds = {x: 0, y: 0, width: layoutWidth, height: layoutHeight};
+      if (model.mode === "relationships") {
+        layoutWidth = Math.max(width, model.totalGroupCount > 3 ? 1360 : 960);
+        layoutHeight = model.totalGroupCount > 3 ? 760 : 640;
+        const layout = clusteredRelationshipLayout(model, layoutWidth, layoutHeight);
+        positions = layout.positions;
+        paths = layout.paths;
+        labelPoints = layout.labelPoints;
+        groups = layout.groups;
+        globalBounds = layout.globalBounds;
+      } else {
+        const centerPosition = {x: Math.max(72, width * .24), y: height / 2, anchor: true};
+        positions.set(model.center.id, centerPosition);
+        const verticalGap = Math.min(80, (height - 64) / Math.max(1, model.items.length));
+        const totalHeight = verticalGap * Math.max(0, model.items.length - 1);
+        const startY = height / 2 - totalHeight / 2;
+        const neighborX = Math.max(centerPosition.x + 116, Math.min(width - 136, width * .72));
+        model.items.forEach(function(item, index) {
+          positions.set(item.neighbor.id, {x: neighborX, y: startY + index * verticalGap, anchor: false});
+          paths.set(item.key, "M " + centerPosition.x + " " + centerPosition.y + " L " + neighborX + " " + (startY + index * verticalGap));
+          labelPoints.set(item.key, {x: (centerPosition.x + neighborX) / 2, y: (centerPosition.y + startY + index * verticalGap) / 2 - 6});
+        });
+      }
+      const itemMap = new Map(model.items.map(function(item) { return [item.key, item]; }));
+      if (model.mode === "relationships") {
+        model.nodes.forEach(function(node) {
+          const incident = model.items.filter(function(pair) { return pair.source.id === node.id || pair.target.id === node.id; });
+          const component = model.components.find(function(group) {
+            return group.nodes.some(function(groupNode) { return groupNode.id === node.id; });
+          });
+          itemMap.set("node:" + node.id, {
+            key: "node:" + node.id, kind: "relationship-node", node: node, incident: incident,
+            groupKey: component ? component.key : null
+          });
+        });
+      }
+      if (state.graphPinnedKey && !itemMap.has(state.graphPinnedKey)) state.graphPinnedKey = null;
+      graphViewport = svgElement("g", {class: "graph-viewport"});
       const edgeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
       const nodeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      svg.append(edgeGroup, nodeGroup);
-      const edgeEls = edges.map(function() {
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("class", "edge"); edgeGroup.appendChild(line); return line;
-      });
-      const nodeEls = nodes.map(function(node) {
-        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        const fullLabel = String(node.label);
-        const visibleLabel = fullLabel.length > 28 ? fullLabel.slice(0, 27) + "…" : fullLabel;
-        group.setAttribute("class", "node" + (state.selected === graphSkillId(node) ? " selected" : ""));
-        group.setAttribute("role", node.type === "skill" ? "button" : "img");
-        if (node.type === "skill") group.setAttribute("tabindex", "0");
-        group.setAttribute("aria-label", node.type + ": " + fullLabel);
-        if (visibleLabel !== fullLabel) {
-          group.setAttribute("title", fullLabel);
-          const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
-          title.textContent = fullLabel;
-          group.appendChild(title);
-        }
-        const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        hitArea.setAttribute("class", "hit-area"); hitArea.setAttribute("r", node.type === "skill" ? "19" : "15");
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("r", node.type === "skill" ? "10" : "7"); circle.setAttribute("fill", nodeColor(node));
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", "13"); label.setAttribute("y", "4"); label.textContent = visibleLabel;
-        if (visibleLabel !== fullLabel) label.setAttribute("title", fullLabel);
-        group.append(hitArea, circle, label); nodeGroup.appendChild(group);
-        if (node.type === "skill") {
-          group.addEventListener("click", function() { selectSkill(graphSkillId(node)); });
-          group.addEventListener("keydown", function(event) {
-            if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectSkill(graphSkillId(node)); }
-          });
-        }
-        let dragging = false;
-        group.addEventListener("pointerdown", function(event) { dragging = true; group.setPointerCapture(event.pointerId); });
-        group.addEventListener("pointermove", function(event) {
-          if (!dragging) return;
-          const rect = svg.getBoundingClientRect();
-          node.x = (event.clientX - rect.left) * width / rect.width;
-          node.y = (event.clientY - rect.top) * height / rect.height;
-          node.vx = 0; node.vy = 0; renderPositions();
-        });
-        group.addEventListener("pointerup", function() { dragging = false; });
-        return group;
-      });
-      function renderPositions() {
-        const selectedGraphIds = new Set(nodes.filter(function(node) {
-          return graphSkillId(node) === state.selected;
-        }).map(function(node) { return node.id; }));
-        edges.forEach(function(edge, index) {
-          const source = nodeMap.get(edge.source), target = nodeMap.get(edge.target);
-          edgeEls[index].setAttribute("x1", source.x); edgeEls[index].setAttribute("y1", source.y);
-          edgeEls[index].setAttribute("x2", target.x); edgeEls[index].setAttribute("y2", target.y);
-          const active = state.selected && (selectedGraphIds.has(edge.source) || selectedGraphIds.has(edge.target));
-          edgeEls[index].setAttribute("class", "edge" + (active ? " active" : ""));
-        });
-        nodes.forEach(function(node, index) {
-          nodeEls[index].setAttribute("transform", "translate(" + node.x + "," + node.y + ")");
-          const selected = graphSkillId(node) === state.selected;
-          const connected = !state.selected || selected || edges.some(function(edge) {
-            return (selectedGraphIds.has(edge.source) && edge.target === node.id) ||
-              (selectedGraphIds.has(edge.target) && edge.source === node.id);
-          });
-          nodeEls[index].setAttribute("class", "node" + (selected ? " selected" : "") + (connected ? "" : " dim"));
-        });
+      graphViewport.append(edgeGroup, nodeGroup);
+      svg.append(graphViewport);
+      if (model.mode === "relationships") {
+        graphLayoutState = {
+          groups: groups,
+          globalBounds: globalBounds
+        };
       }
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const iterations = reduced ? 1 : Math.min(180, 40 + nodes.length);
-      let step = 0;
-      function tick() {
-        if (token !== simulationToken) return;
-        const alpha = 1 - step / iterations;
-        for (let i = 0; i < nodes.length; i += 1) {
-          for (let j = i + 1; j < nodes.length; j += 1) {
-            const a = nodes[i], b = nodes[j];
-            const dx = b.x - a.x, dy = b.y - a.y;
-            const distance2 = Math.max(36, dx * dx + dy * dy);
-            const force = 130 * alpha / distance2;
-            a.vx -= dx * force; a.vy -= dy * force; b.vx += dx * force; b.vy += dy * force;
+      const edgeVisuals = [], nodeVisuals = new Map();
+      let displayedKey = "__unset__";
+      let displayedPinned = null;
+
+      function bindInteraction(element, key) {
+        element.setAttribute("role", "button");
+        element.setAttribute("tabindex", "0");
+        element.setAttribute("aria-pressed", "false");
+        element.addEventListener("click", function() {
+          const selectedItem = itemMap.get(key);
+          if (selectedItem && selectedItem.groupKey) state.relationshipGroupKey = selectedItem.groupKey;
+          state.graphPinnedKey = key; applyFocus(key, true); updateGraphViewControls();
+        });
+        element.addEventListener("keydown", function(event) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            const selectedItem = itemMap.get(key);
+            if (selectedItem && selectedItem.groupKey) state.relationshipGroupKey = selectedItem.groupKey;
+            state.graphPinnedKey = key; applyFocus(key, true); updateGraphViewControls();
           }
-        }
-        edges.forEach(function(edge) {
-          const source = nodeMap.get(edge.source), target = nodeMap.get(edge.target);
-          const dx = target.x - source.x, dy = target.y - source.y;
-          const distance = Math.max(1, Math.hypot(dx, dy));
-          const desired = edge.type === "capability-overlap" ? 105 : 88;
-          const force = (distance - desired) * .006 * alpha;
-          source.vx += dx / distance * force; source.vy += dy / distance * force;
-          target.vx -= dx / distance * force; target.vy -= dy / distance * force;
         });
-        nodes.forEach(function(node) {
-          node.vx += (width / 2 - node.x) * .0009 * alpha; node.vy += (height / 2 - node.y) * .0009 * alpha;
-          node.vx *= .84; node.vy *= .84;
-          node.x = Math.max(18, Math.min(width - 110, node.x + node.vx));
-          node.y = Math.max(18, Math.min(height - 18, node.y + node.vy));
-        });
-        renderPositions(); step += 1;
-        if (step < iterations) requestAnimationFrame(tick);
       }
-      tick();
+
+      model.items.forEach(function(item) {
+        const labelText = model.mode === "relationships"
+          ? item.edges.map(function(edge) { return relationshipTypeText[edge.type]; }).join(" / ")
+          : (dependencyTypeText[item.edge.type] || item.edge.type.replace(/-/g, " "));
+        const line = svgElement("path", {class: "edge", d: paths.get(item.key)});
+        const hit = svgElement("path", {class: "edge-hit", d: paths.get(item.key)});
+        hit.setAttribute("aria-label", graphNodeLabel(item.source) + " 与 " + graphNodeLabel(item.target) + "：" + labelText);
+        hit.setAttribute("title", labelText);
+        const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        title.textContent = labelText; hit.appendChild(title);
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("class", "edge-label");
+        label.setAttribute("x", labelPoints.get(item.key).x);
+        label.setAttribute("y", labelPoints.get(item.key).y);
+        label.setAttribute("text-anchor", "middle");
+        const compactLabel = model.mode === "relationships" && item.edges.length > 1
+          ? relationshipTypeText[item.edges[0].type] + " +" + (item.edges.length - 1)
+          : labelText;
+        label.textContent = compactLabel.length > 18 ? compactLabel.slice(0, 17) + "…" : compactLabel;
+        const labelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        labelTitle.textContent = labelText; label.appendChild(labelTitle);
+        edgeGroup.append(line, hit, label);
+        bindInteraction(hit, item.key);
+        edgeVisuals.push({key: item.key, sourceId: item.source.id, targetId: item.target.id, line: line, hit: hit, label: label});
+      });
+
+      function createNode(node, itemKey) {
+        const position = positions.get(node.id);
+        const selected = graphSkillId(node) === state.selected;
+        const dominant = model.mode !== "relationships" ? node.id === model.center.id : selected;
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        const fullLabel = graphNodeLabel(node);
+        const visibleLimit = model.mode === "relationships" ? 18 : 28;
+        const visibleLabel = fullLabel.length > visibleLimit ? fullLabel.slice(0, visibleLimit - 1) + "…" : fullLabel;
+        group.setAttribute("class", "node" + (selected ? " selected" : ""));
+        group.setAttribute("transform", "translate(" + position.x + "," + position.y + ")");
+        group.setAttribute("aria-label", (selected ? "当前选中 Skill：" : "Skill：") + fullLabel);
+        group.setAttribute("title", fullLabel);
+        const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        title.textContent = fullLabel; group.appendChild(title);
+        const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        hitArea.setAttribute("class", "hit-area"); hitArea.setAttribute("r", dominant ? "26" : "22");
+        if (selected) group.appendChild(svgElement("circle", {class: "selection-ring", r: dominant ? 18 : 15}));
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("r", dominant ? "13" : (selected ? "10" : "8"));
+        circle.setAttribute("fill", selected ? "var(--safe)" : (model.mode === "relationships" ? "var(--primary)" : nodeColor(node)));
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", dominant ? "0" : "14");
+        label.setAttribute("y", dominant ? "-24" : "4");
+        if (dominant) label.setAttribute("text-anchor", "middle");
+        label.textContent = visibleLabel;
+        group.append(hitArea, circle, label); nodeGroup.appendChild(group);
+        bindInteraction(group, itemKey);
+        nodeVisuals.set(node.id, group);
+      }
+      model.nodes.forEach(function(node) {
+        const nodeKey = model.mode === "relationships" ? "node:" + node.id :
+          (node.id === model.center.id ? null : model.items.find(function(item) { return item.neighbor.id === node.id; }).key);
+        createNode(node, nodeKey);
+      });
+
+      function applyFocus(key, pinned) {
+        const effectivePinned = Boolean(key && state.graphPinnedKey === key) || Boolean(pinned);
+        const item = key ? itemMap.get(key) : null;
+        const activeNodes = new Set(), activeEdges = new Set();
+        if (item && item.kind === "relationship-node") {
+          activeNodes.add(item.node.id);
+          item.incident.forEach(function(pair) {
+            activeEdges.add(pair.key); activeNodes.add(pair.source.id); activeNodes.add(pair.target.id);
+          });
+        } else if (item) {
+          activeEdges.add(item.key); activeNodes.add(item.source.id); activeNodes.add(item.target.id);
+        }
+        edgeVisuals.forEach(function(parts) {
+          const focused = activeEdges.has(parts.key);
+          parts.line.setAttribute("class", "edge" + (focused ? " is-focused" : "") + (key && !focused ? " dim" : ""));
+          parts.label.setAttribute("class", "edge-label" + (focused ? " is-focused" : ""));
+          parts.hit.setAttribute("aria-pressed", focused ? "true" : "false");
+        });
+        nodeVisuals.forEach(function(node, nodeId) {
+          const selectedClass = graphSkillId(model.nodes.find(function(itemNode) { return itemNode.id === nodeId; })) === state.selected ? " selected" : "";
+          const focused = activeNodes.has(nodeId);
+          node.setAttribute("class", "node" + selectedClass + (focused ? " is-focused" : "") + (key && !focused ? " dim" : ""));
+          node.setAttribute("aria-pressed", focused ? "true" : "false");
+        });
+        if (displayedKey === key && displayedPinned === effectivePinned) return;
+        displayedKey = key; displayedPinned = effectivePinned;
+        renderGraphInspector(model, item, effectivePinned);
+      }
+      applyFocus(state.graphPinnedKey, Boolean(state.graphPinnedKey));
+      if (model.mode === "relationships") {
+        if (state.relationshipView === "group") focusRelationshipGroup(false);
+        else if (state.relationshipView === "custom") applyGraphCamera();
+        else fitGlobalRelationshipGraph(false);
+      } else {
+        graphCamera.x = 0; graphCamera.y = 0; graphCamera.k = 1;
+        applyGraphCamera();
+        updateGraphViewControls();
+      }
     }
     const highCount = report.summary.severityCounts
       ? (report.summary.severityCounts.high || 0) + (report.summary.severityCounts.critical || 0)
@@ -1059,7 +1678,7 @@
       ? "发现 " + highCount + " 个需要优先处理的 Skill"
       : "已完成检查，未发现高风险 Skill";
     document.getElementById("intro-note").textContent =
-      "先查看每个 Skill 的结论与建议；关系视图常驻在结果之后，用于理解共享资源和风险连接。";
+      "选择一个 Skill 后，可通过节点与连线查看依赖和关系；全局关系图支持缩放与拖拽，选择连线后可聚焦其完整关系组。";
     const visible = renderList();
     const first = visible[0];
     if (first) selectSkill(first.id);
