@@ -18,7 +18,7 @@ from typing import Iterable
 from urllib.parse import urlparse
 
 
-VERSION = "0.11.0"
+VERSION = "0.12.0"
 SELF_SKILL_ROOT = Path(__file__).resolve().parents[1]
 SELF_SKILL_NAMES = {
     "skill-doctor",
@@ -47,6 +47,13 @@ REQUIRED_RELATIONSHIP_DIMENSIONS = {
     "behavioral-interaction",
     "combined-risk",
 }
+REVIEW_RESOURCE_EDGE_TYPES = {
+    "uses-domain": "domain",
+    "accesses-credential": "credential",
+    "reads-file": "file",
+    "writes-file": "file",
+}
+REVIEW_RESOURCE_NODE_TYPES = set(REVIEW_RESOURCE_EDGE_TYPES.values())
 
 
 @dataclass
@@ -1451,7 +1458,7 @@ def validate_review_graph(
     edges = graph["edges"]
     node_by_id: dict[str, dict[str, object]] = {}
     graph_skill_ids: list[str] = []
-    relationship_ids: set[str] = set()
+    graph_edge_ids: set[str] = set()
     for index, raw_node in enumerate(nodes):
         if not isinstance(raw_node, dict):
             raise ValueError(f"Graph node at index {index} must be an object")
@@ -1464,6 +1471,26 @@ def validate_review_graph(
             if skill_id not in expected_skill_ids:
                 raise ValueError(f"Graph Skill node references an unknown Skill: {skill_id}")
             graph_skill_ids.append(skill_id)
+        else:
+            node_type = str(raw_node.get("type", "")).strip()
+            label = str(raw_node.get("label", "")).strip()
+            if node_type not in REVIEW_RESOURCE_NODE_TYPES:
+                raise ValueError(f"Unsupported reviewed resource node type: {node_type}")
+            if not label:
+                raise ValueError("Every reviewed resource node requires a public-safe label")
+            if (
+                "://" in label
+                or Path(label).is_absolute()
+                or re.match(r"^[A-Za-z]:[\\/]", label)
+                or re.search(
+                    r"\b[A-Z][A-Z0-9_]{2,}_(?:API_?)?(?:KEY|TOKEN|SECRET|PASSWORD)\b",
+                    label,
+                )
+            ):
+                raise ValueError(
+                    "Reviewed resource labels must not expose endpoints, absolute paths, "
+                    "or credential identifiers"
+                )
     if set(graph_skill_ids) != expected_skill_ids or len(graph_skill_ids) != len(expected_skill_ids):
         raise ValueError("Graph must contain exactly one Skill node for every reviewed Skill")
     for index, raw_edge in enumerate(edges):
@@ -1479,13 +1506,13 @@ def validate_review_graph(
         target_node = node_by_id[target]
         both_skills = source_node.get("type") == "skill" and target_node.get("type") == "skill"
         edge_type = str(raw_edge.get("type", ""))
+        edge_id = str(raw_edge.get("id", "")).strip()
+        if not edge_id or edge_id in graph_edge_ids:
+            raise ValueError("Every reviewed graph edge requires a unique id")
+        graph_edge_ids.add(edge_id)
         if both_skills:
             if edge_type not in REQUIRED_RELATIONSHIP_DIMENSIONS:
                 raise ValueError(f"Unsupported Skill relationship type: {edge_type}")
-            relationship_id = str(raw_edge.get("id", "")).strip()
-            if not relationship_id or relationship_id in relationship_ids:
-                raise ValueError("Every Skill-to-Skill relationship requires a unique id")
-            relationship_ids.add(relationship_id)
             for field_name in ("summary", "diagnosis", "recommendation"):
                 if not str(raw_edge.get(field_name, "")).strip():
                     raise ValueError(
@@ -1538,6 +1565,26 @@ def validate_review_graph(
                     )
         elif edge_type in REQUIRED_RELATIONSHIP_DIMENSIONS:
             raise ValueError(f"Relationship type {edge_type} must connect two Skill nodes")
+        else:
+            expected_resource_type = REVIEW_RESOURCE_EDGE_TYPES.get(edge_type)
+            if expected_resource_type is None:
+                raise ValueError(f"Unsupported reviewed resource edge type: {edge_type}")
+            if source_node.get("type") != "skill" or target_node.get("type") != expected_resource_type:
+                raise ValueError(
+                    f"Resource edge {edge_type} must connect a Skill source to a "
+                    f"{expected_resource_type} target"
+                )
+            if raw_edge.get("confidence") not in FINAL_RELATIONSHIP_CONFIDENCES:
+                raise ValueError(
+                    "Every reviewed resource edge requires probable or confirmed confidence"
+                )
+            basis = str(raw_edge.get("basis", "")).strip()
+            if not basis:
+                raise ValueError("Every reviewed resource edge requires a concrete public-safe basis")
+            if "://" in basis or re.search(r"(?:^|\s)/(?:Users|home|var|tmp|Volumes)/", basis):
+                raise ValueError(
+                    "Reviewed resource edge basis must not expose real endpoints or absolute paths"
+                )
     return {"nodes": nodes, "edges": edges}
 
 

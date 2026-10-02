@@ -55,6 +55,14 @@ relationship must be an Agent-authored Skill-to-Skill edge backed by public-safe
 packages, a concrete impact diagnosis, and a recommendation. `shared-dependency` additionally requires proof
 that both Skills resolve to the same named dependency or resource, not merely the same resource category.
 
+The final reviewed graph may also show a Skill's own verified resources. These are Agent-authored conclusions,
+not scanner candidate nodes. Use only `domain`, `credential`, or `file` resource nodes and the compatible
+`uses-domain`, `accesses-credential`, `reads-file`, or `writes-file` edges. Each edge requires a unique ID,
+`probable` or `confirmed` confidence, and a concrete public-safe basis. Labels and basis text must stay useful
+without exposing real endpoints, absolute paths, or credential identifiers. Do not merge two redacted resource
+nodes or infer `shared-dependency` from a matching label. If no concrete resource is verified for a Skill,
+emit none; the report hides the empty resource panel.
+
 ## Evidence Chain
 
 Keep these three claims separate:

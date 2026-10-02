@@ -57,6 +57,16 @@ relationship graph shown to users.
    location, and the fact established there. For `shared-dependency`, also name the exact shared resource and
    explain how the Agent established that both references resolve to the same dependency. If identity cannot be
    established, do not publish `shared-dependency`; describe the two independent dependencies separately.
+10. Review each Skill's own concrete resources independently of Skill-to-Skill relationships. Publish a
+   resource only when the inspected source establishes that the Skill uses it. Resource nodes may use only
+   `domain`, `credential`, or `file`; edges may use only `uses-domain`, `accesses-credential`, `reads-file`,
+   or `writes-file`, and must point from the Skill node to the compatible resource node. Every resource edge
+   requires a unique `id`, `probable` or `confirmed` confidence, and a concrete public-safe `basis`. Use a
+   generic but meaningful label such as “公开商品搜索服务”, “服务访问凭据”, or “本地扫描缓存”. Never expose a
+   real endpoint, absolute path, or credential identifier in the public graph. Keep separate resource nodes
+   separate unless exact identity is proven; matching redacted labels do not establish a shared dependency.
+   Zero verified resources is a valid result, and the report must hide that Skill's resource panel instead of
+   rendering a large empty graph.
 
 ## Formal Conclusion Gate
 
@@ -236,6 +246,29 @@ The graph must contain exactly one Skill node for every in-scope Skill. Skill-to
 and every such edge requires a unique ID, confidence, source evidence from both Skills, a concrete summary,
 an impact diagnosis, and a recommendation. An empty Skill-to-Skill edge set is valid only after
 `relationshipReview` confirms that every Skill and every required dimension was checked.
+
+Agent-verified per-Skill resources use this public-safe shape:
+
+```json
+{
+  "nodes": [
+    {"id": "resource-search", "label": "公开商品搜索服务", "type": "domain"}
+  ],
+  "edges": [
+    {
+      "id": "resource-edge-search",
+      "source": "graph-skill-node",
+      "target": "resource-search",
+      "type": "uses-domain",
+      "confidence": "confirmed",
+      "basis": "用途和流程明确通过公开搜索摘要查询商品价格。"
+    }
+  ]
+}
+```
+
+Do not add a resource merely to fill the UI. When a Skill has no verified resource, omit its resource nodes
+and edges; the report viewer hides the resource panel for that selection.
 
 For two reviewed Skills, a verified relationship edge looks like:
 

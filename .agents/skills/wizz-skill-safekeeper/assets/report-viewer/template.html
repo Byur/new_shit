@@ -642,8 +642,10 @@
     .legend #graph-legend-items { display: contents; }
     .legend span { display: inline-flex; align-items: center; gap: 8px; color: var(--text-soft); font-size: 12px; }
     .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: 0 0 auto; }
-    @media (max-width: 1180px) {
-      .skill-card.is-active .skill-card-content { grid-template-columns: minmax(0, 1fr) minmax(272px, .48fr); }
+    @media (max-width: 1439px) {
+      .skill-card.is-active .skill-card-content { grid-template-columns: 1fr; }
+      .skill-dependency { border-top: 1px solid var(--line); border-left: 0; }
+      .skill-dependency-graph { height: 216px; }
       .relationship-body { grid-template-columns: 1fr; grid-template-rows: minmax(352px, 1fr) auto auto; }
       .relationship-body .graph-stage { grid-column: auto; grid-row: auto; border-right: 0; }
       .relationship-body .graph-inspector {
@@ -657,11 +659,6 @@
       .skill-card-main { grid-template-columns: minmax(190px, .8fr) minmax(240px, 1.2fr); }
       .skill-card-main.has-recommendation { grid-template-columns: minmax(190px, .8fr) minmax(240px, 1.2fr); }
       .skill-card-main.has-recommendation .recommendation { grid-column: 1 / -1; display: grid; grid-template-columns: 88px 1fr; gap: 8px; }
-    }
-    @media (max-width: 920px) {
-      .skill-card.is-active .skill-card-content { grid-template-columns: 1fr; }
-      .skill-dependency { border-top: 1px solid var(--line); border-left: 0; }
-      .skill-dependency-graph { height: 216px; }
     }
     @media (max-width: 860px) {
       .report-intro { display: block; }
@@ -1516,7 +1513,7 @@
           '<span class="status-badge severity-' + displaySeverity + '">' + severityText[displaySeverity] + '</span></span></span>' +
           renderTaxonomy(skill.riskTags || skill.candidateTags || []) +
           (showRecommendation ? '<span class="recommendation"><strong>建议采取的措施</strong>' + escapeHtml(recommendation) + '</span>' : '') + '</button>' +
-          (active ? '<section class="skill-dependency" data-skill-dependency="' + escapeHtml(skill.id) + '" aria-label="' + escapeHtml(skill.name) + ' 的关联资源">' +
+          (active && dependencyCount > 0 ? '<section class="skill-dependency" data-skill-dependency="' + escapeHtml(skill.id) + '" aria-label="' + escapeHtml(skill.name) + ' 的关联资源">' +
             '<div class="skill-dependency-head"><strong>当前 Skill 的关联资源</strong><span>' + dependencyCount + ' 项</span></div>' +
             '<div class="skill-dependency-stage"><svg class="skill-dependency-graph" role="img"></svg>' +
             '<div class="skill-dependency-legend" aria-label="图例"></div></div></section>' : '') + '</div>' +

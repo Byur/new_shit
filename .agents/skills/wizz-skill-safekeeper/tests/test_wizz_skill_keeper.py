@@ -72,10 +72,15 @@ class SkillKeeperTests(unittest.TestCase):
         self.assertIn('id="report-tab-relationships" data-report-tab="relationships"', template)
         self.assertIn('id="skill-report-panel" role="tabpanel"', template)
         self.assertIn('class="skill-dependency" data-skill-dependency=', template)
+        self.assertIn('(active && dependencyCount > 0 ?', template)
+        self.assertNotIn('(active ? \'<section class="skill-dependency"', template)
         self.assertIn('class="skill-dependency-legend" aria-label="图例"', template)
         self.assertIn('function drawDependencyCards()', template)
         self.assertIn('.skill-card.is-active .skill-card-content', template)
-        self.assertIn('@media (max-width: 1180px)', template)
+        self.assertIn('@media (max-width: 1439px)', template)
+        self.assertNotIn('@media (max-width: 1180px)', template)
+        self.assertNotIn('@media (max-width: 920px)', template)
+        self.assertIn('@media (max-width: 1439px) {\n      .skill-card.is-active .skill-card-content { grid-template-columns: 1fr; }', template)
         self.assertIn('function buildGraphModel()', template)
         self.assertIn('if (edge.source !== center.id && edge.target !== center.id) return;', template)
         self.assertNotIn('renderSystemRelationships()', template)
@@ -790,6 +795,63 @@ def run(content):
             {"skill-a", "skill-b"},
         )
         self.assertEqual(graph["edges"][0]["id"], "relationship-a-b")
+
+    def test_reviewed_resource_edge_requires_matching_public_safe_resource(self) -> None:
+        graph = wizz_skill_keeper.validate_review_graph(
+            {
+                "nodes": [
+                    {"id": "skill-node", "skillId": "skill-a", "type": "skill"},
+                    {"id": "search-node", "label": "公开商品搜索服务", "type": "domain"},
+                ],
+                "edges": [
+                    {
+                        "id": "resource-search",
+                        "source": "skill-node",
+                        "target": "search-node",
+                        "type": "uses-domain",
+                        "confidence": "confirmed",
+                        "basis": "用途和流程明确通过公开搜索摘要查询商品价格。",
+                    }
+                ],
+            },
+            {"skill-a"},
+        )
+        self.assertEqual(graph["nodes"][1]["type"], "domain")
+
+    def test_reviewed_resource_edge_rejects_mismatched_resource_type(self) -> None:
+        with self.assertRaisesRegex(ValueError, "must connect a Skill source to a domain target"):
+            wizz_skill_keeper.validate_review_graph(
+                {
+                    "nodes": [
+                        {"id": "skill-node", "skillId": "skill-a", "type": "skill"},
+                        {"id": "file-node", "label": "本地报告", "type": "file"},
+                    ],
+                    "edges": [
+                        {
+                            "id": "resource-invalid",
+                            "source": "skill-node",
+                            "target": "file-node",
+                            "type": "uses-domain",
+                            "confidence": "confirmed",
+                            "basis": "用途说明引用该资源。",
+                        }
+                    ],
+                },
+                {"skill-a"},
+            )
+
+    def test_reviewed_resource_node_rejects_sensitive_label(self) -> None:
+        with self.assertRaisesRegex(ValueError, "must not expose endpoints"):
+            wizz_skill_keeper.validate_review_graph(
+                {
+                    "nodes": [
+                        {"id": "skill-node", "skillId": "skill-a", "type": "skill"},
+                        {"id": "credential-node", "label": "SERVICE_API_KEY", "type": "credential"},
+                    ],
+                    "edges": [],
+                },
+                {"skill-a"},
+            )
 
 
 if __name__ == "__main__":
