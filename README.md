@@ -44,7 +44,7 @@ npm run motion-ai-kit:serve
 
 - remotion/build/：Remotion bundle 产物。
 - remotion/out/：视频渲染和帧级 QA 产物。
-- remotion/output/：Remotion 项目的交付视频、转场对比和 QA 证据。
+- remotion/output/：Remotion 项目的交付视频、转场对比和 QA 证据，默认由 remotion 包的 .gitignore 忽略。
 - demos/output/：demo 自己的浏览器验证和演示产物。
 - context-hub/data/：SQLite 数据库、compact memory 和固定模板 HTML 报告。
 

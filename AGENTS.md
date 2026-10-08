@@ -11,7 +11,7 @@
 
 - remotion/build/：Remotion bundle。
 - remotion/out/：渲染视频、帧导出和一次性 QA 结果。
-- remotion/output/：需要按项目保留的 Remotion 交付物和 QA 证据。
+- remotion/output/：Remotion 本地交付物和 QA 证据，默认由 remotion 包的 .gitignore 忽略。
 - demos/output/：demo 的截图、浏览器验证和其他演示产物。
 - context-hub/data/：SQLite 数据库、compact memory、固定模板报告和导出数据。
 - 禁止新建或恢复 monorepo 根目录的 output/、build/ 或 out/ 作为共享产物目录。

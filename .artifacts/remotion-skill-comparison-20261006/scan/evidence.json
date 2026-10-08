@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 2,
+  "scannerVersion": "0.12.0",
+  "generatedAt": "2026-10-06T15:36:03.610032+00:00",
+  "scope": [
+    "/Users/byur/.workbuddy/skills/remotion-video-toolkit",
+    "/Volumes/Project/new_shit/.agents/skills/knowledge-planner",
+    "/Volumes/Project/new_shit/.agents/skills/remotion-video-director",
+    "/Users/byur/.codex/skills/remotion-studio-qa"
+  ],
+  "skills": [
+    {
+      "id": "skill-fe039367b936",
+      "path": "/Users/byur/.codex/skills/remotion-studio-qa",
+      "description": "Review Remotion videos in Studio for timing, subtitle stability, chart continuity, transition artifacts, and frame-to-frame visual flicker before delivery.",
+      "domains": [],
+      "credentials": [],
+      "promptProfile": {
+        "imperatives": 8,
+        "priorityClaims": 0,
+        "consentPressure": 0,
+        "commercialPressure": 0,
+        "disclosureLanguage": 0,
+        "repeatedDirectives": 0,
+        "instructionCharacters": 3601
+      },
+      "contentHash": "c22e6fb52c41ac282b687b9ecc781e415ca6edaa09a4ec953fba5d4ea9577f8a"
+    },
+    {
+      "id": "skill-3dae3a33c782",
+      "path": "/Users/byur/.workbuddy/skills/remotion-video-toolkit",
+      "description": "Complete toolkit for programmatic video creation with Remotion + React. Covers animations, timing, rendering (CLI/Node.js/Lambda/Cloud Run), captions, 3D, charts, text effects, transitions, and media handling. Use when writing Remotion code, building video generation pipelines, or creating data-driven video templates.",
+      "domains": [],
+      "credentials": [],
+      "promptProfile": {
+        "imperatives": 0,
+        "priorityClaims": 0,
+        "consentPressure": 0,
+        "commercialPressure": 0,
+        "disclosureLanguage": 0,
+        "repeatedDirectives": 7,
+        "instructionCharacters": 5528
+      },
+      "contentHash": "040053949d4f2ba0a838afc6d16091c66f312d8a56a0b1feb2c75db85cb5ec73"
+    },
+    {
+      "id": "skill-ad657bada562",
+      "path": "/Volumes/Project/new_shit/.agents/skills/knowledge-planner",
+      "description": "Shape a technical teaching topic into a clear learning direction, material strategy, and demo brief for articles, lessons, demos, presentations, or videos. Do not use for artifact-specific writing, scene direction, or implementation.",
+      "domains": [],
+      "credentials": [],
+      "promptProfile": {
+        "imperatives": 1,
+        "priorityClaims": 0,
+        "consentPressure": 0,
+        "commercialPressure": 0,
+        "disclosureLanguage": 0,
+        "repeatedDirectives": 0,
+        "instructionCharacters": 3637
+      },
+      "contentHash": "afd7a3864267d828f2d3ec81c37eb9dcfd204139e4d4aea91eaffc463f851afa"
+    },
+    {
+      "id": "skill-71685b5721b7",
+      "path": "/Volumes/Project/new_shit/.agents/skills/remotion-video-director",
+      "description": "Direct a Remotion-based technical explainer from an approved learning plan into narration, storyboard, visual treatment, implementation guidance, and visual QA. Do not use for topic research, scope definition, or lesson-outline design when knowledge-planner should lead.",
+      "domains": [],
+      "credentials": [],
+      "promptProfile": {
+        "imperatives": 6,
+        "priorityClaims": 0,
+        "consentPressure": 0,
+        "commercialPressure": 0,
+        "disclosureLanguage": 0,
+        "repeatedDirectives": 0,
+        "instructionCharacters": 7273
+      },
+      "contentHash": "ef1a624d2cf84419a71e902c678fe4741f9248279a4b42c9e0a05c422192af38"
+    }
+  ],
+  "findings": [],
+  "candidateGraph": {
+    "nodes": [
+      {
+        "id": "skill-fe039367b936",
+        "label": "remotion-studio-qa",
+        "type": "skill",
+        "severity": "info",
+        "recommendation": "agent-review"
+      },
+      {
+        "id": "skill-3dae3a33c782",
+        "label": "Remotion 视频创作",
+        "type": "skill",
+        "severity": "info",
+        "recommendation": "agent-review"
+      },
+      {
+        "id": "skill-ad657bada562",
+        "label": "knowledge-planner",
+        "type": "skill",
+        "severity": "info",
+        "recommendation": "agent-review"
+      },
+      {
+        "id": "skill-71685b5721b7",
+        "label": "remotion-video-director",
+        "type": "skill",
+        "severity": "info",
+        "recommendation": "agent-review"
+      }
+    ],
+    "edges": [
+      {
+        "source": "skill-ad657bada562",
+        "target": "skill-71685b5721b7",
+        "type": "capability-overlap",
+        "weight": 0.238,
+        "similarity": {
+          "sharedTokens": 5,
+          "jaccard": 0.128,
+          "containment": 0.238
+        }
+      }
+    ]
+  },
+  "reviewContract": {
+    "path": "references/agent-review.md",
+    "status": "awaiting-agent-review"
+  },
+  "files": [
+    {
+      "skillPath": "/Users/byur/.codex/skills/remotion-studio-qa",
+      "path": "SKILL.md",
+      "size": 3648,
+      "sha256": "7cf047f9dbc81f38ddc18316632005392b955395ef174168463f50922c5fd5a8",
+      "truncated": false
+    },
+    {
+      "skillPath": "/Users/byur/.codex/skills/remotion-studio-qa",
+      "path": "agents/openai.yaml",
+      "size": 125,
+      "sha256": "8217a9a8b3e7eed085f7991818a3284ac41d36fc84c786263a1780063c223ef0",
+      "truncated": false
+    },
+    {
+      "skillPath": "/Users/byur/.workbuddy/skills/remotion-video-toolkit",
+      "path": "SKILL.md",
+      "size": 5950,
+      "sha256": "3aa50fa76a7b3b04197c393bebc9234cc280602343b387e32e16cae24f3c778f",
+      "truncated": false
+    },
+    {
+      "skillPath": "/Users/byur/.workbuddy/skills/remotion-video-toolkit",
+      "path": "_skillhub_meta.json",
+      "size": 872,
+      "sha256": "3c0d8bed52878e81436bc63fde30a92abb52264d8d388dabcbeb635a3c13388c",
+      "truncated": false
+    },
+    {
+      "skillPath": "/Volumes/Project/new_shit/.agents/skills/knowledge-planner",
+      "path": "SKILL.md",
+      "size": 3683,
+      "sha256": "6b6e15b7000af5e217a05da666f4d8c0524820e54414f6fd31140e851eba4c9d",
+      "truncated": false
+    },
+    {
+      "skillPath": "/Volumes/Project/new_shit/.agents/skills/remotion-video-director",
+      "path": "SKILL.md",
+      "size": 7325,
+      "sha256": "d8e23d2f6b654ea196bd9601067672350d75d6927ae66ffecc4f0bba0ec8009b",
+      "truncated": false
+    }
+  ]
+}

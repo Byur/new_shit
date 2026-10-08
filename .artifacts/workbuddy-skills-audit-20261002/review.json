@@ -1,0 +1,859 @@
+{
+  "status": "agent-reviewed",
+  "reviewedAt": "2026-10-02T12:00:00+08:00",
+  "candidateGraphReview": {"status": "completed"},
+  "relationshipReview": {
+    "status": "completed",
+    "dimensions": ["capability-overlap", "trigger-conflict", "shared-dependency", "behavioral-interaction", "combined-risk"],
+    "reviewedSkillIds": [
+      "skill-b3aab70115de", "skill-83ea60d9298c", "skill-d9045fd15d99", "skill-5ba79d8dfc7e",
+      "skill-918d94a810c0", "skill-b8feca9c8686", "skill-2ffb44002153", "skill-364e590f31d4",
+      "skill-e84109cf19a6", "skill-ac22031f7d66", "skill-eb1e885246d7", "skill-f84cf74545ec",
+      "skill-dd8cb0ae1e6b"
+    ]
+  },
+  "skills": [
+    {
+      "skillId": "skill-b3aab70115de",
+      "severity": "info",
+      "confidence": "confirmed",
+      "riskTags": [],
+      "recommendation": "keep",
+      "plainRecommendation": "",
+      "plainConclusion": "按公开搜索摘要做商品比价，并明确提醒价格需到平台复核；本次静态审查未发现实质风险路径。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": []},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": []
+    },
+    {
+      "skillId": "skill-83ea60d9298c",
+      "severity": "medium",
+      "confidence": "probable",
+      "riskTags": ["external-data-transfer", "documentation-mismatch"],
+      "recommendation": "require-confirmation",
+      "plainRecommendation": "处理客户资产清单、评估报告或位置前，先确认哪些资产名称、型号和地点会作为搜索词发送到公开搜索或地图服务；敏感字段应先删去。",
+      "plainConclusion": "Skill 声称客户数据不外传，但核心流程会把从用户文件提取的资产和地点转成公开搜索或地图查询；这与文字承诺不完全一致。候选“付费操作”只是说明默认不调用付费平台，已判为误报。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-cb4fa017bde8"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": [
+        {
+          "tag": "external-data-transfer",
+          "severity": "medium",
+          "confidence": "probable",
+          "title": "客户资产信息可能成为外部搜索词",
+          "explanation": "流程要求从上传文件提取资产、型号和地点后调用公开搜索与地图查询，因此这些字段可能离开当前设备；文档同时宣称不外传，边界表述不准确。",
+          "affectedData": ["资产名称与型号", "客户文件中提取的地点"],
+          "destination": true,
+          "externalSite": {
+            "category": "公开搜索与地图服务",
+            "scale": "unknown",
+            "recognition": "unknown",
+            "safetyAssessment": "not-reviewed",
+            "basis": "Skill 只描述 WebSearch 与地图查询，没有固定运营方或端点，本次静态审查无法核验站点安全性。"
+          },
+          "evidenceCount": 2
+        },
+        {
+          "tag": "documentation-mismatch",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "不外传承诺与搜索流程冲突",
+          "explanation": "首页承诺不外传任何客户数据，但核心工作流明确把资产和地点转为外部检索词。",
+          "affectedData": ["用户提供的资产数据"],
+          "destination": false,
+          "evidenceCount": 2
+        }
+      ]
+    },
+    {
+      "skillId": "skill-d9045fd15d99",
+      "severity": "low",
+      "confidence": "probable",
+      "riskTags": ["external-data-transfer"],
+      "recommendation": "keep-with-notice",
+      "plainRecommendation": "",
+      "plainConclusion": "会把出发地、目的地和日期交给 FlyAI 做票价搜索；不包含预订动作。候选“付费操作”只是行李可能收费的说明，已判为误报。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-ffc39fb9ba39"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": [
+        {
+          "tag": "external-data-transfer",
+          "severity": "low",
+          "confidence": "probable",
+          "title": "行程条件会交给外部票价服务",
+          "explanation": "Skill 的核心能力依赖 FlyAI 搜索车票和机票，行程条件会进入外部服务；未发现乘客身份信息或直接购买流程。",
+          "affectedData": ["出发地", "目的地", "出行日期"],
+          "destination": true,
+          "externalSite": {
+            "category": "交通票价聚合服务",
+            "scale": "unknown",
+            "recognition": "unknown",
+            "safetyAssessment": "not-reviewed",
+            "basis": "Skill 未给出可核验端点或运营主体，本次只确认其声明依赖 FlyAI。"
+          },
+          "evidenceCount": 1
+        }
+      ]
+    },
+    {
+      "skillId": "skill-5ba79d8dfc7e",
+      "severity": "medium",
+      "confidence": "confirmed",
+      "riskTags": ["external-data-transfer", "credential-access"],
+      "recommendation": "require-confirmation",
+      "plainRecommendation": "调用酒店搜索或比价前，明确展示酒店名、城市、入住和离店日期将发送到腾讯云函数代理，并让用户确认；同时移除包内默认共享代理令牌，改为仅从受控环境注入。",
+      "plainConclusion": "酒店名、城市和日期会发送到三个固定云函数代理；脚本还内置了一个默认代理令牌。数据流在文档末尾有披露，但不在首次调用前确认。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-966983fc98f5", "finding-63f66d1a1a4c"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": [
+        {
+          "tag": "external-data-transfer",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "酒店行程会发送到云函数代理",
+          "explanation": "脚本把酒店名、城市、入住日期、离店日期及人数等查询参数 POST 到固定代理，再由代理查询旅游平台。",
+          "affectedData": ["酒店名", "城市", "入住与离店日期", "人数和房间条件"],
+          "destination": true,
+          "externalSite": {
+            "category": "酒店比价代理与旅游平台聚合服务",
+            "scale": "unknown",
+            "recognition": "unknown",
+            "safetyAssessment": "not-reviewed",
+            "basis": "代码固定使用腾讯云函数域名，但本次未联网核验其运营者、存储策略或安全记录。"
+          },
+          "evidenceCount": 1
+        },
+        {
+          "tag": "credential-access",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "包内包含默认共享代理令牌",
+          "explanation": "脚本优先读取环境变量，但在缺失时使用源码内硬编码令牌，容易形成共享凭据和轮换困难。",
+          "affectedData": ["代理服务令牌"],
+          "destination": false,
+          "evidenceCount": 1
+        }
+      ]
+    },
+    {
+      "skillId": "skill-918d94a810c0",
+      "severity": "medium",
+      "confidence": "confirmed",
+      "riskTags": ["external-data-transfer", "credential-access", "supply-chain-risk", "authorization-overreach", "documentation-mismatch"],
+      "recommendation": "restrict",
+      "plainRecommendation": "只允许固定腾讯 NeoData 端点；禁用 NEODATA_ENDPOINT 覆盖和自动 pip 安装，改为预装锁定依赖；保存令牌时不要放在命令行参数中，并在发送金融查询前提示外发。",
+      "plainConclusion": "金融查询和短期凭据会用于固定腾讯代理调用，属于预期能力；扫描器的“任意代码执行”“任意 URL”“广泛文件访问”和“付费”候选均不成立。但脚本会静默安装未锁版本依赖、允许环境变量改写目的端点，并要求把令牌作为命令行参数保存。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-8feaf80804ad", "finding-45815d2bd75d", "finding-9bf44a8be717", "finding-b48e1b9fa5ab", "finding-6199620996fd", "finding-2e950f7f0121", "finding-1ec3f3bb0c8f", "finding-ddf3b17701ab", "finding-5cc522c83546"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": [
+        {
+          "tag": "external-data-transfer",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "金融查询发送到腾讯代理",
+          "explanation": "自然语言查询与 Bearer 凭据会 POST 到 NeoData 端点；这是声明功能所需，但应在首次使用前披露。",
+          "affectedData": ["金融查询文本", "临时访问凭据"],
+          "destination": true,
+          "externalSite": {
+            "category": "金融数据代理服务",
+            "scale": "large",
+            "recognition": "widely-known",
+            "safetyAssessment": "not-reviewed",
+            "basis": "代码目标是腾讯域名且 Skill 声称由腾讯金融数据服务提供；本次未联网核验具体服务安全记录。"
+          },
+          "evidenceCount": 2
+        },
+        {
+          "tag": "supply-chain-risk",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "缺依赖时会静默安装未锁定 requests",
+          "explanation": "脚本在真实查询路径中运行固定 pip install requests；命令不可由用户输入控制，因此不是任意代码执行，但下载版本未固定且没有事前确认。",
+          "affectedData": ["本地 Python 环境"],
+          "destination": false,
+          "evidenceCount": 1
+        },
+        {
+          "tag": "documentation-mismatch",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "令牌不应内联的说明与实际命令矛盾",
+          "explanation": "文档禁止在 Bash 命令中明文内联凭据，但保存流程仍要求 --save-token 后跟明文参数，令牌可能进入进程列表或 shell 历史。",
+          "affectedData": ["访问令牌"],
+          "destination": false,
+          "evidenceCount": 2
+        }
+      ]
+    },
+    {
+      "skillId": "skill-b8feca9c8686",
+      "severity": "info",
+      "confidence": "confirmed",
+      "riskTags": [],
+      "recommendation": "keep",
+      "plainRecommendation": "",
+      "plainConclusion": "只处理用户提供的采购数据，并明确要求涉及付款、改价、删除等动作时重新核对授权；未发现外部调用或执行脚本。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": []},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": []
+    },
+    {
+      "skillId": "skill-2ffb44002153",
+      "severity": "high",
+      "confidence": "confirmed",
+      "riskTags": ["external-data-transfer", "credential-access", "paid-operation", "authorization-overreach"],
+      "recommendation": "require-confirmation",
+      "plainRecommendation": "任何带姓名、生日、邮箱、电话的查询或机票预订前，都要展示将发送的数据、RunRelay/人工运营方和预计费用，并在最后一步单独确认；只读搜索与实际预订不能共用一次授权。",
+      "plainConclusion": "该 Skill 提供真实外部 API、API Key、乘客个人信息提交和机票预订动作；包内补充卡片要求确认，但主 SKILL 的执行步骤没有把确认设为强制门槛。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": []},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": [
+        {
+          "tag": "external-data-transfer",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "乘客身份和联系信息可发送给外部旅行服务",
+          "explanation": "预订示例提交姓名、生日、性别、邮箱和电话，且低成本航司路径可能由人工运营方处理。",
+          "affectedData": ["姓名", "生日", "性别", "邮箱", "电话", "完整行程"],
+          "destination": true,
+          "externalSite": {
+            "category": "旅行搜索、人工代办与预订 API",
+            "scale": "unknown",
+            "recognition": "niche",
+            "safetyAssessment": "not-reviewed",
+            "basis": "包内列出 RunRelay、酒店服务和 Prefy 端点；本次未联网核验其运营规模、隐私政策或安全记录。"
+          },
+          "evidenceCount": 2
+        },
+        {
+          "tag": "paid-operation",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "可以发起真实机票预订",
+          "explanation": "主文档给出 book-flight 请求，属于可能产生订单或费用的外部操作，但执行流程未要求在调用前再次确认。",
+          "affectedData": ["订单", "付款或账户额度"],
+          "destination": true,
+          "externalSite": {
+            "category": "旅行预订 API",
+            "scale": "unknown",
+            "recognition": "niche",
+            "safetyAssessment": "not-reviewed",
+            "basis": "静态文件明确列出预订端点和商业用途，但未核验实时计费与订单条款。"
+          },
+          "evidenceCount": 1
+        }
+      ]
+    },
+    {
+      "skillId": "skill-364e590f31d4",
+      "severity": "high",
+      "confidence": "confirmed",
+      "riskTags": ["unsafe-content-rendering"],
+      "recommendation": "restrict",
+      "plainRecommendation": "在修复前不要打开它生成的地图；至少要把嵌入 script 的 JSON 转义掉 </script>，并把 Skill 名、触发词、模块、热门项等 innerHTML 拼接改成 textContent 或严格白名单渲染。",
+      "plainConclusion": "读取本地 Skill 和调用日志属于声明能力，访问固定 SkillHub 热榜也不传用户内容；真正风险是把本地 Skill 元数据和远端热门数据未经完整转义写进可执行 HTML，安装恶意 Skill 后打开地图可触发浏览器脚本。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-44909902817b", "finding-fd04bf56d2b2", "finding-31e4b6bef723", "finding-d2b923b1fbcd"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": {
+        "status": "agent-verified",
+        "inputSource": "被扫描 Skill 的 SKILL.md frontmatter 字段以及固定 SkillHub 热榜返回字段",
+        "renderingContext": "Python json.dumps 直接替换到 script 数据块，随后多个字段直接拼入 innerHTML、HTML 属性和内联事件",
+        "breakoutValue": "</script><img src=x onerror=alert(1)>",
+        "generatedEffect": "该值可提前关闭脚本块并在生成的 map.html 中加入带事件处理器的活动 HTML；其他字段还可破坏属性或 innerHTML 结构",
+        "reachable": true,
+        "constraintsInsufficient": true
+      },
+      "findings": [
+        {
+          "tag": "unsafe-content-rendering",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "不可信 Skill 元数据可突破地图 HTML 边界",
+          "explanation": "扫描到的 Skill 标题、标识、触发词和模块既未经 script-safe 序列化，也有多处直接进入 innerHTML；恶意本地 Skill 或远端热榜项能改变生成页面的 DOM 或执行页面脚本。",
+          "affectedData": ["生成的本地地图页面", "浏览器页面上下文"],
+          "destination": false,
+          "evidenceCount": 5
+        }
+      ]
+    },
+    {
+      "skillId": "skill-e84109cf19a6",
+      "severity": "high",
+      "confidence": "confirmed",
+      "riskTags": ["unsafe-content-rendering", "unverified-claims", "documentation-mismatch", "scope-hijack"],
+      "recommendation": "explicit-only",
+      "plainRecommendation": "关闭自动触发，只在明确点名时使用；不要把其评分、替代或卸载建议当作安全结论，也不要打开 HTML 报告，直到远端元数据被 script-safe 转义、innerHTML 被消除且 WorkBuddy 的实际目录边界被修正。",
+      "plainConclusion": "扫描器把清理自身缓存误报为破坏性删除，把固定 API 地址误报为任意 URL。真实问题是：它以下载量、文本正则和远端元数据做安装/卸载建议，却宣称能评估安全；默认还扫描 ~/.openclaw/skills 而不是 WorkBuddy 目录。其 HTML 报告会把不可信远端字段直接放进 script 与 innerHTML。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-260a219b2910", "finding-cd7e0e027665", "finding-91a7baad9e45", "finding-ffea05302541", "finding-94459be825c1", "finding-de2bb39b0c63", "finding-a8682dad9e1d", "finding-40993eff69b1", "finding-4bb57b351f47", "finding-197edec81692", "finding-fa733a6fcdfd", "finding-f474ba799bac"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": {
+        "status": "agent-verified",
+        "inputSource": "ClawHub/SkillHub 的 Skill 名称、描述、风险文本与替代推荐，以及本地 Skill frontmatter",
+        "renderingContext": "json.dumps 输出直接替换进 script 变量，随后 slug、category、risk、verdict、alternative 等直接拼入 innerHTML",
+        "breakoutValue": "</script><img src=x onerror=alert(1)>",
+        "generatedEffect": "远端元数据可提前关闭脚本块或通过 innerHTML 生成活动元素，使本地报告页面执行注入内容",
+        "reachable": true,
+        "constraintsInsufficient": true
+      },
+      "findings": [
+        {
+          "tag": "unsafe-content-rendering",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "远端市场元数据可突破 HTML 报告边界",
+          "explanation": "报告生成器把市场返回的文本未经 script-safe 或 DOM-safe 处理后写入页面并用 innerHTML 渲染。",
+          "affectedData": ["本地体检和组合审计页面", "浏览器页面上下文"],
+          "destination": false,
+          "evidenceCount": 3
+        },
+        {
+          "tag": "documentation-mismatch",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "WorkBuddy Skill 默认扫描 OpenClaw 目录",
+          "explanation": "文档以 WorkBuddy 用户场景触发，但体检和组合审计默认读取 ~/.openclaw/skills，可能遗漏实际安装目录。",
+          "affectedData": ["本地 Skill 清单与审计结论"],
+          "destination": false,
+          "evidenceCount": 2
+        },
+        {
+          "tag": "unverified-claims",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "元数据评分被包装成安全与卸载结论",
+          "explanation": "风险雷达主要依赖描述正则、下载量、更新天数和远端摘要，却输出“高风险”“建议换”“卸载”等处置，没有逐文件源码语义核验。",
+          "affectedData": ["安装、替换和卸载决策"],
+          "destination": false,
+          "evidenceCount": 4
+        }
+      ]
+    },
+    {
+      "skillId": "skill-ac22031f7d66",
+      "severity": "medium",
+      "confidence": "confirmed",
+      "riskTags": ["external-data-transfer", "documentation-mismatch"],
+      "recommendation": "explicit-only",
+      "plainRecommendation": "仅在用户明确要求时调用，并在搜索前说明关键词和商品 ID 会发送给第三方购物聚合服务；生成购买链接前披露固定邀请码和可能的佣金归因，不要把脚本描述成中立的全网比价。",
+      "plainConclusion": "脚本会把商品关键词和商品 ID 发给第三方聚合服务，并使用固定 openid 和邀请码生成购买链接；返回数据包含佣金字段，但主文档没有解释商业归因。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": []},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": [
+        {
+          "tag": "external-data-transfer",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "购物关键词和商品标识发送到第三方聚合服务",
+          "explanation": "搜索和详情脚本向第三方购物聚合服务的多个 API 发送关键词、商品 ID、固定 openid 和邀请码。",
+          "affectedData": ["购物关键词", "商品 ID", "固定客户端标识"],
+          "destination": true,
+          "externalSite": {
+            "category": "购物返利与优惠聚合服务",
+            "scale": "unknown",
+            "recognition": "niche",
+            "safetyAssessment": "not-reviewed",
+            "basis": "代码固定访问一个第三方购物聚合服务；本次未联网核验运营方、隐私政策或安全记录。"
+          },
+          "evidenceCount": 3
+        },
+        {
+          "tag": "documentation-mismatch",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "购买链接的商业归因未披露",
+          "explanation": "代码使用固定邀请码并返回 commission 字段，主文档只说请求第三方价格数据，未说明链接可能带商业归因。",
+          "affectedData": ["购买链接", "佣金归因"],
+          "destination": false,
+          "evidenceCount": 2
+        }
+      ]
+    },
+    {
+      "skillId": "skill-eb1e885246d7",
+      "severity": "medium",
+      "confidence": "confirmed",
+      "riskTags": ["external-data-transfer", "credential-access", "authorization-overreach", "priority-escalation"],
+      "recommendation": "require-confirmation",
+      "plainRecommendation": "首次使用时，把下载安装固定版本 CLI、写入 ~/.westock 和 ~/.local/bin、以及专属 APIKey 授权分成独立确认；不要让“禁止使用其他金融来源”的规则覆盖用户选择，并限定到用户明确请求的标的和命令。",
+      "plainConclusion": "候选“任意 URL”和“付费”均是误报；安装器锁定官方域名、固定版本并校验清单哈希。但 Skill 会下载并执行未在包内审计的二进制、持有专属 APIKey、把金融查询发送给外部服务，还用宽泛优先级语句排斥其他来源。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-1f666dee442c", "finding-533b049a76a2", "finding-ca58dfbb7201", "finding-5ba2bb955277", "finding-76b2cdc14cb2", "finding-6a0c374c5e37", "finding-43919f4d1b1a", "finding-f7829505eb46"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": [
+        {
+          "tag": "external-data-transfer",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "金融查询由外部腾讯服务处理",
+          "explanation": "Skill 依赖下载后的 westock CLI 和专属 APIKey 查询外部金融数据；包内未包含 CLI 源码，因此运行时数据边界不能完全从本地包验证。",
+          "affectedData": ["股票与金融查询", "专属 APIKey"],
+          "destination": true,
+          "externalSite": {
+            "category": "腾讯金融数据与 CLI 发布服务",
+            "scale": "large",
+            "recognition": "widely-known",
+            "safetyAssessment": "not-reviewed",
+            "basis": "静态文件固定使用官方发布域名并声明由腾讯自选股提供；未联网核验运行服务与安全记录。"
+          },
+          "evidenceCount": 3
+        },
+        {
+          "tag": "authorization-overreach",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "普通查询会触发安装和持续授权流程",
+          "explanation": "文档要求缺命令时直接重跑安装脚本，并在未鉴权时自动生成链接和持续轮询；安装、授权与查询没有被明确拆成独立同意步骤。",
+          "affectedData": ["本地二进制安装", "账户授权状态"],
+          "destination": false,
+          "evidenceCount": 3
+        },
+        {
+          "tag": "priority-escalation",
+          "severity": "medium",
+          "confidence": "confirmed",
+          "title": "宽泛规则排斥用户选择的其他金融来源",
+          "explanation": "frontmatter 与正文称其为权威入口，并要求命中能力域时禁止 web_search、HTTP 或其他金融 Skill 替代，容易与用户指定来源和同类 Skill 冲突。",
+          "affectedData": ["金融查询路由与来源选择"],
+          "destination": false,
+          "evidenceCount": 2
+        }
+      ]
+    },
+    {
+      "skillId": "skill-f84cf74545ec",
+      "severity": "high",
+      "confidence": "confirmed",
+      "riskTags": ["credential-access", "external-data-transfer", "unsafe-content-rendering", "manipulative-commerce", "supply-chain-risk", "priority-escalation"],
+      "recommendation": "restrict",
+      "plainRecommendation": "立即停用关闭证书校验的低粉爆款和对标账号请求；只保留启用 TLS 校验的 API 路径，并把 RedFox API Key 限定为环境变量读取。修复 HTML 的 script/innerHTML 转义前不要打开生成报告，同时取消每次强制订阅和免费积分引导。",
+      "plainConclusion": "该 Skill 会广泛扫描 shell 配置寻找 API Key、向 RedFox 发送关键词与账号条件，其中两个实际请求显式关闭 TLS 主机名和证书校验；多个 HTML 生成器还把 API 数据或用户关键词直接嵌入 script/innerHTML。免费积分和订阅提示被设为强制重复展示。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-1b407b15af2e", "finding-def417aac8df", "finding-cd1d15039cbf", "finding-05930ce186b4", "finding-c75af0419ae3", "finding-1ed588042520", "finding-22bd3ffacb68", "finding-0290deb68d3d", "finding-b05519ae6085", "finding-e54578e1abf9", "finding-c16b6f6ad4c2", "finding-eabcf78aba6e", "finding-ba5afe9a4273", "finding-45a72c098120", "finding-c68ebd28a093", "finding-0e7a008abb03", "finding-8dbb834ac0bb", "finding-bdf8169ff44b", "finding-00432ce38f82", "finding-395043f97d59", "finding-b9bfb140d57b", "finding-299eab411efe", "finding-780eb60ec2dc", "finding-770b440e1197", "finding-b565c7601dfb", "finding-0f80379c548f", "finding-d2fe84091d70", "finding-68b497cdd329", "finding-24b3575ff53f", "finding-33a00fbd8701", "finding-1125fb53d895"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": {
+        "status": "agent-verified",
+        "inputSource": "RedFox API 返回的文章、作者、链接与账号字段，以及用户提供的关键词",
+        "renderingContext": "generate_xhs_report.py 将 json.dumps 原样放入 script 数据块，gen_xhs_html.py 将标题、作者、头像和 URL 直接拼入 innerHTML",
+        "breakoutValue": "</script><img src=x onerror=alert(1)>",
+        "generatedEffect": "该值可关闭 script 数据块并加入活动 HTML；在日榜模板中也可作为标题直接成为 innerHTML，触发事件处理器",
+        "reachable": true,
+        "constraintsInsufficient": true
+      },
+      "findings": [
+        {
+          "tag": "credential-access",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "自动扫描多个 shell 配置文件寻找 API Key",
+          "explanation": "多个模块会读取若干 Shell 启动配置并用正则寻找 RedFox API Key，部分路径还把 key 前八位和文件路径写到日志。",
+          "affectedData": ["Shell 配置文件", "RedFox API Key", "凭据前缀"],
+          "destination": false,
+          "evidenceCount": 15
+        },
+        {
+          "tag": "external-data-transfer",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "查询条件和 API Key 发送到 RedFox，部分路径不校验证书",
+          "explanation": "关键词、日期、赛道、账号 ID 与 API Key 会发送到 RedFox；低粉爆款与对标账号模块显式关闭主机名和证书校验，使中间人可窃取凭据或篡改结果。",
+          "affectedData": ["RedFox API Key", "关键词", "日期与赛道", "小红书账号 ID 和粉丝条件"],
+          "destination": true,
+          "externalSite": {
+            "category": "小红书内容与账号数据 API",
+            "scale": "unknown",
+            "recognition": "niche",
+            "safetyAssessment": "concerns-found",
+            "basis": "本地代码在两个真实请求路径中关闭 TLS 证书和主机名校验；这是一项传输实现问题，不代表对运营方整体安全性的判断。"
+          },
+          "evidenceCount": 7
+        },
+        {
+          "tag": "unsafe-content-rendering",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "外部内容和用户关键词可突破生成报告的 HTML 边界",
+          "explanation": "API 数据与关键词被直接替换进 script 数据块，并有多处作为未转义字符串拼入 innerHTML；可构造关闭 script 或注入活动元素的值。",
+          "affectedData": ["本地 HTML 报告", "浏览器页面上下文"],
+          "destination": false,
+          "evidenceCount": 4
+        },
+        {
+          "tag": "manipulative-commerce",
+          "severity": "high",
+          "confidence": "confirmed",
+          "title": "免费积分、注册和订阅被设为重复强制提示",
+          "explanation": "获取 Key 流程强调新用户免费积分，多个模块要求只要有结果或无论有无数据都必须追加订阅服务提示，价格、积分消耗和取消条件未在使用前完整说明。",
+          "affectedData": ["注册与订阅决策", "可能消耗的积分或额度"],
+          "destination": false,
+          "evidenceCount": 4
+        }
+      ]
+    },
+    {
+      "skillId": "skill-dd8cb0ae1e6b",
+      "severity": "info",
+      "confidence": "confirmed",
+      "riskTags": [],
+      "recommendation": "keep",
+      "plainRecommendation": "",
+      "plainConclusion": "安全模式只生成搜索查询和结构化占位数据，不直接请求购物站点；扫描器把“不能获得实时优惠券”的普通限制说明误判为权威冒充，把缺少 YAML frontmatter 误判为文档冲突。",
+      "evidenceReview": {"status": "completed", "reviewedEvidenceIds": ["finding-9e66ed5d2800", "finding-d833e8cedb6d"]},
+      "harmAssessment": null,
+      "executionAssessment": null,
+      "renderingAssessment": null,
+      "findings": []
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {"id": "n-bjjl", "skillId": "skill-b3aab70115de", "label": "比价精灵", "type": "skill", "severity": "info"},
+      {"id": "n-equipment", "skillId": "skill-83ea60d9298c", "label": "评估设备询价", "type": "skill", "severity": "medium"},
+      {"id": "n-flyai", "skillId": "skill-d9045fd15d99", "label": "FlyAI 高铁飞机比价", "type": "skill", "severity": "low"},
+      {"id": "n-hotel", "skillId": "skill-5ba79d8dfc7e", "label": "酒店价格监控与比价", "type": "skill", "severity": "medium"},
+      {"id": "n-neodata", "skillId": "skill-918d94a810c0", "label": "NeoData 金融搜索", "type": "skill", "severity": "medium"},
+      {"id": "n-procurement", "skillId": "skill-b8feca9c8686", "label": "采购询价比价管理", "type": "skill", "severity": "info"},
+      {"id": "n-runrelay", "skillId": "skill-2ffb44002153", "label": "RunRelay", "type": "skill", "severity": "high"},
+      {"id": "n-skillmap", "skillId": "skill-364e590f31d4", "label": "Skill 全景地图", "type": "skill", "severity": "high"},
+      {"id": "n-selector", "skillId": "skill-e84109cf19a6", "label": "Skill 管家", "type": "skill", "severity": "high"},
+      {"id": "n-taobao", "skillId": "skill-ac22031f7d66", "label": "淘宝京东拼多多比价", "type": "skill", "severity": "medium"},
+      {"id": "n-westock", "skillId": "skill-eb1e885246d7", "label": "腾讯自选股金融数据", "type": "skill", "severity": "medium"},
+      {"id": "n-xhs", "skillId": "skill-f84cf74545ec", "label": "小红书内容灵感专家", "type": "skill", "severity": "high"},
+      {"id": "n-zprice", "skillId": "skill-dd8cb0ae1e6b", "label": "购物比价师", "type": "skill", "severity": "info"},
+      {"id": "r-bjjl-search", "label": "公开商品搜索服务", "type": "domain"},
+      {"id": "r-equipment-search-map", "label": "公开搜索与地图服务", "type": "domain"},
+      {"id": "r-flyai-travel", "label": "交通票价聚合服务", "type": "domain"},
+      {"id": "r-hotel-proxy", "label": "酒店比价代理服务", "type": "domain"},
+      {"id": "r-hotel-credential", "label": "酒店代理访问凭据", "type": "credential"},
+      {"id": "r-neodata-service", "label": "金融数据代理服务", "type": "domain"},
+      {"id": "r-neodata-credential", "label": "金融服务访问凭据", "type": "credential"},
+      {"id": "r-neodata-cache", "label": "本地短期凭据缓存", "type": "file"},
+      {"id": "r-runrelay-service", "label": "旅行搜索与预订服务", "type": "domain"},
+      {"id": "r-runrelay-credential", "label": "旅行服务访问凭据", "type": "credential"},
+      {"id": "r-skillmap-market", "label": "公开 Skill 市场", "type": "domain"},
+      {"id": "r-skillmap-local", "label": "本地 Skill 与调用记录", "type": "file"},
+      {"id": "r-selector-markets", "label": "公开 Skill 市场", "type": "domain"},
+      {"id": "r-selector-local-skills", "label": "本地 Skill 清单", "type": "file"},
+      {"id": "r-selector-cache", "label": "本地扫描缓存", "type": "file"},
+      {"id": "r-taobao-service", "label": "购物返利与优惠聚合服务", "type": "domain"},
+      {"id": "r-westock-service", "label": "金融数据与发布服务", "type": "domain"},
+      {"id": "r-westock-credential", "label": "金融服务专属访问凭据", "type": "credential"},
+      {"id": "r-westock-local-state", "label": "本地命令与授权状态", "type": "file"},
+      {"id": "r-xhs-service", "label": "内容与账号数据服务", "type": "domain"},
+      {"id": "r-xhs-credential", "label": "内容服务访问凭据", "type": "credential"},
+      {"id": "r-xhs-shell-config", "label": "Shell 启动配置", "type": "file"},
+      {"id": "r-xhs-reports", "label": "本地报告与缓存", "type": "file"},
+      {"id": "r-zprice-search", "label": "公开商品搜索服务", "type": "domain"}
+    ],
+    "edges": [
+      {
+        "id": "rel-price-search",
+        "source": "n-bjjl",
+        "target": "n-zprice",
+        "type": "capability-overlap",
+        "confidence": "confirmed",
+        "summary": "两个 Skill 都通过公开搜索摘要做多平台商品比价并提醒下单前核实。",
+        "diagnosis": "宽泛的商品比价请求会同时命中，输出口径接近，保留两者会增加路由歧义而不增加实时数据能力。",
+        "recommendation": "选择其中一个作为公开搜索型比价入口；另一项仅在用户明确点名时使用。",
+        "evidence": [
+          {"skillId": "skill-b3aab70115de", "location": "SKILL.md", "basis": "用途和流程明确使用 web_search 汇总京东、天猫等公开价格摘要。"},
+          {"skillId": "skill-dd8cb0ae1e6b", "location": "SKILL.md", "basis": "安全模式同样只使用搜索引擎索引生成多平台比价报告。"}
+        ]
+      },
+      {
+        "id": "rel-price-api",
+        "source": "n-bjjl",
+        "target": "n-taobao",
+        "type": "capability-overlap",
+        "confidence": "confirmed",
+        "summary": "两个 Skill 都处理淘宝、京东、拼多多等商品比价，但数据通路不同。",
+        "diagnosis": "同一请求可能在公开搜索与第三方返利聚合 API 之间被不透明路由，后者还有商业归因和额外外发。",
+        "recommendation": "默认使用公开搜索型比价；只有用户明确接受第三方购物聚合服务外发和邀请码归因时才用 API 型 Skill。",
+        "evidence": [
+          {"skillId": "skill-b3aab70115de", "location": "SKILL.md", "basis": "比价数据声明来自搜索引擎摘要和第三方比价网页。"},
+          {"skillId": "skill-ac22031f7d66", "location": "scripts/main.py", "basis": "搜索与详情直接调用第三方购物聚合 API，并使用固定 openid 和邀请码。"}
+        ]
+      },
+      {
+        "id": "rel-asset-price",
+        "source": "n-bjjl",
+        "target": "n-equipment",
+        "type": "capability-overlap",
+        "confidence": "probable",
+        "summary": "设备与办公用品的估价场景同时落入通用商品比价和全资产询价。",
+        "diagnosis": "对手机、电脑、办公设备等标品，两个 Skill 可能同时触发；一个偏购物建议，一个偏评估区间和客户文件处理。",
+        "recommendation": "个人购买走比价精灵；资产清单、二手处置或评估区间走设备询价，并在外发检索前确认字段。",
+        "evidence": [
+          {"skillId": "skill-b3aab70115de", "location": "SKILL.md", "basis": "触发范围覆盖购买商品、最低价和多平台比较。"},
+          {"skillId": "skill-83ea60d9298c", "location": "SKILL.md", "basis": "触发范围覆盖电子设备、办公用品、机器设备和批量资产清单估价。"}
+        ]
+      },
+      {
+        "id": "rel-flight-travel",
+        "source": "n-flyai",
+        "target": "n-runrelay",
+        "type": "capability-overlap",
+        "confidence": "confirmed",
+        "summary": "两个 Skill 都能搜索机票和比较出行方案。",
+        "diagnosis": "FlyAI 偏价格与高铁对比，不预订；RunRelay 可提交乘客信息并预订。若不先区分意图，普通比价可能误进入更高风险流程。",
+        "recommendation": "只读比价默认用 FlyAI；只有用户明确要求预订且完成个人信息与费用确认后才用 RunRelay。",
+        "evidence": [
+          {"skillId": "skill-d9045fd15d99", "location": "SKILL.md", "basis": "能力是高铁与机票搜索、日期比较和出行推荐。"},
+          {"skillId": "skill-2ffb44002153", "location": "SKILL.md", "basis": "能力同时覆盖航班搜索和 book-flight 预订端点。"}
+        ]
+      },
+      {
+        "id": "rel-hotel-travel",
+        "source": "n-hotel",
+        "target": "n-runrelay",
+        "type": "capability-overlap",
+        "confidence": "confirmed",
+        "summary": "两个 Skill 都覆盖酒店搜索和价格比较。",
+        "diagnosis": "酒店比价请求可能命中两个不同外部服务；酒店监控偏多平台比价，RunRelay 偏旅行 API 和预订编排。",
+        "recommendation": "价格监控走酒店专用 Skill；跨航班酒店编排或预订才使用 RunRelay，并重新确认数据与费用。",
+        "evidence": [
+          {"skillId": "skill-5ba79d8dfc7e", "location": "SKILL.md", "basis": "明确提供酒店搜索、多平台比价和监控请求。"},
+          {"skillId": "skill-2ffb44002153", "location": "SKILL.md", "basis": "提供酒店搜索端点和多代理旅行编排。"}
+        ]
+      },
+      {
+        "id": "rel-finance-routing",
+        "source": "n-neodata",
+        "target": "n-westock",
+        "type": "trigger-conflict",
+        "confidence": "confirmed",
+        "summary": "两个 Skill 都覆盖股票、基金、宏观、外汇等金融查询，而 WeStock 明确禁止用其他金融 Skill 替代。",
+        "diagnosis": "同一问题可能同时匹配；WeStock 的排他路由会压过 NeoData 或用户指定来源，造成来源不透明。",
+        "recommendation": "按用户指定来源优先；未指定时，结构化命令查询用 WeStock，新闻、研报和自然语言广搜用 NeoData，并向用户标明来源。",
+        "evidence": [
+          {"skillId": "skill-918d94a810c0", "location": "SKILL.md", "basis": "数据覆盖股票、基金、宏观、外汇、商品、研报、舆情和新闻。"},
+          {"skillId": "skill-eb1e885246d7", "location": "SKILL.md", "basis": "覆盖相同金融域，并写明命中能力域时禁止 web_search、HTTP 和其他金融 Skill。"}
+        ]
+      },
+      {
+        "id": "rel-skill-management",
+        "source": "n-skillmap",
+        "target": "n-selector",
+        "type": "combined-risk",
+        "confidence": "confirmed",
+        "summary": "两者都扫描本地 Skill 并生成交互式 HTML；Skill 管家还混入远端市场元数据。",
+        "diagnosis": "恶意本地 Skill 或受污染远端元数据可分别进入两个未充分转义的报告生成器，扩大打开报告时的浏览器注入面。",
+        "recommendation": "两者生成的 HTML 都应在修复前停止打开；统一采用 script-safe JSON 序列化和 textContent/DOM API 后再恢复。",
+        "evidence": [
+          {"skillId": "skill-364e590f31d4", "location": "scripts/build_map.py", "basis": "本地 Skill 数据经 json.dumps 直接替换进脚本模板，前端多处使用 innerHTML。"},
+          {"skillId": "skill-e84109cf19a6", "location": "scripts/html_report.py", "basis": "本地和远端审计字段直接嵌入 script 数据并拼接进 innerHTML。"}
+        ]
+      },
+      {
+        "id": "resource-bjjl-search",
+        "source": "n-bjjl",
+        "target": "r-bjjl-search",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "用途和流程明确通过公开搜索摘要查询商品价格。"
+      },
+      {
+        "id": "resource-equipment-search-map",
+        "source": "n-equipment",
+        "target": "r-equipment-search-map",
+        "type": "uses-domain",
+        "confidence": "probable",
+        "basis": "核心流程把资产、型号和地点转换为公开搜索或地图查询。"
+      },
+      {
+        "id": "resource-flyai-travel",
+        "source": "n-flyai",
+        "target": "r-flyai-travel",
+        "type": "uses-domain",
+        "confidence": "probable",
+        "basis": "票价比较流程声明把行程条件交给外部交通票价服务。"
+      },
+      {
+        "id": "resource-hotel-proxy",
+        "source": "n-hotel",
+        "target": "r-hotel-proxy",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "脚本把酒店与行程条件发送到固定的酒店比价代理。"
+      },
+      {
+        "id": "resource-hotel-credential",
+        "source": "n-hotel",
+        "target": "r-hotel-credential",
+        "type": "accesses-credential",
+        "confidence": "confirmed",
+        "basis": "脚本读取代理访问凭据，并在缺失时使用包内默认值。"
+      },
+      {
+        "id": "resource-neodata-service",
+        "source": "n-neodata",
+        "target": "r-neodata-service",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "自然语言金融查询会发送到固定的金融数据代理服务。"
+      },
+      {
+        "id": "resource-neodata-credential",
+        "source": "n-neodata",
+        "target": "r-neodata-credential",
+        "type": "accesses-credential",
+        "confidence": "confirmed",
+        "basis": "查询请求需要读取并携带短期访问凭据。"
+      },
+      {
+        "id": "resource-neodata-cache",
+        "source": "n-neodata",
+        "target": "r-neodata-cache",
+        "type": "writes-file",
+        "confidence": "confirmed",
+        "basis": "保存流程会把带时间戳的短期凭据写入本地缓存。"
+      },
+      {
+        "id": "resource-runrelay-service",
+        "source": "n-runrelay",
+        "target": "r-runrelay-service",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "搜索与预订流程会调用外部旅行服务并可提交订单。"
+      },
+      {
+        "id": "resource-runrelay-credential",
+        "source": "n-runrelay",
+        "target": "r-runrelay-credential",
+        "type": "accesses-credential",
+        "confidence": "confirmed",
+        "basis": "旅行搜索与预订请求需要服务访问凭据。"
+      },
+      {
+        "id": "resource-skillmap-market",
+        "source": "n-skillmap",
+        "target": "r-skillmap-market",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "地图生成器会读取公开 Skill 市场的热门数据。"
+      },
+      {
+        "id": "resource-skillmap-local",
+        "source": "n-skillmap",
+        "target": "r-skillmap-local",
+        "type": "reads-file",
+        "confidence": "confirmed",
+        "basis": "地图生成器会读取本地 Skill 元数据和调用记录。"
+      },
+      {
+        "id": "resource-selector-markets",
+        "source": "n-selector",
+        "target": "r-selector-markets",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "搜索、对比和详情流程会调用两个公开 Skill 市场。"
+      },
+      {
+        "id": "resource-selector-local-skills",
+        "source": "n-selector",
+        "target": "r-selector-local-skills",
+        "type": "reads-file",
+        "confidence": "confirmed",
+        "basis": "体检和组合审计会读取本地 Skill 清单与说明文件。"
+      },
+      {
+        "id": "resource-selector-cache",
+        "source": "n-selector",
+        "target": "r-selector-cache",
+        "type": "writes-file",
+        "confidence": "confirmed",
+        "basis": "市场查询和增量扫描结果会写入本地缓存。"
+      },
+      {
+        "id": "resource-taobao-service",
+        "source": "n-taobao",
+        "target": "r-taobao-service",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "脚本把购物关键词和商品标识发送到第三方聚合服务。"
+      },
+      {
+        "id": "resource-westock-service",
+        "source": "n-westock",
+        "target": "r-westock-service",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "安装与查询流程依赖外部金融数据和命令发布服务。"
+      },
+      {
+        "id": "resource-westock-credential",
+        "source": "n-westock",
+        "target": "r-westock-credential",
+        "type": "accesses-credential",
+        "confidence": "confirmed",
+        "basis": "金融查询需要读取并携带专属访问凭据。"
+      },
+      {
+        "id": "resource-westock-local-state",
+        "source": "n-westock",
+        "target": "r-westock-local-state",
+        "type": "writes-file",
+        "confidence": "confirmed",
+        "basis": "安装和授权流程会写入本地命令、数据与授权状态。"
+      },
+      {
+        "id": "resource-xhs-service",
+        "source": "n-xhs",
+        "target": "r-xhs-service",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "关键词、账号条件和访问凭据会发送到内容数据服务。"
+      },
+      {
+        "id": "resource-xhs-credential",
+        "source": "n-xhs",
+        "target": "r-xhs-credential",
+        "type": "accesses-credential",
+        "confidence": "confirmed",
+        "basis": "多个请求模块会查找并使用内容服务访问凭据。"
+      },
+      {
+        "id": "resource-xhs-shell-config",
+        "source": "n-xhs",
+        "target": "r-xhs-shell-config",
+        "type": "reads-file",
+        "confidence": "confirmed",
+        "basis": "多个模块会读取 Shell 启动配置以查找服务凭据。"
+      },
+      {
+        "id": "resource-xhs-reports",
+        "source": "n-xhs",
+        "target": "r-xhs-reports",
+        "type": "writes-file",
+        "confidence": "confirmed",
+        "basis": "数据结果会写入本地报告和缓存文件。"
+      },
+      {
+        "id": "resource-zprice-search",
+        "source": "n-zprice",
+        "target": "r-zprice-search",
+        "type": "uses-domain",
+        "confidence": "confirmed",
+        "basis": "说明要求由 Agent 调用公开搜索服务获取实际商品信息。"
+      }
+    ]
+  }
+}

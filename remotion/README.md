@@ -28,7 +28,7 @@ npm run render:story
 - docs/：脚本、素材来源、QA 和视觉规则。
 - build/：Remotion bundle 产物，由本包 .gitignore 管理。
 - out/：单次渲染视频和帧级 QA 产物，由本包 .gitignore 管理。
-- output/：按项目归档的交付视频、转场对比和 QA 证据；需要保留的证据可以纳入版本控制。
+- output/：按项目归档的交付视频、转场对比和 QA 证据，默认由本包 .gitignore 忽略。
 
 ## Remotion 工作约束
 

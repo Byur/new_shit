@@ -1,0 +1,7 @@
+interface:
+  display_name: "Remotion Technical Guardrails"
+  short_description: "Enforce continuity and headless rendering rules"
+  default_prompt: "Use $remotion-technical-guardrails alongside the official Remotion workflow to check scene continuity and rendering mode."
+
+policy:
+  allow_implicit_invocation: true

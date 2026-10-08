@@ -1,0 +1,2463 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none';">
+  <title>Wizz Skill Safekeeper 安全审查报告</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f3f5f7, #0e1318);
+      --surface: light-dark(#ffffff, #151b21);
+      --surface-soft: light-dark(#f7f8fa, #1b232b);
+      --surface-strong: light-dark(#edf1f4, #222c35);
+      --text: light-dark(#17212b, #eef3f6);
+      --text-soft: light-dark(#4f5d69, #b2bec7);
+      --text-faint: light-dark(#6b7883, #8e9ba5);
+      --line: light-dark(#dce2e7, #303b45);
+      --line-strong: light-dark(#bcc7d0, #465561);
+      --primary: light-dark(#173f66, #8fc5f2);
+      --primary-strong: light-dark(#0e3152, #b7dcfa);
+      --primary-soft: light-dark(#eaf2f9, #172c3d);
+      --flow-accent: light-dark(#74b8b4, #3f7779);
+      --safe: light-dark(#166342, #6fd6a6);
+      --safe-soft: light-dark(#e9f5ef, #153227);
+      --warn: light-dark(#875600, #f3bd60);
+      --warn-soft: light-dark(#fff4dc, #382b14);
+      --high: light-dark(#a73b2b, #ff9687);
+      --high-soft: light-dark(#fcece8, #3d211e);
+      --critical: light-dark(#8a234d, #ff89b2);
+      --critical-soft: light-dark(#faeaf1, #3a1d2a);
+      --data: light-dark(#276890, #7fc4ec);
+      --data-soft: light-dark(#e9f3f8, #16303f);
+      --integrity: light-dark(#a04135, #f89b8e);
+      --integrity-soft: light-dark(#faece9, #3a211e);
+      --human: light-dark(#8a620f, #e8c46f);
+      --human-soft: light-dark(#f9f1dd, #342b18);
+      --commerce: light-dark(#6d4b91, #c7a5e8);
+      --commerce-soft: light-dark(#f2ecf8, #2c2237);
+      --other: light-dark(#52616d, #aab7c0);
+      --other-soft: light-dark(#edf0f2, #252d33);
+      --shadow: 0 14px 40px light-dark(rgba(23, 33, 43, .07), rgba(0, 0, 0, .2));
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+    html { scroll-behavior: smooth; }
+    body { min-width: 540px; margin: 0; background: var(--bg); color: var(--text); }
+    body.drawer-open, body.guide-open { overflow: hidden; }
+    button, input { font: inherit; }
+    button, input {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 2px;
+    }
+    button { cursor: pointer; }
+    input {
+      min-height: 32px;
+      padding: 4px 8px;
+      font-size: 12px;
+      transition: background-color 160ms ease;
+    }
+    input:hover { background: var(--surface-soft); }
+    button:focus-visible, [tabindex]:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--primary) 35%, transparent);
+      outline-offset: 2px;
+    }
+    input:focus-visible { outline: 0; border-color: var(--line); background: var(--primary-soft); box-shadow: none; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 0; font-size: clamp(20px, 2vw, 25px); letter-spacing: -.02em; }
+    h2 { margin-bottom: 0; font-size: 18px; letter-spacing: -.01em; }
+    h3 { font-size: 15px; }
+    .shell { min-height: 100vh; }
+    .app-header {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      min-height: 64px; padding: 8px clamp(16px, 4vw, 48px);
+      border-top: 2px solid var(--primary-strong); border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      backdrop-filter: blur(16px);
+    }
+    .brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .brand-mark {
+      display: grid; place-items: center; width: 32px; height: 32px; flex: 0 0 auto;
+      border-radius: 2px; background: var(--primary); color: light-dark(#fff, #0e1a24);
+    }
+    .brand-mark svg { width: 16px; height: 16px; }
+    main { max-width: 1440px; margin: 0 auto; padding: 32px clamp(16px, 4vw, 48px) 48px; }
+    .report-intro {
+      display: flex; justify-content: space-between; align-items: end; gap: 32px;
+      padding-bottom: 24px;
+    }
+    .eyebrow {
+      margin-bottom: 8px; color: var(--primary); font-size: 12px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+    .report-intro h2 { max-width: 740px; font-size: clamp(25px, 4vw, 42px); line-height: 1.13; letter-spacing: -.035em; }
+    .intro-note { max-width: 440px; margin-bottom: 0; color: var(--text-soft); font-size: 14px; line-height: 1.65; }
+    .stats {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 24px; border: 1px solid var(--line); border-radius: 2px;
+      background: var(--surface); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .stat { min-width: 0; padding: 16px; border-left: 1px solid var(--line); }
+    .stat:first-child { border-left: 0; }
+    .stat-label { display: block; color: var(--text-faint); font-size: 12px; }
+    .stat strong { display: block; margin-top: 8px; font-size: 26px; font-weight: 650; letter-spacing: -.02em; }
+    .panel { border: 1px solid var(--line); border-radius: 2px; background: var(--surface); min-width: 0; }
+    .panel-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      min-height: 56px; padding: 16px; border-bottom: 1px solid var(--line);
+    }
+    .panel-title { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+    .count { color: var(--text-faint); font-size: 12px; white-space: nowrap; }
+    .results-layout { display: block; }
+    .results-panel { overflow: visible; }
+    .results-head { align-items: center; }
+    [role="tabpanel"][hidden] { display: none; }
+    .toolbar {
+      display: grid; grid-template-columns: minmax(220px, 1fr) minmax(170px, .35fr);
+      gap: 16px; padding: 16px; border-bottom: 1px solid var(--line); background: var(--surface-soft);
+    }
+    .field { position: relative; display: grid; gap: 8px; }
+    .field label { color: var(--text-faint); font-size: 11px; font-weight: 650; letter-spacing: .03em; }
+    .field:focus-within label { color: var(--primary); }
+    .field input { width: 100%; }
+    .field input::placeholder { color: var(--text-faint); }
+    .custom-select { position: relative; min-width: 0; }
+    .custom-select-trigger {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      width: 100%; min-height: 32px; padding: 4px 8px; text-align: left;
+      font-size: 12px; transition: background-color 160ms ease, color 160ms ease;
+    }
+    .custom-select-trigger:hover:not(:disabled) { background: var(--surface-soft); }
+    .custom-select-trigger:focus-visible { outline: 0; border-color: var(--line); background: var(--primary-soft); }
+    .custom-select-trigger[aria-expanded="true"] { background: var(--primary-soft); color: var(--primary); }
+    .custom-select-trigger:disabled { color: var(--text-faint); background: var(--surface-strong); cursor: not-allowed; opacity: .68; }
+    .custom-select-trigger svg { width: 14px; height: 14px; flex: 0 0 auto; transition: transform 160ms ease; }
+    .custom-select-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+    .custom-select-menu {
+      position: absolute; top: calc(100% + 4px); right: 0; left: 0; z-index: 30;
+      display: grid; gap: 2px; padding: 4px; border: 1px solid var(--line-strong);
+      border-radius: 2px; background: var(--surface); box-shadow: var(--shadow);
+    }
+    .custom-select-option {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      width: 100%; min-height: 36px; padding: 8px; border: 0; border-radius: 2px;
+      background: transparent; color: var(--text-soft); text-align: left; font-size: 12px;
+    }
+    .custom-select-option:hover, .custom-select-option.is-active { background: var(--surface-soft); color: var(--text); }
+    .custom-select-option[aria-selected="true"] { background: var(--primary-soft); color: var(--primary); font-weight: 700; }
+    .custom-select-option:focus-visible { outline: 0; background: var(--surface-strong); }
+    .custom-select-option svg { width: 14px; height: 14px; opacity: 0; }
+    .custom-select-option[aria-selected="true"] svg { opacity: 1; }
+    .skill-list { display: grid; overflow: hidden; border-radius: 0 0 2px 2px; }
+    .skill-card {
+      position: relative; border-bottom: 1px solid var(--line); background: var(--surface);
+      transition: background-color 160ms ease, box-shadow 160ms ease;
+    }
+    .skill-card:last-child { border-bottom: 0; }
+    .skill-card.is-active {
+      background: var(--primary-soft); box-shadow: inset 2px 0 0 var(--primary);
+    }
+    .skill-card-content { min-width: 0; }
+    .skill-card.is-active .skill-card-content {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(296px, .42fr); align-items: stretch;
+    }
+    .skill-card-main {
+      display: grid; grid-template-columns: minmax(220px, .9fr) minmax(270px, 1.2fr) minmax(184px, .72fr);
+      gap: 16px; width: 100%; padding: 16px; border: 0; border-radius: 0;
+      background: transparent; text-align: left; color: inherit;
+      transition: background-color 160ms ease, box-shadow 160ms ease;
+    }
+    .skill-card-main.has-recommendation { grid-template-columns: minmax(220px, .9fr) minmax(270px, 1.2fr) minmax(184px, .72fr); }
+    .skill-card-main:hover { background: color-mix(in srgb, var(--primary-soft) 56%, transparent); }
+    .skill-card-main:active { background: var(--surface-strong); }
+    .skill-card-main[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--primary-soft) 76%, transparent);
+    }
+    .skill-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .skill-name { display: block; margin-bottom: 8px; font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
+    .path { display: block; color: var(--text-faint); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
+    .recommendation { align-self: start; color: var(--text-soft); font-size: 12px; line-height: 1.5; }
+    .recommendation strong { display: block; margin-bottom: 8px; color: var(--text); font-size: 11px; letter-spacing: .04em; }
+    .analysis-trigger {
+      position: relative; isolation: isolate; overflow: hidden;
+      display: none; align-items: center; justify-content: space-between; gap: 8px;
+      width: calc(100% - 32px); min-height: 44px; margin: 0 16px 16px; padding: 8px 16px;
+      border-color: transparent; border-radius: 2px; background: var(--primary);
+      color: light-dark(#fff, #0e1a24); font-size: 12px; font-weight: 750;
+    }
+    .analysis-trigger::before {
+      content: ""; position: absolute; top: 50%; left: -50%; z-index: 0;
+      width: 200%; aspect-ratio: 1; pointer-events: none;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg 38deg,
+        color-mix(in srgb, var(--flow-accent) 36%, transparent) 62deg,
+        var(--flow-accent) 88deg,
+        color-mix(in srgb, var(--flow-accent) 36%, transparent) 114deg,
+        transparent 138deg 218deg,
+        color-mix(in srgb, var(--flow-accent) 36%, transparent) 242deg,
+        var(--flow-accent) 268deg,
+        color-mix(in srgb, var(--flow-accent) 36%, transparent) 294deg,
+        transparent 318deg 360deg
+      );
+      transform: translateY(-50%) rotate(0turn); transform-origin: center;
+      animation: analysis-border-flow 7.2s linear infinite;
+    }
+    .analysis-trigger::after {
+      content: ""; position: absolute; inset: 2px; z-index: 1; border-radius: 1px;
+      background: var(--primary); pointer-events: none;
+    }
+    .skill-card.is-active .analysis-trigger { display: flex; }
+    .analysis-trigger span, .analysis-trigger svg { position: relative; z-index: 2; }
+    .analysis-trigger svg { width: 16px; height: 16px; transition: transform 160ms ease; }
+    .analysis-trigger:hover svg { transform: translateX(4px); }
+    @keyframes analysis-border-flow {
+      to { transform: translateY(-50%) rotate(1turn); }
+    }
+    .skill-dependency {
+      display: grid; grid-template-rows: auto minmax(184px, 1fr); min-width: 0;
+      padding: 16px; border-left: 1px solid var(--line); background: var(--surface);
+    }
+    .skill-dependency-head {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px;
+    }
+    .skill-dependency-head strong { font-size: 12px; }
+    .skill-dependency-head span { color: var(--text-faint); font-size: 10px; }
+    .skill-dependency-stage {
+      position: relative; min-height: 184px; overflow: hidden; border: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+    .skill-dependency-graph { display: block; width: 100%; height: 184px; }
+    .skill-dependency-graph .dependency-edge { stroke: var(--line-strong); stroke-width: 1.25; }
+    .skill-dependency-graph .dependency-edge-label {
+      fill: var(--text-faint); font-size: 8px; font-weight: 700; paint-order: stroke;
+      stroke: var(--surface-soft); stroke-width: 4px; stroke-linejoin: round;
+    }
+    .skill-dependency-graph .dependency-node text {
+      fill: var(--text); font-size: 9px; font-weight: 650; paint-order: stroke;
+      stroke: var(--surface-soft); stroke-width: 3px; stroke-linejoin: round;
+    }
+    .skill-dependency-graph .dependency-node circle { stroke: var(--surface); stroke-width: 2; }
+    .skill-dependency-empty { display: grid; place-items: center; height: 100%; padding: 16px; color: var(--text-faint); font-size: 11px; text-align: center; }
+    .skill-dependency-legend {
+      position: absolute; right: 8px; bottom: 8px; display: grid; gap: 4px; padding: 6px 8px;
+      border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 94%, transparent);
+      color: var(--text-soft); font-size: 9px; box-shadow: 0 2px 8px light-dark(rgba(23, 33, 43, .06), rgba(0, 0, 0, .18));
+    }
+    .skill-dependency-legend span { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .skill-dependency-legend i { width: 6px; height: 6px; border-radius: 50%; }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 8px; width: fit-content; min-height: 24px;
+      padding: 0 8px; border: 1px solid currentColor; border-radius: 2px;
+      font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .status-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .severity-critical { color: var(--critical); }
+    .severity-high { color: var(--high); }
+    .severity-medium { color: var(--warn); }
+    .severity-low, .severity-info { color: var(--safe); }
+    .severity-pending { color: var(--text-soft); }
+    .taxonomy { display: grid; gap: 8px; align-content: start; }
+    .taxonomy-empty { color: var(--text-faint); font-size: 12px; }
+    .taxonomy-group {
+      display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px;
+      padding: 8px; border-left: 2px solid currentColor; border-radius: 2px;
+    }
+    .taxonomy-label { font-size: 11px; font-weight: 700; line-height: 1.55; }
+    .taxonomy-values { display: flex; flex-wrap: wrap; gap: 8px 16px; min-width: 0; }
+    .taxonomy-value { color: var(--text); font-size: 11px; line-height: 1.55; overflow-wrap: anywhere; }
+    .taxonomy-value + .taxonomy-value::before { content: "/"; margin-right: 8px; color: currentColor; opacity: .45; }
+    .taxonomy-data { color: var(--data); background: var(--data-soft); }
+    .taxonomy-integrity { color: var(--integrity); background: var(--integrity-soft); }
+    .taxonomy-human { color: var(--human); background: var(--human-soft); }
+    .taxonomy-commerce { color: var(--commerce); background: var(--commerce-soft); }
+    .taxonomy-other { color: var(--other); background: var(--other-soft); }
+    .empty-results { padding: 48px 16px; color: var(--text-soft); text-align: center; }
+    .drawer-scrim {
+      position: fixed; inset: 0; z-index: 40; border: 0; border-radius: 0;
+      background: rgba(5, 13, 20, .48); opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 160ms ease, visibility 160ms ease;
+    }
+    .drawer-scrim.is-open { opacity: 1; visibility: visible; pointer-events: auto; }
+    .analysis-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; z-index: 50; height: 100vh; height: 100dvh;
+      display: grid; grid-template-rows: auto minmax(0, 1fr) auto; width: min(480px, 100vw);
+      border-left: 1px solid var(--line); background: var(--surface); box-shadow: -16px 0 40px rgba(5, 13, 20, .18);
+      transform: translateX(100%); visibility: hidden;
+      transition: transform 240ms cubic-bezier(.2, .8, .2, 1), visibility 240ms ease;
+    }
+    .analysis-drawer.is-open { transform: translateX(0); visibility: visible; }
+    .drawer-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      min-height: 64px; padding: 8px 16px; border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .drawer-kicker { display: block; margin-bottom: 0; color: var(--primary); font-size: 10px; font-weight: 750; letter-spacing: .08em; }
+    .drawer-close {
+      display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
+      border-color: var(--line-strong); background: var(--surface-soft);
+    }
+    .drawer-close:hover { border-color: var(--primary); color: var(--primary); }
+    .drawer-close svg { width: 16px; height: 16px; }
+    .detail { min-height: 0; padding: 24px; overflow: auto; overscroll-behavior: contain; }
+    .detail-empty { padding: 40px 16px; color: var(--text-faint); text-align: center; line-height: 1.6; }
+    .detail h2 { margin-bottom: 8px; font-size: 21px; overflow-wrap: anywhere; }
+    .detail-description { color: var(--text-soft); font-size: 13px; line-height: 1.6; }
+    .detail-status { display: grid; gap: 8px; margin: 16px 0; }
+    .decision-row {
+      display: grid; grid-template-columns: 112px 1fr; gap: 8px; align-items: baseline;
+      padding: 8px; border: 1px solid var(--line); border-radius: 2px; background: var(--surface-soft);
+    }
+    .decision-label { color: var(--text-faint); font-size: 11px; font-weight: 650; }
+    .decision-value { font-size: 12px; font-weight: 650; }
+    .review-status {
+      display: flex; align-items: flex-start; gap: 8px; padding: 8px;
+      border: 1px solid var(--line); border-radius: 2px; font-size: 12px; line-height: 1.5;
+    }
+    .review-status svg { width: 16px; height: 16px; flex: 0 0 auto; margin-top: 1px; }
+    .review-status strong { display: block; font-size: 12px; }
+    .review-status small { display: block; margin-top: 2px; color: var(--text-soft); font-size: 11px; }
+    .review-status.is-confirmed { border-color: color-mix(in srgb, var(--safe) 48%, var(--line)); background: var(--safe-soft); color: var(--safe); }
+    .review-status.is-pending { background: var(--surface-soft); color: var(--text-soft); }
+    .conclusion {
+      margin: 16px 0 8px; padding: 16px; border-left: 2px solid var(--primary);
+      background: var(--primary-soft); font-size: 13px; line-height: 1.65;
+    }
+    .detail-taxonomy { margin: 16px 0; }
+    .detail-section-title { margin: 24px 0 8px; color: var(--text-faint); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .finding { padding: 16px 0; border-top: 1px solid var(--line); }
+    .finding h3 { margin-bottom: 8px; line-height: 1.45; }
+    .finding p { margin-bottom: 8px; font-size: 13px; line-height: 1.62; }
+    .finding-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; color: var(--text-faint); font-size: 11px; line-height: 1.5; }
+    .finding-meta span + span::before { content: "·"; margin-right: 16px; }
+    .verification-state { color: var(--safe); font-weight: 700; }
+    .verification-state svg { width: 12px; height: 12px; margin-right: 4px; vertical-align: -2px; }
+    .external-site {
+      display: grid; gap: 8px; margin: 16px 0 8px; padding: 16px;
+      border: 1px solid var(--line); border-left: 2px solid var(--data); background: var(--data-soft);
+    }
+    .external-site h4 { margin: 0; color: var(--data); font-size: 12px; }
+    .external-site dl { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 8px; margin: 0; }
+    .external-site dt { color: var(--text-faint); font-size: 11px; }
+    .external-site dd { margin: 0; font-size: 12px; overflow-wrap: anywhere; }
+    .external-site-note { margin: 0 !important; color: var(--text-soft); font-size: 12px !important; }
+    .drawer-action {
+      padding: 16px 24px 24px; border-top: 1px solid var(--line); background: var(--surface);
+    }
+    .drawer-action button {
+      width: 100%; min-height: 40px; padding: 8px 16px; border-color: var(--primary);
+      background: var(--primary); color: light-dark(#fff, #0e1a24); font-weight: 700;
+      transition: filter 160ms ease;
+    }
+    .drawer-action button:hover { filter: brightness(1.08); }
+    .copy-toast {
+      position: absolute; top: 50%; left: 50%; z-index: 5; width: min(calc(100% - 32px), 360px);
+      display: flex; align-items: flex-start; gap: 8px; padding: 12px 16px;
+      border: 1px solid color-mix(in srgb, var(--safe) 48%, var(--line)); border-radius: 2px;
+      background: var(--surface); box-shadow: var(--shadow); color: var(--text);
+      opacity: 0; transform: translate(-50%, calc(-50% + 8px)); pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+    .copy-toast.is-visible { opacity: 1; transform: translate(-50%, -50%); }
+    .copy-toast svg { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 1px; color: var(--safe); }
+    .copy-toast strong { display: block; margin-bottom: 2px; color: var(--safe); font-size: 12px; }
+    .copy-toast span { display: block; color: var(--text-soft); font-size: 12px; line-height: 1.55; }
+    .copy-toast.is-error { border-color: color-mix(in srgb, var(--warn) 48%, var(--line)); }
+    .copy-toast.is-error svg, .copy-toast.is-error strong { color: var(--warn); }
+    .guide-launcher {
+      position: fixed; right: 24px; bottom: 24px; z-index: 42; width: min(296px, calc(100vw - 32px));
+      padding: 16px 48px 16px 16px; border: 1px solid var(--line-strong); background: var(--surface);
+      box-shadow: 0 16px 40px light-dark(rgba(23, 33, 43, .16), rgba(0, 0, 0, .4));
+    }
+    .guide-launcher::after {
+      content: ""; position: absolute; right: 28px; bottom: -7px; width: 12px; height: 12px;
+      border-right: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong);
+      background: var(--surface); transform: rotate(45deg);
+    }
+    .guide-launcher-kicker { display: block; margin-bottom: 4px; color: var(--primary); font-size: 10px; font-weight: 750; letter-spacing: .08em; }
+    .guide-launcher strong { display: block; margin-bottom: 4px; font-size: 13px; }
+    .guide-launcher p { margin: 0 0 8px; color: var(--text-soft); font-size: 11px; line-height: 1.55; }
+    .guide-launcher-tip {
+      display: flex; align-items: flex-start; gap: 8px; margin: 0 0 12px; padding: 8px 0 0;
+      border-top: 1px solid var(--line); color: var(--text-faint); font-size: 10px; line-height: 1.5;
+    }
+    .guide-launcher-tip svg { width: 14px; height: 14px; flex: 0 0 auto; margin-top: 1px; color: var(--primary); }
+    .guide-launcher-start {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 12px;
+      border-color: var(--primary); background: var(--primary); color: light-dark(#fff, #0e1a24); font-size: 11px; font-weight: 750;
+    }
+    .guide-launcher-start svg { width: 14px; height: 14px; }
+    .guide-launcher-close, .guide-popover-close {
+      display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
+      border: 0; background: transparent; color: var(--text-faint);
+    }
+    .guide-launcher-close { position: absolute; top: 8px; right: 8px; }
+    .guide-launcher-close:hover, .guide-popover-close:hover { color: var(--text); background: var(--surface-soft); }
+    .guide-launcher-close svg, .guide-popover-close svg { width: 16px; height: 16px; }
+    .guide-layer { position: fixed; inset: 0; z-index: 90; pointer-events: auto; }
+    .guide-spotlight {
+      position: fixed; z-index: 1; border: 2px solid var(--flow-accent); border-radius: 2px;
+      background: transparent; box-shadow: 0 0 0 9999px light-dark(rgba(12, 23, 34, .68), rgba(0, 0, 0, .76));
+      transition: top 220ms ease, left 220ms ease, width 220ms ease, height 220ms ease;
+      pointer-events: none;
+    }
+    .guide-popover {
+      position: fixed; z-index: 2; width: min(336px, calc(100vw - 32px)); max-height: calc(100dvh - 32px);
+      padding: 16px; overflow: auto; border: 1px solid var(--line-strong); border-top: 2px solid var(--flow-accent);
+      background: var(--surface); box-shadow: 0 18px 56px rgba(0, 0, 0, .28); outline: none;
+      transition: top 220ms ease, left 220ms ease;
+    }
+    .guide-popover-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+    .guide-step-count { color: var(--primary); font-size: 10px; font-weight: 750; letter-spacing: .08em; }
+    .guide-popover h2 { margin: 0 0 8px; font-size: 17px; line-height: 1.4; }
+    .guide-popover p { margin: 0; color: var(--text-soft); font-size: 12px; line-height: 1.65; }
+    .guide-progress { display: flex; gap: 4px; margin: 16px 0; }
+    .guide-progress span { width: 20px; height: 2px; background: var(--line-strong); }
+    .guide-progress span.is-done { background: var(--flow-accent); }
+    .guide-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .guide-actions-group { display: flex; gap: 8px; }
+    .guide-action {
+      min-height: 36px; padding: 6px 12px; border-color: var(--line-strong);
+      background: var(--surface); color: var(--text-soft); font-size: 11px; font-weight: 700;
+    }
+    .guide-action:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+    .guide-action:disabled { opacity: .38; cursor: not-allowed; }
+    .guide-action.is-primary { border-color: var(--primary); background: var(--primary); color: light-dark(#fff, #0e1a24); }
+    .guide-arrow { position: fixed; z-index: 3; width: 18px; height: 10px; pointer-events: none; }
+    .guide-arrow svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    .guide-arrow path { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1; }
+    .guide-layer[data-placement="bottom"] .guide-arrow { transform: none; }
+    .guide-layer[data-placement="top"] .guide-arrow { transform: rotate(180deg); }
+    .guide-layer[data-placement="right"] .guide-arrow { transform: rotate(-90deg); }
+    .guide-layer[data-placement="left"] .guide-arrow { transform: rotate(90deg); }
+    .guide-layer[data-placement="center"] .guide-arrow { display: none; }
+    .relationship { overflow: hidden; }
+    .relationship-head {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;
+      padding: 16px; border-bottom: 1px solid var(--line); background: var(--surface-soft);
+    }
+    .relationship-head p { max-width: 440px; margin: 0; color: var(--text-soft); font-size: 12px; line-height: 1.6; text-align: right; }
+    .graph-mode {
+      display: inline-grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 2px;
+      border: 1px solid var(--line); border-radius: 2px; background: var(--surface-soft);
+    }
+    .graph-mode button {
+      min-height: 32px; padding: 4px 8px; border: 0; border-radius: 1px;
+      background: transparent; color: var(--text-soft); font-size: 11px; font-weight: 700;
+    }
+    .graph-mode button:hover { color: var(--text); background: var(--surface); }
+    .graph-mode button[aria-selected="true"] { color: var(--primary); background: var(--surface); box-shadow: 0 1px 4px rgba(23, 33, 43, .08); }
+    .graph-view-actions {
+      position: absolute; top: 16px; right: 16px; z-index: 2;
+      display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--line);
+      border-radius: 2px; background: color-mix(in srgb, var(--surface) 94%, transparent);
+      box-shadow: 0 4px 16px light-dark(rgba(23, 33, 43, .08), rgba(0, 0, 0, .18));
+      backdrop-filter: blur(8px);
+    }
+    .graph-view-actions button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      min-width: 28px; min-height: 28px; padding: 4px 8px; border: 0; border-radius: 1px;
+      background: transparent; color: var(--text-soft); font-size: 10px; font-weight: 700;
+    }
+    .graph-view-actions svg { width: 14px; height: 14px; flex: 0 0 auto; }
+    .graph-view-actions button:hover:not(:disabled) { color: var(--text); background: var(--surface-soft); }
+    .graph-view-actions button[aria-pressed="true"] { color: var(--primary); background: var(--primary-soft); }
+    .graph-view-actions button:disabled { opacity: .42; cursor: not-allowed; }
+    .relationship-body {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
+      grid-template-rows: minmax(560px, auto) auto; min-height: 560px;
+    }
+    .graph-stage { position: relative; display: grid; min-width: 0; overflow: hidden; background: var(--surface); }
+    .relationship-body .graph-stage {
+      grid-column: 1; grid-row: 1; border-right: 1px solid var(--line);
+    }
+    #graph { display: block; width: 100%; height: 456px; touch-action: none; cursor: grab; }
+    #graph.is-panning { cursor: grabbing; }
+    .graph-pan-hint {
+      position: absolute; right: 16px; bottom: 12px; z-index: 2; padding: 4px 8px;
+      border: 1px solid var(--line); border-radius: 2px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      color: var(--text-faint); font-size: 9px; pointer-events: none;
+    }
+    .edge { fill: none; stroke: var(--line-strong); stroke-width: 1.25; opacity: .68; pointer-events: none; }
+    .edge.active, .edge.is-focused { stroke: var(--primary); stroke-width: 2.25; opacity: 1; }
+    .edge.dim { opacity: .28; }
+    .edge-hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
+    .edge-label {
+      fill: var(--text-faint); font-size: 9px; font-weight: 700; paint-order: stroke;
+      stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; pointer-events: none;
+    }
+    .edge-hit:hover + .edge-label, .edge-hit:focus-visible + .edge-label { fill: var(--text); }
+    .edge-label.is-focused { fill: var(--primary); }
+    .node { cursor: pointer; transition: opacity 160ms ease; }
+    .node circle { stroke: var(--surface); stroke-width: 2; }
+    .node:hover text, .node:focus-visible text { fill: var(--primary); }
+    .node .selection-ring { fill: none; stroke: var(--primary); stroke-width: 2; opacity: .9; }
+    .node text {
+      fill: var(--text); font-size: 11px; paint-order: stroke;
+      stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: all;
+    }
+    .node .hit-area { fill: transparent; stroke: none; pointer-events: all; }
+    .node.dim { opacity: .4; }
+    .node.selected > circle:not(.hit-area):not(.selection-ring) { stroke: var(--primary); stroke-width: 4; }
+    .node.is-focused > circle:not(.hit-area):not(.selection-ring) { stroke: var(--flow-accent); stroke-width: 4; }
+    .node:focus-visible .hit-area { stroke: var(--primary); stroke-width: 2; }
+    .graph-empty {
+      position: absolute; inset: 0; display: grid; place-items: center; padding: 32px;
+      color: var(--text-faint); text-align: center; font-size: 12px; line-height: 1.6; pointer-events: none;
+    }
+    .graph-inspector {
+      min-height: 152px; padding: 16px; overflow: visible;
+      border-top: 1px solid var(--line); background: var(--surface-soft); outline: none;
+    }
+    .relationship-body .graph-inspector {
+      grid-column: 2; grid-row: 1; min-height: 0; max-height: 640px; overflow: auto;
+      border-top: 0; overscroll-behavior: contain;
+    }
+    .graph-inspector-head {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px;
+    }
+    .graph-inspector-kicker {
+      display: block; margin-bottom: 4px; color: var(--primary); font-size: 10px;
+      font-weight: 750; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .graph-inspector h3 { margin: 0; font-size: 16px; line-height: 1.45; overflow-wrap: anywhere; }
+    .graph-inspector-note { margin: 0; color: var(--text-soft); font-size: 13px; line-height: 1.65; }
+    .graph-inspector-hint { color: var(--text-faint); font-size: 11px; white-space: nowrap; }
+    .graph-inspector-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .graph-inspector-action {
+      min-height: 32px; padding: 4px 8px; border-color: var(--line-strong);
+      background: var(--surface); color: var(--text-soft); font-size: 11px; font-weight: 700;
+    }
+    .graph-inspector-action:hover { border-color: var(--primary); color: var(--primary); }
+    .graph-inspector-action.is-primary { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+    .graph-inspector-close {
+      display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
+      border-color: var(--line-strong); background: var(--surface); color: var(--text-soft);
+    }
+    .graph-inspector-close:hover { border-color: var(--primary); color: var(--primary); }
+    .graph-inspector-close svg { width: 16px; height: 16px; }
+    .graph-inspector-scrim { display: none; }
+    .graph-endpoints {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 8px; align-items: center; margin: 0 0 12px;
+    }
+    .graph-endpoint-picker { position: relative; min-width: 0; }
+    .graph-endpoint {
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px;
+      width: 100%; min-width: 0; min-height: 40px; padding: 8px;
+      border: 1px solid var(--line); background: var(--surface); color: var(--text); text-align: left; font-size: 12px; font-weight: 700;
+    }
+    .graph-endpoint:hover, .graph-endpoint[aria-expanded="true"] { border-color: var(--primary); background: var(--primary-soft); }
+    .graph-endpoint-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .graph-endpoint-chevron { width: 14px; height: 14px; color: var(--text-faint); transition: transform 160ms ease; }
+    .graph-endpoint[aria-expanded="true"] .graph-endpoint-chevron { transform: rotate(180deg); }
+    .graph-endpoint-dot {
+      display: grid; place-items: center; width: 18px; height: 18px; flex: 0 0 auto;
+      border: 1px solid currentColor; border-radius: 50%; background: var(--surface); color: var(--primary); font-size: 9px;
+    }
+    .graph-endpoint-menu {
+      position: absolute; top: calc(100% + 4px); right: 0; left: 0; z-index: 8;
+      display: grid; gap: 2px; max-height: 208px; padding: 4px; overflow: auto;
+      border: 1px solid var(--line-strong); background: var(--surface); box-shadow: var(--shadow);
+    }
+    .graph-endpoint-option {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center;
+      width: 100%; min-height: 40px; padding: 8px; border: 0; background: transparent; color: var(--text-soft); text-align: left; font-size: 11px;
+    }
+    .graph-endpoint-option:hover, .graph-endpoint-option:focus-visible { background: var(--surface-soft); color: var(--text); }
+    .graph-endpoint-option[aria-selected="true"] { background: var(--primary-soft); color: var(--primary); font-weight: 700; }
+    .graph-endpoint-option small { color: var(--text-faint); font-size: 9px; white-space: nowrap; }
+    .graph-endpoint-arrow { color: var(--text-faint); font-size: 12px; }
+    .graph-endpoint-help { margin: -4px 0 12px; color: var(--text-faint); font-size: 10px; line-height: 1.5; }
+    .node .endpoint-marker { pointer-events: none; }
+    .node .endpoint-marker circle { fill: var(--surface); stroke-width: 1.5; }
+    .node .endpoint-marker text { stroke: none; font-size: 8px; font-weight: 800; text-anchor: middle; }
+    .node.endpoint-a .endpoint-marker circle { stroke: var(--data); }
+    .node.endpoint-a .endpoint-marker text { fill: var(--data); }
+    .node.endpoint-b .endpoint-marker circle { stroke: var(--human); }
+    .node.endpoint-b .endpoint-marker text { fill: var(--human); }
+    .graph-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .graph-tag {
+      display: inline-flex; align-items: center; min-height: 24px; padding: 2px 8px;
+      border: 1px solid var(--line-strong); border-radius: 2px; background: var(--surface);
+      color: var(--text-soft); font-size: 10px; font-weight: 700;
+    }
+    .relation-capability-overlap { --relation-accent: var(--data); --relation-soft: var(--data-soft); }
+    .relation-trigger-conflict { --relation-accent: var(--warn); --relation-soft: var(--warn-soft); }
+    .relation-shared-dependency { --relation-accent: var(--other); --relation-soft: var(--other-soft); }
+    .relation-behavioral-interaction { --relation-accent: var(--human); --relation-soft: var(--human-soft); }
+    .relation-combined-risk { --relation-accent: var(--high); --relation-soft: var(--high-soft); }
+    .graph-tag[class*="relation-"] { border-color: var(--relation-accent); background: var(--relation-soft); color: var(--relation-accent); }
+    .graph-relation-stack { display: grid; gap: 12px; }
+    .graph-pair { display: grid; gap: 8px; }
+    .graph-pair + .graph-pair { padding-top: 12px; border-top: 1px solid var(--line); }
+    .graph-pair > h4 { margin: 0; color: var(--text); font-size: 12px; line-height: 1.5; }
+    .graph-relation-card { border-left: 2px solid var(--relation-accent, var(--primary)); background: var(--surface); }
+    .graph-relation-card > summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      min-height: 44px; padding: 8px 12px; cursor: pointer; list-style: none;
+      color: var(--relation-accent, var(--primary)); font-size: 12px; font-weight: 750;
+    }
+    .graph-relation-card > summary::-webkit-details-marker { display: none; }
+    .graph-relation-card > summary::after { content: "+"; color: var(--text-faint); font-size: 16px; font-weight: 500; }
+    .graph-relation-card[open] > summary::after { content: "−"; }
+    .graph-relation-content { padding: 0 12px 12px; }
+    .graph-relation-card p { margin: 0; color: var(--text-soft); font-size: 13px; line-height: 1.65; }
+    .graph-conclusion { padding: 10px 12px; background: var(--relation-soft, var(--primary-soft)); color: var(--text) !important; }
+    .graph-relation-card dl {
+      display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 6px 12px;
+      margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line);
+    }
+    .graph-relation-card dt { color: var(--text-faint); font-size: 11px; font-weight: 700; }
+    .graph-relation-card dd { margin: 0; color: var(--text); font-size: 13px; line-height: 1.6; }
+    .graph-evidence { margin-top: 10px; }
+    .graph-evidence summary { width: fit-content; min-height: 32px; padding: 6px 0; color: var(--primary); cursor: pointer; font-size: 11px; font-weight: 700; }
+    .graph-evidence ul { display: grid; gap: 6px; margin: 8px 0 0; padding-left: 18px; }
+    .graph-evidence li { color: var(--text-soft); font-size: 12px; line-height: 1.6; }
+    .graph-relation-directory { display: grid; gap: 8px; margin-top: 12px; }
+    .graph-relation-link {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center;
+      min-height: 48px; padding: 8px 12px; border-color: var(--line); background: var(--surface); text-align: left;
+    }
+    .graph-relation-link:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .graph-relation-link strong { display: block; margin-bottom: 2px; font-size: 12px; overflow-wrap: anywhere; }
+    .graph-relation-link small { color: var(--text-faint); font-size: 11px; line-height: 1.45; }
+    .graph-relation-link svg { width: 16px; height: 16px; color: var(--primary); }
+    .legend {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: start;
+      gap: 8px 16px; padding: 16px; border-top: 1px solid var(--line); background: var(--surface-soft);
+    }
+    .relationship-body .legend { grid-column: 1 / -1; grid-row: 2; }
+    .legend-title { grid-column: 1 / -1; margin-bottom: 0; color: var(--text-faint); font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+    .legend #graph-legend-items { display: contents; }
+    .legend span { display: inline-flex; align-items: center; gap: 8px; color: var(--text-soft); font-size: 12px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: 0 0 auto; }
+    @media (max-width: 1439px) {
+      .skill-card.is-active .skill-card-content { grid-template-columns: 1fr; }
+      .skill-dependency { border-top: 1px solid var(--line); border-left: 0; }
+      .skill-dependency-graph { height: 216px; }
+      .relationship-body { grid-template-columns: 1fr; grid-template-rows: minmax(352px, 1fr) auto auto; }
+      .relationship-body .graph-stage { grid-column: auto; grid-row: auto; border-right: 0; }
+      .relationship-body .graph-inspector {
+        grid-column: auto; grid-row: auto; max-height: none; overflow: visible;
+        border-top: 1px solid var(--line);
+      }
+      .relationship-body .legend { grid-column: auto; grid-row: auto; }
+      #graph { height: 456px; }
+    }
+    @media (max-width: 1080px) {
+      .skill-card-main { grid-template-columns: minmax(190px, .8fr) minmax(240px, 1.2fr); }
+      .skill-card-main.has-recommendation { grid-template-columns: minmax(190px, .8fr) minmax(240px, 1.2fr); }
+      .skill-card-main.has-recommendation .recommendation { grid-column: 1 / -1; display: grid; grid-template-columns: 88px 1fr; gap: 8px; }
+    }
+    @media (max-width: 860px) {
+      .report-intro { display: block; }
+      .intro-note { margin-top: 16px; }
+      #graph { height: 384px; }
+    }
+    @media (min-width: 540px) and (max-width: 760px) {
+      body.graph-inspector-open { overflow: hidden; }
+      .graph-view-actions button { min-width: 44px; min-height: 44px; }
+      .graph-inspector-scrim:not([hidden]) {
+        position: fixed; inset: 0; z-index: 34; display: block; padding: 0; border: 0;
+        background: light-dark(rgba(12, 23, 34, .58), rgba(0, 0, 0, .72)); cursor: pointer;
+      }
+      .relationship-body .graph-inspector.has-selection {
+        position: fixed; right: 0; bottom: 0; left: 0; z-index: 35; width: 100vw; max-width: none;
+        max-height: min(56dvh, 560px); overflow: auto; overscroll-behavior: contain;
+        border: 0; border-top: 2px solid var(--flow-accent); background: var(--surface);
+        box-shadow: 0 -16px 48px light-dark(rgba(23, 33, 43, .28), rgba(0, 0, 0, .56));
+      }
+      .relationship-body .graph-inspector.has-selection::before {
+        content: ""; display: block; width: 40px; height: 3px; margin: -8px auto 12px;
+        border-radius: 2px; background: var(--line-strong);
+      }
+      .graph-inspector-action, .graph-inspector-close { min-height: 44px; }
+      .graph-inspector-close { width: 44px; }
+      .graph-endpoint, .graph-endpoint-option { min-height: 44px; }
+      .graph-relation-card > summary { min-height: 48px; }
+      .graph-relation-link { min-height: 48px; }
+      .graph-relation-card p, .graph-relation-card dd, .graph-inspector-note { font-size: 14px; }
+      .graph-evidence li { font-size: 13px; }
+    }
+    @media (min-width: 540px) and (max-width: 640px) {
+      .app-header { position: static; padding: 8px 16px; }
+      main { padding: 24px 16px 32px; }
+      .report-intro h2 { font-size: 26px; }
+      .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .stat { padding-inline: 8px; border-top: 0; }
+      .toolbar { grid-template-columns: 1fr; }
+      input, .custom-select-trigger, .custom-select-option { min-height: 44px; }
+      .skill-card-main { grid-template-columns: 1fr; gap: 16px; }
+      .skill-card-main.has-recommendation { grid-template-columns: 1fr; }
+      .skill-title-row { flex-wrap: wrap; }
+      .skill-card-main.has-recommendation .recommendation { grid-column: auto; display: block; }
+      .taxonomy-group { grid-template-columns: 80px minmax(0, 1fr); }
+      .results-head { align-items: stretch; flex-direction: column; }
+      .report-tabs { width: 100%; }
+      .relationship-head { display: block; }
+      .relationship-head .panel-title { flex-wrap: wrap; }
+      .relationship-head p { margin-top: 8px; text-align: left; }
+      .graph-view-actions { top: 8px; right: 8px; }
+      .graph-view-actions .button-label { display: none; }
+      .graph-pan-hint { right: 8px; bottom: 8px; }
+      .legend { grid-template-columns: 1fr 1fr; }
+      #graph { height: 416px; }
+      .graph-inspector { min-height: 176px; }
+      .graph-inspector-head { display: block; }
+      .graph-inspector-hint { display: block; margin-top: 8px; white-space: normal; }
+      .graph-relation-card dl { grid-template-columns: 1fr; gap: 4px; }
+      .analysis-drawer { width: 100vw; }
+      .drawer-close { width: 44px; height: 44px; }
+      .detail { padding: 16px; }
+      .drawer-action { padding: 16px; }
+      .detail-description, .finding p { font-size: 14px; }
+      .drawer-action button { min-height: 44px; }
+      .guide-launcher { right: 16px; bottom: 16px; width: calc(100vw - 32px); }
+      .guide-popover { width: calc(100vw - 32px); }
+      .guide-launcher-start, .guide-action { min-height: 44px; }
+      .guide-launcher-close, .guide-popover-close { width: 44px; height: 44px; }
+    }
+    @media (min-width: 540px) and (max-height: 560px) and (orientation: landscape) {
+      .app-header { position: static; }
+      .analysis-drawer { width: min(520px, 72vw); }
+      .drawer-head { min-height: 56px; }
+      .detail { padding: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+      .analysis-trigger::before { animation: none !important; background: color-mix(in srgb, var(--flow-accent) 48%, transparent); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3 4.5 6.5v5.2c0 4.5 3 7.8 7.5 9.3 4.5-1.5 7.5-4.8 7.5-9.3V6.5L12 3Z"/>
+            <path d="m8.7 12 2.1 2.1 4.6-4.6"/>
+          </svg>
+        </span>
+        <h1>Wizz Skill Safekeeper</h1>
+      </div>
+    </header>
+    <main>
+      <section class="report-intro" aria-labelledby="report-title">
+        <div>
+          <div class="eyebrow">扫描报告</div>
+          <h2 id="report-title">正在整理检查结果</h2>
+        </div>
+        <p class="intro-note" id="intro-note">选择一个 Skill 查看它的依赖，也可切换到 Skill 间关系图；点击 Skill 聚焦局部，点击连线查看已复核诊断。</p>
+      </section>
+
+      <section class="stats" aria-label="扫描摘要">
+        <div class="stat"><span class="stat-label">已检查 Skill</span><strong id="skill-count">0</strong></div>
+        <div class="stat"><span class="stat-label">高风险及以上</span><strong id="high-count">0</strong></div>
+        <div class="stat"><span class="stat-label">扫描文件</span><strong id="file-count">0</strong></div>
+      </section>
+
+      <div class="results-layout">
+        <section class="panel results-panel" aria-labelledby="results-title">
+          <div class="panel-head results-head">
+            <div class="panel-title"><h2 id="results-title">扫描结果</h2><span class="count" id="visible-count"></span></div>
+            <div class="graph-mode report-tabs" role="tablist" aria-label="扫描结果视图">
+              <button type="button" role="tab" id="report-tab-skills" data-report-tab="skills" aria-selected="true" aria-controls="skill-report-panel">Skill 体检报告</button>
+              <button type="button" role="tab" id="report-tab-relationships" data-report-tab="relationships" aria-selected="false" aria-controls="skill-relationship-panel" tabindex="-1">Skill 关系图</button>
+            </div>
+          </div>
+          <div id="skill-report-panel" role="tabpanel" aria-labelledby="report-tab-skills">
+          <div class="toolbar" aria-label="筛选扫描结果">
+            <div class="field">
+              <label for="search">查找 Skill</label>
+              <input id="search" type="search" placeholder="名称、说明或风险标签">
+            </div>
+            <div class="field">
+              <label id="severity-label" for="severity">最低风险</label>
+              <div class="custom-select" id="severity-select" data-value="pending">
+                <button type="button" class="custom-select-trigger" id="severity" aria-haspopup="listbox" aria-expanded="false" aria-controls="severity-menu" aria-labelledby="severity-label severity-value">
+                  <span id="severity-value">全部</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg>
+                </button>
+                <div class="custom-select-menu" id="severity-menu" role="listbox" aria-labelledby="severity-label" hidden>
+                  <button type="button" class="custom-select-option" role="option" data-value="pending" aria-selected="true"><span>全部</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
+                  <button type="button" class="custom-select-option" role="option" data-value="medium" aria-selected="false"><span>中风险及以上</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
+                  <button type="button" class="custom-select-option" role="option" data-value="high" aria-selected="false"><span>高风险及以上</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
+                  <button type="button" class="custom-select-option" role="option" data-value="critical" aria-selected="false"><span>仅严重</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="skill-list" id="skill-list"></div>
+          </div>
+        <section class="relationship" id="skill-relationship-panel" role="tabpanel" aria-labelledby="report-tab-relationships" hidden>
+          <div class="relationship-head">
+            <div class="panel-title"><h2 id="relationship-title">Skill 间关系</h2><span class="count" id="graph-skill-name">Agent 已复核关系</span></div>
+            <p>点击节点查看直接关系，点击连线查看双方的具体诊断。</p>
+          </div>
+          <div class="relationship-body">
+            <div class="graph-stage">
+              <div class="graph-view-actions" id="graph-view-actions" aria-label="Skill 关系视角" hidden>
+                <button type="button" data-graph-zoom="out" aria-label="缩小关系图" title="缩小">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/></svg>
+                </button>
+                <button type="button" data-graph-zoom="in" aria-label="放大关系图" title="放大">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+                <button type="button" data-graph-view="global" aria-pressed="true" aria-label="适应全部关系组">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M3 16v5h5"/></svg>
+                  <span class="button-label">适应全图</span>
+                </button>
+                <button type="button" data-graph-view="group" aria-pressed="false" aria-label="聚焦当前选中的完整关系组">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                  <span class="button-label">聚焦关系组</span>
+                </button>
+              </div>
+              <svg id="graph" role="img" aria-label="当前 Skill 与其关联资源图"></svg>
+              <div class="graph-pan-hint" id="graph-pan-hint" hidden>滚轮缩放 · 拖拽平移</div>
+              <div class="graph-empty" id="graph-empty" hidden></div>
+            </div>
+            <button type="button" class="graph-inspector-scrim" id="graph-inspector-scrim" aria-label="关闭关系详情并返回全局关系图" tabindex="-1" hidden></button>
+            <aside class="graph-inspector" id="graph-inspector" aria-label="关系诊断"></aside>
+            <div class="sr-only" id="graph-status" role="status" aria-live="polite" aria-atomic="true"></div>
+            <div class="legend" aria-label="图例">
+              <div class="legend-title">图例</div>
+              <div id="graph-legend-items"></div>
+            </div>
+          </div>
+        </section>
+        </section>
+      </div>
+    </main>
+  </div>
+  <button type="button" class="drawer-scrim" id="drawer-scrim" aria-label="关闭 Skill 详细分析" tabindex="-1"></button>
+  <aside class="analysis-drawer" id="analysis-drawer" role="dialog" aria-modal="true" aria-labelledby="analysis-title" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <span class="drawer-kicker">详细分析</span>
+        <h2 id="analysis-title">Skill 分析</h2>
+      </div>
+      <button type="button" class="drawer-close" id="drawer-close" aria-label="关闭详细分析">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="detail" id="detail" aria-live="polite"><div class="detail-empty">选择一个 Skill 查看分析</div></div>
+    <div class="drawer-action" id="drawer-action" hidden></div>
+    <div class="copy-toast" id="copy-toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+      <div><strong id="copy-toast-title">复核请求已复制</strong><span id="copy-toast-message">请回到对话窗口，粘贴并发送给 Agent 继续复核。</span></div>
+    </div>
+  </aside>
+  <aside class="guide-launcher" id="guide-launcher" aria-label="功能指引入口">
+    <button type="button" class="guide-launcher-close" id="guide-launcher-close" aria-label="关闭功能指引入口">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    </button>
+    <span class="guide-launcher-kicker">功能指引</span>
+    <strong>第一次查看这份报告？</strong>
+    <p>用不到一分钟了解体检、依赖与 Skill 关系图。</p>
+    <div class="guide-launcher-tip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 8h18M7 6h.01M10 6h.01"/></svg>
+      <span>建议在浏览器中单独打开报告，获得更完整的图表视野。</span>
+    </div>
+    <button type="button" class="guide-launcher-start" id="guide-launcher-start">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+      开始了解
+    </button>
+  </aside>
+  <div class="guide-layer" id="guide-layer" data-placement="bottom" hidden>
+    <div class="guide-spotlight" id="guide-spotlight" aria-hidden="true"></div>
+    <span class="guide-arrow" id="guide-arrow" aria-hidden="true"><svg viewBox="0 0 18 10"><path d="M1 9 9 1l8 8Z"/></svg></span>
+    <section class="guide-popover" id="guide-popover" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-describedby="guide-description" tabindex="-1">
+      <div class="guide-popover-head">
+        <span class="guide-step-count" id="guide-step-count"></span>
+        <button type="button" class="guide-popover-close" id="guide-popover-close" aria-label="退出功能指引">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <h2 id="guide-title"></h2>
+      <p id="guide-description" aria-live="polite"></p>
+      <div class="guide-progress" id="guide-progress" aria-hidden="true"></div>
+      <div class="guide-actions">
+        <button type="button" class="guide-action" id="guide-skip">跳过</button>
+        <div class="guide-actions-group">
+          <button type="button" class="guide-action" id="guide-prev">上一步</button>
+          <button type="button" class="guide-action is-primary" id="guide-next">下一步</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    "use strict";
+    const report = {"schemaVersion": 2, "scannerVersion": "0.11.0", "generatedAt": "2026-10-02T08:10:26.239616+00:00", "scope": ["skills"], "mode": "standard", "summary": {"skillCount": 13, "severityCounts": {"info": 3, "medium": 5, "low": 1, "high": 4}, "recommendationCounts": {"keep": 3, "require-confirmation": 4, "keep-with-notice": 1, "restrict": 3, "explicit-only": 2}, "topRiskTags": [{"tag": "external-data-transfer", "count": 8}, {"tag": "credential-access", "count": 5}, {"tag": "documentation-mismatch", "count": 4}, {"tag": "authorization-overreach", "count": 3}, {"tag": "unsafe-content-rendering", "count": 3}, {"tag": "supply-chain-risk", "count": 2}, {"tag": "priority-escalation", "count": 2}, {"tag": "paid-operation", "count": 1}, {"tag": "unverified-claims", "count": 1}, {"tag": "scope-hijack", "count": 1}], "verificationStatus": "agent-reviewed"}, "resourceEstimate": {"complexity": "low", "mode": "standard", "estimatedLocalSeconds": 1.6, "estimatedPeakMemoryMB": 57, "estimatedTechnicalReviewTokens": 543495, "tokenNote": "Approximate tokens only if an Agent later loads all inspected text; the local scanner does not consume model tokens."}, "actual": {"elapsedSeconds": 0.5332, "fileCount": 156, "totalBytes": 2010931}, "skills": [{"id": "skill-b3aab70115de", "name": "比价精灵 · Ecommerce Comparator", "path": "bjjl__skillhub", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "info", "confidence": "confirmed", "recommendation": "keep", "candidateSeverity": "info", "candidateConfidence": "heuristic", "candidateTags": [], "findings": [], "findingCount": 0, "fileCount": 7, "totalBytes": 15552, "externalServiceCount": 0, "credentialReferenceCount": 0, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "", "riskTags": [], "reviewedConclusion": "按公开搜索摘要做商品比价，并明确提醒价格需到平台复核；本次静态审查未发现实质风险路径。"}, {"id": "skill-83ea60d9298c", "name": "评估设备询价", "path": "equipment-price", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "medium", "confidence": "probable", "recommendation": "require-confirmation", "candidateSeverity": "medium", "candidateConfidence": "confirmed", "candidateTags": ["paid-operation"], "findings": [{"tag": "external-data-transfer", "severity": "medium", "confidence": "probable", "title": "客户资产信息可能成为外部搜索词", "explanation": "流程要求从上传文件提取资产、型号和地点后调用公开搜索与地图查询，因此这些字段可能离开当前设备；文档同时宣称不外传，边界表述不准确。", "affectedData": ["资产名称与型号", "客户文件中提取的地点"], "destination": "外部站点", "externalSite": {"category": "公开搜索与地图服务", "scale": "unknown", "recognition": "unknown", "safetyAssessment": "not-reviewed", "basis": "Skill 只描述 WebSearch 与地图查询，没有固定运营方或端点，本次静态审查无法核验站点安全性。"}, "evidenceCount": 2, "status": "agent-verified"}, {"tag": "documentation-mismatch", "severity": "medium", "confidence": "confirmed", "title": "不外传承诺与搜索流程冲突", "explanation": "首页承诺不外传任何客户数据，但核心工作流明确把资产和地点转为外部检索词。", "affectedData": ["用户提供的资产数据"], "destination": null, "externalSite": null, "evidenceCount": 2, "status": "agent-verified"}], "findingCount": 1, "fileCount": 2, "totalBytes": 11633, "externalServiceCount": 0, "credentialReferenceCount": 0, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "处理客户资产清单、评估报告或位置前，先确认哪些资产名称、型号和地点会作为搜索词发送到公开搜索或地图服务；敏感字段应先删去。", "riskTags": ["external-data-transfer", "documentation-mismatch"], "reviewedConclusion": "Skill 声称客户数据不外传，但核心流程会把从用户文件提取的资产和地点转成公开搜索或地图查询；这与文字承诺不完全一致。候选“付费操作”只是说明默认不调用付费平台，已判为误报。"}, {"id": "skill-d9045fd15d99", "name": "FlyAI 高铁飞机比价", "path": "flyai-price-compare__skillhub", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "low", "confidence": "probable", "recommendation": "keep-with-notice", "candidateSeverity": "medium", "candidateConfidence": "confirmed", "candidateTags": ["paid-operation"], "findings": [{"tag": "external-data-transfer", "severity": "low", "confidence": "probable", "title": "行程条件会交给外部票价服务", "explanation": "Skill 的核心能力依赖 FlyAI 搜索车票和机票，行程条件会进入外部服务；未发现乘客身份信息或直接购买流程。", "affectedData": ["出发地", "目的地", "出行日期"], "destination": "外部站点", "externalSite": {"category": "交通票价聚合服务", "scale": "unknown", "recognition": "unknown", "safetyAssessment": "not-reviewed", "basis": "Skill 未给出可核验端点或运营主体，本次只确认其声明依赖 FlyAI。"}, "evidenceCount": 1, "status": "agent-verified"}], "findingCount": 1, "fileCount": 4, "totalBytes": 18684, "externalServiceCount": 0, "credentialReferenceCount": 0, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "", "riskTags": ["external-data-transfer"], "reviewedConclusion": "会把出发地、目的地和日期交给 FlyAI 做票价搜索；不包含预订动作。候选“付费操作”只是行李可能收费的说明，已判为误报。"}, {"id": "skill-5ba79d8dfc7e", "name": "酒店价格监控与比价", "path": "hotel-price-monitor__skillhub", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "medium", "confidence": "confirmed", "recommendation": "require-confirmation", "candidateSeverity": "high", "candidateConfidence": "confirmed", "candidateTags": ["credential-access", "external-data-transfer"], "findings": [{"tag": "external-data-transfer", "severity": "medium", "confidence": "confirmed", "title": "酒店行程会发送到云函数代理", "explanation": "脚本把酒店名、城市、入住日期、离店日期及人数等查询参数 POST 到固定代理，再由代理查询旅游平台。", "affectedData": ["酒店名", "城市", "入住与离店日期", "人数和房间条件"], "destination": "外部站点", "externalSite": {"category": "酒店比价代理与旅游平台聚合服务", "scale": "unknown", "recognition": "unknown", "safetyAssessment": "not-reviewed", "basis": "代码固定使用腾讯云函数域名，但本次未联网核验其运营者、存储策略或安全记录。"}, "evidenceCount": 1, "status": "agent-verified"}, {"tag": "credential-access", "severity": "medium", "confidence": "confirmed", "title": "包内包含默认共享代理令牌", "explanation": "脚本优先读取环境变量，但在缺失时使用源码内硬编码令牌，容易形成共享凭据和轮换困难。", "affectedData": ["代理服务令牌"], "destination": null, "externalSite": null, "evidenceCount": 1, "status": "agent-verified"}], "findingCount": 2, "fileCount": 5, "totalBytes": 38302, "externalServiceCount": 0, "credentialReferenceCount": 1, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "调用酒店搜索或比价前，明确展示酒店名、城市、入住和离店日期将发送到腾讯云函数代理，并让用户确认；同时移除包内默认共享代理令牌，改为仅从受控环境注入。", "riskTags": ["external-data-transfer", "credential-access"], "reviewedConclusion": "酒店名、城市和日期会发送到三个固定云函数代理；脚本还内置了一个默认代理令牌。数据流在文档末尾有披露，但不在首次调用前确认。"}, {"id": "skill-918d94a810c0", "name": "NeoData金融搜索服务", "path": "neodata-financial-search", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "medium", "confidence": "confirmed", "recommendation": "restrict", "candidateSeverity": "high", "candidateConfidence": "confirmed", "candidateTags": ["arbitrary-code-execution", "broad-file-access", "credential-access", "external-data-transfer", "paid-operation", "unsafe-url-fetch"], "findings": [{"tag": "external-data-transfer", "severity": "medium", "confidence": "confirmed", "title": "金融查询发送到腾讯代理", "explanation": "自然语言查询与 Bearer 凭据会 POST 到 NeoData 端点；这是声明功能所需，但应在首次使用前披露。", "affectedData": ["金融查询文本", "临时访问凭据"], "destination": "外部站点", "externalSite": {"category": "金融数据代理服务", "scale": "large", "recognition": "widely-known", "safetyAssessment": "not-reviewed", "basis": "代码目标是腾讯域名且 Skill 声称由腾讯金融数据服务提供；本次未联网核验具体服务安全记录。"}, "evidenceCount": 2, "status": "agent-verified"}, {"tag": "supply-chain-risk", "severity": "medium", "confidence": "confirmed", "title": "缺依赖时会静默安装未锁定 requests", "explanation": "脚本在真实查询路径中运行固定 pip install requests；命令不可由用户输入控制，因此不是任意代码执行，但下载版本未固定且没有事前确认。", "affectedData": ["本地 Python 环境"], "destination": null, "externalSite": null, "evidenceCount": 1, "status": "agent-verified"}, {"tag": "documentation-mismatch", "severity": "medium", "confidence": "confirmed", "title": "令牌不应内联的说明与实际命令矛盾", "explanation": "文档禁止在 Bash 命令中明文内联凭据，但保存流程仍要求 --save-token 后跟明文参数，令牌可能进入进程列表或 shell 历史。", "affectedData": ["访问令牌"], "destination": null, "externalSite": null, "evidenceCount": 2, "status": "agent-verified"}], "findingCount": 9, "fileCount": 7, "totalBytes": 67669, "externalServiceCount": 0, "credentialReferenceCount": 2, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "只允许固定腾讯 NeoData 端点；禁用 NEODATA_ENDPOINT 覆盖和自动 pip 安装，改为预装锁定依赖；保存令牌时不要放在命令行参数中，并在发送金融查询前提示外发。", "riskTags": ["external-data-transfer", "credential-access", "supply-chain-risk", "authorization-overreach", "documentation-mismatch"], "reviewedConclusion": "金融查询和短期凭据会用于固定腾讯代理调用，属于预期能力；扫描器的“任意代码执行”“任意 URL”“广泛文件访问”和“付费”候选均不成立。但脚本会静默安装未锁版本依赖、允许环境变量改写目的端点，并要求把令牌作为命令行参数保存。"}, {"id": "skill-b8feca9c8686", "name": "采购询价比价管理｜郭亿易", "path": "procurement-quote-supplier-control-guoyiyi-ecom__skillhub", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "info", "confidence": "confirmed", "recommendation": "keep", "candidateSeverity": "info", "candidateConfidence": "heuristic", "candidateTags": [], "findings": [], "findingCount": 0, "fileCount": 7, "totalBytes": 20725, "externalServiceCount": 0, "credentialReferenceCount": 0, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "", "riskTags": [], "reviewedConclusion": "只处理用户提供的采购数据，并明确要求涉及付款、改价、删除等动作时重新核对授权；未发现外部调用或执行脚本。"}, {"id": "skill-2ffb44002153", "name": "Runrelay", "path": "runrelay__skillhub", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "high", "confidence": "confirmed", "recommendation": "require-confirmation", "candidateSeverity": "info", "candidateConfidence": "heuristic", "candidateTags": [], "findings": [{"tag": "external-data-transfer", "severity": "high", "confidence": "confirmed", "title": "乘客身份和联系信息可发送给外部旅行服务", "explanation": "预订示例提交姓名、生日、性别、邮箱和电话，且低成本航司路径可能由人工运营方处理。", "affectedData": ["姓名", "生日", "性别", "邮箱", "电话", "完整行程"], "destination": "外部站点", "externalSite": {"category": "旅行搜索、人工代办与预订 API", "scale": "unknown", "recognition": "niche", "safetyAssessment": "not-reviewed", "basis": "包内列出 RunRelay、酒店服务和 Prefy 端点；本次未联网核验其运营规模、隐私政策或安全记录。"}, "evidenceCount": 2, "status": "agent-verified"}, {"tag": "paid-operation", "severity": "high", "confidence": "confirmed", "title": "可以发起真实机票预订", "explanation": "主文档给出 book-flight 请求，属于可能产生订单或费用的外部操作，但执行流程未要求在调用前再次确认。", "affectedData": ["订单", "付款或账户额度"], "destination": "外部站点", "externalSite": {"category": "旅行预订 API", "scale": "unknown", "recognition": "niche", "safetyAssessment": "not-reviewed", "basis": "静态文件明确列出预订端点和商业用途，但未核验实时计费与订单条款。"}, "evidenceCount": 1, "status": "agent-verified"}], "findingCount": 0, "fileCount": 5, "totalBytes": 8480, "externalServiceCount": 0, "credentialReferenceCount": 1, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "任何带姓名、生日、邮箱、电话的查询或机票预订前，都要展示将发送的数据、RunRelay/人工运营方和预计费用，并在最后一步单独确认；只读搜索与实际预订不能共用一次授权。", "riskTags": ["external-data-transfer", "credential-access", "paid-operation", "authorization-overreach"], "reviewedConclusion": "该 Skill 提供真实外部 API、API Key、乘客个人信息提交和机票预订动作；包内补充卡片要求确认，但主 SKILL 的执行步骤没有把确认设为强制门槛。"}, {"id": "skill-364e590f31d4", "name": "skill.看一看", "path": "skill-map__skillhub", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "high", "confidence": "confirmed", "recommendation": "restrict", "candidateSeverity": "medium", "candidateConfidence": "confirmed", "candidateTags": ["broad-file-access", "external-data-transfer"], "findings": [{"tag": "unsafe-content-rendering", "severity": "high", "confidence": "confirmed", "title": "不可信 Skill 元数据可突破地图 HTML 边界", "explanation": "扫描到的 Skill 标题、标识、触发词和模块既未经 script-safe 序列化，也有多处直接进入 innerHTML；恶意本地 Skill 或远端热榜项能改变生成页面的 DOM 或执行页面脚本。", "affectedData": ["生成的本地地图页面", "浏览器页面上下文"], "destination": null, "externalSite": null, "evidenceCount": 5, "status": "agent-verified"}], "findingCount": 4, "fileCount": 14, "totalBytes": 525575, "externalServiceCount": 1, "credentialReferenceCount": 0, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "在修复前不要打开它生成的地图；至少要把嵌入 script 的 JSON 转义掉 <\/script>，并把 Skill 名、触发词、模块、热门项等 innerHTML 拼接改成 textContent 或严格白名单渲染。", "riskTags": ["unsafe-content-rendering"], "reviewedConclusion": "读取本地 Skill 和调用日志属于声明能力，访问固定 SkillHub 热榜也不传用户内容；真正风险是把本地 Skill 元数据和远端热门数据未经完整转义写进可执行 HTML，安装恶意 Skill 后打开地图可触发浏览器脚本。"}, {"id": "skill-e84109cf19a6", "name": "Skill管家（装之前帮你选，装完帮你管）", "path": "skill-selector-pro__skillhub", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "high", "confidence": "confirmed", "recommendation": "explicit-only", "candidateSeverity": "critical", "candidateConfidence": "confirmed", "candidateTags": ["broad-file-access", "destructive-action", "external-data-transfer", "paid-operation", "unsafe-url-fetch"], "findings": [{"tag": "unsafe-content-rendering", "severity": "high", "confidence": "confirmed", "title": "远端市场元数据可突破 HTML 报告边界", "explanation": "报告生成器把市场返回的文本未经 script-safe 或 DOM-safe 处理后写入页面并用 innerHTML 渲染。", "affectedData": ["本地体检和组合审计页面", "浏览器页面上下文"], "destination": null, "externalSite": null, "evidenceCount": 3, "status": "agent-verified"}, {"tag": "documentation-mismatch", "severity": "medium", "confidence": "confirmed", "title": "WorkBuddy Skill 默认扫描 OpenClaw 目录", "explanation": "文档以 WorkBuddy 用户场景触发，但体检和组合审计默认读取 ~/.openclaw/skills，可能遗漏实际安装目录。", "affectedData": ["本地 Skill 清单与审计结论"], "destination": null, "externalSite": null, "evidenceCount": 2, "status": "agent-verified"}, {"tag": "unverified-claims", "severity": "high", "confidence": "confirmed", "title": "元数据评分被包装成安全与卸载结论", "explanation": "风险雷达主要依赖描述正则、下载量、更新天数和远端摘要，却输出“高风险”“建议换”“卸载”等处置，没有逐文件源码语义核验。", "affectedData": ["安装、替换和卸载决策"], "destination": null, "externalSite": null, "evidenceCount": 4, "status": "agent-verified"}], "findingCount": 12, "fileCount": 55, "totalBytes": 561508, "externalServiceCount": 0, "credentialReferenceCount": 4, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "关闭自动触发，只在明确点名时使用；不要把其评分、替代或卸载建议当作安全结论，也不要打开 HTML 报告，直到远端元数据被 script-safe 转义、innerHTML 被消除且 WorkBuddy 的实际目录边界被修正。", "riskTags": ["unsafe-content-rendering", "unverified-claims", "documentation-mismatch", "scope-hijack"], "reviewedConclusion": "扫描器把清理自身缓存误报为破坏性删除，把固定 API 地址误报为任意 URL。真实问题是：它以下载量、文本正则和远端元数据做安装/卸载建议，却宣称能评估安全；默认还扫描 ~/.openclaw/skills 而不是 WorkBuddy 目录。其 HTML 报告会把不可信远端字段直接放进 script 与 innerHTML。"}, {"id": "skill-ac22031f7d66", "name": "🛍️ 淘宝/京东/拼多多比价技能", "path": "taobao__skillhub", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "medium", "confidence": "confirmed", "recommendation": "explicit-only", "candidateSeverity": "info", "candidateConfidence": "heuristic", "candidateTags": [], "findings": [{"tag": "external-data-transfer", "severity": "medium", "confidence": "confirmed", "title": "购物关键词和商品标识发送到第三方聚合服务", "explanation": "搜索和详情脚本向第三方购物聚合服务的多个 API 发送关键词、商品 ID、固定 openid 和邀请码。", "affectedData": ["购物关键词", "商品 ID", "固定客户端标识"], "destination": "外部站点", "externalSite": {"category": "购物返利与优惠聚合服务", "scale": "unknown", "recognition": "niche", "safetyAssessment": "not-reviewed", "basis": "代码固定访问一个第三方购物聚合服务；本次未联网核验运营方、隐私政策或安全记录。"}, "evidenceCount": 3, "status": "agent-verified"}, {"tag": "documentation-mismatch", "severity": "medium", "confidence": "confirmed", "title": "购买链接的商业归因未披露", "explanation": "代码使用固定邀请码并返回 commission 字段，主文档只说请求第三方价格数据，未说明链接可能带商业归因。", "affectedData": ["购买链接", "佣金归因"], "destination": null, "externalSite": null, "evidenceCount": 2, "status": "agent-verified"}], "findingCount": 0, "fileCount": 6, "totalBytes": 10896, "externalServiceCount": 0, "credentialReferenceCount": 0, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "仅在用户明确要求时调用，并在搜索前说明关键词和商品 ID 会发送给第三方购物聚合服务；生成购买链接前披露固定邀请码和可能的佣金归因，不要把脚本描述成中立的全网比价。", "riskTags": ["external-data-transfer", "documentation-mismatch"], "reviewedConclusion": "脚本会把商品关键词和商品 ID 发给第三方聚合服务，并使用固定 openid 和邀请码生成购买链接；返回数据包含佣金字段，但主文档没有解释商业归因。"}, {"id": "skill-eb1e885246d7", "name": "腾讯自选股-金融数据查询", "path": "westockdata", "description": "已提供用途说明；下方结论基于静态证据，不代表运行时保证。", "verificationStatus": "agent-reviewed", "severity": "medium", "confidence": "confirmed", "recommendation": "require-confirmation", "candidateSeverity": "high", "candidateConfidence": "confirmed", "candidateTags": ["external-data-transfer", "paid-operation", "unsafe-url-fetch"], "findings": [{"tag": "external-data-transfer", "severity": "medium", "confidence": "confirmed", "title": "金融查询由外部腾讯服务处理", "explanation": "Skill 依赖下载后的 westock CLI 和专属 APIKey 查询外部金融数据；包内未包含 CLI 源码，因此运行时数据边界不能完全从本地包验证。", "affectedData": ["股票与金融查询", "专属 APIKey"], "destination": "外部站点", "externalSite": {"category": "腾讯金融数据与 CLI 发布服务", "scale": "large", "recognition": "widely-known", "safetyAssessment": "not-reviewed", "basis": "静态文件固定使用官方发布域名并声明由腾讯自选股提供；未联网核验运行服务与安全记录。"}, "evidenceCount": 3, "status": "agent-verified"}, {"tag": "authorization-overreach", "severity": "medium", "confidence": "confirmed", "title": "普通查询会触发安装和持续授权流程", "explanation": "文档要求缺命令时直接重跑安装脚本，并在未鉴权时自动生成链接和持续轮询；安装、授权与查询没有被明确拆成独立同意步骤。", "affectedData": ["本地二进制安装", "账户授权状态"], "destination": null, "externalSite": null, "evidenceCount": 3, "status": "agent-verified"}, {"tag": "priority-escalation", "severity": "medium", "confidence": "confirmed", "title": "宽泛规则排斥用户选择的其他金融来源", "explanation": "frontmatter 与正文称其为权威入口，并要求命中能力域时禁止 web_search、HTTP 或其他金融 Skill 替代，容易与用户指定来源和同类 Skill 冲突。", "affectedData": ["金融查询路由与来源选择"], "destination": null, "externalSite": null, "evidenceCount": 2, "status": "agent-verified"}], "findingCount": 8, "fileCount": 12, "totalBytes": 322870, "externalServiceCount": 0, "credentialReferenceCount": 0, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "首次使用时，把下载安装固定版本 CLI、写入 ~/.westock 和 ~/.local/bin、以及专属 APIKey 授权分成独立确认；不要让“禁止使用其他金融来源”的规则覆盖用户选择，并限定到用户明确请求的标的和命令。", "riskTags": ["external-data-transfer", "credential-access", "authorization-overreach", "priority-escalation"], "reviewedConclusion": "候选“任意 URL”和“付费”均是误报；安装器锁定官方域名、固定版本并校验清单哈希。但 Skill 会下载并执行未在包内审计的二进制、持有专属 APIKey、把金融查询发送给外部服务，还用宽泛优先级语句排斥其他来源。"}, {"id": "skill-f84cf74545ec", "name": "小红书内容灵感专家", "path": "xiaohongshu-inspiration-redfox__skillhub", "description": "用途说明包含需要注意的触发范围、优先级或授权表达。", "verificationStatus": "agent-reviewed", "severity": "high", "confidence": "confirmed", "recommendation": "restrict", "candidateSeverity": "high", "candidateConfidence": "confirmed", "candidateTags": ["broad-file-access", "credential-access", "external-data-transfer", "manipulative-commerce"], "findings": [{"tag": "credential-access", "severity": "high", "confidence": "confirmed", "title": "自动扫描多个 shell 配置文件寻找 API Key", "explanation": "多个模块会读取若干 Shell 启动配置并用正则寻找 RedFox API Key，部分路径还把 key 前八位和文件路径写到日志。", "affectedData": ["Shell 配置文件", "RedFox API Key", "凭据前缀"], "destination": null, "externalSite": null, "evidenceCount": 15, "status": "agent-verified"}, {"tag": "external-data-transfer", "severity": "high", "confidence": "confirmed", "title": "查询条件和 API Key 发送到 RedFox，部分路径不校验证书", "explanation": "关键词、日期、赛道、账号 ID 与 API Key 会发送到 RedFox；低粉爆款与对标账号模块显式关闭主机名和证书校验，使中间人可窃取凭据或篡改结果。", "affectedData": ["RedFox API Key", "关键词", "日期与赛道", "小红书账号 ID 和粉丝条件"], "destination": "外部站点", "externalSite": {"category": "小红书内容与账号数据 API", "scale": "unknown", "recognition": "niche", "safetyAssessment": "concerns-found", "basis": "本地代码在两个真实请求路径中关闭 TLS 证书和主机名校验；这是一项传输实现问题，不代表对运营方整体安全性的判断。"}, "evidenceCount": 7, "status": "agent-verified"}, {"tag": "unsafe-content-rendering", "severity": "high", "confidence": "confirmed", "title": "外部内容和用户关键词可突破生成报告的 HTML 边界", "explanation": "API 数据与关键词被直接替换进 script 数据块，并有多处作为未转义字符串拼入 innerHTML；可构造关闭 script 或注入活动元素的值。", "affectedData": ["本地 HTML 报告", "浏览器页面上下文"], "destination": null, "externalSite": null, "evidenceCount": 4, "status": "agent-verified"}, {"tag": "manipulative-commerce", "severity": "high", "confidence": "confirmed", "title": "免费积分、注册和订阅被设为重复强制提示", "explanation": "获取 Key 流程强调新用户免费积分，多个模块要求只要有结果或无论有无数据都必须追加订阅服务提示，价格、积分消耗和取消条件未在使用前完整说明。", "affectedData": ["注册与订阅决策", "可能消耗的积分或额度"], "destination": null, "externalSite": null, "evidenceCount": 4, "status": "agent-verified"}], "findingCount": 31, "fileCount": 24, "totalBytes": 368694, "externalServiceCount": 1, "credentialReferenceCount": 1, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "立即停用关闭证书校验的低粉爆款和对标账号请求；只保留启用 TLS 校验的 API 路径，并把 RedFox API Key 限定为环境变量读取。修复 HTML 的 script/innerHTML 转义前不要打开生成报告，同时取消每次强制订阅和免费积分引导。", "riskTags": ["credential-access", "external-data-transfer", "unsafe-content-rendering", "manipulative-commerce", "supply-chain-risk", "priority-escalation"], "reviewedConclusion": "该 Skill 会广泛扫描 shell 配置寻找 API Key、向 RedFox 发送关键词与账号条件，其中两个实际请求显式关闭 TLS 主机名和证书校验；多个 HTML 生成器还把 API 数据或用户关键词直接嵌入 script/innerHTML。免费积分和订阅提示被设为强制重复展示。"}, {"id": "skill-dd8cb0ae1e6b", "name": "购物比价师", "path": "z-price-compare__skillhub", "description": "没有提供清晰的用途说明。", "verificationStatus": "agent-reviewed", "severity": "info", "confidence": "confirmed", "recommendation": "keep", "candidateSeverity": "medium", "candidateConfidence": "confirmed", "candidateTags": ["authority-imitation", "documentation-mismatch"], "findings": [], "findingCount": 2, "fileCount": 8, "totalBytes": 40343, "externalServiceCount": 0, "credentialReferenceCount": 0, "implicitInvocation": null, "technicalAnalysisAvailable": true, "reviewedRecommendation": "", "riskTags": [], "reviewedConclusion": "安全模式只生成搜索查询和结构化占位数据，不直接请求购物站点；扫描器把“不能获得实时优惠券”的普通限制说明误判为权威冒充，把缺少 YAML frontmatter 误判为文档冲突。"}], "graph": {"status": "agent-reviewed", "nodes": [{"id": "n-bjjl", "skillId": "skill-b3aab70115de", "label": "比价精灵", "type": "skill", "severity": "info"}, {"id": "n-equipment", "skillId": "skill-83ea60d9298c", "label": "评估设备询价", "type": "skill", "severity": "medium"}, {"id": "n-flyai", "skillId": "skill-d9045fd15d99", "label": "FlyAI 高铁飞机比价", "type": "skill", "severity": "low"}, {"id": "n-hotel", "skillId": "skill-5ba79d8dfc7e", "label": "酒店价格监控与比价", "type": "skill", "severity": "medium"}, {"id": "n-neodata", "skillId": "skill-918d94a810c0", "label": "NeoData 金融搜索", "type": "skill", "severity": "medium"}, {"id": "n-procurement", "skillId": "skill-b8feca9c8686", "label": "采购询价比价管理", "type": "skill", "severity": "info"}, {"id": "n-runrelay", "skillId": "skill-2ffb44002153", "label": "RunRelay", "type": "skill", "severity": "high"}, {"id": "n-skillmap", "skillId": "skill-364e590f31d4", "label": "Skill 全景地图", "type": "skill", "severity": "high"}, {"id": "n-selector", "skillId": "skill-e84109cf19a6", "label": "Skill 管家", "type": "skill", "severity": "high"}, {"id": "n-taobao", "skillId": "skill-ac22031f7d66", "label": "淘宝京东拼多多比价", "type": "skill", "severity": "medium"}, {"id": "n-westock", "skillId": "skill-eb1e885246d7", "label": "腾讯自选股金融数据", "type": "skill", "severity": "medium"}, {"id": "n-xhs", "skillId": "skill-f84cf74545ec", "label": "小红书内容灵感专家", "type": "skill", "severity": "high"}, {"id": "n-zprice", "skillId": "skill-dd8cb0ae1e6b", "label": "购物比价师", "type": "skill", "severity": "info"}, {"id": "r-bjjl-search", "label": "公开商品搜索服务", "type": "domain"}, {"id": "r-equipment-search-map", "label": "公开搜索与地图服务", "type": "domain"}, {"id": "r-flyai-travel", "label": "交通票价聚合服务", "type": "domain"}, {"id": "r-hotel-proxy", "label": "酒店比价代理服务", "type": "domain"}, {"id": "r-hotel-credential", "label": "酒店代理访问凭据", "type": "credential"}, {"id": "r-neodata-service", "label": "金融数据代理服务", "type": "domain"}, {"id": "r-neodata-credential", "label": "金融服务访问凭据", "type": "credential"}, {"id": "r-neodata-cache", "label": "本地短期凭据缓存", "type": "file"}, {"id": "r-runrelay-service", "label": "旅行搜索与预订服务", "type": "domain"}, {"id": "r-runrelay-credential", "label": "旅行服务访问凭据", "type": "credential"}, {"id": "r-skillmap-market", "label": "公开 Skill 市场", "type": "domain"}, {"id": "r-skillmap-local", "label": "本地 Skill 与调用记录", "type": "file"}, {"id": "r-selector-markets", "label": "公开 Skill 市场", "type": "domain"}, {"id": "r-selector-local-skills", "label": "本地 Skill 清单", "type": "file"}, {"id": "r-selector-cache", "label": "本地扫描缓存", "type": "file"}, {"id": "r-taobao-service", "label": "购物返利与优惠聚合服务", "type": "domain"}, {"id": "r-westock-service", "label": "金融数据与发布服务", "type": "domain"}, {"id": "r-westock-credential", "label": "金融服务专属访问凭据", "type": "credential"}, {"id": "r-westock-local-state", "label": "本地命令与授权状态", "type": "file"}, {"id": "r-xhs-service", "label": "内容与账号数据服务", "type": "domain"}, {"id": "r-xhs-credential", "label": "内容服务访问凭据", "type": "credential"}, {"id": "r-xhs-shell-config", "label": "Shell 启动配置", "type": "file"}, {"id": "r-xhs-reports", "label": "本地报告与缓存", "type": "file"}, {"id": "r-zprice-search", "label": "公开商品搜索服务", "type": "domain"}], "edges": [{"id": "rel-price-search", "source": "n-bjjl", "target": "n-zprice", "type": "capability-overlap", "confidence": "confirmed", "summary": "两个 Skill 都通过公开搜索摘要做多平台商品比价并提醒下单前核实。", "diagnosis": "宽泛的商品比价请求会同时命中，输出口径接近，保留两者会增加路由歧义而不增加实时数据能力。", "recommendation": "选择其中一个作为公开搜索型比价入口；另一项仅在用户明确点名时使用。", "evidence": [{"skillId": "skill-b3aab70115de", "location": "SKILL.md", "basis": "用途和流程明确使用 web_search 汇总京东、天猫等公开价格摘要。"}, {"skillId": "skill-dd8cb0ae1e6b", "location": "SKILL.md", "basis": "安全模式同样只使用搜索引擎索引生成多平台比价报告。"}]}, {"id": "rel-price-api", "source": "n-bjjl", "target": "n-taobao", "type": "capability-overlap", "confidence": "confirmed", "summary": "两个 Skill 都处理淘宝、京东、拼多多等商品比价，但数据通路不同。", "diagnosis": "同一请求可能在公开搜索与第三方返利聚合 API 之间被不透明路由，后者还有商业归因和额外外发。", "recommendation": "默认使用公开搜索型比价；只有用户明确接受第三方购物聚合服务外发和邀请码归因时才用 API 型 Skill。", "evidence": [{"skillId": "skill-b3aab70115de", "location": "SKILL.md", "basis": "比价数据声明来自搜索引擎摘要和第三方比价网页。"}, {"skillId": "skill-ac22031f7d66", "location": "scripts/main.py", "basis": "搜索与详情直接调用第三方购物聚合 API，并使用固定 openid 和邀请码。"}]}, {"id": "rel-asset-price", "source": "n-bjjl", "target": "n-equipment", "type": "capability-overlap", "confidence": "probable", "summary": "设备与办公用品的估价场景同时落入通用商品比价和全资产询价。", "diagnosis": "对手机、电脑、办公设备等标品，两个 Skill 可能同时触发；一个偏购物建议，一个偏评估区间和客户文件处理。", "recommendation": "个人购买走比价精灵；资产清单、二手处置或评估区间走设备询价，并在外发检索前确认字段。", "evidence": [{"skillId": "skill-b3aab70115de", "location": "SKILL.md", "basis": "触发范围覆盖购买商品、最低价和多平台比较。"}, {"skillId": "skill-83ea60d9298c", "location": "SKILL.md", "basis": "触发范围覆盖电子设备、办公用品、机器设备和批量资产清单估价。"}]}, {"id": "rel-flight-travel", "source": "n-flyai", "target": "n-runrelay", "type": "capability-overlap", "confidence": "confirmed", "summary": "两个 Skill 都能搜索机票和比较出行方案。", "diagnosis": "FlyAI 偏价格与高铁对比，不预订；RunRelay 可提交乘客信息并预订。若不先区分意图，普通比价可能误进入更高风险流程。", "recommendation": "只读比价默认用 FlyAI；只有用户明确要求预订且完成个人信息与费用确认后才用 RunRelay。", "evidence": [{"skillId": "skill-d9045fd15d99", "location": "SKILL.md", "basis": "能力是高铁与机票搜索、日期比较和出行推荐。"}, {"skillId": "skill-2ffb44002153", "location": "SKILL.md", "basis": "能力同时覆盖航班搜索和 book-flight 预订端点。"}]}, {"id": "rel-hotel-travel", "source": "n-hotel", "target": "n-runrelay", "type": "capability-overlap", "confidence": "confirmed", "summary": "两个 Skill 都覆盖酒店搜索和价格比较。", "diagnosis": "酒店比价请求可能命中两个不同外部服务；酒店监控偏多平台比价，RunRelay 偏旅行 API 和预订编排。", "recommendation": "价格监控走酒店专用 Skill；跨航班酒店编排或预订才使用 RunRelay，并重新确认数据与费用。", "evidence": [{"skillId": "skill-5ba79d8dfc7e", "location": "SKILL.md", "basis": "明确提供酒店搜索、多平台比价和监控请求。"}, {"skillId": "skill-2ffb44002153", "location": "SKILL.md", "basis": "提供酒店搜索端点和多代理旅行编排。"}]}, {"id": "rel-finance-routing", "source": "n-neodata", "target": "n-westock", "type": "trigger-conflict", "confidence": "confirmed", "summary": "两个 Skill 都覆盖股票、基金、宏观、外汇等金融查询，而 WeStock 明确禁止用其他金融 Skill 替代。", "diagnosis": "同一问题可能同时匹配；WeStock 的排他路由会压过 NeoData 或用户指定来源，造成来源不透明。", "recommendation": "按用户指定来源优先；未指定时，结构化命令查询用 WeStock，新闻、研报和自然语言广搜用 NeoData，并向用户标明来源。", "evidence": [{"skillId": "skill-918d94a810c0", "location": "SKILL.md", "basis": "数据覆盖股票、基金、宏观、外汇、商品、研报、舆情和新闻。"}, {"skillId": "skill-eb1e885246d7", "location": "SKILL.md", "basis": "覆盖相同金融域，并写明命中能力域时禁止 web_search、HTTP 和其他金融 Skill。"}]}, {"id": "rel-skill-management", "source": "n-skillmap", "target": "n-selector", "type": "combined-risk", "confidence": "confirmed", "summary": "两者都扫描本地 Skill 并生成交互式 HTML；Skill 管家还混入远端市场元数据。", "diagnosis": "恶意本地 Skill 或受污染远端元数据可分别进入两个未充分转义的报告生成器，扩大打开报告时的浏览器注入面。", "recommendation": "两者生成的 HTML 都应在修复前停止打开；统一采用 script-safe JSON 序列化和 textContent/DOM API 后再恢复。", "evidence": [{"skillId": "skill-364e590f31d4", "location": "scripts/build_map.py", "basis": "本地 Skill 数据经 json.dumps 直接替换进脚本模板，前端多处使用 innerHTML。"}, {"skillId": "skill-e84109cf19a6", "location": "scripts/html_report.py", "basis": "本地和远端审计字段直接嵌入 script 数据并拼接进 innerHTML。"}]}, {"id": "resource-bjjl-search", "source": "n-bjjl", "target": "r-bjjl-search", "type": "uses-domain", "confidence": "confirmed", "basis": "用途和流程明确通过公开搜索摘要查询商品价格。"}, {"id": "resource-equipment-search-map", "source": "n-equipment", "target": "r-equipment-search-map", "type": "uses-domain", "confidence": "probable", "basis": "核心流程把资产、型号和地点转换为公开搜索或地图查询。"}, {"id": "resource-flyai-travel", "source": "n-flyai", "target": "r-flyai-travel", "type": "uses-domain", "confidence": "probable", "basis": "票价比较流程声明把行程条件交给外部交通票价服务。"}, {"id": "resource-hotel-proxy", "source": "n-hotel", "target": "r-hotel-proxy", "type": "uses-domain", "confidence": "confirmed", "basis": "脚本把酒店与行程条件发送到固定的酒店比价代理。"}, {"id": "resource-hotel-credential", "source": "n-hotel", "target": "r-hotel-credential", "type": "accesses-credential", "confidence": "confirmed", "basis": "脚本读取代理访问凭据，并在缺失时使用包内默认值。"}, {"id": "resource-neodata-service", "source": "n-neodata", "target": "r-neodata-service", "type": "uses-domain", "confidence": "confirmed", "basis": "自然语言金融查询会发送到固定的金融数据代理服务。"}, {"id": "resource-neodata-credential", "source": "n-neodata", "target": "r-neodata-credential", "type": "accesses-credential", "confidence": "confirmed", "basis": "查询请求需要读取并携带短期访问凭据。"}, {"id": "resource-neodata-cache", "source": "n-neodata", "target": "r-neodata-cache", "type": "writes-file", "confidence": "confirmed", "basis": "保存流程会把带时间戳的短期凭据写入本地缓存。"}, {"id": "resource-runrelay-service", "source": "n-runrelay", "target": "r-runrelay-service", "type": "uses-domain", "confidence": "confirmed", "basis": "搜索与预订流程会调用外部旅行服务并可提交订单。"}, {"id": "resource-runrelay-credential", "source": "n-runrelay", "target": "r-runrelay-credential", "type": "accesses-credential", "confidence": "confirmed", "basis": "旅行搜索与预订请求需要服务访问凭据。"}, {"id": "resource-skillmap-market", "source": "n-skillmap", "target": "r-skillmap-market", "type": "uses-domain", "confidence": "confirmed", "basis": "地图生成器会读取公开 Skill 市场的热门数据。"}, {"id": "resource-skillmap-local", "source": "n-skillmap", "target": "r-skillmap-local", "type": "reads-file", "confidence": "confirmed", "basis": "地图生成器会读取本地 Skill 元数据和调用记录。"}, {"id": "resource-selector-markets", "source": "n-selector", "target": "r-selector-markets", "type": "uses-domain", "confidence": "confirmed", "basis": "搜索、对比和详情流程会调用两个公开 Skill 市场。"}, {"id": "resource-selector-local-skills", "source": "n-selector", "target": "r-selector-local-skills", "type": "reads-file", "confidence": "confirmed", "basis": "体检和组合审计会读取本地 Skill 清单与说明文件。"}, {"id": "resource-selector-cache", "source": "n-selector", "target": "r-selector-cache", "type": "writes-file", "confidence": "confirmed", "basis": "市场查询和增量扫描结果会写入本地缓存。"}, {"id": "resource-taobao-service", "source": "n-taobao", "target": "r-taobao-service", "type": "uses-domain", "confidence": "confirmed", "basis": "脚本把购物关键词和商品标识发送到第三方聚合服务。"}, {"id": "resource-westock-service", "source": "n-westock", "target": "r-westock-service", "type": "uses-domain", "confidence": "confirmed", "basis": "安装与查询流程依赖外部金融数据和命令发布服务。"}, {"id": "resource-westock-credential", "source": "n-westock", "target": "r-westock-credential", "type": "accesses-credential", "confidence": "confirmed", "basis": "金融查询需要读取并携带专属访问凭据。"}, {"id": "resource-westock-local-state", "source": "n-westock", "target": "r-westock-local-state", "type": "writes-file", "confidence": "confirmed", "basis": "安装和授权流程会写入本地命令、数据与授权状态。"}, {"id": "resource-xhs-service", "source": "n-xhs", "target": "r-xhs-service", "type": "uses-domain", "confidence": "confirmed", "basis": "关键词、账号条件和访问凭据会发送到内容数据服务。"}, {"id": "resource-xhs-credential", "source": "n-xhs", "target": "r-xhs-credential", "type": "accesses-credential", "confidence": "confirmed", "basis": "多个请求模块会查找并使用内容服务访问凭据。"}, {"id": "resource-xhs-shell-config", "source": "n-xhs", "target": "r-xhs-shell-config", "type": "reads-file", "confidence": "confirmed", "basis": "多个模块会读取 Shell 启动配置以查找服务凭据。"}, {"id": "resource-xhs-reports", "source": "n-xhs", "target": "r-xhs-reports", "type": "writes-file", "confidence": "confirmed", "basis": "数据结果会写入本地报告和缓存文件。"}, {"id": "resource-zprice-search", "source": "n-zprice", "target": "r-zprice-search", "type": "uses-domain", "confidence": "confirmed", "basis": "说明要求由 Agent 调用公开搜索服务获取实际商品信息。"}]}, "review": {"status": "agent-reviewed", "evidenceCoverage": "complete", "relationshipCoverage": "complete", "owner": "agent", "reviewedAt": "2026-10-02T12:00:00+08:00"}, "limitations": ["结论由 Agent 基于本地静态证据复核得出，没有执行被审查的 Skill。", "Agent 结论仍可能受上下文缺失影响，严重处置前需要人工确认。", "本次没有联网核验外部站点的信誉或公开声明。"], "technicalAnalysisAvailable": true};
+    const severityRank = {pending: -1, info: 0, low: 1, medium: 2, high: 3, critical: 4};
+    const recommendationText = {
+      keep: "可以继续使用，无需额外调整。",
+      "keep-with-notice": "可以继续使用；在首次发生联网、读取敏感信息或产生费用前，用通俗文字告知用户。",
+      "require-confirmation": "继续使用前，在发送数据、访问账号、产生费用或修改内容的当下再次询问用户。",
+      restrict: "先缩小可访问的数据、站点、账号密钥和费用额度，再继续使用。",
+      "explicit-only": "关闭自动触发；只在用户明确点名这个 Skill 时运行。",
+      isolate: "暂时停止日常使用，确认并修复已发现的有害路径后再恢复。",
+      uninstall: "停止使用并移除；如曾使用账号密钥，还应更换相关密钥。",
+      "agent-review": "扫描已完成，需要 Agent 结合原文和代码上下文形成最终结论。"
+    };
+    const severityText = {
+      info: "未见明显风险", low: "低风险", medium: "中风险",
+      high: "高风险", critical: "严重风险", pending: "待 Agent 核验"
+    };
+    const confidenceText = {heuristic: "初步判断", probable: "较可信", confirmed: "证据充分", pending: "待核验"};
+    const tagText = {
+      "external-data-transfer": "数据可能发往外部站点", "credential-access": "访问账号密钥",
+      "broad-file-access": "广泛读取文件", "unsafe-url-fetch": "不受限网址访问",
+      "silent-telemetry": "未明示的数据采集", "arbitrary-code-execution": "执行任意代码",
+      "content-rendering-boundary": "内容渲染边界", "unsafe-content-rendering": "内容注入已确认",
+      "destructive-action": "破坏性操作", "obfuscated-behavior": "行为经过隐藏",
+      "supply-chain-risk": "供应链风险", "documentation-mismatch": "文档与行为不一致",
+      "scope-hijack": "偏离用户目标", "priority-escalation": "提升自身优先级",
+      "instruction-conflict": "指令冲突", "authorization-overreach": "超出授权范围",
+      "disclosure-suppression": "压制风险披露", "delayed-disclosure": "延后披露",
+      "authority-imitation": "模仿权威身份", "manipulative-commerce": "商业诱导",
+      "policy-evasion": "规避规则", "cognitive-overload": "制造认知负担",
+      "paid-operation": "可能产生费用", "unverified-claims": "未经验证的声明"
+    };
+    const siteScaleText = {unknown: "暂不清楚", small: "小型", medium: "中型", large: "大型"};
+    const siteRecognitionText = {unknown: "暂不清楚", niche: "小众或专业领域", regional: "区域性知名", "widely-known": "广为人知"};
+    const siteSafetyText = {
+      "not-reviewed": "本次未完成站点安全评价",
+      "no-material-concern-found": "暂未发现明显问题",
+      "concerns-found": "发现需要关注的问题"
+    };
+    const tagDimensions = [
+      {key: "data", label: "数据与权限", tags: new Set(["external-data-transfer", "credential-access", "broad-file-access", "unsafe-url-fetch", "silent-telemetry"])},
+      {key: "integrity", label: "执行与完整性", tags: new Set(["arbitrary-code-execution", "content-rendering-boundary", "unsafe-content-rendering", "destructive-action", "obfuscated-behavior", "supply-chain-risk", "documentation-mismatch"])},
+      {key: "human", label: "提示与交互", tags: new Set(["scope-hijack", "priority-escalation", "instruction-conflict", "authorization-overreach", "disclosure-suppression", "delayed-disclosure", "authority-imitation", "manipulative-commerce", "policy-evasion", "cognitive-overload"])},
+      {key: "commerce", label: "费用与承诺", tags: new Set(["paid-operation", "unverified-claims"])},
+    ];
+    const state = {
+      selected: null, query: "", severity: "pending", reportTab: "skills",
+      relationshipView: "global", relationshipGroupKey: null, graphPinnedKey: null,
+      relationshipEndpoints: null, drawerOpen: false
+    };
+    const byId = new Map(report.skills.map(function(skill) { return [skill.id, skill]; }));
+    const graph = report.graph || {status: "pending-agent-review", nodes: [], edges: []};
+    const svg = document.getElementById("graph");
+    const graphPanHint = document.getElementById("graph-pan-hint");
+    const graphCamera = {x: 0, y: 0, k: 1, min: .42, max: 2.8, dragging: false, pointerId: null};
+    let graphViewport = null;
+    let graphLayoutState = null;
+    let graphCameraFrame = 0;
+    const shell = document.querySelector(".shell");
+    const drawer = document.getElementById("analysis-drawer");
+    const drawerScrim = document.getElementById("drawer-scrim");
+    const drawerClose = document.getElementById("drawer-close");
+    const drawerAction = document.getElementById("drawer-action");
+    const copyToast = document.getElementById("copy-toast");
+    const guideLauncher = document.getElementById("guide-launcher");
+    const guideLauncherStart = document.getElementById("guide-launcher-start");
+    const guideLayer = document.getElementById("guide-layer");
+    const guideSpotlight = document.getElementById("guide-spotlight");
+    const guidePopover = document.getElementById("guide-popover");
+    const guideArrow = document.getElementById("guide-arrow");
+    const guideStepCount = document.getElementById("guide-step-count");
+    const guideTitle = document.getElementById("guide-title");
+    const guideDescription = document.getElementById("guide-description");
+    const guideProgress = document.getElementById("guide-progress");
+    const guidePrev = document.getElementById("guide-prev");
+    const guideNext = document.getElementById("guide-next");
+    let guideActive = false;
+    let guideStepIndex = 0;
+    let guideCurrentTarget = null;
+    let guideSnapshot = null;
+    let guidePositionTimer = 0;
+    let copyToastTimer = 0;
+    const severitySelect = setupCustomSelect(document.getElementById("severity-select"), function(value) {
+      state.severity = value; applyFilters();
+    });
+    const reportTabButtons = Array.from(document.querySelectorAll("[data-report-tab]"));
+    const skillReportPanel = document.getElementById("skill-report-panel");
+    const skillRelationshipPanel = document.getElementById("skill-relationship-panel");
+    function setReportTab(tab, moveFocus) {
+      state.reportTab = tab === "relationships" ? "relationships" : "skills";
+      reportTabButtons.forEach(function(button) {
+        const active = button.dataset.reportTab === state.reportTab;
+        button.setAttribute("aria-selected", active ? "true" : "false");
+        button.tabIndex = active ? 0 : -1;
+        if (active && moveFocus) button.focus();
+      });
+      skillReportPanel.hidden = state.reportTab !== "skills";
+      skillRelationshipPanel.hidden = state.reportTab !== "relationships";
+      if (state.reportTab === "relationships") {
+        state.relationshipView = "global";
+        state.relationshipGroupKey = null;
+        state.graphPinnedKey = null;
+        state.relationshipEndpoints = null;
+        window.requestAnimationFrame(drawGraph);
+      } else {
+        setGraphInspectorSelection(false);
+        document.getElementById("visible-count").textContent = "显示 " + filteredSkills().length + " / " + report.skills.length;
+      }
+    }
+    reportTabButtons.forEach(function(button, index) {
+      button.addEventListener("click", function() { setReportTab(button.dataset.reportTab, false); });
+      button.addEventListener("keydown", function(event) {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight" && event.key !== "Home" && event.key !== "End") return;
+        event.preventDefault();
+        let next = index;
+        if (event.key === "ArrowLeft") next = (index - 1 + reportTabButtons.length) % reportTabButtons.length;
+        if (event.key === "ArrowRight") next = (index + 1) % reportTabButtons.length;
+        if (event.key === "Home") next = 0;
+        if (event.key === "End") next = reportTabButtons.length - 1;
+        setReportTab(reportTabButtons[next].dataset.reportTab, true);
+      });
+    });
+    const guideSteps = [
+      {
+        selector: ".report-tabs",
+        title: "先选择你要查看的视角",
+        description: "体检报告用于逐个查看 Skill；关系图用于理解多个 Skill 之间经过 Agent 复核的关联、冲突与组合影响。",
+        prepare: function() { setReportTab("skills", false); }
+      },
+      {
+        selector: ".toolbar",
+        title: "快速找到需要关注的 Skill",
+        description: "可以按名称、说明或风险标签搜索，也可以只看中风险、高风险或严重风险的结果。",
+        prepare: function() { setReportTab("skills", false); }
+      },
+      {
+        selector: ".skill-card.is-active .skill-card-content",
+        title: "查看体检结论与关联资源",
+        description: "点击任意 Skill 卡片即可选中。卡片左侧是风险结论，右侧会同步展示该 Skill 使用的站点、密钥或本地文件。",
+        prepare: function() { setReportTab("skills", false); }
+      },
+      {
+        selector: ".skill-card.is-active .analysis-trigger",
+        title: "打开更完整的分析",
+        description: "从这里进入详细分析抽屉，查看 Agent 诊断、证据说明、外部站点评价和更具体的处理建议。",
+        prepare: function() { setReportTab("skills", false); }
+      },
+      {
+        selector: '[data-report-tab="relationships"]',
+        title: "切换到 Skill 关系图",
+        description: "关系图只展示经过 Agent 复核的 Skill 间关系，帮助你发现能力重叠、触发冲突、行为交互与组合风险。",
+        prepare: function() { setReportTab("relationships", false); }
+      },
+      {
+        selector: ".graph-stage",
+        title: "在一张图中理解全部关系组",
+        description: "点击节点查看它的直接关系，点击连线查看双方的具体诊断。画布支持缩放和拖拽，不会因查看详情而自动跳动。",
+        prepare: function() { if (state.reportTab !== "relationships") setReportTab("relationships", false); }
+      },
+      {
+        selector: ".graph-view-actions",
+        title: "控制全局与局部视角",
+        description: "使用放大、缩小和适应全图查看整体；选中关系后，可聚焦它所属的完整关系组。",
+        prepare: function() { if (state.reportTab !== "relationships") setReportTab("relationships", false); }
+      },
+      {
+        selector: ".graph-endpoints",
+        title: "在关系组内切换双方",
+        description: "A 可以切换到关系组内的任意 Skill，B 会自动收窄为与 A 直接相关的 Skill；图中的标记、连线和诊断会同步变化。",
+        prepare: function() {
+          if (state.reportTab !== "relationships") setReportTab("relationships", false);
+          if (!document.querySelector(".graph-endpoints")) {
+            const firstRelationship = svg.querySelector(".edge-hit");
+            if (firstRelationship) firstRelationship.dispatchEvent(new MouseEvent("click", {bubbles: true}));
+          }
+        }
+      }
+    ];
+
+    function saveGuideSnapshot() {
+      return {
+        reportTab: state.reportTab,
+        relationshipView: state.relationshipView,
+        relationshipGroupKey: state.relationshipGroupKey,
+        graphPinnedKey: state.graphPinnedKey,
+        relationshipEndpoints: state.relationshipEndpoints ? Object.assign({}, state.relationshipEndpoints) : null,
+        scrollX: window.scrollX,
+        scrollY: window.scrollY
+      };
+    }
+
+    function restoreGuideSnapshot() {
+      if (!guideSnapshot) return;
+      setReportTab(guideSnapshot.reportTab, false);
+      state.relationshipView = guideSnapshot.relationshipView;
+      state.relationshipGroupKey = guideSnapshot.relationshipGroupKey;
+      state.graphPinnedKey = guideSnapshot.graphPinnedKey;
+      state.relationshipEndpoints = guideSnapshot.relationshipEndpoints;
+      if (state.reportTab === "relationships") window.requestAnimationFrame(drawGraph);
+      window.requestAnimationFrame(function() { window.scrollTo(guideSnapshot.scrollX, guideSnapshot.scrollY); });
+    }
+
+    function clampGuideValue(value, minimum, maximum) {
+      return Math.min(Math.max(value, minimum), Math.max(minimum, maximum));
+    }
+
+    function positionGuide() {
+      if (!guideActive || !guideCurrentTarget || !document.contains(guideCurrentTarget)) return;
+      const rect = guideCurrentTarget.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const spotlightPadding = 8;
+      const spotlightLeft = clampGuideValue(rect.left - spotlightPadding, 8, viewportWidth - 24);
+      const spotlightTop = clampGuideValue(rect.top - spotlightPadding, 8, viewportHeight - 24);
+      const spotlightRight = clampGuideValue(rect.right + spotlightPadding, 24, viewportWidth - 8);
+      const spotlightBottom = clampGuideValue(rect.bottom + spotlightPadding, 24, viewportHeight - 8);
+      guideSpotlight.style.left = spotlightLeft + "px";
+      guideSpotlight.style.top = spotlightTop + "px";
+      guideSpotlight.style.width = Math.max(16, spotlightRight - spotlightLeft) + "px";
+      guideSpotlight.style.height = Math.max(16, spotlightBottom - spotlightTop) + "px";
+
+      const popoverWidth = guidePopover.offsetWidth;
+      const popoverHeight = guidePopover.offsetHeight;
+      const gap = 18;
+      const margin = 16;
+      const spaceBelow = viewportHeight - spotlightBottom;
+      const spaceAbove = spotlightTop;
+      const spaceRight = viewportWidth - spotlightRight;
+      const spaceLeft = spotlightLeft;
+      let placement = "center";
+      let left = (viewportWidth - popoverWidth) / 2;
+      let top = (viewportHeight - popoverHeight) / 2;
+      if (spaceBelow >= popoverHeight + gap) {
+        placement = "bottom";
+        left = rect.left + rect.width / 2 - popoverWidth / 2;
+        top = spotlightBottom + gap;
+      } else if (spaceAbove >= popoverHeight + gap) {
+        placement = "top";
+        left = rect.left + rect.width / 2 - popoverWidth / 2;
+        top = spotlightTop - popoverHeight - gap;
+      } else if (viewportWidth >= 760 && spaceRight >= popoverWidth + gap) {
+        placement = "right";
+        left = spotlightRight + gap;
+        top = rect.top + rect.height / 2 - popoverHeight / 2;
+      } else if (viewportWidth >= 760 && spaceLeft >= popoverWidth + gap) {
+        placement = "left";
+        left = spotlightLeft - popoverWidth - gap;
+        top = rect.top + rect.height / 2 - popoverHeight / 2;
+      }
+      left = clampGuideValue(left, margin, viewportWidth - popoverWidth - margin);
+      top = clampGuideValue(top, margin, viewportHeight - popoverHeight - margin);
+      guideLayer.dataset.placement = placement;
+      guidePopover.style.left = left + "px";
+      guidePopover.style.top = top + "px";
+      if (placement === "bottom" || placement === "top") {
+        guideArrow.style.left = clampGuideValue(rect.left + rect.width / 2 - 9, left + 16, left + popoverWidth - 34) + "px";
+        guideArrow.style.top = (placement === "bottom" ? top - 10 : top + popoverHeight) + "px";
+      } else if (placement === "right" || placement === "left") {
+        guideArrow.style.left = (placement === "right" ? left - 14 : left + popoverWidth - 4) + "px";
+        guideArrow.style.top = clampGuideValue(rect.top + rect.height / 2 - 5, top + 16, top + popoverHeight - 26) + "px";
+      } else {
+        guideArrow.style.left = "0";
+        guideArrow.style.top = "0";
+      }
+    }
+
+    function resolveGuideTarget(step, attempt) {
+      if (!guideActive) return;
+      if (step.prepare) step.prepare();
+      window.requestAnimationFrame(function() {
+        const candidate = document.querySelector(step.selector);
+        const target = candidate && candidate.getClientRects().length ? candidate : null;
+        if (!target && attempt < 3) {
+          window.setTimeout(function() { resolveGuideTarget(step, attempt + 1); }, 60);
+          return;
+        }
+        if (!target) {
+          if (guideStepIndex < guideSteps.length - 1) showGuideStep(guideStepIndex + 1);
+          else finishGuide(true);
+          return;
+        }
+        guideCurrentTarget = target;
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        target.scrollIntoView({block: "center", inline: "nearest", behavior: reducedMotion ? "auto" : "smooth"});
+        window.clearTimeout(guidePositionTimer);
+        positionGuide();
+        guidePositionTimer = window.setTimeout(positionGuide, reducedMotion ? 0 : 240);
+      });
+    }
+
+    function showGuideStep(index) {
+      guideStepIndex = clampGuideValue(index, 0, guideSteps.length - 1);
+      const step = guideSteps[guideStepIndex];
+      guideStepCount.textContent = "步骤 " + (guideStepIndex + 1) + " / " + guideSteps.length;
+      guideTitle.textContent = step.title;
+      guideDescription.textContent = step.description;
+      guideProgress.innerHTML = guideSteps.map(function(_, stepIndex) {
+        return '<span class="' + (stepIndex <= guideStepIndex ? "is-done" : "") + '"></span>';
+      }).join("");
+      guidePrev.disabled = guideStepIndex === 0;
+      guideNext.textContent = guideStepIndex === guideSteps.length - 1 ? "完成" : "下一步";
+      resolveGuideTarget(step, 0);
+    }
+
+    function startGuide() {
+      if (guideActive) return;
+      if (state.drawerOpen) closeDrawer(false);
+      guideSnapshot = saveGuideSnapshot();
+      guideActive = true;
+      guideLayer.hidden = false;
+      guideLauncher.hidden = true;
+      shell.setAttribute("inert", "");
+      document.body.classList.add("guide-open");
+      showGuideStep(0);
+      guidePopover.focus();
+    }
+
+    function finishGuide(completed) {
+      if (!guideActive) return;
+      guideActive = false;
+      window.clearTimeout(guidePositionTimer);
+      guideLayer.hidden = true;
+      guideCurrentTarget = null;
+      shell.removeAttribute("inert");
+      document.body.classList.remove("guide-open");
+      restoreGuideSnapshot();
+      if (completed) guideLauncher.hidden = true;
+      else {
+        guideLauncher.hidden = false;
+        guideLauncherStart.focus();
+      }
+      if (completed) {
+        const activeReportTab = reportTabButtons.find(function(button) { return button.dataset.reportTab === state.reportTab; });
+        if (activeReportTab) activeReportTab.focus();
+      }
+    }
+
+    guideLauncherStart.addEventListener("click", startGuide);
+    document.getElementById("guide-launcher-close").addEventListener("click", function() {
+      guideLauncher.hidden = true;
+      const activeReportTab = reportTabButtons.find(function(button) { return button.dataset.reportTab === state.reportTab; });
+      if (activeReportTab) activeReportTab.focus();
+    });
+    document.getElementById("guide-popover-close").addEventListener("click", function() { finishGuide(false); });
+    document.getElementById("guide-skip").addEventListener("click", function() { finishGuide(false); });
+    guidePrev.addEventListener("click", function() { if (guideStepIndex > 0) showGuideStep(guideStepIndex - 1); });
+    guideNext.addEventListener("click", function() {
+      if (guideStepIndex === guideSteps.length - 1) finishGuide(true);
+      else showGuideStep(guideStepIndex + 1);
+    });
+    document.addEventListener("keydown", function(event) {
+      if (!guideActive) return;
+      if (event.key === "Escape") { event.preventDefault(); finishGuide(false); return; }
+      if (event.key === "ArrowRight") { event.preventDefault(); guideNext.click(); return; }
+      if (event.key === "ArrowLeft") { event.preventDefault(); guidePrev.click(); return; }
+      if (event.key !== "Tab") return;
+      const controls = Array.from(guidePopover.querySelectorAll('button:not([disabled])'));
+      if (!controls.length) return;
+      const firstControl = controls[0];
+      const lastControl = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === firstControl) {
+        event.preventDefault(); lastControl.focus();
+      } else if (!event.shiftKey && document.activeElement === lastControl) {
+        event.preventDefault(); firstControl.focus();
+      }
+    });
+    window.addEventListener("scroll", function() { if (guideActive) positionGuide(); }, true);
+    document.querySelectorAll("[data-graph-view]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        if (button.disabled) return;
+        if (button.dataset.graphView === "group") focusRelationshipGroup(true);
+        else fitGlobalRelationshipGraph(true);
+      });
+    });
+    document.querySelectorAll("[data-graph-zoom]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        if (button.disabled || state.reportTab !== "relationships") return;
+        zoomGraphAt(svg.clientWidth / 2, svg.clientHeight / 2, button.dataset.graphZoom === "in" ? 1.22 : 1 / 1.22);
+      });
+    });
+    svg.addEventListener("wheel", function(event) {
+      if (state.reportTab !== "relationships" || !graphViewport) return;
+      event.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      zoomGraphAt(event.clientX - rect.left, event.clientY - rect.top, Math.exp(-event.deltaY * .0015));
+    }, {passive: false});
+    svg.addEventListener("pointerdown", function(event) {
+      if (state.reportTab !== "relationships" || !graphViewport || event.button !== 0) return;
+      if (event.target.closest(".node, .edge-hit")) return;
+      window.cancelAnimationFrame(graphCameraFrame);
+      graphCamera.dragging = true;
+      graphCamera.pointerId = event.pointerId;
+      graphCamera.startClientX = event.clientX;
+      graphCamera.startClientY = event.clientY;
+      graphCamera.startX = graphCamera.x;
+      graphCamera.startY = graphCamera.y;
+      svg.setPointerCapture(event.pointerId);
+      svg.classList.add("is-panning");
+    });
+    svg.addEventListener("pointermove", function(event) {
+      if (!graphCamera.dragging || graphCamera.pointerId !== event.pointerId) return;
+      const rect = svg.getBoundingClientRect();
+      const scaleX = svg.viewBox.baseVal.width / Math.max(1, rect.width);
+      const scaleY = svg.viewBox.baseVal.height / Math.max(1, rect.height);
+      graphCamera.x = graphCamera.startX + (event.clientX - graphCamera.startClientX) * scaleX;
+      graphCamera.y = graphCamera.startY + (event.clientY - graphCamera.startClientY) * scaleY;
+      state.relationshipView = "custom";
+      applyGraphCamera();
+    });
+    function stopGraphPan(event) {
+      if (!graphCamera.dragging || (event && graphCamera.pointerId !== event.pointerId)) return;
+      graphCamera.dragging = false;
+      if (svg.hasPointerCapture(graphCamera.pointerId)) svg.releasePointerCapture(graphCamera.pointerId);
+      graphCamera.pointerId = null;
+      svg.classList.remove("is-panning");
+      updateGraphViewControls();
+    }
+    svg.addEventListener("pointerup", stopGraphPan);
+    svg.addEventListener("pointercancel", stopGraphPan);
+
+    function showCopyToast(title, message, isError) {
+      window.clearTimeout(copyToastTimer);
+      copyToast.classList.toggle("is-error", Boolean(isError));
+      document.getElementById("copy-toast-title").textContent = title;
+      document.getElementById("copy-toast-message").textContent = message;
+      copyToast.hidden = false;
+      window.requestAnimationFrame(function() { copyToast.classList.add("is-visible"); });
+      copyToastTimer = window.setTimeout(function() {
+        copyToast.classList.remove("is-visible");
+        window.setTimeout(function() {
+          if (!copyToast.classList.contains("is-visible")) copyToast.hidden = true;
+        }, 180);
+      }, 5000);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, function(char) {
+        return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char];
+      });
+    }
+    function setupCustomSelect(root, onChange) {
+      const trigger = root.querySelector(".custom-select-trigger");
+      const menu = root.querySelector(".custom-select-menu");
+      const valueLabel = trigger.querySelector("span");
+      let options = Array.from(menu.querySelectorAll(".custom-select-option"));
+      let value = root.dataset.value || (options[0] && options[0].dataset.value) || "";
+
+      function currentOption() {
+        return options.find(function(option) { return option.dataset.value === value; });
+      }
+      function sync() {
+        options.forEach(function(option) {
+          option.setAttribute("aria-selected", option.dataset.value === value ? "true" : "false");
+        });
+        const selected = currentOption();
+        if (selected) valueLabel.textContent = selected.querySelector("span").textContent;
+        root.dataset.value = value;
+      }
+      function close(restoreFocus) {
+        menu.hidden = true;
+        trigger.setAttribute("aria-expanded", "false");
+        if (restoreFocus) trigger.focus();
+      }
+      function open() {
+        if (trigger.disabled) return;
+        document.querySelectorAll('.custom-select-trigger[aria-expanded="true"]').forEach(function(other) {
+          if (other !== trigger) {
+            other.setAttribute("aria-expanded", "false");
+            document.getElementById(other.getAttribute("aria-controls")).hidden = true;
+          }
+        });
+        menu.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+        (currentOption() || options[0]).focus();
+      }
+      function choose(option) {
+        if (!option) return;
+        value = option.dataset.value;
+        sync(); close(true); onChange(value);
+      }
+      function move(option, delta) {
+        const index = Math.max(0, options.indexOf(option));
+        options[(index + delta + options.length) % options.length].focus();
+      }
+      trigger.addEventListener("click", function() {
+        if (trigger.getAttribute("aria-expanded") === "true") close(false); else open();
+      });
+      trigger.addEventListener("keydown", function(event) {
+        if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+          event.preventDefault(); open();
+        }
+      });
+      function bindOptions() {
+        options.forEach(function(option) {
+          option.addEventListener("click", function() { choose(option); });
+          option.addEventListener("keydown", function(event) {
+            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+              event.preventDefault(); move(option, event.key === "ArrowDown" ? 1 : -1);
+            } else if (event.key === "Home" || event.key === "End") {
+              event.preventDefault(); options[event.key === "Home" ? 0 : options.length - 1].focus();
+            } else if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault(); choose(option);
+            } else if (event.key === "Escape") {
+              event.preventDefault(); close(true);
+            } else if (event.key === "Tab") {
+              close(false);
+            }
+          });
+        });
+      }
+      document.addEventListener("pointerdown", function(event) {
+        if (!root.contains(event.target)) close(false);
+      });
+      bindOptions(); sync();
+      return {
+        setDisabled: function(disabled, title) {
+          trigger.disabled = disabled;
+          trigger.title = title || "";
+          trigger.setAttribute("aria-disabled", disabled ? "true" : "false");
+          if (disabled) close(false);
+        },
+        removeOption: function(optionValue) {
+          const option = options.find(function(item) { return item.dataset.value === optionValue; });
+          if (option) option.remove();
+          options = Array.from(menu.querySelectorAll(".custom-select-option"));
+          if (!options.some(function(item) { return item.dataset.value === value; }) && options[0]) value = options[0].dataset.value;
+          sync();
+        }
+      };
+    }
+    function displayTag(tag) { return tagText[tag] || tag.replace(/-/g, " "); }
+    function groupTags(tags) {
+      const remaining = new Set(tags || []);
+      const groups = tagDimensions.map(function(dimension) {
+        const values = (tags || []).filter(function(tag) { return dimension.tags.has(tag); });
+        values.forEach(function(tag) { remaining.delete(tag); });
+        return {key: dimension.key, label: dimension.label, values: values};
+      }).filter(function(group) { return group.values.length; });
+      if (remaining.size) groups.push({key: "other", label: "其他", values: Array.from(remaining)});
+      return groups;
+    }
+    function renderTaxonomy(tags, className) {
+      const groups = groupTags(tags);
+      if (!groups.length) return '<div class="taxonomy-empty">未标记风险维度</div>';
+      return '<div class="taxonomy ' + (className || "") + '">' + groups.map(function(group) {
+        return '<div class="taxonomy-group taxonomy-' + group.key + '">' +
+          '<span class="taxonomy-label">' + escapeHtml(group.label) + '</span>' +
+          '<span class="taxonomy-values">' + group.values.map(function(tag) {
+            return '<span class="taxonomy-value" title="' + escapeHtml(tag) + '">' + escapeHtml(displayTag(tag)) + '</span>';
+          }).join("") + '</span></div>';
+      }).join("") + '</div>';
+    }
+    function renderExternalSite(site) {
+      if (!site) return "";
+      return '<section class="external-site" aria-label="外部站点说明"><h4>外部站点说明</h4><dl>' +
+        '<dt>站点属性</dt><dd>' + escapeHtml(site.category) + '</dd>' +
+        '<dt>规模</dt><dd>' + escapeHtml(siteScaleText[site.scale] || site.scale) + '</dd>' +
+        '<dt>知名度</dt><dd>' + escapeHtml(siteRecognitionText[site.recognition] || site.recognition) + '</dd>' +
+        '<dt>安全评价</dt><dd>' + escapeHtml(siteSafetyText[site.safetyAssessment] || site.safetyAssessment) + '</dd>' +
+        '</dl><p class="external-site-note">判断依据：' + escapeHtml(site.basis) + '</p></section>';
+    }
+    function filteredSkills() {
+      const query = state.query.trim().toLowerCase();
+      return report.skills.filter(function(skill) {
+        const comparableSeverity = skill.verificationStatus === "agent-reviewed" ? skill.severity : skill.candidateSeverity;
+        if (severityRank[comparableSeverity] < severityRank[state.severity]) return false;
+        if (!query) return true;
+        return [skill.name, skill.description].concat(skill.riskTags || skill.candidateTags || [])
+          .join(" ").toLowerCase().includes(query);
+      });
+    }
+    function dependencyModelForSkill(skillId) {
+      const nodeMap = new Map(graph.nodes.map(function(node) { return [node.id, node]; }));
+      const center = graph.nodes.find(function(node) {
+        return node.type === "skill" && graphSkillId(node) === skillId;
+      });
+      if (!center) return {center: null, items: []};
+      const items = [];
+      graph.edges.forEach(function(edge, index) {
+        if (edge.source !== center.id && edge.target !== center.id) return;
+        const neighborId = edge.source === center.id ? edge.target : edge.source;
+        const neighbor = nodeMap.get(neighborId);
+        if (!neighbor || neighbor.type === "skill") return;
+        items.push({key: "dependency:" + neighborId + ":" + index, neighbor: neighbor, edge: edge});
+      });
+      items.sort(function(a, b) { return graphNodeLabel(a.neighbor).localeCompare(graphNodeLabel(b.neighbor), "zh-CN"); });
+      return {center: center, items: items};
+    }
+    function renderList() {
+      const skills = filteredSkills();
+      document.getElementById("visible-count").textContent = "显示 " + skills.length + " / " + report.skills.length;
+      const list = document.getElementById("skill-list");
+      if (!skills.length) {
+        list.innerHTML = '<div class="empty-results">没有符合当前筛选条件的 Skill</div>';
+        return skills;
+      }
+      list.innerHTML = skills.map(function(skill) {
+        const reviewed = skill.verificationStatus === "agent-reviewed";
+        const displaySeverity = reviewed ? skill.severity : "pending";
+        const displayRecommendation = reviewed ? skill.recommendation : "agent-review";
+        const showRecommendation = reviewed && severityRank[displaySeverity] >= severityRank.medium;
+        const recommendation = skill.reviewedRecommendation || recommendationText[displayRecommendation] || displayRecommendation;
+        const active = state.selected === skill.id;
+        const dependencyCount = active ? dependencyModelForSkill(skill.id).items.length : 0;
+        return '<article class="skill-card' + (active ? " is-active" : "") + '">' +
+          '<div class="skill-card-content">' +
+          '<button type="button" class="skill-card-main' + (showRecommendation ? " has-recommendation" : "") + '" data-skill="' + escapeHtml(skill.id) + '" aria-pressed="' +
+          (active ? "true" : "false") + '">' +
+          '<span><span class="skill-title-row"><span><span class="skill-name">' + escapeHtml(skill.name) + '</span>' +
+          '<span class="path">' + escapeHtml(skill.path) + '</span></span>' +
+          '<span class="status-badge severity-' + displaySeverity + '">' + severityText[displaySeverity] + '</span></span></span>' +
+          renderTaxonomy(skill.riskTags || skill.candidateTags || []) +
+          (showRecommendation ? '<span class="recommendation"><strong>建议采取的措施</strong>' + escapeHtml(recommendation) + '</span>' : '') + '</button>' +
+          (active && dependencyCount > 0 ? '<section class="skill-dependency" data-skill-dependency="' + escapeHtml(skill.id) + '" aria-label="' + escapeHtml(skill.name) + ' 的关联资源">' +
+            '<div class="skill-dependency-head"><strong>当前 Skill 的关联资源</strong><span>' + dependencyCount + ' 项</span></div>' +
+            '<div class="skill-dependency-stage"><svg class="skill-dependency-graph" role="img"></svg>' +
+            '<div class="skill-dependency-legend" aria-label="图例"></div></div></section>' : '') + '</div>' +
+          (active ? '<button type="button" class="analysis-trigger" data-skill="' + escapeHtml(skill.id) +
+            '" aria-controls="analysis-drawer" aria-expanded="' + (state.drawerOpen ? "true" : "false") + '">' +
+            '<span>查看详细分析</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>' : '') +
+          '</article>';
+      }).join("");
+      list.querySelectorAll(".skill-card-main").forEach(function(card) {
+        card.addEventListener("click", function() { selectSkill(card.dataset.skill); });
+      });
+      list.querySelectorAll(".analysis-trigger").forEach(function(trigger) {
+        trigger.addEventListener("click", function() { openDrawer(trigger.dataset.skill); });
+      });
+      drawDependencyCards();
+      return skills;
+    }
+    function openDrawer(id) {
+      if (id && state.selected !== id) selectSkill(id);
+      if (!state.selected) return;
+      state.drawerOpen = true;
+      renderList();
+      drawer.classList.add("is-open");
+      drawerScrim.classList.add("is-open");
+      drawer.setAttribute("aria-hidden", "false");
+      shell.setAttribute("inert", "");
+      document.body.classList.add("drawer-open");
+      drawerClose.focus();
+    }
+    function closeDrawer(restoreFocus) {
+      if (!state.drawerOpen) return;
+      const selectedId = state.selected;
+      state.drawerOpen = false;
+      drawer.classList.remove("is-open");
+      drawerScrim.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+      shell.removeAttribute("inert");
+      document.body.classList.remove("drawer-open");
+      renderList();
+      if (restoreFocus !== false && selectedId) {
+        const trigger = document.querySelector('.analysis-trigger[data-skill="' + CSS.escape(selectedId) + '"]');
+        if (trigger) trigger.focus();
+      }
+    }
+    function applyFilters() {
+      const skills = renderList();
+      if (state.selected && !skills.some(function(skill) { return skill.id === state.selected; })) {
+        const drawerWasOpen = state.drawerOpen;
+        state.selected = null;
+        if (drawerWasOpen) closeDrawer(false);
+        else renderList();
+        drawerAction.hidden = true;
+        drawerAction.innerHTML = "";
+        document.getElementById("detail").innerHTML = skills.length
+          ? '<div class="detail-empty">选择一个 Skill 查看分析</div>'
+          : '<div class="detail-empty">没有符合当前筛选条件的 Skill</div>';
+      }
+      if (state.reportTab === "relationships") drawGraph();
+    }
+    function selectSkill(id) {
+      const skill = byId.get(id);
+      if (!skill) return;
+      if (state.selected !== id) {
+        state.graphPinnedKey = null;
+        state.relationshipGroupKey = null;
+        state.relationshipEndpoints = null;
+      }
+      state.selected = id;
+      const reviewed = skill.verificationStatus === "agent-reviewed";
+      const displaySeverity = reviewed ? skill.severity : "pending";
+      const displayRecommendation = reviewed ? skill.recommendation : "agent-review";
+      const showRecommendation = reviewed && severityRank[displaySeverity] >= severityRank.medium;
+      const recommendation = skill.reviewedRecommendation || recommendationText[displayRecommendation] || displayRecommendation;
+      const findings = (skill.findings || []).length ? skill.findings.map(function(finding) {
+        const findingSeverity = finding.status === "agent-verified" ? finding.severity : finding.candidateSeverity;
+        const findingConfidence = finding.status === "agent-verified" ? finding.confidence : finding.candidateConfidence;
+        return '<article class="finding"><h3 class="severity-' + findingSeverity + '">' + escapeHtml(finding.title) +
+          '</h3><p>' + escapeHtml(finding.explanation) + '</p><div class="finding-meta">' +
+          '<span>' + escapeHtml(displayTag(finding.tag)) + '</span>' +
+          '<span>' + escapeHtml(severityText[findingSeverity]) + '</span>' +
+          '<span class="' + (finding.status === "agent-verified" ? "verification-state" : "") + '">' +
+          (finding.status === "agent-verified" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>核验完成' : "等待 Agent 核验") + '</span>' +
+          '<span>' + escapeHtml(confidenceText[findingConfidence] || findingConfidence) + '</span>' +
+          (finding.destination ? '<span>目标：' + escapeHtml(finding.destination) + '</span>' : '') +
+          '</div>' + renderExternalSite(finding.externalSite) + '</article>';
+      }).join("") : '<p class="detail-description">在当前分析范围内未发现需要展开的风险项。</p>';
+      const prompt = "请使用 $wizz-skill-safekeeper，针对报告中的 Skill " + skill.name +
+        "（ID: " + skill.id + "）执行 Agent 证据复核。请读取本报告旁的 evidence.json，" +
+        "逐条核验候选信号的上下文、实际代码路径、提示词语用和文档冲突；不要执行目标 Skill，" +
+        "不要把扫描器候选标签直接当成风险结论。先输出非技术结论；只有我明确要求时才展开源码位置和技术证据。";
+      document.getElementById("detail").innerHTML =
+        '<h2>' + escapeHtml(skill.name) + '</h2>' +
+        '<p class="detail-description">' + escapeHtml(skill.description || "没有提供清晰的用途说明。") + '</p>' +
+        '<div class="detail-status"><div class="decision-row"><span class="decision-label">风险结论</span>' +
+        '<span class="status-badge severity-' + displaySeverity + '">' + severityText[displaySeverity] + '</span></div>' +
+        (showRecommendation ? '<div class="decision-row"><span class="decision-label">建议采取的措施</span><span class="decision-value">' + escapeHtml(recommendation) + '</span></div>' : '') +
+        (reviewed ? '<div class="review-status is-confirmed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span><strong>Agent 核验完成</strong><small>结论依据：' + escapeHtml(confidenceText[skill.confidence] || skill.confidence) + '</small></span></div>' :
+          '<div class="review-status is-pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><strong>等待 Agent 核验</strong><small>当前仅为扫描候选，尚未形成风险结论</small></span></div>') + '</div>' +
+        '<div class="conclusion">' + escapeHtml(reviewed ? (skill.reviewedConclusion || "Agent 已完成证据复核。") : "等待 Agent 结合证据进行复核。") + '</div>' +
+        '<div class="detail-section-title">风险维度</div>' + renderTaxonomy(skill.riskTags || skill.candidateTags || [], "detail-taxonomy") +
+        '<div class="detail-section-title">具体发现</div>' + findings;
+      drawerAction.hidden = false;
+      drawerAction.innerHTML = '<button type="button" id="ask-agent">' + (reviewed ? "重新请求 Agent 复核" : "通过 Agent 请求复核") + '</button>';
+      document.getElementById("ask-agent").addEventListener("click", async function() {
+        if (window.openai && typeof window.openai.sendFollowUpMessage === "function") {
+          await window.openai.sendFollowUpMessage({prompt: prompt, title: "分析 " + skill.name});
+          showCopyToast("复核请求已发送", "请回到对话窗口继续与 Agent 对话。", false);
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(prompt);
+          document.getElementById("ask-agent").textContent = "复核请求已复制";
+          showCopyToast("复核请求已复制", "请回到对话窗口，粘贴并发送给 Agent 继续复核。", false);
+        } catch (error) {
+          document.getElementById("ask-agent").textContent = "复制失败，请重试";
+          showCopyToast("未能自动复制", "请再次尝试；若仍失败，请回到对话窗口直接请求 Agent 复核。", true);
+        }
+      });
+      renderList();
+      if (state.reportTab === "relationships") drawGraph();
+    }
+    document.getElementById("search").addEventListener("input", function(event) {
+      state.query = event.target.value; applyFilters();
+    });
+    drawerScrim.addEventListener("click", function() { closeDrawer(true); });
+    drawerClose.addEventListener("click", function() { closeDrawer(true); });
+    document.addEventListener("keydown", function(event) {
+      if (!state.drawerOpen) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeDrawer(true);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(drawer.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+        .filter(function(element) { return !element.hidden && element.offsetParent !== null; });
+      if (!focusable.length) return;
+      const firstFocusable = focusable[0];
+      const lastFocusable = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === firstFocusable) {
+        event.preventDefault(); lastFocusable.focus();
+      } else if (!event.shiftKey && document.activeElement === lastFocusable) {
+        event.preventDefault(); firstFocusable.focus();
+      }
+    });
+    function graphSkillId(node) {
+      return node.type === "skill" ? (node.skillId || node.id) : null;
+    }
+    const relationshipTypeText = {
+      "capability-overlap": "能力相似",
+      "trigger-conflict": "触发冲突",
+      "shared-dependency": "共享依赖",
+      "behavioral-interaction": "行为交互",
+      "combined-risk": "组合风险"
+    };
+    function relationshipToneClass(type) {
+      return relationshipTypeText[type] ? "relation-" + type : "";
+    }
+    function graphNodeLabel(node) {
+      if (!node) return "未知对象";
+      const skill = node.type === "skill" ? byId.get(graphSkillId(node)) : null;
+      return skill ? skill.name : String(node.label || node.id);
+    }
+    function isCompleteRelationshipEdge(edge, source, target) {
+      if (!edge || !source || !target || source.type !== "skill" || target.type !== "skill") return false;
+      if (!relationshipTypeText[edge.type] || !edge.id || !edge.summary || !edge.diagnosis || !edge.recommendation) return false;
+      if (edge.confidence !== "probable" && edge.confidence !== "confirmed") return false;
+      if (!Array.isArray(edge.evidence) || edge.evidence.length < 2) return false;
+      const expectedSkillIds = new Set([graphSkillId(source), graphSkillId(target)]);
+      const evidencedSkillIds = new Set(edge.evidence.map(function(item) { return item && item.skillId; }).filter(Boolean));
+      if ([...expectedSkillIds].some(function(skillId) { return !evidencedSkillIds.has(skillId); })) return false;
+      if (edge.type === "shared-dependency") {
+        return Boolean(edge.sharedResource && edge.sharedResource.name && edge.sharedResource.identityBasis);
+      }
+      return true;
+    }
+    const dependencyTypeText = {
+      "uses-domain": "使用外部站点",
+      "accesses-credential": "访问账号密钥",
+      "reads-file": "读取本地文件",
+      "writes-file": "写入本地文件"
+    };
+    const resourceTypeText = {domain: "外部站点", credential: "账号密钥", file: "本地文件"};
+    const resourceLegendColor = {domain: "var(--data)", credential: "var(--human)", file: "var(--other)"};
+    const graphInspector = document.getElementById("graph-inspector");
+    const graphInspectorScrim = document.getElementById("graph-inspector-scrim");
+    const graphStatus = document.getElementById("graph-status");
+    const graphEmpty = document.getElementById("graph-empty");
+    let closeGraphInspector = null;
+
+    function setGraphInspectorSelection(open) {
+      graphInspector.classList.toggle("has-selection", Boolean(open));
+      graphInspectorScrim.hidden = !open;
+      document.body.classList.toggle("graph-inspector-open", Boolean(open));
+    }
+    graphInspectorScrim.addEventListener("click", function() {
+      if (closeGraphInspector) closeGraphInspector(true);
+    });
+    document.addEventListener("keydown", function(event) {
+      if (event.key !== "Escape" || !state.graphPinnedKey || state.reportTab !== "relationships" || state.drawerOpen || guideActive) return;
+      event.preventDefault();
+      if (closeGraphInspector) closeGraphInspector(true);
+    });
+
+    function drawDependencyCards() {
+      document.querySelectorAll("[data-skill-dependency]").forEach(function(section) {
+        const skillId = section.dataset.skillDependency;
+        const skill = byId.get(skillId);
+        const model = dependencyModelForSkill(skillId);
+        const dependencySvg = section.querySelector(".skill-dependency-graph");
+        const stage = section.querySelector(".skill-dependency-stage");
+        const legend = section.querySelector(".skill-dependency-legend");
+        const previousEmpty = stage.querySelector(".skill-dependency-empty");
+        if (previousEmpty) previousEmpty.remove();
+        dependencySvg.hidden = false;
+        dependencySvg.innerHTML = "";
+        const width = Math.max(260, dependencySvg.clientWidth || stage.clientWidth || 260);
+        const height = Math.max(184, dependencySvg.clientHeight || 184);
+        dependencySvg.setAttribute("viewBox", "0 0 " + width + " " + height);
+        dependencySvg.setAttribute("aria-label", (skill ? skill.name : "当前 Skill") + " 与 " + model.items.length + " 个关联资源");
+        if (!model.center || !model.items.length) {
+          dependencySvg.hidden = true;
+          legend.hidden = true;
+          stage.insertAdjacentHTML("beforeend", '<div class="skill-dependency-empty">未发现已确认的关联资源</div>');
+          return;
+        }
+        legend.hidden = false;
+        const presentTypes = Array.from(new Set(model.items.map(function(item) { return item.neighbor.type; })));
+        legend.innerHTML = '<span><i style="background:var(--safe)"></i>当前 Skill</span>' + presentTypes.map(function(type) {
+          return '<span><i style="background:' + (resourceLegendColor[type] || "var(--primary)") + '"></i>' + escapeHtml(resourceTypeText[type] || "关联资源") + '</span>';
+        }).join("");
+        const center = {x: width * .5, y: height * .5};
+        const radiusX = Math.min(116, width * .34);
+        const radiusY = Math.min(58, height * .34);
+        const positions = model.items.map(function(item, index) {
+          if (model.items.length === 1) return {item: item, x: width * .76, y: center.y};
+          const angle = -Math.PI / 2 + (Math.PI * 2 * index / model.items.length);
+          return {item: item, x: center.x + Math.cos(angle) * radiusX, y: center.y + Math.sin(angle) * radiusY};
+        });
+        positions.forEach(function(position) {
+          const line = svgElement("line", {class: "dependency-edge", x1: center.x, y1: center.y, x2: position.x, y2: position.y});
+          const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+          title.textContent = dependencyTypeText[position.item.edge.type] || position.item.edge.type;
+          line.appendChild(title);
+          dependencySvg.appendChild(line);
+          const edgeLabel = svgElement("text", {
+            class: "dependency-edge-label", x: (center.x + position.x) / 2,
+            y: (center.y + position.y) / 2 - 5, "text-anchor": "middle"
+          });
+          const connection = dependencyTypeText[position.item.edge.type] || position.item.edge.type.replace(/-/g, " ");
+          edgeLabel.textContent = connection.length > 8 ? connection.slice(0, 7) + "…" : connection;
+          const edgeTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
+          edgeTitle.textContent = connection; edgeLabel.appendChild(edgeTitle);
+          dependencySvg.appendChild(edgeLabel);
+        });
+        function addDependencyNode(node, x, y, current) {
+          const group = svgElement("g", {class: "dependency-node", transform: "translate(" + x + "," + y + ")"});
+          const fullLabel = graphNodeLabel(node);
+          const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+          title.textContent = fullLabel; group.appendChild(title);
+          group.appendChild(svgElement("circle", {r: current ? 11 : 7, fill: current ? "var(--safe)" : (resourceLegendColor[node.type] || "var(--primary)")}));
+          const text = svgElement("text", {
+            x: current ? 0 : (x > center.x ? -12 : 12), y: current ? -18 : 3,
+            "text-anchor": current ? "middle" : (x > center.x ? "end" : "start")
+          });
+          const limit = current ? 18 : 15;
+          text.textContent = fullLabel.length > limit ? fullLabel.slice(0, limit - 1) + "…" : fullLabel;
+          group.appendChild(text); dependencySvg.appendChild(group);
+        }
+        addDependencyNode(model.center, center.x, center.y, true);
+        positions.forEach(function(position) { addDependencyNode(position.item.neighbor, position.x, position.y, false); });
+      });
+    }
+
+    function buildRelationshipPairs(nodeMap) {
+      const grouped = new Map();
+      graph.edges.forEach(function(edge) {
+        const source = nodeMap.get(edge.source), target = nodeMap.get(edge.target);
+        if (!isCompleteRelationshipEdge(edge, source, target)) return;
+        const ids = [source.id, target.id].sort();
+        const key = "relationship:" + ids.join("|");
+        if (!grouped.has(key)) {
+          grouped.set(key, {key: key, kind: "relationship", source: nodeMap.get(ids[0]), target: nodeMap.get(ids[1]), edges: []});
+        }
+        grouped.get(key).edges.push(edge);
+      });
+      return Array.from(grouped.values()).sort(function(a, b) {
+        return (graphNodeLabel(a.source) + graphNodeLabel(a.target)).localeCompare(graphNodeLabel(b.source) + graphNodeLabel(b.target), "zh-CN");
+      });
+    }
+
+    function buildRelationshipComponents(nodes, pairs) {
+      const nodeMap = new Map(nodes.map(function(node) { return [node.id, node]; }));
+      const adjacency = new Map(nodes.map(function(node) { return [node.id, new Set()]; }));
+      pairs.forEach(function(pair) {
+        adjacency.get(pair.source.id).add(pair.target.id);
+        adjacency.get(pair.target.id).add(pair.source.id);
+      });
+      const visited = new Set();
+      const components = [];
+      nodes.forEach(function(node) {
+        if (visited.has(node.id)) return;
+        const queue = [node.id], ids = [];
+        visited.add(node.id);
+        while (queue.length) {
+          const id = queue.shift(); ids.push(id);
+          adjacency.get(id).forEach(function(next) {
+            if (!visited.has(next)) { visited.add(next); queue.push(next); }
+          });
+        }
+        const idSet = new Set(ids);
+        const componentPairs = pairs.filter(function(pair) { return idSet.has(pair.source.id) && idSet.has(pair.target.id); });
+        const key = "group:" + ids.slice().sort().join("|");
+        components.push({key: key, nodes: ids.map(function(id) { return nodeMap.get(id); }), pairs: componentPairs});
+      });
+      components.sort(function(a, b) {
+        const aSelected = a.nodes.some(function(node) { return graphSkillId(node) === state.selected; });
+        const bSelected = b.nodes.some(function(node) { return graphSkillId(node) === state.selected; });
+        if (aSelected !== bSelected) return aSelected ? -1 : 1;
+        if (a.nodes.length !== b.nodes.length) return b.nodes.length - a.nodes.length;
+        return graphNodeLabel(a.nodes[0]).localeCompare(graphNodeLabel(b.nodes[0]), "zh-CN");
+      });
+      return components;
+    }
+
+    function buildGraphModel() {
+      const nodeMap = new Map(graph.nodes.map(function(node) { return [node.id, node]; }));
+      const center = graph.nodes.find(function(node) {
+        return node.type === "skill" && graphSkillId(node) === state.selected;
+      });
+      const allPairs = buildRelationshipPairs(nodeMap);
+      const relatedIds = new Set();
+      allPairs.forEach(function(pair) { relatedIds.add(pair.source.id); relatedIds.add(pair.target.id); });
+      const allNodes = Array.from(relatedIds).map(function(id) { return nodeMap.get(id); }).filter(Boolean);
+      const components = buildRelationshipComponents(allNodes, allPairs);
+      components.forEach(function(component) {
+        component.pairs.forEach(function(pair) { pair.groupKey = component.key; });
+      });
+      const selectedComponent = center ? components.find(function(component) {
+        return component.nodes.some(function(node) { return node.id === center.id; });
+      }) : null;
+      const requestedComponent = components.find(function(component) { return component.key === state.relationshipGroupKey; });
+      const activeComponent = requestedComponent || selectedComponent || components[0] || null;
+      if (activeComponent && !state.relationshipGroupKey) state.relationshipGroupKey = activeComponent.key;
+      return {
+        mode: "relationships", view: state.relationshipView, center: center || null, nodes: allNodes, items: allPairs,
+        components: components, activeComponent: activeComponent, totalGroupCount: components.length,
+        relationshipCount: allPairs.reduce(function(total, item) { return total + item.edges.length; }, 0)
+      };
+    }
+
+    function renderInspectorActions(canFocusGroup) {
+      return '<div class="graph-inspector-actions">' +
+        (canFocusGroup ? '<button type="button" class="graph-inspector-action is-primary" data-inspector-action="focus-group">聚焦关系组</button>' : '') +
+        '<button type="button" class="graph-inspector-close" data-inspector-action="clear" aria-label="关闭关系详情并返回全局关系图" title="关闭详情">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>';
+    }
+
+    function pairOtherNode(pair, nodeId) {
+      return pair.source.id === nodeId ? pair.target : pair.source;
+    }
+
+    function endpointSelection(pair) {
+      const saved = state.relationshipEndpoints;
+      if (saved && saved.pairKey === pair.key) {
+        const ids = new Set([pair.source.id, pair.target.id]);
+        if (ids.has(saved.aId) && ids.has(saved.bId) && saved.aId !== saved.bId) return saved;
+      }
+      return {pairKey: pair.key, aId: pair.source.id, bId: pair.target.id};
+    }
+
+    function renderEndpointPicker(slot, node, choices, selectedId) {
+      const menuId = "graph-endpoint-menu-" + slot;
+      const options = choices.map(function(choice) {
+        return '<button type="button" class="graph-endpoint-option" role="option" aria-selected="' +
+          (choice.node.id === selectedId ? "true" : "false") + '" data-endpoint-pair="' + escapeHtml(choice.pair.key) +
+          '" data-endpoint-a="' + escapeHtml(choice.aId) + '" data-endpoint-b="' + escapeHtml(choice.bId) + '">' +
+          '<span>' + escapeHtml(graphNodeLabel(choice.node)) + '</span><small>' + choice.pair.edges.length + ' 条关系</small></button>';
+      }).join("");
+      return '<div class="graph-endpoint-picker">' +
+        '<button type="button" class="graph-endpoint" data-endpoint-toggle="' + slot + '" aria-haspopup="listbox" aria-expanded="false" aria-controls="' + menuId + '">' +
+        '<span class="graph-endpoint-dot" aria-hidden="true">' + slot.toUpperCase() + '</span>' +
+        '<span class="graph-endpoint-name">' + escapeHtml(graphNodeLabel(node)) + '</span>' +
+        '<svg class="graph-endpoint-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg></button>' +
+        '<div class="graph-endpoint-menu" id="' + menuId + '" role="listbox" aria-label="切换端点 ' + slot.toUpperCase() + '" hidden>' + options + '</div></div>';
+    }
+
+    function renderEndpointPair(pair, model) {
+      const selection = endpointSelection(pair);
+      state.relationshipEndpoints = selection;
+      const aNode = model.nodes.find(function(node) { return node.id === selection.aId; }) || pair.source;
+      const bNode = model.nodes.find(function(node) { return node.id === selection.bId; }) || pair.target;
+      const component = model.components.find(function(group) { return group.key === pair.groupKey; });
+      const groupPairs = component ? component.pairs : [pair];
+      const groupNodes = component ? component.nodes : [pair.source, pair.target];
+      const aChoices = groupNodes.map(function(node) {
+        const direct = groupPairs.find(function(candidate) {
+          return node.id !== bNode.id && ((candidate.source.id === node.id && candidate.target.id === bNode.id) ||
+            (candidate.target.id === node.id && candidate.source.id === bNode.id));
+        });
+        const incident = direct || groupPairs.find(function(candidate) { return candidate.source.id === node.id || candidate.target.id === node.id; });
+        if (!incident) return null;
+        const other = pairOtherNode(incident, node.id);
+        return {node: node, pair: incident, aId: node.id, bId: other.id};
+      }).filter(Boolean);
+      const bChoices = groupPairs.filter(function(candidate) {
+        return candidate.source.id === aNode.id || candidate.target.id === aNode.id;
+      }).map(function(candidate) {
+        const other = pairOtherNode(candidate, aNode.id);
+        return {node: other, pair: candidate, aId: aNode.id, bId: other.id};
+      });
+      return '<div class="graph-endpoints" aria-label="当前关系端点，可在关系组内切换">' +
+        renderEndpointPicker("a", aNode, aChoices, aNode.id) +
+        '<span class="graph-endpoint-arrow" aria-hidden="true">↔</span>' +
+        renderEndpointPicker("b", bNode, bChoices, bNode.id) + '</div>' +
+        '<p class="graph-endpoint-help">切换端点会打开该关系，并在图中同步标记 A / B 与高亮连线。</p>';
+    }
+
+    function renderGraphOverview(model) {
+      setGraphInspectorSelection(false);
+      const heading = model.view === "group" ? "已聚焦当前关系组" : "全部已复核关系";
+      const summary = "一个连续关系网络呈现 " + model.totalGroupCount + " 个关系组、" + model.nodes.length + " 个 Skill、" + model.items.length +
+        " 对关联和 " + model.relationshipCount + " 条 Agent 已复核关系。" +
+        (model.view === "group" ? " 当前镜头聚焦整个关系组，其他关系组仍保留在画布中。" : " 可滚轮缩放、拖拽平移，或选择连线后聚焦其所属关系组。");
+      graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">Skill 间关系</span>' +
+        '<h3>' + escapeHtml(heading) + '</h3></div><span class="graph-inspector-hint">点击节点或连线查看</span></div>' +
+        '<p class="graph-inspector-note">' + summary + ' 选择只会更新关系诊断，不会自动移动主图。</p>';
+      graphStatus.textContent = heading + "，共 " + model.relationshipCount + " 条已复核关系";
+    }
+
+    function renderGraphInspector(model, item, pinned) {
+      if (!item) { renderGraphOverview(model); return; }
+      setGraphInspectorSelection(Boolean(pinned));
+      if (item.kind === "relationship-node") {
+        const relationTypes = Array.from(new Map(item.incident.reduce(function(entries, pair) {
+          return entries.concat(pair.edges.map(function(edge) { return [edge.type, relationshipTypeText[edge.type]]; }));
+        }, [])).entries());
+        const directory = item.incident.map(function(pair) {
+          const other = pair.source.id === item.node.id ? pair.target : pair.source;
+          const types = pair.edges.map(function(edge) { return relationshipTypeText[edge.type]; }).join(" · ");
+          return '<button type="button" class="graph-relation-link" data-relationship-key="' + escapeHtml(pair.key) + '">' +
+            '<span><strong>' + escapeHtml(graphNodeLabel(other)) + '</strong><small>' + escapeHtml(types) + '</small></span>' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>';
+        }).join("");
+        graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">Skill 节点</span>' +
+          '<h3>' + escapeHtml(graphNodeLabel(item.node)) + '</h3></div>' + renderInspectorActions(true) + '</div>' +
+          '<div class="graph-tags">' + relationTypes.map(function(entry) { return '<span class="graph-tag ' + relationshipToneClass(entry[0]) + '">' + escapeHtml(entry[1]) + '</span>'; }).join("") + '</div>' +
+          '<p class="graph-inspector-note">以下是该 Skill 已完成 Agent 复核的直接关系。选择其中一项，再查看具体诊断与双方依据。</p>' +
+          '<div class="graph-relation-directory">' + directory + '</div>';
+        graphStatus.textContent = "正在查看 " + graphNodeLabel(item.node) + "，共 " + item.incident.length + " 对直接关系";
+        return;
+      }
+      graphInspector.innerHTML = '<div class="graph-inspector-head"><div><span class="graph-inspector-kicker">Skill 间关系</span>' +
+        '<h3>双方关系诊断</h3></div>' + renderInspectorActions(true) + '</div>' +
+        renderEndpointPair(item, model) + '<div class="graph-tags">' +
+        item.edges.map(function(edge) { return '<span class="graph-tag ' + relationshipToneClass(edge.type) + '">' + escapeHtml(relationshipTypeText[edge.type]) + '</span>'; }).join("") +
+        '</div><div class="graph-relation-stack">' + renderRelationshipPair(item, false) + '</div>';
+      const activeEndpoints = endpointSelection(item);
+      const endpointA = model.nodes.find(function(node) { return node.id === activeEndpoints.aId; }) || item.source;
+      const endpointB = model.nodes.find(function(node) { return node.id === activeEndpoints.bId; }) || item.target;
+      graphStatus.textContent = "已打开 " + graphNodeLabel(endpointA) + " 与 " + graphNodeLabel(endpointB) + " 的 " + item.edges.length + " 条关系诊断";
+    }
+
+    function renderRelationshipPair(pair, includeHeading) {
+      const sourceName = graphNodeLabel(pair.source);
+      const targetName = graphNodeLabel(pair.target);
+      const cards = pair.edges.map(function(edge, index) {
+        const evidence = edge.evidence.map(function(entry) {
+          const skill = byId.get(entry.skillId);
+          const owner = skill ? skill.name : "关联 Skill";
+          const location = entry.location ? " · " + entry.location : "";
+          return '<li><strong>' + escapeHtml(owner) + '</strong>' + escapeHtml(location) + '：' + escapeHtml(entry.basis) + '</li>';
+        }).join("");
+        return '<details class="graph-relation-card ' + relationshipToneClass(edge.type) + '" data-relation-type="' + escapeHtml(edge.type) + '"' + (index === 0 ? ' open' : '') + '>' +
+          '<summary><span>' + escapeHtml(relationshipTypeText[edge.type]) + '</span><small>' + escapeHtml(confidenceText[edge.confidence] || edge.confidence) + '</small></summary>' +
+          '<div class="graph-relation-content"><p class="graph-conclusion">' + escapeHtml(edge.summary) + '</p>' +
+          '<dl><dt>Agent 诊断</dt><dd>' + escapeHtml(edge.diagnosis) + '</dd>' +
+          '<dt>怎么处理</dt><dd>' + escapeHtml(edge.recommendation) + '</dd></dl>' +
+          '<details class="graph-evidence"><summary>为什么这样判断（' + edge.evidence.length + ' 条依据）</summary><ul>' + evidence + '</ul></details></div></details>';
+      }).join("");
+      const heading = includeHeading
+        ? '<h4>' + escapeHtml(sourceName) + ' ↔ ' + escapeHtml(targetName) + '</h4>'
+        : "";
+      return '<section class="graph-pair">' + heading + cards + '</section>';
+    }
+
+    function svgElement(name, attributes) {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.keys(attributes || {}).forEach(function(key) { element.setAttribute(key, attributes[key]); });
+      return element;
+    }
+
+    function updateGraphViewControls() {
+      document.querySelectorAll("[data-graph-view]").forEach(function(button) {
+        button.setAttribute("aria-pressed", button.dataset.graphView === state.relationshipView ? "true" : "false");
+        button.disabled = button.dataset.graphView === "group" && (!graphLayoutState || !graphLayoutState.groups.some(function(group) {
+          return group.key === state.relationshipGroupKey;
+        }));
+      });
+      document.querySelectorAll("[data-graph-zoom]").forEach(function(button) {
+        button.disabled = !graphViewport || (button.dataset.graphZoom === "in" ? graphCamera.k >= graphCamera.max - .01 : graphCamera.k <= graphCamera.min + .01);
+      });
+    }
+
+    function applyGraphCamera() {
+      if (!graphViewport) return;
+      graphViewport.setAttribute("transform", "translate(" + graphCamera.x + " " + graphCamera.y + ") scale(" + graphCamera.k + ")");
+      updateGraphViewControls();
+    }
+
+    function cameraForBounds(bounds, maxScale) {
+      const width = Math.max(320, svg.clientWidth), height = Math.max(320, svg.clientHeight);
+      const padding = 48;
+      const scale = Math.max(graphCamera.min, Math.min(graphCamera.max, maxScale,
+        Math.min((width - padding * 2) / Math.max(1, bounds.width), (height - padding * 2) / Math.max(1, bounds.height))));
+      return {
+        x: width / 2 - (bounds.x + bounds.width / 2) * scale,
+        y: height / 2 - (bounds.y + bounds.height / 2) * scale,
+        k: scale
+      };
+    }
+
+    function moveGraphCamera(target, animate) {
+      window.cancelAnimationFrame(graphCameraFrame);
+      const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!animate || reducedMotion) {
+        graphCamera.x = target.x; graphCamera.y = target.y; graphCamera.k = target.k;
+        applyGraphCamera(); return;
+      }
+      const start = {x: graphCamera.x, y: graphCamera.y, k: graphCamera.k};
+      const startedAt = performance.now();
+      function step(now) {
+        const progress = Math.min(1, (now - startedAt) / 280);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        graphCamera.x = start.x + (target.x - start.x) * eased;
+        graphCamera.y = start.y + (target.y - start.y) * eased;
+        graphCamera.k = start.k + (target.k - start.k) * eased;
+        applyGraphCamera();
+        if (progress < 1) graphCameraFrame = window.requestAnimationFrame(step);
+      }
+      graphCameraFrame = window.requestAnimationFrame(step);
+    }
+
+    function fitGlobalRelationshipGraph(animate) {
+      if (!graphLayoutState) return;
+      state.relationshipView = "global";
+      moveGraphCamera(cameraForBounds(graphLayoutState.globalBounds, 1), animate);
+    }
+
+    function focusRelationshipGroup(animate) {
+      if (!graphLayoutState) return;
+      const group = graphLayoutState.groups.find(function(item) { return item.key === state.relationshipGroupKey; });
+      if (!group) return;
+      state.relationshipView = "group";
+      moveGraphCamera(cameraForBounds(group.bounds, 1.75), animate);
+    }
+
+    function zoomGraphAt(x, y, factor) {
+      if (!graphViewport) return;
+      window.cancelAnimationFrame(graphCameraFrame);
+      const nextScale = Math.max(graphCamera.min, Math.min(graphCamera.max, graphCamera.k * factor));
+      const worldX = (x - graphCamera.x) / graphCamera.k;
+      const worldY = (y - graphCamera.y) / graphCamera.k;
+      graphCamera.x = x - worldX * nextScale;
+      graphCamera.y = y - worldY * nextScale;
+      graphCamera.k = nextScale;
+      state.relationshipView = "custom";
+      applyGraphCamera();
+    }
+
+    function clusteredRelationshipLayout(model, width, height) {
+      const positions = new Map(), paths = new Map(), labelPoints = new Map(), groups = [];
+      const canvasCenter = {x: width / 2, y: height / 2};
+      const satelliteCount = Math.max(0, model.components.length - 1);
+      model.components.forEach(function(component, componentIndex) {
+        const featured = componentIndex === 0;
+        let centerX = canvasCenter.x, centerY = canvasCenter.y;
+        if (!featured) {
+          const angle = -Math.PI / 2 + Math.PI * 2 * (componentIndex - 1) / Math.max(1, satelliteCount);
+          centerX += Math.cos(angle) * width * .34;
+          centerY += Math.sin(angle) * height * .32;
+        }
+        const degrees = new Map(component.nodes.map(function(node) { return [node.id, 0]; }));
+        component.pairs.forEach(function(pair) { degrees.set(pair.source.id, degrees.get(pair.source.id) + 1); degrees.set(pair.target.id, degrees.get(pair.target.id) + 1); });
+        const selected = component.nodes.find(function(node) { return graphSkillId(node) === state.selected; });
+        const anchor = selected || component.nodes.slice().sort(function(a, b) {
+          return degrees.get(b.id) - degrees.get(a.id) || graphNodeLabel(a).localeCompare(graphNodeLabel(b), "zh-CN");
+        })[0];
+        const others = component.nodes.filter(function(node) { return node.id !== anchor.id; });
+        positions.set(anchor.id, {x: centerX, y: centerY, anchor: true});
+        const radiusX = featured ? Math.min(180, width * .15) : Math.min(104, width * .085);
+        const radiusY = featured ? Math.min(132, height * .19) : Math.min(76, height * .11);
+        if (others.length === 1) {
+          positions.set(anchor.id, {x: centerX - radiusX * .62, y: centerY, anchor: true});
+          positions.set(others[0].id, {x: centerX + radiusX * .62, y: centerY, anchor: false});
+        } else {
+          others.forEach(function(node, index) {
+            const angle = -Math.PI / 2 + (Math.PI * 2 * index / Math.max(1, others.length));
+            positions.set(node.id, {x: centerX + Math.cos(angle) * radiusX, y: centerY + Math.sin(angle) * radiusY, anchor: false});
+          });
+        }
+        const componentPositions = component.nodes.map(function(node) { return positions.get(node.id); });
+        const minX = Math.min.apply(null, componentPositions.map(function(position) { return position.x; }));
+        const maxX = Math.max.apply(null, componentPositions.map(function(position) { return position.x; }));
+        const minY = Math.min.apply(null, componentPositions.map(function(position) { return position.y; }));
+        const maxY = Math.max.apply(null, componentPositions.map(function(position) { return position.y; }));
+        const padX = featured ? 112 : 88, padY = featured ? 88 : 72;
+        groups.push({
+          key: component.key, count: component.nodes.length,
+          bounds: {x: minX - padX, y: minY - padY, width: maxX - minX + padX * 2, height: maxY - minY + padY * 2}
+        });
+        component.pairs.forEach(function(pair) {
+          const source = positions.get(pair.source.id), target = positions.get(pair.target.id);
+          if (pair.source.id === anchor.id || pair.target.id === anchor.id || component.nodes.length <= 2) {
+            paths.set(pair.key, "M " + source.x + " " + source.y + " L " + target.x + " " + target.y);
+            const dx = target.x - source.x, dy = target.y - source.y;
+            const length = Math.hypot(dx, dy) || 1;
+            labelPoints.set(pair.key, {
+              x: (source.x + target.x) / 2 - dy / length * 12,
+              y: (source.y + target.y) / 2 + dx / length * 12 - 4
+            });
+            return;
+          }
+          const midX = (source.x + target.x) / 2, midY = (source.y + target.y) / 2;
+          let vectorX = midX - centerX, vectorY = midY - centerY;
+          const length = Math.hypot(vectorX, vectorY) || 1;
+          if (length < 10) { vectorX = -(target.y - source.y); vectorY = target.x - source.x; }
+          const vectorLength = Math.hypot(vectorX, vectorY) || 1;
+          const controlX = midX + vectorX / vectorLength * 40, controlY = midY + vectorY / vectorLength * 32;
+          paths.set(pair.key, "M " + source.x + " " + source.y + " Q " + controlX + " " + controlY + " " + target.x + " " + target.y);
+          labelPoints.set(pair.key, {x: (source.x + 2 * controlX + target.x) / 4, y: (source.y + 2 * controlY + target.y) / 4 - 6});
+        });
+      });
+      const minGroupX = Math.min.apply(null, groups.map(function(group) { return group.bounds.x; }));
+      const minGroupY = Math.min.apply(null, groups.map(function(group) { return group.bounds.y; }));
+      const maxGroupX = Math.max.apply(null, groups.map(function(group) { return group.bounds.x + group.bounds.width; }));
+      const maxGroupY = Math.max.apply(null, groups.map(function(group) { return group.bounds.y + group.bounds.height; }));
+      return {
+        positions: positions, paths: paths, labelPoints: labelPoints, groups: groups,
+        globalBounds: {x: minGroupX, y: minGroupY, width: maxGroupX - minGroupX, height: maxGroupY - minGroupY}
+      };
+    }
+
+    function drawGraph() {
+      const model = buildGraphModel();
+      const relationshipViewActions = document.getElementById("graph-view-actions");
+      relationshipViewActions.hidden = false;
+      graphPanHint.hidden = false;
+      const width = Math.max(320, svg.clientWidth);
+      const relationshipHeight = model.totalGroupCount > 3 ? 640 : 560;
+      svg.style.height = relationshipHeight + "px";
+      const height = Math.max(320, svg.clientHeight);
+      svg.innerHTML = "";
+      svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+      graphViewport = null;
+      graphLayoutState = null;
+      document.getElementById("relationship-title").textContent = "Skill 间关系";
+      document.getElementById("graph-skill-name").textContent = model.totalGroupCount + " 个关系组 · " + model.nodes.length + " 个 Skill · " + model.items.length + " 对关联";
+      document.getElementById("visible-count").textContent = model.relationshipCount + " 条 Agent 已复核关系";
+      document.getElementById("graph-legend-items").innerHTML =
+        '<span><i class="dot" style="background:var(--safe)"></i>当前选中</span>' +
+        '<span><i class="dot" style="background:var(--primary)"></i>Skill 节点</span>' +
+        '<span><i class="dot" style="background:var(--line-strong)"></i>一对或多种已复核关系</span>';
+      svg.setAttribute("aria-label", "可缩放、拖拽的全部 Agent 已复核 Skill 关系图");
+      if (!model.items.length) {
+        graphEmpty.hidden = false;
+        graphEmpty.textContent = "当前没有 Agent 已复核的 Skill 间关系";
+        state.graphPinnedKey = null;
+        updateGraphViewControls();
+        renderGraphOverview(model);
+        return;
+      }
+      graphEmpty.hidden = true;
+      let positions = new Map(), paths = new Map(), labelPoints = new Map(), groups = [];
+      let layoutWidth = width, layoutHeight = height;
+      let globalBounds = {x: 0, y: 0, width: layoutWidth, height: layoutHeight};
+      layoutWidth = Math.max(width, model.totalGroupCount > 3 ? 1360 : 960);
+      layoutHeight = model.totalGroupCount > 3 ? 760 : 640;
+      const layout = clusteredRelationshipLayout(model, layoutWidth, layoutHeight);
+      positions = layout.positions;
+      paths = layout.paths;
+      labelPoints = layout.labelPoints;
+      groups = layout.groups;
+      globalBounds = layout.globalBounds;
+      const itemMap = new Map(model.items.map(function(item) { return [item.key, item]; }));
+      model.nodes.forEach(function(node) {
+        const incident = model.items.filter(function(pair) { return pair.source.id === node.id || pair.target.id === node.id; });
+        const component = model.components.find(function(group) {
+          return group.nodes.some(function(groupNode) { return groupNode.id === node.id; });
+        });
+        itemMap.set("node:" + node.id, {
+          key: "node:" + node.id, kind: "relationship-node", node: node, incident: incident,
+          groupKey: component ? component.key : null
+        });
+      });
+      if (state.graphPinnedKey && !itemMap.has(state.graphPinnedKey)) {
+        state.graphPinnedKey = null;
+        state.relationshipEndpoints = null;
+      }
+      graphViewport = svgElement("g", {class: "graph-viewport"});
+      const edgeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      const nodeGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      graphViewport.append(edgeGroup, nodeGroup);
+      svg.append(graphViewport);
+      graphLayoutState = {groups: groups, globalBounds: globalBounds};
+      const edgeVisuals = [], nodeVisuals = new Map();
+      let displayedKey = "__unset__";
+      let displayedPinned = null;
+      let displayedEndpointSignature = "";
+
+      closeGraphInspector = function(returnFocus) {
+        state.graphPinnedKey = null;
+        state.relationshipEndpoints = null;
+        state.relationshipGroupKey = null;
+        applyFocus(null, false);
+        fitGlobalRelationshipGraph(true);
+        updateGraphViewControls();
+        if (returnFocus) window.requestAnimationFrame(function() {
+          const globalViewButton = document.querySelector('[data-graph-view="global"]');
+          if (globalViewButton) globalViewButton.focus();
+        });
+      };
+
+      function bindInteraction(element, key) {
+        element.setAttribute("role", "button");
+        element.setAttribute("tabindex", "0");
+        element.setAttribute("aria-pressed", "false");
+        element.addEventListener("click", function() {
+          const selectedItem = itemMap.get(key);
+          if (selectedItem && selectedItem.groupKey) state.relationshipGroupKey = selectedItem.groupKey;
+          state.relationshipEndpoints = selectedItem && selectedItem.kind === "relationship"
+            ? {pairKey: selectedItem.key, aId: selectedItem.source.id, bId: selectedItem.target.id}
+            : null;
+          state.graphPinnedKey = key; applyFocus(key, true); updateGraphViewControls();
+        });
+        element.addEventListener("keydown", function(event) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            const selectedItem = itemMap.get(key);
+            if (selectedItem && selectedItem.groupKey) state.relationshipGroupKey = selectedItem.groupKey;
+            state.relationshipEndpoints = selectedItem && selectedItem.kind === "relationship"
+              ? {pairKey: selectedItem.key, aId: selectedItem.source.id, bId: selectedItem.target.id}
+              : null;
+            state.graphPinnedKey = key; applyFocus(key, true); updateGraphViewControls();
+          }
+        });
+      }
+
+      model.items.forEach(function(item) {
+        const labelText = item.edges.map(function(edge) { return relationshipTypeText[edge.type]; }).join(" / ");
+        const line = svgElement("path", {class: "edge", d: paths.get(item.key)});
+        const hit = svgElement("path", {class: "edge-hit", d: paths.get(item.key)});
+        hit.setAttribute("aria-label", graphNodeLabel(item.source) + " 与 " + graphNodeLabel(item.target) + "：" + labelText);
+        hit.setAttribute("title", labelText);
+        const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        title.textContent = labelText; hit.appendChild(title);
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("class", "edge-label");
+        label.setAttribute("x", labelPoints.get(item.key).x);
+        label.setAttribute("y", labelPoints.get(item.key).y);
+        label.setAttribute("text-anchor", "middle");
+        const compactLabel = item.edges.length > 1
+          ? relationshipTypeText[item.edges[0].type] + " +" + (item.edges.length - 1)
+          : labelText;
+        label.textContent = compactLabel.length > 18 ? compactLabel.slice(0, 17) + "…" : compactLabel;
+        const labelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        labelTitle.textContent = labelText; label.appendChild(labelTitle);
+        edgeGroup.append(line, hit, label);
+        bindInteraction(hit, item.key);
+        edgeVisuals.push({key: item.key, sourceId: item.source.id, targetId: item.target.id, line: line, hit: hit, label: label});
+      });
+
+      function createNode(node, itemKey) {
+        const position = positions.get(node.id);
+        const selected = graphSkillId(node) === state.selected;
+        const dominant = selected;
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        const fullLabel = graphNodeLabel(node);
+        const visibleLimit = 18;
+        const visibleLabel = fullLabel.length > visibleLimit ? fullLabel.slice(0, visibleLimit - 1) + "…" : fullLabel;
+        group.setAttribute("class", "node" + (selected ? " selected" : ""));
+        group.setAttribute("transform", "translate(" + position.x + "," + position.y + ")");
+        group.setAttribute("aria-label", (selected ? "当前选中 Skill：" : "Skill：") + fullLabel);
+        group.setAttribute("title", fullLabel);
+        const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        title.textContent = fullLabel; group.appendChild(title);
+        const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        hitArea.setAttribute("class", "hit-area"); hitArea.setAttribute("r", dominant ? "26" : "22");
+        if (selected) group.appendChild(svgElement("circle", {class: "selection-ring", r: dominant ? 18 : 15}));
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("r", dominant ? "13" : (selected ? "10" : "8"));
+        circle.setAttribute("fill", selected ? "var(--safe)" : "var(--primary)");
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", dominant ? "0" : "14");
+        label.setAttribute("y", dominant ? "-24" : "4");
+        if (dominant) label.setAttribute("text-anchor", "middle");
+        label.textContent = visibleLabel;
+        const endpointMarker = svgElement("g", {class: "endpoint-marker", transform: "translate(" + (dominant ? 17 : 11) + "," + (dominant ? -17 : -11) + ")"});
+        endpointMarker.style.display = "none";
+        endpointMarker.appendChild(svgElement("circle", {r: 7}));
+        const endpointMarkerText = svgElement("text", {x: 0, y: 3});
+        endpointMarker.appendChild(endpointMarkerText);
+        group.append(hitArea, circle, label, endpointMarker); nodeGroup.appendChild(group);
+        bindInteraction(group, itemKey);
+        nodeVisuals.set(node.id, group);
+      }
+      model.nodes.forEach(function(node) {
+        createNode(node, "node:" + node.id);
+      });
+
+      function applyFocus(key, pinned) {
+        const effectivePinned = Boolean(key && state.graphPinnedKey === key) || Boolean(pinned);
+        const item = key ? itemMap.get(key) : null;
+        const activeNodes = new Set(), activeEdges = new Set();
+        let endpointAId = null, endpointBId = null;
+        if (item && item.kind === "relationship-node") {
+          activeNodes.add(item.node.id);
+          item.incident.forEach(function(pair) {
+            activeEdges.add(pair.key); activeNodes.add(pair.source.id); activeNodes.add(pair.target.id);
+          });
+        } else if (item) {
+          activeEdges.add(item.key); activeNodes.add(item.source.id); activeNodes.add(item.target.id);
+          const selectedEndpoints = endpointSelection(item);
+          endpointAId = selectedEndpoints.aId;
+          endpointBId = selectedEndpoints.bId;
+        }
+        edgeVisuals.forEach(function(parts) {
+          const focused = activeEdges.has(parts.key);
+          parts.line.setAttribute("class", "edge" + (focused ? " is-focused" : "") + (key && !focused ? " dim" : ""));
+          parts.label.setAttribute("class", "edge-label" + (focused ? " is-focused" : ""));
+          parts.hit.setAttribute("aria-pressed", focused ? "true" : "false");
+        });
+        nodeVisuals.forEach(function(node, nodeId) {
+          const selectedClass = graphSkillId(model.nodes.find(function(itemNode) { return itemNode.id === nodeId; })) === state.selected ? " selected" : "";
+          const focused = activeNodes.has(nodeId);
+          const endpointClass = nodeId === endpointAId ? " endpoint-a" : (nodeId === endpointBId ? " endpoint-b" : "");
+          node.setAttribute("class", "node" + selectedClass + (focused ? " is-focused" : "") + endpointClass + (key && !focused ? " dim" : ""));
+          node.setAttribute("aria-pressed", focused ? "true" : "false");
+          const marker = node.querySelector(".endpoint-marker");
+          if (marker) {
+            const endpointLabel = nodeId === endpointAId ? "A" : (nodeId === endpointBId ? "B" : "");
+            marker.style.display = endpointLabel ? "block" : "none";
+            marker.querySelector("text").textContent = endpointLabel;
+          }
+        });
+        const endpointSignature = endpointAId && endpointBId ? endpointAId + "|" + endpointBId : "";
+        if (displayedKey === key && displayedPinned === effectivePinned && displayedEndpointSignature === endpointSignature) return;
+        displayedKey = key; displayedPinned = effectivePinned; displayedEndpointSignature = endpointSignature;
+        renderGraphInspector(model, item, effectivePinned);
+        const clearButton = graphInspector.querySelector('[data-inspector-action="clear"]');
+        if (clearButton) clearButton.addEventListener("click", function() { closeGraphInspector(true); });
+        const focusButton = graphInspector.querySelector('[data-inspector-action="focus-group"]');
+        if (focusButton) focusButton.addEventListener("click", function() { focusRelationshipGroup(true); });
+        graphInspector.querySelectorAll("[data-relationship-key]").forEach(function(button) {
+          button.addEventListener("click", function() {
+            const relationshipKey = button.dataset.relationshipKey;
+            const relationship = itemMap.get(relationshipKey);
+            if (!relationship) return;
+            state.graphPinnedKey = relationshipKey;
+            state.relationshipEndpoints = {pairKey: relationship.key, aId: relationship.source.id, bId: relationship.target.id};
+            if (relationship.groupKey) state.relationshipGroupKey = relationship.groupKey;
+            applyFocus(relationshipKey, true);
+          });
+        });
+        graphInspector.querySelectorAll("[data-endpoint-toggle]").forEach(function(button) {
+          button.addEventListener("click", function() {
+            const menu = document.getElementById(button.getAttribute("aria-controls"));
+            const opening = menu && menu.hidden;
+            graphInspector.querySelectorAll(".graph-endpoint-menu").forEach(function(otherMenu) { otherMenu.hidden = true; });
+            graphInspector.querySelectorAll("[data-endpoint-toggle]").forEach(function(otherButton) { otherButton.setAttribute("aria-expanded", "false"); });
+            if (menu && opening) {
+              menu.hidden = false;
+              button.setAttribute("aria-expanded", "true");
+              const selectedOption = menu.querySelector('[aria-selected="true"]');
+              if (selectedOption) selectedOption.focus();
+            }
+          });
+        });
+        graphInspector.querySelectorAll("[data-endpoint-pair]").forEach(function(option) {
+          option.addEventListener("click", function() {
+            const relationship = itemMap.get(option.dataset.endpointPair);
+            if (!relationship) return;
+            state.relationshipEndpoints = {
+              pairKey: relationship.key,
+              aId: option.dataset.endpointA,
+              bId: option.dataset.endpointB
+            };
+            state.graphPinnedKey = relationship.key;
+            if (relationship.groupKey) state.relationshipGroupKey = relationship.groupKey;
+            applyFocus(relationship.key, true);
+          });
+        });
+        graphInspector.querySelectorAll(".graph-endpoint-picker").forEach(function(picker) {
+          picker.addEventListener("focusout", function() {
+            window.setTimeout(function() {
+              if (picker.contains(document.activeElement)) return;
+              const menu = picker.querySelector(".graph-endpoint-menu");
+              const toggle = picker.querySelector("[data-endpoint-toggle]");
+              if (menu) menu.hidden = true;
+              if (toggle) toggle.setAttribute("aria-expanded", "false");
+            }, 0);
+          });
+          picker.addEventListener("keydown", function(event) {
+            if (event.key !== "Escape") return;
+            const menu = picker.querySelector(".graph-endpoint-menu");
+            const toggle = picker.querySelector("[data-endpoint-toggle]");
+            if (menu) menu.hidden = true;
+            if (toggle) { toggle.setAttribute("aria-expanded", "false"); toggle.focus(); }
+          });
+        });
+        graphInspector.querySelectorAll(".graph-relation-card").forEach(function(details) {
+          details.addEventListener("toggle", function() {
+            if (!details.open) return;
+            graphInspector.querySelectorAll(".graph-relation-card[open]").forEach(function(other) {
+              if (other !== details) other.open = false;
+            });
+          });
+        });
+      }
+      applyFocus(state.graphPinnedKey, Boolean(state.graphPinnedKey));
+      if (state.relationshipView === "group") focusRelationshipGroup(false);
+      else if (state.relationshipView === "custom") applyGraphCamera();
+      else fitGlobalRelationshipGraph(false);
+    }
+    const highCount = report.summary.severityCounts
+      ? (report.summary.severityCounts.high || 0) + (report.summary.severityCounts.critical || 0)
+      : (report.summary.candidateSeverityCounts.high || 0) + (report.summary.candidateSeverityCounts.critical || 0);
+    document.getElementById("skill-count").textContent = report.summary.skillCount;
+    document.getElementById("high-count").textContent = highCount;
+    document.getElementById("file-count").textContent = report.actual.fileCount.toLocaleString();
+    document.getElementById("report-title").textContent = highCount
+      ? "发现 " + highCount + " 个需要优先处理的 Skill"
+      : "已完成检查，未发现高风险 Skill";
+    document.getElementById("intro-note").textContent =
+      "在体检报告中查看单个 Skill 与关联资源；切换到 Skill 关系图，查看 Agent 已复核的跨 Skill 关系与具体诊断。";
+    const visible = renderList();
+    const first = visible[0];
+    if (first) selectSkill(first.id);
+    setReportTab("skills", false);
+    window.addEventListener("resize", function() {
+      drawDependencyCards();
+      if (state.reportTab === "relationships") drawGraph();
+      if (guideActive) window.requestAnimationFrame(positionGuide);
+    });
+  </script>
+</body>
+</html>

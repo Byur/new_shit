@@ -1,0 +1,7 @@
+interface:
+  display_name: "Remotion Video Director"
+  short_description: "技术讲解视频的叙事、分镜与视觉导演"
+  default_prompt: "Use $remotion-video-director to turn this approved learning plan into a narrative and storyboard."
+
+policy:
+  allow_implicit_invocation: true

@@ -12,5 +12,4 @@ dist/
 # Package-local Remotion build and render artifacts
 build/
 out/
-output/**/*.tmp
-output/**/*.part
+output/

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Remotion Studio QA"
+  short_description: "Evidence-first source preflight and human Studio QA"
+  default_prompt: "Use $remotion-studio-qa to run an evidence-first source preflight, then guide human Studio review; inspect encoded output only if I explicitly request it."
+
+policy:
+  allow_implicit_invocation: true

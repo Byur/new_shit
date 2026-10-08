@@ -1,0 +1,262 @@
+{
+  "source": "skillhub.cn",
+  "apiBase": "https://api.skillhub.cn",
+  "slug": "remotion-video-toolkit",
+  "namespace": "clawhub_shreefentsar",
+  "version": "1.4.0",
+  "fetchedAsUntrustedData": true,
+  "downloadedFiles": [
+    {
+      "path": "rules/3d.md",
+      "size": 2290,
+      "sha256": "2a5b1a72de35168bba08c7e78153fccd408ec7882fdd1778f2751162e1661378"
+    },
+    {
+      "path": "rules/animations.md",
+      "size": 790,
+      "sha256": "99a6377d64061af5f7fcd1a179c0c8f6d7bcd0a515060a46db117a757ac3387a"
+    },
+    {
+      "path": "rules/assets.md",
+      "size": 1590,
+      "sha256": "664160a48fe6ef76c9b25ea51b3796d39d371cb3632f380b014492412902ad42"
+    },
+    {
+      "path": "rules/assets/charts-bar-chart.tsx",
+      "size": 3429,
+      "sha256": "6e5e219c596c8515336570a5bc89c233e32e695d5816dec88eb929e798eeea61"
+    },
+    {
+      "path": "rules/assets/text-animations-typewriter.tsx",
+      "size": 2183,
+      "sha256": "92b5f47d6d18387a0aa008ce9dceefd30f673ae5879e16892bd4b4ea97f5dddb"
+    },
+    {
+      "path": "rules/assets/text-animations-word-highlight.tsx",
+      "size": 2387,
+      "sha256": "5dbba688b875baaa62555c7a243f54739e81edbf34148c87048594a210c3ec2c"
+    },
+    {
+      "path": "rules/audio.md",
+      "size": 3822,
+      "sha256": "06d859b2f463d0e0e823655548e314b59a1d6321377857fca52a09c629170b12"
+    },
+    {
+      "path": "rules/calculate-metadata.md",
+      "size": 2920,
+      "sha256": "b258c788fb3337187245c814f2fd4ddf10f7330ec97cb8117202a0145d4d27a6"
+    },
+    {
+      "path": "rules/can-decode.md",
+      "size": 1587,
+      "sha256": "fb3f9933e45103d72530915b72a844b3454c6acc03289db5efe8f4541b088fad"
+    },
+    {
+      "path": "rules/charts.md",
+      "size": 1751,
+      "sha256": "2430705a627c468e0922e2f78ca1a2379537d378b5fe76292b69f44659a5d66e"
+    },
+    {
+      "path": "rules/compositions.md",
+      "size": 3445,
+      "sha256": "58d92350fecc1cb57567615fd5e65f35df3e2893ea58e82768050d051e6e692d"
+    },
+    {
+      "path": "rules/display-captions.md",
+      "size": 3698,
+      "sha256": "96abde72e0bcb88cdc5871b80b5d6eb0c6aedf0ea9611e6c5157cb0ee980ba99"
+    },
+    {
+      "path": "rules/extract-frames.md",
+      "size": 5496,
+      "sha256": "b7a63f6509a1a33d624f36d3f6772abbc364b0c883520803f3701c26541e7cd7"
+    },
+    {
+      "path": "rules/fonts.md",
+      "size": 3484,
+      "sha256": "1749e4cf82e8b157d4b0a26f46721152d3ef9e5e9a1686753b8bb6a1be83ddbc"
+    },
+    {
+      "path": "rules/get-audio-duration.md",
+      "size": 1354,
+      "sha256": "d5098e8d20b227464e3519c761cba1e03396c77da636d1893c7be3061a0a8e40"
+    },
+    {
+      "path": "rules/get-video-dimensions.md",
+      "size": 1627,
+      "sha256": "839867aa115e09a719096a902a6ad5e304135f2053cce9928776fb4fcb5bf3e1"
+    },
+    {
+      "path": "rules/get-video-duration.md",
+      "size": 1341,
+      "sha256": "7b31fab3cbf9b0771bae41e2c41c9abed2b59d495ffac7160e562fdf86848726"
+    },
+    {
+      "path": "rules/gifs.md",
+      "size": 3868,
+      "sha256": "53d9d658e3093dba4a798945d5c1b7004688ed96a09521cfb22b4cec418a8ae7"
+    },
+    {
+      "path": "rules/images.md",
+      "size": 2783,
+      "sha256": "91d32f6e528b1f1cddc9a0cf70d0faa74491e3a2fe4a32933da0e21010e9aa74"
+    },
+    {
+      "path": "rules/import-srt-captions.md",
+      "size": 2113,
+      "sha256": "38d33be5439714a2ddb577d8c8a6b7bf09bd10f66c0540415fb70536d4374e87"
+    },
+    {
+      "path": "rules/lottie.md",
+      "size": 1779,
+      "sha256": "6c0cb4babcff94e35ecc22ac63a44d2131db26e7e30b53bbae0a1eb0828c74a0"
+    },
+    {
+      "path": "rules/measuring-dom-nodes.md",
+      "size": 974,
+      "sha256": "5270db465cb9eed1942b9970de101211f954b7802dfd92e957bdc7e3eebe6c5c"
+    },
+    {
+      "path": "rules/measuring-text.md",
+      "size": 3000,
+      "sha256": "88905cbd701e247306645c19f18e01aebe27c4eb0178a4e5d0377687f5ac1478"
+    },
+    {
+      "path": "rules/rendering.md",
+      "size": 5847,
+      "sha256": "4630b82b206e09760abf507d6942d7bc6a5af4cf0ac97dde2e3e2e5710147a0b"
+    },
+    {
+      "path": "rules/sequencing.md",
+      "size": 2389,
+      "sha256": "ecb74589c87da53d15230ffc669ca8de197c9748de2be7720acd54c1f777950c"
+    },
+    {
+      "path": "rules/tailwind.md",
+      "size": 422,
+      "sha256": "bdd5162400cd20c6faebdc9d6d2ff9380f4f213f791b38eeb536c5231be34586"
+    },
+    {
+      "path": "rules/text-animations.md",
+      "size": 700,
+      "sha256": "40ac6b1bccf1c57d9edd46c74e847ec6e86fe775d3ef4fd14e1338f4a2606171"
+    },
+    {
+      "path": "rules/timing.md",
+      "size": 3939,
+      "sha256": "f639ed8452767a7458a480c7d33b7126b57c70c3b5e061aeaaba382420fd8ad2"
+    },
+    {
+      "path": "rules/transcribe-captions.md",
+      "size": 850,
+      "sha256": "e7d3edf667e3b1f3c3ed93431cc7caf5e28786c7d1e547f33ee926480a01c0d0"
+    },
+    {
+      "path": "rules/transitions.md",
+      "size": 3730,
+      "sha256": "a42100803a1e5e679617ae7fb72e91431be2a0ca53e15437fa10bdd651921bfa"
+    },
+    {
+      "path": "rules/trimming.md",
+      "size": 1210,
+      "sha256": "40727aefd5939a42925f1ee1fcdfaf733f7fc098c26d7676f7fb69b418913375"
+    },
+    {
+      "path": "rules/videos.md",
+      "size": 3509,
+      "sha256": "d9d3032a57f92c759daf0bd60b3282f6810ecc9958e9093a6b828de623b05328"
+    },
+    {
+      "path": "SKILL.md",
+      "size": 5595,
+      "sha256": "140a3e508a447954d2a87777dcca8216fb425d7a99c5d54d632506d79cb31714"
+    },
+    {
+      "path": "_meta.json",
+      "size": 141,
+      "sha256": "0d3cf66ee7dd8663f512acf9eee3c7e90611614606e9afee47f7a2dd3dd79fc3"
+    }
+  ],
+  "skippedFiles": [],
+  "totalBytes": 86043,
+  "detail": {
+    "contentZhAvailable": true,
+    "latestVersion": {
+      "changelog": "Synced by skillhub pipeline",
+      "createdAt": 1774624456688,
+      "version": "1.4.0"
+    },
+    "namespace": {
+      "canonicalName": "@clawhub_shreefentsar/remotion-video-toolkit",
+      "displayName": "shreefentsar",
+      "handle": "clawhub_shreefentsar",
+      "publicSlug": "remotion-video-toolkit"
+    },
+    "owner": {
+      "displayName": "shreefentsar",
+      "handle": "shreefentsar",
+      "image": null
+    },
+    "securityReports": {
+      "keen": {
+        "reportUrl": "https://tix.qq.com/search/skill?keyword=04e78bb72927a7ffb8d63d8a6b824b05",
+        "status": "benign",
+        "statusText": "安全，无风险"
+      },
+      "sanbu": {
+        "reportUrl": "https://static.cloudsec.tencent.com/html-report-v2/2026/08/05/1023088_75d78903b646237cd53bfd8a3bf99a9a.html?q-sign-algorithm=sha1&q-ak=AKID8JMG1bzBC1dz96qNhssfFftujT1NCoFi&q-sign-time=1791294289%3B1822830289&q-key-time=1791294289%3B1822830289&q-header-list=host&q-url-param-list=&q-signature=e3348fff82ace878c0c94d28e61a7626e86fa6d7",
+        "status": "benign",
+        "statusText": "安全，无风险"
+      }
+    },
+    "skill": {
+      "authorVerifiedHandle": null,
+      "category": "design-media",
+      "claim_state": "unclaimed",
+      "claimable": true,
+      "claimed_user_handle": null,
+      "createdAt": 1772740030877,
+      "displayName": "Remotion Video Toolkit",
+      "ext": null,
+      "githubAuthorLogin": "shreefentsar",
+      "iconUrl": "https://cloudcache.tencent-cloud.com/qcloud/ui/static/other_external_resource/2d8152d9-7618-454e-9d87-2487f1b4457f.png",
+      "isAuthorVerified": false,
+      "isServiceized": false,
+      "labels": {
+        "requires_api_key": "false"
+      },
+      "last_synced_at": null,
+      "overviewMd": "",
+      "slug": "remotion-video-toolkit",
+      "source": "clawhub",
+      "sourceUrl": "https://clawhub.ai/shreefentsar/remotion-video-toolkit",
+      "stats": {
+        "comments": 0,
+        "downloads": 48455,
+        "installs": 6202,
+        "stars": 107,
+        "versions": 1
+      },
+      "subCategories": [
+        {
+          "key": "design-video",
+          "name": "视频处理"
+        },
+        {
+          "key": "design-visual-asset",
+          "name": "视觉素材"
+        }
+      ],
+      "summary": "Complete toolkit for programmatic video creation with Remotion + React. Covers animations, timing, rendering (CLI/Node.js/Lambda/Cloud Run), captions, 3D, charts, text effects, transitions, and media handling. Use when writing Remotion code, building video generation pipelines, or creating data-driven video templates.",
+      "summary_zh": "使用 Remotion + React 进行程序化视频创作的完整工具包。涵盖动画、时间控制、渲染（CLI/Node.js/Lambda/Cloud Run）、字幕、3D、图表、文字特效、转场及媒体处理。适用于编写 Remotion 代码、构建视频生成流水线或创建数据驱动的视频模板。",
+      "tags": {
+        "latest": "1.4.0"
+      },
+      "updatedAt": 1791300694193,
+      "upstream_owner_login": "shreefentsar",
+      "upstream_url": "https://clawhub.ai/shreefentsar/remotion-video-toolkit",
+      "verified": false
+    },
+    "slug": "remotion-video-toolkit"
+  }
+}
