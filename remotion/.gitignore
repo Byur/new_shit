@@ -1,0 +1,16 @@
+# Package-local dependencies and local configuration
+node_modules/
+.env
+.env.*
+.DS_Store
+
+# TypeScript / tooling caches
+*.tsbuildinfo
+.cache/
+dist/
+
+# Package-local Remotion build and render artifacts
+build/
+out/
+output/**/*.tmp
+output/**/*.part

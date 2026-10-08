@@ -61,11 +61,11 @@ export const HelloWorld: React.FC<HelloWorldProps> = ({
           <Logo logoColor1={logoColor1} logoColor2={logoColor2} />
         </AbsoluteFill>
         {/* Sequences can shift the time for its children! */}
-        <Sequence from={35}>
+        <Sequence from={35} premountFor={fps}>
           <Title titleText={propOne} titleColor={propTwo} />
         </Sequence>
         {/* The subtitle will only enter on the 75th frame. */}
-        <Sequence from={75}>
+        <Sequence from={75} premountFor={fps}>
           <Subtitle />
         </Sequence>
       </AbsoluteFill>

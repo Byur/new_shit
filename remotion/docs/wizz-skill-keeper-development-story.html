@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="从第三方 Skill 审查案例出发，讲解如何设计一套由本地扫描器采证、Agent 完成核验的安全审查方法。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f4f0e8'/%3E%3Crect x='3' y='3' width='26' height='26' fill='none' stroke='%2318211e' stroke-width='2'/%3E%3Ctext x='7' y='21' font-family='monospace' font-size='12' font-weight='700' fill='%23176b67'%3EWK%3C/text%3E%3C/svg%3E">
+  <title>Wizz Skill Keeper｜设计纪实与实践教程</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f0e8;
+      --paper-strong: #fffdf8;
+      --ink: #18211e;
+      --ink-soft: #52615c;
+      --line: #cfc8bc;
+      --line-strong: #a69f94;
+      --teal: #176b67;
+      --teal-soft: #dceae6;
+      --coral: #ad4f32;
+      --coral-soft: #f3e2d9;
+      --yellow: #e4b94e;
+      --yellow-soft: #f6ebc9;
+      --blue: #365f88;
+      --blue-soft: #dee8f1;
+      --code: #212927;
+      --radius: 2px;
+      --shadow: 0 16px 48px rgba(29, 36, 32, .08);
+      --page: 1184px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", Inter, system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.72;
+      text-rendering: optimizeLegibility;
+    }
+    button, a { touch-action: manipulation; }
+    a { color: var(--teal); text-underline-offset: 4px; }
+    a:hover { color: #0e514e; }
+    :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+    ::selection { background: var(--yellow-soft); color: var(--ink); }
+
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: -80px;
+      z-index: 100;
+      padding: 10px 14px;
+      background: var(--ink);
+      color: white;
+      transition: top .18s ease;
+    }
+    .skip-link:focus { top: 16px; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--line);
+      background: rgba(244, 240, 232, .94);
+      backdrop-filter: blur(14px);
+    }
+    .topbar__inner {
+      width: min(calc(100% - 32px), var(--page));
+      min-height: 56px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+    .brand__mark {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--ink);
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .topbar__meta {
+      color: var(--ink-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+
+    .hero {
+      width: min(calc(100% - 32px), var(--page));
+      margin: 0 auto;
+      padding: 72px 0 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .6fr);
+      gap: 64px;
+      align-items: end;
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--coral);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { line-height: 1.14; text-wrap: balance; }
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: clamp(40px, 5.1vw, 68px);
+      font-weight: 600;
+      letter-spacing: -.045em;
+    }
+    .hero__lead {
+      max-width: 720px;
+      margin: 24px 0 0;
+      color: var(--ink-soft);
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.62;
+    }
+    .hero__aside {
+      border-top: 3px solid var(--ink);
+      padding-top: 16px;
+    }
+    .hero__aside p { margin: 0 0 16px; color: var(--ink-soft); }
+    .learning-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: learning;
+    }
+    .learning-list li {
+      counter-increment: learning;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 14px;
+    }
+    .learning-list li::before {
+      content: "0" counter(learning);
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .thesis {
+      width: min(calc(100% - 32px), var(--page));
+      margin: 32px auto 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line-strong);
+      background: var(--paper-strong);
+      box-shadow: var(--shadow);
+    }
+    .thesis__item { min-height: 132px; padding: 20px; }
+    .thesis__item + .thesis__item { border-left: 1px solid var(--line); }
+    .thesis__kicker {
+      display: block;
+      margin-bottom: 22px;
+      color: var(--ink-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .thesis__item strong { font-size: 18px; line-height: 1.35; }
+
+    .shell {
+      width: min(calc(100% - 32px), var(--page));
+      margin: 72px auto 120px;
+      display: grid;
+      grid-template-columns: 216px minmax(0, 1fr);
+      gap: 56px;
+      align-items: start;
+    }
+    .toc {
+      position: sticky;
+      top: 80px;
+      border-top: 2px solid var(--ink);
+      padding-top: 12px;
+    }
+    .toc__label {
+      margin: 0 0 12px;
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .toc a {
+      display: block;
+      min-height: 40px;
+      padding: 9px 8px 8px 12px;
+      border-left: 2px solid transparent;
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .toc a:hover { color: var(--ink); background: rgba(255, 253, 248, .7); }
+    .toc a[aria-current="true"] {
+      border-left-color: var(--teal);
+      background: var(--teal-soft);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .content { min-width: 0; }
+    .chapter {
+      scroll-margin-top: 88px;
+      padding: 0 0 80px;
+      border-bottom: 1px solid var(--line-strong);
+      margin-bottom: 72px;
+    }
+    .chapter:last-child { margin-bottom: 0; }
+    .chapter__head {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 32px;
+    }
+    .chapter__index {
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    h2 {
+      margin: 0;
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: clamp(30px, 4vw, 46px);
+      font-weight: 600;
+      letter-spacing: -.035em;
+    }
+    .chapter__summary {
+      max-width: 760px;
+      margin: 14px 0 0;
+      color: var(--ink-soft);
+      font-size: 18px;
+    }
+    h3 {
+      margin: 40px 0 14px;
+      font-size: 21px;
+      font-weight: 760;
+      letter-spacing: -.02em;
+    }
+    p { margin: 0 0 16px; }
+    .prose { max-width: 780px; }
+    .prose > p { color: #2e3a36; }
+    .quote {
+      margin: 32px 0;
+      border-left: 4px solid var(--coral);
+      padding: 12px 0 12px 24px;
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: clamp(22px, 3vw, 30px);
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .quote small {
+      display: block;
+      margin-top: 10px;
+      color: var(--ink-soft);
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+    }
+
+    .decision-grid {
+      margin: 32px 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .decision {
+      min-width: 0;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+    }
+    .decision--wide { grid-column: 1 / -1; }
+    .decision__type {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 2px 7px;
+      border: 1px solid currentColor;
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+    }
+    .decision--reject .decision__type { color: var(--coral); }
+    .decision h3 { margin: 0 0 10px; font-size: 18px; }
+    .decision p { margin: 0; color: var(--ink-soft); font-size: 14px; }
+
+    .architecture {
+      margin: 40px 0;
+      border: 1px solid var(--line-strong);
+      background: var(--paper-strong);
+      padding: 24px;
+    }
+    .architecture__title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      margin-bottom: 24px;
+    }
+    .architecture__title strong { font-size: 20px; }
+    .architecture__title span { color: var(--ink-soft); font-size: 13px; }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 48px 1fr 48px 1fr;
+      align-items: stretch;
+    }
+    .flow__node {
+      min-height: 176px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: #faf8f2;
+    }
+    .flow__node--accent { border-top: 4px solid var(--teal); }
+    .flow__node--final { border-top: 4px solid var(--yellow); }
+    .flow__node small {
+      display: block;
+      margin-bottom: 16px;
+      color: var(--ink-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-transform: uppercase;
+    }
+    .flow__node strong { display: block; margin-bottom: 10px; font-size: 18px; }
+    .flow__node ul { margin: 0; padding-left: 18px; color: var(--ink-soft); font-size: 13px; }
+    .flow__arrow { display: grid; place-items: center; color: var(--teal); font-size: 24px; }
+
+    .field-map {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--line);
+      margin: 24px 0 40px;
+    }
+    .field-map__col { padding: 18px; }
+    .field-map__col + .field-map__col { border-left: 1px solid var(--line); }
+    .field-map__col h3 { margin: 0 0 14px; font-size: 16px; }
+    .field-map code {
+      display: block;
+      margin: 8px 0;
+      overflow-wrap: anywhere;
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+
+    .rule-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0 40px;
+      background: var(--paper-strong);
+      font-size: 14px;
+    }
+    .rule-table th,
+    .rule-table td {
+      padding: 16px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .rule-table th {
+      background: #ece8df;
+      color: var(--ink-soft);
+      font-size: 12px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .rule-table td:first-child { width: 24%; font-weight: 750; color: var(--ink); }
+    .rule-table td:nth-child(2) { width: 35%; color: var(--coral); }
+    .rule-table td:nth-child(3) { color: var(--teal); }
+
+    .case-compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .case {
+      padding: 24px;
+      border-top: 4px solid var(--blue);
+      background: var(--blue-soft);
+    }
+    .case--alert { border-top-color: var(--coral); background: var(--coral-soft); }
+    .case h3 { margin: 0 0 16px; }
+    .case dl { margin: 0; }
+    .case dt {
+      margin-top: 14px;
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .case dd { margin: 3px 0 0; }
+
+    .change-log {
+      margin: 28px 0;
+      border-top: 1px solid var(--line-strong);
+    }
+    .change {
+      display: grid;
+      grid-template-columns: 156px minmax(0, 1fr);
+      gap: 24px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .change__label {
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .change__body strong { display: block; margin-bottom: 5px; }
+    .change__body p { margin: 0; color: var(--ink-soft); font-size: 14px; }
+
+    .metrics {
+      margin: 32px 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .metric { padding: 22px 16px; }
+    .metric + .metric { border-left: 1px solid var(--line); }
+    .metric strong {
+      display: block;
+      color: var(--teal);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.1;
+    }
+    .metric span { display: block; margin-top: 8px; color: var(--ink-soft); font-size: 12px; }
+
+    details {
+      margin: 16px 0;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+    }
+    summary {
+      cursor: pointer;
+      min-height: 48px;
+      padding: 12px 44px 12px 16px;
+      position: relative;
+      font-weight: 750;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "+";
+      position: absolute;
+      right: 16px;
+      top: 9px;
+      color: var(--teal);
+      font-size: 22px;
+      font-weight: 400;
+    }
+    details[open] summary::after { content: "−"; }
+    .details__body { padding: 0 16px 16px; color: var(--ink-soft); }
+    .details__body ul { margin: 0; padding-left: 20px; }
+
+    .epilogue {
+      padding: 36px;
+      border: 1px solid var(--line-strong);
+      background: var(--ink);
+      color: #f8f3e9;
+    }
+    .epilogue h3 { margin: 0 0 16px; color: white; font-size: 26px; }
+    .epilogue p { max-width: 760px; margin: 0; color: #cbd3cf; }
+
+    .footer {
+      border-top: 1px solid var(--line-strong);
+      padding: 32px 16px 48px;
+      color: var(--ink-soft);
+      text-align: center;
+      font-size: 13px;
+    }
+    .footer code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    @media (max-width: 940px) {
+      .hero { grid-template-columns: 1fr; gap: 36px; }
+      .thesis { grid-template-columns: repeat(2, 1fr); }
+      .thesis__item:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
+      .thesis__item:nth-child(4) { border-top: 1px solid var(--line); }
+      .shell { grid-template-columns: 1fr; gap: 32px; }
+      .toc {
+        position: relative;
+        top: 0;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+      }
+      .toc__label { grid-column: 1 / -1; }
+      .toc a { border-left: 0; border-bottom: 2px solid transparent; }
+      .toc a[aria-current="true"] { border-left: 0; border-bottom-color: var(--teal); }
+      .flow { grid-template-columns: 1fr; gap: 8px; }
+      .flow__arrow { transform: rotate(90deg); min-height: 32px; }
+      .field-map { grid-template-columns: 1fr; }
+      .field-map__col + .field-map__col { border-left: 0; border-top: 1px solid var(--line); }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .metric:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
+      .metric:nth-child(4) { border-top: 1px solid var(--line); }
+    }
+
+    @media (max-width: 640px) {
+      .topbar__meta { display: none; }
+      .hero { padding-top: 48px; }
+      h1 { font-size: 42px; }
+      .thesis { grid-template-columns: 1fr; }
+      .thesis__item + .thesis__item { border-left: 0; border-top: 1px solid var(--line); }
+      .shell { margin-top: 48px; }
+      .toc { grid-template-columns: repeat(2, 1fr); }
+      .chapter__head { grid-template-columns: 48px minmax(0, 1fr); gap: 12px; }
+      .chapter__index { font-size: 24px; }
+      .decision-grid,
+      .case-compare { grid-template-columns: 1fr; }
+      .decision--wide { grid-column: auto; }
+      .rule-table { display: block; overflow-x: auto; white-space: normal; }
+      .change { grid-template-columns: 1fr; gap: 4px; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric + .metric { border-left: 0; border-top: 1px solid var(--line); }
+      .epilogue { padding: 24px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+
+    @media print {
+      .topbar, .toc, .skip-link { display: none; }
+      body { background: white; }
+      .hero, .thesis, .shell { width: 100%; }
+      .shell { display: block; margin-top: 40px; }
+      .chapter { break-inside: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="#top" aria-label="返回页面顶部">
+        <span class="brand__mark" aria-hidden="true">WK</span>
+        <span>Wizz Skill Keeper · 设计纪实</span>
+      </a>
+      <span class="topbar__meta">CASE STUDY / PRACTICAL GUIDE</span>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Product case study · 2026.09</p>
+        <h1 id="page-title">如何把一次安全审查，做成可复用的 Skill 守门方法</h1>
+        <p class="hero__lead">当 Agent 开始借助 Skill 读取文件、访问站点、调用账号与付费服务，风险就不再只藏在代码里，也藏在提示词如何施压、费用何时披露、权限如何被解释。本篇从一个真实的第三方 Skill 审查出发，拆解如何把零散问题变成一套可复用、可验证、对普通用户友好的审查方法。</p>
+      </div>
+      <aside class="hero__aside" aria-label="教程内容概览">
+        <p><strong>读完这篇教程，你会看到：</strong></p>
+        <ol class="learning-list">
+          <li>如何从真实风险案例中定义审查范围</li>
+          <li>如何划分扫描器与 Agent 的职责</li>
+          <li>如何用证据门槛减少误报与恐慌</li>
+          <li>如何把技术结论变成用户能行动的界面</li>
+        </ol>
+      </aside>
+    </section>
+
+    <section class="thesis" aria-label="核心结论">
+      <div class="thesis__item"><span class="thesis__kicker">起点</span><strong>不是“做一个扫描器”，而是保护基础用户免受高优先级 Skill 的误导。</strong></div>
+      <div class="thesis__item"><span class="thesis__kicker">关键转向</span><strong>扫描器采证；Agent 复核。关系图也只能来自核验后的结论。</strong></div>
+      <div class="thesis__item"><span class="thesis__kicker">设计原则</span><strong>默认通俗、技术证据隔离；风险与置信度、建议彼此分开。</strong></div>
+      <div class="thesis__item"><span class="thesis__kicker">最终形态</span><strong>一个本地、只读、双阶段、强制全证据覆盖的 Skill 守门人。</strong></div>
+    </section>
+
+    <div class="shell">
+      <nav class="toc" aria-label="章节导航">
+        <p class="toc__label">Decision threads</p>
+        <a href="#origin">01 问题从哪里来</a>
+        <a href="#scope">02 第一阶段做什么</a>
+        <a href="#architecture">03 谁负责判断</a>
+        <a href="#rules">04 风险规则如何收紧</a>
+        <a href="#field-test">05 真实审查如何反校准</a>
+        <a href="#interface">06 页面如何被磨出来</a>
+        <a href="#delivery">07 定位、传播与验证</a>
+      </nav>
+
+      <article class="content">
+        <section class="chapter" id="origin" aria-labelledby="origin-title">
+          <header class="chapter__head">
+            <span class="chapter__index">01</span>
+            <div>
+              <h2 id="origin-title">问题不是抽象想出来的：它先在一个“小红书 Skill”里露出形状</h2>
+              <p class="chapter__summary">最早的任务只是审查一个第三方 Skill。真正推动产品诞生的，是审查中反复出现的“披露不足、权限不清、营销诱导与实现漂移”。</p>
+            </div>
+          </header>
+
+          <div class="prose">
+            <p>被审查对象把内容生产、趋势查询、违禁词检测和第三方 RedFox 服务绑定在一起。静态检查发现：核心能力依赖第三方积分 API；用户内容会被发往外部站点；多个脚本会从 shell 配置中寻找 API Key；URL 抓取缺乏内网地址防护；提示词中还存在“通过 AI 检测”、强刺激营销与注册引导。</p>
+            <p>但这次审查也马上暴露出另一面：安全结论不能只凭一个敏感词或一个函数名。例如，文档声称会上报“原始文案”，脚本实际上只发送了来源字段；这不是“没有问题”，却也不是可以直接下隐私泄露实锤的证据。审查必须同时看声明、代码、调用点与数据流。</p>
+          </div>
+
+          <div class="decision-grid">
+            <article class="decision"><span class="decision__type">OBSERVED</span><h3>商业导流是安全体验的一部分</h3><p>注册、免费积分、订阅与扣费披露不是普通文案问题。它们会改变 Agent 的建议，并可能影响用户消费决策。</p></article>
+            <article class="decision"><span class="decision__type">OBSERVED</span><h3>“联网”必须落到数据流</h3><p>文件中出现网址，不等于数据外传；要追到真实请求调用、载荷字段、凭据与目标站点。</p></article>
+            <article class="decision"><span class="decision__type">OBSERVED</span><h3>文档与实现同样需要对照</h3><p>说明里承诺“本地”“只读”或“不上传”，都必须由代码路径支撑；反过来，文档夸大的危险也不能直接当作事实。</p></article>
+            <article class="decision"><span class="decision__type">OBSERVED</span><h3>普通用户需要的是行动建议</h3><p>源码行号不能替代结论。用户真正需要知道的是：能看到什么、会发到哪里、何时扣费、该限制什么。</p></article>
+          </div>
+
+          <p class="quote">“市面上充斥着许多有安全风险以及信息干扰的 Skill……基础用户很可能被高优先级、但存在风险甚至恶意的 Skill 所误导。”<small>由具体案例上升为产品问题的原始判断</small></p>
+
+          <div class="prose">
+            <h3>为什么这一段研究没有被丢掉</h3>
+            <p>研究过程中还追查了 RedFox 的接口路径、输入输出、榜单分类和异步任务设计，结论是它更像“多来源采集 + 自建数据池 + 派生榜单 + 异步任务 + 统一计费网关”，而非简单套壳。这个插曲为后续风险模型留下了重要习惯：不要仅凭品牌印象评价外部站点，要说清它是什么平台、规模与知名度如何、当前证据能否支持安全判断。</p>
+          </div>
+        </section>
+
+        <section class="chapter" id="scope" aria-labelledby="scope-title">
+          <header class="chapter__head">
+            <span class="chapter__index">02</span>
+            <div>
+              <h2 id="scope-title">先把“第一阶段”做窄：可见、可解释、不可擅自处置</h2>
+              <p class="chapter__summary">产品一开始就主动放弃了运行时防护与自动修复，把资源集中在本地静态证据、通俗报告与可视化理解上。</p>
+            </div>
+          </header>
+
+          <div class="decision-grid">
+            <article class="decision"><span class="decision__type">SELECTED</span><h3>本地只读扫描</h3><p>接受单个 Skill、工作区或全局目录；不执行目标脚本、不跟随外部链接、不调用付费接口，也不使用发现的凭据。</p></article>
+            <article class="decision"><span class="decision__type">SELECTED</span><h3>纯前端交互报告</h3><p>生成可独立打开的 HTML：扫描结果、单 Skill 分析与关系视图都在本地消费，并提醒范围扩大后的资源成本。</p></article>
+            <article class="decision"><span class="decision__type">SELECTED</span><h3>默认非技术，技术证据隔离</h3><p>普通页面只说影响、触发条件和建议；路径、源码摘录、真实域名、凭据名、哈希进入 evidence.json，只有主动请求才展开。</p></article>
+            <article class="decision"><span class="decision__type">SELECTED</span><h3>建议，不替用户执行</h3><p>可以建议保留、提醒、显式调用、限制或确认，但卸载、禁用、修改、隔离始终需要新的明确授权。</p></article>
+            <article class="decision decision--reject"><span class="decision__type">NOT IN PHASE 1</span><h3>运行时沙箱与网络拦截</h3><p>第一阶段不做动态执行、系统权限监控、网络代理或云端判定服务，因为它们会改变威胁模型、权限边界与实现成本。</p></article>
+            <article class="decision decision--reject"><span class="decision__type">REJECTED</span><h3>自动卸载或“一键隔离”</h3><p>静态命中不够支撑破坏性处置。产品从一开始就把建议与授权分开，后来又进一步提高了隔离门槛。</p></article>
+          </div>
+
+          <div class="prose">
+            <h3>可视化为什么选择力导向图</h3>
+            <p>用户需要看的不只是“哪个 Skill 有问题”，还包括 Skill 是否连接同一站点、共享凭据、重叠触发或构成冲突。力导向图适合把未知数量的 Skill 与外部资源放进同一张关系网络；但它不适合承担最终判断，所以关系边后来被纳入 Agent 复核。</p>
+            <p>单 Skill 页面则走相反方向：减少网络感，突出非技术结论、风险维度、置信度与行动建议。两种视图各自解决“全局理解”和“局部决策”，没有被强行做成同一种组件。</p>
+          </div>
+        </section>
+
+        <section class="chapter" id="architecture" aria-labelledby="architecture-title">
+          <header class="chapter__head">
+            <span class="chapter__index">03</span>
+            <div>
+              <h2 id="architecture-title">最重要的架构转向：扫描器没有资格给出最终答案</h2>
+              <p class="chapter__summary">第一版把静态规则当成判断器。用户连续追问“只有扫描器介入吗”，最终把系统重新分成证据采集与语义核验两层。</p>
+            </div>
+          </header>
+
+          <p class="quote">“本地扫描器对信息进行采集，Agent 对信息进行核验。比如审查一个 Skill 中是否含有恶意提示词，不应该是本地扫描器可以办到的。”<small>这句话重写了整个产品的职责边界</small></p>
+
+          <div class="architecture" role="img" aria-label="Wizz Skill Keeper 双阶段审查架构：扫描器采集证据，Agent 完成语义核验，最终生成通俗报告和关系图">
+            <div class="architecture__title"><strong>双阶段审查闭环</strong><span>candidate ≠ verdict</span></div>
+            <div class="flow">
+              <div class="flow__node">
+                <small>Stage 1 / local</small>
+                <strong>扫描器采集证据</strong>
+                <ul><li>文件、YAML 与哈希</li><li>提示词候选片段</li><li>代码能力与调用点</li><li>站点、凭据、付费信号</li><li>候选关系</li></ul>
+              </div>
+              <div class="flow__arrow" aria-hidden="true">→</div>
+              <div class="flow__node flow__node--accent">
+                <small>Stage 2 / semantic</small>
+                <strong>Agent 逐条复核</strong>
+                <ul><li>指令、示例还是安全文档</li><li>能力、影响与意图区分</li><li>调用路径是否真实可达</li><li>误报与不确定性</li><li>关系是否成立</li></ul>
+              </div>
+              <div class="flow__arrow" aria-hidden="true">→</div>
+              <div class="flow__node flow__node--final">
+                <small>Reviewed output</small>
+                <strong>正式结论与关系图</strong>
+                <ul><li>风险等级与置信度</li><li>通俗解释</li><li>具体建议</li><li>Agent 核验关系</li><li>完整证据覆盖声明</li></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-map" aria-label="扫描字段与复核字段的区别">
+            <div class="field-map__col"><h3>扫描阶段只允许候选</h3><code>candidateTags</code><code>candidateSeverity</code><code>candidateConfidence</code><code>verificationStatus: pending-agent-review</code></div>
+            <div class="field-map__col"><h3>详细证据留在独立文件</h3><code>evidence.json</code><code>candidateGraph</code><code>source location / excerpt / call site</code></div>
+            <div class="field-map__col"><h3>复核后才有最终字段</h3><code>finalSeverity</code><code>confidence</code><code>recommendation</code><code>verified graph nodes / edges</code></div>
+          </div>
+
+          <div class="prose">
+            <h3>关系图也被重新定义</h3>
+            <p>早期实现让扫描器直接生成关系图。用户指出，连接与冲突本身也是一种结论，不能把“同文件出现”“同域名字符串”之类候选关系画成事实。因此扫描报告中的用户关系图被清空，候选图只留在 evidence.json；只有 Agent 确认的节点与边才能进入正式报告。</p>
+            <h3>从“可选复核”变成“强制复核”</h3>
+            <p>产品化继续推进后，扫描成功不再等于审查完成。正式报告要求范围内每个 Skill 的每条证据都被复核：<code>evidenceReview.status</code> 必须是 <code>completed</code>，证据 ID 必须与 evidence.json 精确一致，候选关系也必须单独声明完成。缺失、多余、重复、未知 Skill 或关系未复核，review 命令都会拒绝生成最终报告。</p>
+            <p>“待 Agent 核验”因此不是装饰性文案，而是一个真实数据状态。只有用户明确要求“只采证据”，或缺少权限/证据确实无法继续时，流程才允许停在那里，并且不得把它包装成正式结论。</p>
+          </div>
+        </section>
+
+        <section class="chapter" id="rules" aria-labelledby="rules-title">
+          <header class="chapter__head">
+            <span class="chapter__index">04</span>
+            <div>
+              <h2 id="rules-title">规则不是越多越安全：真正的工作是不断收紧“可以下结论”的条件</h2>
+              <p class="chapter__summary">真实审查中的质疑，逐项改变了风险分类、严重度、建议与措辞。目标不是少报，而是只在证据够的时候说重话。</p>
+            </div>
+          </header>
+
+          <table class="rule-table">
+            <thead><tr><th>争议点</th><th>容易误判的旧逻辑</th><th>最终规则</th></tr></thead>
+            <tbody>
+              <tr><td>本地信息读取</td><td>只要读取 Skill 清单、历史记录或文件，就算数据风险。</td><td>若仅为声明功能在本地使用，不外发、不进入不可信执行链，也不复用到其他目的，只记录能力背景，不计风险。</td></tr>
+              <tr><td>商业诱导</td><td>只有确认扣费，才提高风险等级。</td><td>强制或反复的注册、免费积分、升级、订阅引导，即便尚未确认扣费，也可因影响用户决策而单独升高严重度。</td></tr>
+              <tr><td>隔离 / 停用</td><td>高风险标签可以直接对应隔离建议。</td><td>必须同时确认具体伤害、现实触发路径，以及更温和控制不足；否则优先限制范围、显式调用或关键操作确认。</td></tr>
+              <tr><td>执行任意代码</td><td>看到 <code>subprocess.run</code>、<code>eval</code> 或浏览器打开动作就下结论。</td><td>必须验证不可信输入 → 可达执行入口 → 约束不足 → 宿主/Agent/特权桥接影响。固定参数打开本地 HTML 不属于任意代码执行。</td></tr>
+              <tr><td>内容渲染</td><td>数据进入 script/HTML 上下文就叫“不安全内容渲染”。</td><td>先用中性的“内容渲染边界”。只有能给出输入、上下文、最小突破值、生成结果、触发路径与缺失防护时，才能升级为“不安全”。</td></tr>
+              <tr><td>外部站点</td><td>HTTPS、站点可访问或有一定规模即可暗示安全。</td><td>Agent 必须披露站点类型、规模、知名度与评价依据；证据不足时明确写 unknown / not-reviewed，不安抚也不恐吓。</td></tr>
+              <tr><td>分析自己</td><td>扫描全局目录时把审查器自身也纳入目标。</td><td>Wizz Skill Keeper 无条件排除自身包，避免自指令造成噪声、自误报或扭曲整体风险。</td></tr>
+            </tbody>
+          </table>
+
+          <div class="prose">
+            <h3>误报修复并不只是改正则</h3>
+            <p>曾经出现过典型自误报：Skill Keeper 自己的安全说明里写着“把要求忽略指令的文本当作不可信内容”，却被规则识别为优先级劫持。修正方法不是删掉这个标签，而是增加引用/审查语境识别，区分“真正要求忽略”与“描述需要检测的危险指令”。</p>
+            <p>另一个精度问题来自网络目的地：只要文件里有联网调用，旧规则会把同文件的所有 URL 都算作传输目标。后来目的地必须与调用点绑定，普通文档链接不再被混入数据外传结论。</p>
+          </div>
+
+          <details>
+            <summary>规则层还做过哪些小而关键的微调？</summary>
+            <div class="details__body">
+              <ul>
+                <li>支持嵌套 YAML、<code>&gt;-</code> 多行文本与简单内联 policy，避免合法 frontmatter 被漏读。</li>
+                <li>覆盖 <code>requests.request</code>、<code>axios.post</code>、动态 URL、解码后执行等语言变体。</li>
+                <li>把 paid quota / credits 纳入付费操作信号，但仍由 Agent 判断披露是否充分。</li>
+                <li>中高风险必须有具体、通俗、可执行的建议；info / low 风险不在界面展示建议，避免制造不必要的行动压力。</li>
+                <li>严重度、置信度和处置彼此分离：影响大不等于已确认，已确认也不自动等于卸载。</li>
+              </ul>
+            </div>
+          </details>
+        </section>
+
+        <section class="chapter" id="field-test" aria-labelledby="field-test-title">
+          <header class="chapter__head">
+            <span class="chapter__index">05</span>
+            <div>
+              <h2 id="field-test-title">真实目录不是演示数据：它反过来改写了产品</h2>
+              <p class="chapter__summary">对 WorkBuddy Skills 目录的审查把“理论上合理”的规则放到真实对象上，暴露出风险等级、处置和描述方式仍然过激。</p>
+            </div>
+          </header>
+
+          <div class="case-compare">
+            <article class="case">
+              <h3>skill-map__skillhub</h3>
+              <dl>
+                <dt>最初结论</dt><dd>高风险；读取本地数据、网页注入，并被怀疑可执行任意代码。</dd>
+                <dt>用户质疑</dt><dd>本地消费不应自动算风险；固定打开报告看不出任意代码执行路径。</dd>
+                <dt>重新取证</dt><dd><code>open/xdg-open</code> 只接收固定生成的 <code>output/map.html</code>；没有不可信输入控制宿主命令的证据。</dd>
+                <dt>最终校准</dt><dd>任意代码执行撤销；渲染问题先降为“内容渲染边界”。在没有推导出边界突破前，整体降为低风险、保留并提示。</dd>
+              </dl>
+            </article>
+            <article class="case case--alert">
+              <h3>小红书相关 Skill</h3>
+              <dl>
+                <dt>明确能力</dt><dd>请求会携带 API Key 与查询条件；部分路径关闭 HTTPS 身份校验；依赖第三方数据平台。</dd>
+                <dt>提示词问题</dt><dd>注册、免费积分、订阅与升级引导反复出现，费用规则披露不足。</dd>
+                <dt>规则变化</dt><dd>商业诱导被提升为独立高风险维度，不再等到“已经扣费”才处理。</dd>
+                <dt>处置克制</dt><dd>风险高不自动等于隔离；建议必须说明限制什么、何时确认、为什么更温和措施是否足够。</dd>
+              </dl>
+            </article>
+          </div>
+
+          <div class="prose">
+            <p>这轮真实审查还有一个细节：清点阶段识别到 2 个 Skill、40 个文件、约 972 KB；正式结论记录了 38 个被审查文件。更重要的不是数字本身，而是它证明了报告层必须区分“清点范围、实际证据与正式复核覆盖”，不能用一句“扫完了”掩盖边界。</p>
+            <p>最终结论也学会了一个克制动作：当证据只能证明能力和影响、无法证明作者主观恶意时，必须明确说“无法确认意图”。这不是退缩，而是把系统从情绪化标签拉回可验证事实。</p>
+          </div>
+        </section>
+
+        <section class="chapter" id="interface" aria-labelledby="interface-title">
+          <header class="chapter__head">
+            <span class="chapter__index">06</span>
+            <div>
+              <h2 id="interface-title">HTML 不是报告壳：它承担“不要误导用户”的最后一层责任</h2>
+              <p class="chapter__summary">页面经历了多轮重制。每一次微调都不是纯审美，而是在重新分配注意力、解释状态与引导下一步。</p>
+            </div>
+          </header>
+
+          <div class="change-log">
+            <div class="change"><div class="change__label">信息架构</div><div class="change__body"><strong>扫描结果优先，详情进入右侧抽屉</strong><p>去掉“本地只读诊断 · 默认非技术报告”“资源与范围”“分析边界”等占据首屏却不帮助决策的模块。卡片承担总览，抽屉承载深入分析。</p></div></div>
+            <div class="change"><div class="change__label">标签系统</div><div class="change__body"><strong>不再把所有 Tag 堆在同一个容器</strong><p>风险标签拆成“数据与权限、执行与完整性、提示与交互、费用与承诺”等维度；风险等级、置信度和建议使用不同视觉语法。</p></div></div>
+            <div class="change"><div class="change__label">关系视图</div><div class="change__body"><strong>经历过“无关系时隐藏”到“常驻展示”的反转</strong><p>早期为了减噪，页面只在有风险且有边时显示关系图；后来用户明确要求常驻，让“没有关系”也成为可感知结论。默认显示 Skill 与关联资源；若不存在 Skill 直接关联，则禁用下拉并隐藏“仅 Skill”。</p></div></div>
+            <div class="change"><div class="change__label">可交互性</div><div class="change__body"><strong>卡片高亮替代“选择 / 已选择”文字</strong><p>可点击与只读元素通过边界、hover、光标和层级区分；被选中卡片出现“查看详细分析”入口，不再增加呆板状态文案。</p></div></div>
+            <div class="change"><div class="change__label">动效</div><div class="change__body"><strong>从呼吸背景到单一的缓慢边框流动</strong><p>呼吸与流动叠加会冲突，高频流动又显得焦躁。最终只保留 5.6 秒一周的双束边框光带，色值从刺眼纯白改为低饱和 Aqua，并支持减少动态效果。</p></div></div>
+            <div class="change"><div class="change__label">视觉纪律</div><div class="change__body"><strong>2px 圆角、8px 间距节奏、小型化控件</strong><p>收敛过多圆角与大控件；重做下拉框；取消输入/选择控件的高亮边框，但仍保留可见的键盘焦点表现。浅色与深色模式跟随系统自动切换。</p></div></div>
+            <div class="change"><div class="change__label">响应式</div><div class="change__body"><strong>明确 540px 是产品模板的适配下限</strong><p>曾验证 320px / 375px，随后根据实际使用场景改为只保证 540px 及以上；540px 下保持单列，539px 以下不再继续压缩布局。</p></div></div>
+            <div class="change"><div class="change__label">抽屉行动区</div><div class="change__body"><strong>固定底部操作，不让正文滚动遮挡</strong><p>正文预留高度，行动按钮贴底；复核提示词不再占据页面。复制成功的 Toast 在抽屉水平与垂直居中，并明确引导用户回到对话窗口粘贴给 Agent。</p></div></div>
+            <div class="change"><div class="change__label">数据细节</div><div class="change__body"><strong>低风险隐藏建议后，列仍保持对齐</strong><p>扫描卡片采用固定三列，建议为空时保留位置。力导向图长文本在 28 字符后省略，同时写入 title、SVG title 与 aria-label，兼顾悬停与辅助技术。</p></div></div>
+            <div class="change"><div class="change__label">状态文案</div><div class="change__body"><strong>“已确认”改为“Agent 核验完成 / 证据充分”</strong><p>绿色传递流程完成与证据充分，而不是暗示 Skill 一定安全；风险等级继续独立显示。技术词“外部服务”也调整为“外部站点 / 数据平台 / 账号密钥”等更熟悉的表达。</p></div></div>
+          </div>
+
+          <details open>
+            <summary>一条没有被牺牲的无障碍底线</summary>
+            <div class="details__body"><p>抽屉支持遮罩与 Esc 关闭、焦点约束与返回；Toast 使用状态播报；长图节点有完整文本；减少动态效果时动画停止。视觉上取消“输入框选中高亮边框”并不等于取消键盘焦点，二者被分别处理。</p></div>
+          </details>
+        </section>
+
+        <section class="chapter" id="delivery" aria-labelledby="delivery-title">
+          <header class="chapter__head">
+            <span class="chapter__index">07</span>
+            <div>
+              <h2 id="delivery-title">从“安全工具”到“Skill 守门人”：定位决定了如何被理解</h2>
+              <p class="chapter__summary">产品传播没有把重点放在“发现了多少危险”，而是强调证据、复核与用户控制。验证标准也从“扫得快”转向“证据是否被完整理解”。</p>
+            </div>
+          </header>
+
+          <div class="prose">
+            <p>最终定位不是“替用户判断一切的安全裁判”，而是一个在使用前帮助用户看清权限、数据去向、费用与提示词影响的 Skill 守门人。Keeper 这个角色强调的是守住边界：它会提醒、解释、建议，但不会越过用户自动处置。</p>
+            <p>传播文案也围绕同一承诺展开：<strong>先看清，再安心使用。</strong>背景叙事强调 Skill 正在成为 Agent 扩展能力的重要入口；功能叙事则说明 Wizz Skill Keeper 会检查权限、外部站点、提示词操控、费用与冲突，并由 Agent 逐条复核证据。</p>
+          </div>
+
+          <div class="decision-grid">
+            <article class="decision"><span class="decision__type">POSITIONING</span><h3>守门，而不是代替用户做决定</h3><p>把能力定义为“审查、解释与提醒”，避免让安全产品本身成为新的高优先级指令源。</p></article>
+            <article class="decision"><span class="decision__type">MESSAGE</span><h3>先讲必要性，再讲检测能力</h3><p>从文件、账号、外部站点与付费操作进入 Agent 工作流的变化讲起，让用户先理解为什么需要审查。</p></article>
+            <article class="decision"><span class="decision__type">TONE</span><h3>不靠恐惧推动使用</h3><p>不把未知站点描述成危险，不把能力信号写成恶意事实；用明确证据和具体行动替代笼统警告。</p></article>
+            <article class="decision"><span class="decision__type">LOCALIZATION</span><h3>用户语言优先，中文默认</h3><p>报告、建议与界面标签使用用户当前语言；无法判断时默认简体中文，产品描述提供中英双语版本。</p></article>
+          </div>
+
+          <div class="metrics" aria-label="验证指标">
+            <div class="metric"><strong>25 / 25</strong><span>v0.2.0 合成风险标签最终命中</span></div>
+            <div class="metric"><strong>0 / 3</strong><span>安全对照误报</span></div>
+            <div class="metric"><strong>20 / 20</strong><span>当前回归测试，本次重新执行通过</span></div>
+            <div class="metric"><strong>2 stages</strong><span>本地扫描采证 + Agent 语义核验</span></div>
+          </div>
+
+          <div class="prose">
+            <h3>验证策略本身也发生过转向</h3>
+            <p>早期规模评测覆盖了 10 / 50 / 100 个 Skill：约 0.049s / 0.068s / 0.088s，峰值内存约 19.2 / 22.8 / 23.5 MiB，本地扫描不消耗模型 Token。黑盒质量最初只有 14/25 命中、2/3 安全对照误报；修复后达到 22/25 与 0/3，最终回归达到 25/25。</p>
+            <p>随后用户明确取消规模压测作为主要门槛，改用一个代表性真实样例做 one-shot 闭环：扫描器出候选，Agent 读 evidence.json 完成语义复核，review 命令生成正式报告和关系图。这个转向承认了一点：对本地脚本来说，速度不是最稀缺的能力，判断质量和可追溯性才是。</p>
+          </div>
+
+          <details>
+            <summary>跨平台适配结论（只确认，没有实施）</summary>
+            <div class="details__body">
+              <ul>
+                <li><strong>WorkBuddy：</strong>本地导入基本兼容；若上架开放平台，需要补齐 description_zh / description_en / version / author 等字段并验证 assets 引用。</li>
+                <li><strong>千问办公：</strong>文件结构基本兼容，安装目录改为 <code>~/.qwenworkcn/skills/</code>；仍需验证 Python、HTML 打开方式及其他本地依赖。</li>
+                <li><strong>豆包工作：</strong>官方资料确认本地文件、浏览器与飞书权限能力，但未找到完整公开 Skill 包规范，因此不能正式宣称兼容，需产品内导入测试。</li>
+              </ul>
+            </div>
+          </details>
+
+          <div class="epilogue">
+            <h3>最后形成的产品观</h3>
+            <p>Wizz Skill Keeper 的价值不在于“比人更快贴标签”，而在于把安全判断拆成可检查的责任链：本地工具负责尽量完整地收集事实，Agent 负责理解语境和影响，界面负责把结论讲得通俗但不过度，处置权仍留给用户。它最终守住的，不只是 Skill 的安全，也是用户对 Agent 结论的信任。</p>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>一篇关于证据采集、Agent 核验、风险表达与审查界面设计的实践教程。生成日期：2026-09-29。</p>
+  </footer>
+
+  <script>
+    const sections = [...document.querySelectorAll('.chapter')];
+    const links = [...document.querySelectorAll('.toc a')];
+    const linkById = new Map(links.map(link => [link.getAttribute('href').slice(1), link]));
+
+    const activate = id => {
+      links.forEach(link => link.removeAttribute('aria-current'));
+      linkById.get(id)?.setAttribute('aria-current', 'true');
+    };
+
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible[0]) activate(visible[0].target.id);
+    }, { rootMargin: '-18% 0px -68% 0px', threshold: 0 });
+
+    sections.forEach(section => observer.observe(section));
+    links.forEach(link => link.addEventListener('click', () => {
+      activate(link.getAttribute('href').slice(1));
+    }));
+    activate(sections[0]?.id);
+  </script>
+</body>
+</html>

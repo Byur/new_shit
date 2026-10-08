@@ -1,54 +1,58 @@
-# Remotion video
+# new_shit monorepo
 
-<p align="center">
-  <a href="https://github.com/remotion-dev/logo">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng">
-      <img alt="Animated Remotion Logo" src="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif">
-    </picture>
-  </a>
-</p>
+new_shit 是一个使用 npm workspaces 管理的个人项目 monorepo。源码、运行脚本、数据和生成产物按子包分治，monorepo 根目录只负责 workspace 配置和跨包入口，不承载各包的 output/、build/ 或 out/。
 
-Welcome to your Remotion project!
+## 子包
 
-## Commands
+| 子包 | 职责 | 包级文档 |
+| --- | --- | --- |
+| context-hub/ | TypeScript + Node.js 的 SQLite 数据层、固定 HTML 报告和 MCP 服务 | [context-hub/README.md](context-hub/README.md) |
+| remotion/ | Remotion 视频源码、媒体、Studio、渲染脚本和视频 QA 产物 | [remotion/README.md](remotion/README.md) |
+| demos/ | 独立实验和可运行演示，不承担生产包职责 | [demos/README.md](demos/README.md) |
 
-**Install Dependencies**
+## 安装
 
-```console
-npm i
-```
+在 monorepo 根目录执行：
 
-**Start Preview**
+~~~bash
+npm install
+~~~
 
-```console
-npm run dev
-```
+运行时使用 Node.js；各包的 TypeScript 源码遵循对应包 README 中的运行约定。
 
-**Render video**
+## 根目录入口
 
-```console
-npx remotion render
-```
+根 package.json 只提供 Remotion 和 Context Hub 的常用跨包入口：
 
-**Upgrade Remotion**
+~~~bash
+npm run remotion:dev
+npm run remotion:build
+npm run remotion:lint
+npm run remotion:render-story
+npm run context-hub:test
+npm run context-hub:mcp
+~~~
 
-```console
-npx remotion upgrade
-```
+demos 不注册根目录命令。运行 demo 时进入 demos/，使用该包自己的脚本：
 
-## Docs
+~~~bash
+cd demos
+npm run motion-ai-kit:serve
+~~~
 
-Get started with Remotion by reading the [fundamentals page](https://www.remotion.dev/docs/the-fundamentals).
+## 产物与数据归属
 
-## Help
+- remotion/build/：Remotion bundle 产物。
+- remotion/out/：视频渲染和帧级 QA 产物。
+- remotion/output/：Remotion 项目的交付视频、转场对比和 QA 证据。
+- demos/output/：demo 自己的浏览器验证和演示产物。
+- context-hub/data/：SQLite 数据库、compact memory 和固定模板 HTML 报告。
 
-We provide help on our [Discord server](https://discord.gg/6VzzNDwUwV).
+根目录不创建共享的 output/、build/ 或 out/ 目录。每个子包通过自己的 .gitignore 管理可再生或临时产物。
 
-## Issues
+## 设计原则
 
-Found an issue with Remotion? [File an issue here](https://github.com/remotion-dev/remotion/issues/new).
-
-## License
-
-Note that for some entities a company license is needed. [Read the terms here](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).
+- 包内源码、脚本、配置和产物路径相对包根目录定义。
+- 需要长期维护的数据使用结构化 SQLite 记录，不把完整历史上下文反复写回 automation memory。
+- HTML 报告使用固定模板生成，报告数据和呈现层分离。
+- 本地 MCP 服务默认监听 127.0.0.1:7777，使用后应停止服务。

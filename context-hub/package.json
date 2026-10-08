@@ -1,0 +1,21 @@
+{
+  "name": "context-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A local SQLite-backed archive for scheduled-workspace context, reports, and compact memory.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "scripts": {
+    "init": "node --experimental-strip-types src/cli.ts init",
+    "import": "node --experimental-strip-types src/cli.ts import",
+    "report": "node --experimental-strip-types src/cli.ts report",
+    "memory": "node --experimental-strip-types src/cli.ts memory",
+    "prompt": "node --experimental-strip-types src/cli.ts prompt",
+    "stats": "node --experimental-strip-types src/cli.ts stats",
+    "mcp": "node --experimental-strip-types src/mcp-server.ts",
+    "dashboard": "node --experimental-strip-types src/server.ts",
+    "test": "node --experimental-strip-types --test"
+  }
+}

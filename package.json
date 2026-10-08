@@ -5,29 +5,29 @@
   "repository": {},
   "license": "UNLICENSED",
   "private": true,
-  "dependencies": {
-    "@remotion/cli": "4.0.525",
-    "@remotion/zod-types": "4.0.525",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "remotion": "4.0.525",
-    "zod": "4.5.4",
-    "@remotion/tailwind-v4": "4.0.525",
-    "tailwindcss": "4.0.0"
-  },
-  "devDependencies": {
-    "@remotion/eslint-config-flat": "4.0.525",
-    "@types/react": "19.2.7",
-    "@types/web": "0.0.166",
-    "eslint": "9.19.0",
-    "prettier": "3.8.1",
-    "typescript": "5.9.3"
-  },
+  "workspaces": [
+    "context-hub",
+    "remotion",
+    "demos"
+  ],
   "scripts": {
-    "dev": "remotion studio",
-    "build": "remotion bundle",
-    "upgrade": "remotion upgrade",
-    "lint": "eslint src && tsc"
+    "dev": "npm run dev --workspace remotion",
+    "build": "npm run build --workspace remotion",
+    "upgrade": "npm run upgrade --workspace remotion",
+    "lint": "npm run lint --workspace remotion",
+    "remotion:dev": "npm run dev --workspace remotion",
+    "remotion:build": "npm run build --workspace remotion",
+    "remotion:lint": "npm run lint --workspace remotion",
+    "remotion:render-story": "npm run render:story --workspace remotion",
+    "context-hub:init": "npm run init --workspace context-hub",
+    "context-hub:import": "npm run import --workspace context-hub",
+    "context-hub:report": "npm run report --workspace context-hub",
+    "context-hub:memory": "npm run memory --workspace context-hub",
+    "context-hub:prompt": "npm run prompt --workspace context-hub",
+    "context-hub:stats": "npm run stats --workspace context-hub",
+    "context-hub:mcp": "npm run mcp --workspace context-hub",
+    "context-hub:dashboard": "npm run dashboard --workspace context-hub",
+    "context-hub:test": "npm run test --workspace context-hub"
   },
   "sideEffects": [
     "*.css"

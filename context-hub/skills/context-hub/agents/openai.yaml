@@ -1,0 +1,12 @@
+interface:
+  display_name: "Context Hub"
+  short_description: "Compact context and report archive"
+  default_prompt: "Use $context-hub to retrieve compact workspace context and sync a generated report."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "context-hub"
+      description: "Local Context Hub MCP service for compact context and report data"
+      transport: "streamable_http"
+      url: "http://127.0.0.1:7777/mcp"

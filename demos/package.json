@@ -1,0 +1,11 @@
+{
+  "name": "@new-shit/demos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone demos maintained in the new_shit monorepo.",
+  "repository": {},
+  "license": "UNLICENSED",
+  "scripts": {
+    "motion-ai-kit:serve": "python3 -m http.server 4173 --directory motion-ai-kit-demo"
+  }
+}

@@ -1,0 +1,171 @@
+# Context Hub compact memory · AI 技术博客精读
+
+workspace: ai
+source: /Users/byur/Documents/优化是个好事
+generated_at: 2026-10-08T14:18:29.864Z
+dedup_items: 146
+
+## 读取规则
+- 定时任务只读取本文件，不读取历史 HTML 正文。
+- 去重优先匹配 URL，其次匹配标准化标题；需要正文时再按 source_path 精确打开单个报告。
+- 新运行结束后只追加新的结构化 item 和一行 run 摘要。
+
+## 最近报告
+- 2026-08-05 | deepread | AI 技术博客精读｜2026-08-05 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-08-05.html
+- 2026-08-04 | deepread | AI 技术博客精读 2026-08-04 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-08-04.html
+- 2026-08-03 | deepread | AI 技术博客精读 2026-08-03 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-08-03.html
+- 2026-07-31 | deepread | AI 技术博客精读 2026-07-31 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-07-31.html
+- 2026-07-30 | deepread | AI 技术博客精读 2026-07-30 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-07-30.html
+- 2026-07-29 | deepread | AI 技术博客精读 2026-07-29 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-07-29.html
+- 2026-07-28 | deepread | AI 技术博客精读 2026-07-28｜边界正在变成运行时 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-07-28.html
+- 2026-07-27 | deepread | AI 技术博客精读｜2026-07-27 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-07-27.html
+- 2026-07-24 | deepread | AI 技术博客精读｜2026-07-24 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-07-24.html
+- 2026-07-23 | deepread | AI 技术博客精读 2026-07-23｜把科学 AI 做成基础设施 | /Users/byur/Documents/优化是个好事/ai-tech-deepread-2026-07-23.html
+
+## 永久排重来源
+- OpenAI | Research Index | https://openai.com/research/index/ | first_seen=2026-10-08T14:10:02.391Z
+- Google / Gemini | Google Gemini Blog | https://blog.google/products/gemini/ | first_seen=2026-10-08T14:10:02.391Z
+- OpenAI | News | https://openai.com/news/ | first_seen=2026-10-08T14:10:02.391Z
+- Anthropic | Alignment Science | https://alignment.anthropic.com/ | first_seen=2026-10-08T14:10:02.391Z
+- Anthropic | Frontier Red Team | https://red.anthropic.com/ | first_seen=2026-10-08T14:10:02.391Z
+- Google Research | Empirical Research Assistance (ERA): From Nature publication to catalyzing Computational Discovery | https://research.google/blog/empirical-research-assistance-era-from-nature-publication-to-catalyzing-computational-discovery/ | first_seen=2026-10-08T14:10:02.391Z
+- Anthropic | Project Glasswing: An initial update | https://www.anthropic.com/research/glasswing-initial-update | first_seen=2026-10-08T14:10:02.391Z
+- OpenAI | An OpenAI model has disproved a central conjecture in discrete geometry | https://openai.com/index/model-disproves-discrete-geometry-conjecture/ | first_seen=2026-10-08T14:10:02.391Z
+- Google / Gemini | Google Research Blog | https://research.google/blog/ | first_seen=2026-10-08T14:10:02.391Z
+- Google / Gemini | Google DeepMind Blog | https://deepmind.google/discover/blog/ | first_seen=2026-10-08T14:10:02.391Z
+- Anthropic | Research | https://www.anthropic.com/research | first_seen=2026-10-08T14:10:02.391Z
+- x.com | OpenAI X | https://x.com/OpenAI | first_seen=2026-10-08T14:10:02.391Z
+- Google DeepMind | Gemini Robotics-ER 1.6: Powering real-world robotics tasks through enhanced embodied reasoning | https://deepmind.google/blog/gemini-robotics-er-1-6/ | first_seen=2026-10-08T14:10:02.394Z
+- x.com | Anthropic X | https://x.com/AnthropicAI | first_seen=2026-10-08T14:10:02.394Z
+- x.com | DeepMind X | https://x.com/GoogleDeepMind | first_seen=2026-10-08T14:10:02.394Z
+- Anthropic Alignment Science Blog | Teaching Claude Why | https://alignment.anthropic.com/2026/teaching-claude-why/ | first_seen=2026-10-08T14:10:02.394Z
+- Anthropic | Anthropic Research · Teaching Claude why | https://www.anthropic.com/research/teaching-claude-why | first_seen=2026-10-08T14:10:02.394Z
+- OpenAI | Advancing content provenance for a safer, more transparent AI ecosystem | https://openai.com/index/advancing-content-provenance/ | first_seen=2026-10-08T14:10:02.394Z
+- Google / Gemini | Google AI Blog | https://blog.google/technology/ai/ | first_seen=2026-10-08T14:10:02.394Z
+- Google / Gemini | Google DeepMind Blog | https://deepmind.google/blog/ | first_seen=2026-10-08T14:10:02.394Z
+- Google DeepMind | Reimagining the mouse pointer for the AI era | https://deepmind.google/blog/ai-pointer/ | first_seen=2026-10-08T14:10:02.396Z
+- maximmassenkoff.com | Maxim Massenkoff homepage | https://maximmassenkoff.com/ | first_seen=2026-10-08T14:10:02.396Z
+- OpenAI | Dreaming: Better memory for a more helpful ChatGPT | https://openai.com/index/chatgpt-memory-dreaming/ | first_seen=2026-10-08T14:10:02.396Z
+- OpenAI | Research News | https://openai.com/news/research/ | first_seen=2026-10-08T14:10:02.396Z
+- Google / Gemini | Gemini updates | https://gemini.google/updates/ | first_seen=2026-10-08T14:10:02.396Z
+- OpenAI | OpenAI Research | https://openai.com/research | first_seen=2026-10-08T14:10:02.396Z
+- Anthropic | Coding agents in the social sciences | https://www.anthropic.com/research/coding-agents-social-sciences | first_seen=2026-10-08T14:10:02.396Z
+- OpenAI | Introducing GPT‑Rosalind for life sciences research | https://openai.com/index/introducing-gpt-rosalind/ | first_seen=2026-10-08T14:10:02.397Z
+- Anthropic | Making Claude a chemist | https://www.anthropic.com/research/making-claude-a-chemist | first_seen=2026-10-08T14:10:02.397Z
+- Anthropic | Engineering | https://www.anthropic.com/engineering | first_seen=2026-10-08T14:10:02.397Z
+- Google DeepMind | Co-Scientist: A multi-agent AI partner to accelerate research | https://deepmind.google/blog/co-scientist-a-multi-agent-ai-partner-to-accelerate-research/ | first_seen=2026-10-08T14:10:02.397Z
+- OpenAI | Research Index | https://openai.com/research/ | first_seen=2026-10-08T14:10:02.399Z
+- Anthropic | Natural Language Autoencoders: Turning Claude’s thoughts into text | https://www.anthropic.com/research/natural-language-autoencoders | first_seen=2026-10-08T14:10:02.399Z
+- OpenAI | Advancing voice intelligence with new models in the API | https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/ | first_seen=2026-10-08T14:10:02.399Z
+- Google / Gemini | The Keyword Innovation & AI | https://blog.google/innovation-and-ai/ | first_seen=2026-10-08T14:10:02.399Z
+- Google | DiffusionGemma: 4x faster text generation | https://blog.google/innovation-and-ai/technology/developers-tools/diffusion-gemma-faster-text-generation/ | first_seen=2026-10-08T14:10:02.399Z
+- Anthropic | Anthropic, `Auditing hidden objectives`, https://www.anthropic.com/research/auditing-hidden-objectives | https://www.anthropic.com/research/auditing-hidden-objectives | first_seen=2026-10-08T14:10:02.401Z
+- OpenAI | OpenAI, `Monitoring internal coding agents for misalignment`, https://openai.com/index/monitoring-internal-coding-agents-misalignment/ | https://openai.com/index/monitoring-internal-coding-agents-misalignment/ | first_seen=2026-10-08T14:10:02.401Z
+- Google / Gemini | Google DeepMind, `An approach to technical AGI safety and security`, https://deepmind.google/research/publications/an-approach-to-technical-agi-safety-and-secur | https://deepmind.google/research/publications/an-approach-to-technical-agi-safety-and-security/ | first_seen=2026-10-08T14:10:02.401Z
+- Google DeepMind | Measuring the impact of learning with AI in Sierra Leone and beyond | https://deepmind.google/blog/measuring-the-impact-of-learning-with-ai-in-sierra-leone-and-beyond/ | first_seen=2026-10-08T14:10:02.402Z
+- Anthropic | Project Deal | https://www.anthropic.com/features/project-deal | first_seen=2026-10-08T14:10:02.402Z
+- OpenAI | Strengthening societal resilience with Rosalind Biodefense | https://openai.com/index/strengthening-societal-resilience-with-rosalind-biodefense/ | first_seen=2026-10-08T14:10:02.402Z
+- Google DeepMind | Investing in multi-agent AI safety research | https://deepmind.google/blog/investing-in-multi-agent-ai-safety-research/ | first_seen=2026-10-08T14:10:02.404Z
+- OpenAI | Introducing new capabilities to GPT-Rosalind | https://openai.com/index/introducing-new-capabilities-to-gpt-rosalind/ | first_seen=2026-10-08T14:10:02.404Z
+- Anthropic | Paving the way for agents in biology | https://www.anthropic.com/research/agents-in-biology | first_seen=2026-10-08T14:10:02.404Z
+- OpenAI | Introducing GPT‑5.5 | https://openai.com/index/introducing-gpt-5-5/ | first_seen=2026-10-08T14:10:02.405Z
+- Google | Gemini 3.5: frontier intelligence with action | https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/ | first_seen=2026-10-08T14:10:02.405Z
+- Anthropic | What we learned mapping a year’s worth of AI-enabled cyber threats | https://www.anthropic.com/news/AI-enabled-cyber-threats-mitre-attack | first_seen=2026-10-08T14:10:02.405Z
+- Anthropic | Donating our open-source alignment tool | https://www.anthropic.com/research/donating-open-source-petri | first_seen=2026-10-08T14:10:02.406Z
+- OpenAI | Deployment Safety Hub | https://deploymentsafety.openai.com/ | first_seen=2026-10-08T14:10:02.406Z
+- OpenAI | GPT‑5.5 Instant System Card | https://openai.com/index/gpt-5-5-instant-system-card/ | first_seen=2026-10-08T14:10:02.406Z
+- Google | Introducing Gemma 4 12B: a unified, encoder-free multimodal model | https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemma-4-12b/ | first_seen=2026-10-08T14:10:02.406Z
+- OpenAI | How an astrophysicist uses Codex to help simulate black holes | https://openai.com/index/using-codex-to-simulate-black-holes/ | first_seen=2026-10-08T14:10:02.408Z
+- Google | Fluid, natural voice translation with Gemini 3.5 Live Translate | https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-live-3-5-translate/ | first_seen=2026-10-08T14:10:02.408Z
+- Anthropic | An update on recent Claude Code quality reports | https://www.anthropic.com/engineering/april-23-postmortem | first_seen=2026-10-08T14:10:02.408Z
+- Google Research | Unlocking dependable responses with Gemini Enterprise Agent Platform’s Agentic RAG | https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/ | first_seen=2026-10-08T14:10:02.409Z
+- OpenAI | OpenAI Product News | https://openai.com/news/product/ | first_seen=2026-10-08T14:10:02.409Z
+- Anthropic | Agentic coding and persistent returns to expertise | https://www.anthropic.com/research/claude-code-expertise | first_seen=2026-10-08T14:10:02.409Z
+- OpenAI | Introducing ChatGPT Images 2.0 | https://openai.com/index/introducing-chatgpt-images-2-0/ | first_seen=2026-10-08T14:10:02.409Z
+- x.com | Google AI X | https://x.com/GoogleAI | first_seen=2026-10-08T14:10:02.411Z
+- Anthropic | Measuring LLMs' impact on N-day exploits | https://www.anthropic.com/research/n-days | first_seen=2026-10-08T14:10:02.411Z
+- OpenAI | A near-autonomous AI chemist improves a challenging reaction in medicinal chemistry | https://openai.com/index/ai-chemist-improves-reaction/ | first_seen=2026-10-08T14:10:02.411Z
+- Google Research | New framework for auditing machine unlearning | https://research.google/blog/new-framework-for-auditing-machine-unlearning/ | first_seen=2026-10-08T14:10:02.411Z
+- OpenAI | Applied AI | https://openai.com/news/applied-ai/ | first_seen=2026-10-08T14:10:02.412Z
+- Anthropic | Project Fetch: Phase two | https://www.anthropic.com/research/project-fetch-phase-two | first_seen=2026-10-08T14:10:02.413Z
+- OpenAI | Using AI to help physicians diagnose rare genetic diseases affecting children | https://openai.com/index/diagnose-rare-childhood-diseases/ | first_seen=2026-10-08T14:10:02.413Z
+- Google Research | From pixels to planning: Earth AI for nature restoration | https://research.google/blog/from-pixels-to-planning-earth-ai-for-nature-restoration/ | first_seen=2026-10-08T14:10:02.413Z
+- Anthropic | Measuring LLMs’ ability to develop exploits | https://www.anthropic.com/research/exploit-evals | first_seen=2026-10-08T14:10:02.415Z
+- Google DeepMind | Securing the future of AI agents | https://deepmind.google/blog/securing-the-future-of-ai-agents/ | first_seen=2026-10-08T14:10:02.415Z
+- OpenAI | Predicting model behavior before release by simulating deployment | https://openai.com/index/deployment-simulation/ | first_seen=2026-10-08T14:10:02.415Z
+- OpenAI | Patch the Planet: a Daybreak initiative to support open source maintainers | https://openai.com/index/patch-the-planet/ | first_seen=2026-10-08T14:10:02.416Z
+- Anthropic Engineering | How we contain Claude across products | https://www.anthropic.com/engineering/how-we-contain-claude | first_seen=2026-10-08T14:10:02.416Z
+- Google Research | Research into how AI can help users understand skin conditions | https://research.google/blog/research-into-how-ai-can-help-users-understand-skin-conditions/ | first_seen=2026-10-08T14:10:02.416Z
+- Anthropic Alignment Science Blog | Diffuse AI Control on Fuzzy Tasks | https://alignment.anthropic.com/2026/diffuse-ai-control/ | first_seen=2026-10-08T14:10:02.418Z
+- Google Research | Thinking to recall: How reasoning unlocks parametric knowledge in LLMs | https://research.google/blog/thinking-to-recall-how-reasoning-unlocks-parametric-knowledge-in-llms/ | first_seen=2026-10-08T14:10:02.418Z
+- OpenAI | How GPT-5 helped immunologist Derya Unutmaz solve a 3-year-old mystery | https://openai.com/index/gpt-5-immunology-mystery/ | first_seen=2026-10-08T14:10:02.418Z
+- OpenAI | Previewing GPT-5.6 Sol: a next-generation model | https://openai.com/index/previewing-gpt-5-6-sol/ | first_seen=2026-10-08T14:10:02.419Z
+- OpenAI | GPT-5.6 Preview System Card | https://deploymentsafety.openai.com/gpt-5-6-preview | first_seen=2026-10-08T14:10:02.419Z
+- Anthropic | Anthropic Economic Index report: Cadences | https://www.anthropic.com/research/economic-index-june-2026-report | first_seen=2026-10-08T14:10:02.419Z
+- Google Research | Accelerating Gemini Nano models on Pixel with frozen Multi-Token Prediction | https://research.google/blog/accelerating-gemini-nano-models-on-pixel-with-frozen-multi-token-prediction/ | first_seen=2026-10-08T14:10:02.419Z
+- Anthropic | Introducing Claude Tag | https://www.anthropic.com/news/introducing-claude-tag | first_seen=2026-10-08T14:10:02.421Z
+- Google | Introducing computer use in Gemini 3.5 Flash | https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-computer-use-gemini-3-5-flash/ | first_seen=2026-10-08T14:10:02.421Z
+- OpenAI | Building self-improving tax agents with Codex | https://openai.com/index/building-self-improving-tax-agents-with-codex/ | first_seen=2026-10-08T14:10:02.422Z
+- Google Research | Optimizing cloud economics with linear elastic caching | https://research.google/blog/optimizing-cloud-economics-with-linear-elastic-caching/ | first_seen=2026-10-08T14:10:02.422Z
+- Anthropic | Claude Fable 5 and Claude Mythos 5 | https://www.anthropic.com/news/claude-fable-5-mythos-5 | first_seen=2026-10-08T14:10:02.422Z
+- Google Research | SensorFM: Towards a general intelligence and interface for wearable health data | https://research.google/blog/sensorfm-towards-a-general-intelligence-and-interface-for-wearable-health-data/ | first_seen=2026-10-08T14:10:02.424Z
+- OpenAI | Separating signal from noise in coding evaluations | https://openai.com/index/separating-signal-from-noise-coding-evaluations/ | first_seen=2026-10-08T14:10:02.424Z
+- Anthropic | A safe off-switch for dangerous AI biology knowledge | https://www.anthropic.com/research/off-switch-dual-use | first_seen=2026-10-08T14:10:02.424Z
+- OpenAI | Introducing GeneBench-Pro | https://openai.com/index/introducing-genebench-pro/ | first_seen=2026-10-08T14:10:02.427Z
+- Anthropic Frontier Red Team | Claude plays robotics | https://www.anthropic.com/research/claude-plays-robotics | first_seen=2026-10-08T14:10:02.427Z
+- Google Research | Introducing TabFM: A zero-shot foundation model for tabular data | https://research.google/blog/introducing-tabfm-a-zero-shot-foundation-model-for-tabular-data/ | first_seen=2026-10-08T14:10:02.427Z
+- Anthropic | A global workspace in language models | https://www.anthropic.com/research/global-workspace | first_seen=2026-10-08T14:10:02.428Z
+- Google Research | The power of collaboration: How we can reduce traffic congestion | https://research.google/blog/the-power-of-collaboration-how-we-can-reduce-traffic-congestion/ | first_seen=2026-10-08T14:10:02.428Z
+- OpenAI | Introducing GPT-Live | https://openai.com/index/introducing-gpt-live/ | first_seen=2026-10-08T14:10:02.428Z
+- OpenAI | GPT-Red: Unlocking Self-Improvement for Robustness | https://openai.com/index/unlocking-self-improvement-gpt-red/ | first_seen=2026-10-08T14:10:02.430Z
+- Google Research | Towards demystifying the creativity of diffusion models | https://research.google/blog/towards-demystifying-the-creativity-of-diffusion-models/ | first_seen=2026-10-08T14:10:02.430Z
+- Anthropic | How Claude's values vary by model and language | https://www.anthropic.com/research/claude-values-models-languages | first_seen=2026-10-08T14:10:02.430Z
+- Google DeepMind | Our approach to bioresilience | https://deepmind.google/blog/our-approach-to-bioresilience/ | first_seen=2026-10-08T14:10:02.431Z
+- Anthropic | More details on Fable 5’s cyber safeguards and our jailbreak framework | https://www.anthropic.com/news/fable-safeguards-jailbreak-framework | first_seen=2026-10-08T14:10:02.431Z
+- OpenAI | GPT-5.6: Frontier intelligence that scales with your ambition | https://openai.com/index/gpt-5-6/ | first_seen=2026-10-08T14:10:02.431Z
+- Anthropic | How Canada uses Claude: Findings from the Anthropic Economic Index | https://www.anthropic.com/research/how-canada-uses-claude | first_seen=2026-10-08T14:10:02.433Z
+- Google DeepMind | Empowering India’s next generation of innovators with ATL Saathi | https://deepmind.google/blog/empowering-indias-next-generation-of-innovators-with-atl-saathi/ | first_seen=2026-10-08T14:10:02.433Z
+- OpenAI | A scorecard for the AI age | https://openai.com/index/a-scorecard-for-the-ai-age/ | first_seen=2026-10-08T14:10:02.433Z
+- Google Research | Expanding our Heat Resilience data to 50+ global cities | https://research.google/blog/expanding-our-heat-resilience-data-to-50-global-cities/ | first_seen=2026-10-08T14:10:02.434Z
+- Google / Gemini | The Keyword / DeepMind | https://blog.google/technology/google-deepmind/ | first_seen=2026-10-08T14:10:02.434Z
+- Anthropic | Introducing Claude Sonnet 5 | https://www.anthropic.com/news/claude-sonnet-5 | first_seen=2026-10-08T14:10:02.434Z
+- OpenAI | Safety and alignment in an era of long-horizon models | https://openai.com/index/safety-alignment-long-horizon-models/ | first_seen=2026-10-08T14:10:02.434Z
+- OpenAI | Security | https://openai.com/news/security/ | first_seen=2026-10-08T14:10:02.436Z
+- Google DeepMind | Introducing Gemini 3.5 Flash Cyber | https://deepmind.google/blog/introducing-gemini-3-5-flash-cyber/ | first_seen=2026-10-08T14:10:02.436Z
+- Anthropic Alignment Science Blog | Agentic Misalignment in Summer 2026 | https://alignment.anthropic.com/2026/agentic-misalignment-summer-2026/ | first_seen=2026-10-08T14:10:02.436Z
+- OpenAI | OpenAI and Hugging Face partner to address security incident during model evaluation | https://openai.com/index/hugging-face-model-evaluation-security-incident/ | first_seen=2026-10-08T14:10:02.436Z
+- Google Cloud / Google DeepMind | Accelerating the frontiers of scientific discovery: Google’s $40M commitment to the Genesis Mission | https://cloud.google.com/blog/topics/public-sector/accelerating-frontiers-of-scientific-discovery-40-million-dollar-commitment-genesis-mission | first_seen=2026-10-08T14:10:02.437Z
+- Anthropic | Claude Science, an AI workbench for scientists, is now available | https://www.anthropic.com/news/claude-science-ai-workbench | first_seen=2026-10-08T14:10:02.437Z
+- OpenAI | Advancing the next era of national science | https://openai.com/index/advancing-the-next-era-of-national-science/ | first_seen=2026-10-08T14:10:02.437Z
+- Anthropic | Government of Alberta uses Claude to find and fix cybersecurity vulnerabilities across government systems | https://www.anthropic.com/news/alberta-government-claude-cybersecurity | first_seen=2026-10-08T14:10:02.439Z
+- Google Research | Towards a quantum computer that learns from its errors | https://www.research.google/blog/towards-a-quantum-computer-that-learns-from-its-errors/ | first_seen=2026-10-08T14:10:02.439Z
+- OpenAI | How agents are transforming work | https://openai.com/index/how-agents-are-transforming-work/ | first_seen=2026-10-08T14:10:02.439Z
+- Google Research | SymptomAI: Towards a conversational AI agent for everyday symptom assessment | https://research.google/blog/symptomai-towards-a-conversational-ai-agent-for-everyday-symptom-assessment/ | first_seen=2026-10-08T14:10:02.440Z
+- Anthropic | Introducing Claude Opus 5 | https://www.anthropic.com/news/claude-opus-5 | first_seen=2026-10-08T14:10:02.440Z
+- OpenAI | Launching Health in ChatGPT | https://openai.com/index/health-in-chatgpt/ | first_seen=2026-10-08T14:10:02.440Z
+- Google / Google DeepMind | Start building with Nano Banana 2 Lite and Gemini Omni Flash | https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-flash-nano-banana-2-lite/ | first_seen=2026-10-08T14:10:02.443Z
+- OpenAI | Core dump epidemiology: fixing an 18-year-old bug | https://openai.com/index/core-dump-epidemiology-data-infrastructure-bug/ | first_seen=2026-10-08T14:10:02.443Z
+- OpenAI | Engineering | https://openai.com/news/engineering/ | first_seen=2026-10-08T14:10:02.443Z
+- Anthropic | News | https://www.anthropic.com/news | first_seen=2026-10-08T14:10:02.443Z
+- Anthropic | Redeploying Fable 5 | https://www.anthropic.com/news/redeploying-fable-5 | first_seen=2026-10-08T14:10:02.443Z
+- Anthropic | The Making of Claude Code | https://www.anthropic.com/features/making-of-claude-code | first_seen=2026-10-08T14:10:02.445Z
+- Google / Gemini | Google DeepMind Publications | https://deepmind.google/research/publications/ | first_seen=2026-10-08T14:10:02.445Z
+- Google DeepMind | Visual prompt engineering for video models | https://deepmind.google/research/publications/264392/ | first_seen=2026-10-08T14:10:02.445Z
+- OpenAI | How enabling two settings tripled our scores on the ARC-AGI-3 benchmark | https://openai.com/index/how-two-settings-tripled-our-arc-agi-3-scores/ | first_seen=2026-10-08T14:10:02.445Z
+- Google DeepMind | Unlocking UK house-building with AI-accelerated planning | https://deepmind.google/blog/unlocking-uk-house-building-with-ai-accelerated-planning/ | first_seen=2026-10-08T14:10:02.446Z
+- Anthropic | Introducing Claude for Teachers | https://www.anthropic.com/news/claude-for-teachers | first_seen=2026-10-08T14:10:02.446Z
+- OpenAI | Introducing OpenAI Presence | https://openai.com/index/introducing-openai-presence/ | first_seen=2026-10-08T14:10:02.446Z
+- OpenAI | How to manage AI investments in the agentic era | https://openai.com/index/managing-ai-investments-in-agentic-era/ | first_seen=2026-10-08T14:10:02.448Z
+- Anthropic | Introducing a way to reflect on how you use Claude | https://www.anthropic.com/news/reflect-with-claude | first_seen=2026-10-08T14:10:02.448Z
+- Google / NotebookLM | Do better research with NotebookLM | https://blog.google/innovation-and-ai/products/notebooklm/better-research-notebooklm/ | first_seen=2026-10-08T14:10:02.448Z
+- OpenAI | AI Adoption | https://openai.com/news/ai-adoption/ | first_seen=2026-10-08T14:10:02.448Z
+- Google / Gemini | Google Developers Blog | https://developers.googleblog.com/ | first_seen=2026-10-08T14:10:02.448Z
+- OpenAI | How GPT-5.6 fuses frontier intelligence with frontier efficiency | https://openai.com/index/gpt-5-6-frontier-intelligence-efficiency/ | first_seen=2026-10-08T14:10:02.450Z
+- Anthropic | Discovering cryptographic weaknesses with Claude | https://www.anthropic.com/research/discovering-cryptographic-weaknesses | first_seen=2026-10-08T14:10:02.450Z
+- Google DeepMind | Towards Structural Understanding of LLM Overthinking | https://deepmind.google/research/publications/203490/ | first_seen=2026-10-08T14:10:02.450Z
+- Google Research | Science One Framework: A verifiable autonomous research framework via Chain-of-Evidence | https://research.google/blog/science-one-framework-a-verifiable-autonomous-research-framework-via-chain-of-evidence/ | first_seen=2026-10-08T14:10:02.451Z
+- Anthropic | UST is bringing Claude to physical AI | https://www.anthropic.com/news/ust-claude | first_seen=2026-10-08T14:10:02.451Z
+- OpenAI | Scientific computing in the age of agentic AI | https://openai.com/index/scientific-computing-agentic-ai/ | first_seen=2026-10-08T14:10:02.451Z
+- Google | Introducing Gemini 3.6 Flash, 3.5 Flash-Lite, and 3.5 Flash Cyber | https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/ | first_seen=2026-10-08T14:10:02.452Z
+- Anthropic Frontier Red Team | Project Pilot: Can AI control a drone? | https://www.anthropic.com/research/project-pilot | first_seen=2026-10-08T14:10:02.452Z
+- OpenAI | How AI is expanding what people do at work | https://openai.com/index/how-ai-is-expanding-what-people-do-at-work/ | first_seen=2026-10-08T14:10:02.452Z

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Motion AI Kit Demo Explorer</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23080b0a'/%3E%3Cpath d='M14 42L27 16L36 34L43 22L50 42H14Z' fill='%237ef0b5'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-band" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Motion AI Kit / local demo</p>
+          <h1 id="page-title">把动画专家放进 coding agent 里</h1>
+          <p class="lede">
+            这个小实验不假装拥有你的 Motion+ 账号，而是把 AI Kit 的核心工作流做成可点击的本地页面：
+            上下文、性能审计、CSS spring、transition 编辑。
+          </p>
+        </div>
+        <div class="motion-stage" aria-label="Motion AI Kit capability map">
+          <div class="orbit orbit-a"></div>
+          <div class="orbit orbit-b"></div>
+          <div class="node node-agent">Agent</div>
+          <div class="node node-docs">Docs</div>
+          <div class="node node-score">Score</div>
+          <div class="node node-css">CSS</div>
+        </div>
+      </section>
+
+      <section class="workbench" aria-label="Motion AI Kit interactive demo">
+        <aside class="scenario-panel">
+          <p class="panel-label">Try a request</p>
+          <button class="scenario-button is-active" type="button" data-scenario="context">
+            做一个磁性 hover 卡片
+          </button>
+          <button class="scenario-button" type="button" data-scenario="audit">
+            审计首页里偏慢的动效
+          </button>
+          <button class="scenario-button" type="button" data-scenario="spring">
+            生成一个 snappy but bouncy 的 CSS spring
+          </button>
+          <button class="scenario-button" type="button" data-scenario="editor">
+            可视化微调 transition
+          </button>
+        </aside>
+
+        <section class="agent-panel" aria-live="polite">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-label">Agent output</p>
+              <h2 id="scenario-title">Docs & examples context</h2>
+            </div>
+            <span id="scenario-badge" class="badge">Free context</span>
+          </div>
+          <p id="scenario-copy" class="scenario-copy"></p>
+          <div id="scenario-pills" class="pills"></div>
+          <pre class="code-window"><code id="scenario-code"></code></pre>
+        </section>
+      </section>
+
+      <section class="audit-band" aria-labelledby="audit-title">
+        <div class="section-heading">
+          <p class="panel-label">MotionScore idea</p>
+          <h2 id="audit-title">同一个动效，成本可以差一个等级</h2>
+        </div>
+        <div class="audit-grid">
+          <article class="score-card">
+            <div class="score-top">
+              <span class="rank rank-d">D</span>
+              <div>
+                <h3>Layout-triggering</h3>
+                <p>动画改 `left`，浏览器每帧都要重新布局和重绘。</p>
+              </div>
+            </div>
+            <div class="animation-lane lane-slow">
+              <span class="moving-dot dot-slow"></span>
+            </div>
+            <code>left: 240px</code>
+          </article>
+
+          <article class="score-card">
+            <div class="score-top">
+              <span class="rank rank-s">S</span>
+              <div>
+                <h3>Compositor only</h3>
+                <p>动画改 `transform`，主要交给合成线程，通常更稳。</p>
+              </div>
+            </div>
+            <div class="animation-lane lane-fast">
+              <span class="moving-dot dot-fast"></span>
+            </div>
+            <code>transform: translateX(240px)</code>
+          </article>
+        </div>
+      </section>
+
+      <section class="spring-band" aria-labelledby="spring-title">
+        <div class="section-heading">
+          <p class="panel-label">CSS spring generation</p>
+          <h2 id="spring-title">不用运行时，也能拿到 spring 手感</h2>
+        </div>
+        <div class="spring-lab">
+          <div class="controls" role="group" aria-label="Spring presets">
+            <button class="preset-button is-active" type="button" data-preset="snappy">Snappy</button>
+            <button class="preset-button" type="button" data-preset="bouncy">Bouncy</button>
+            <button class="preset-button" type="button" data-preset="gentle">Gentle</button>
+          </div>
+          <div class="spring-preview">
+            <div id="spring-card" class="spring-card">hover me</div>
+          </div>
+          <pre class="css-output"><code id="spring-code"></code></pre>
+        </div>
+      </section>
+
+      <section class="notes-band" aria-labelledby="notes-title">
+        <h2 id="notes-title">这个 demo 真实展示了什么</h2>
+        <div class="note-grid">
+          <article>
+            <h3>AI Kit 是 agent 工具，不是 UI 组件库</h3>
+            <p>它给 Cursor、Codex、Claude Code 等 agent 加上 Motion 专用上下文、命令和 MCP 能力。</p>
+          </article>
+          <article>
+            <h3>它的价值在“建议能落代码”</h3>
+            <p>审计结果会指出具体文件、慢在哪里、怎么改，而不仅是说“动画不好”。</p>
+          </article>
+          <article>
+            <h3>高级能力依赖 Motion+</h3>
+            <p>示例源码、MotionScore、CSS spring 生成和 transition editor 都需要 Motion+ 才能完整使用。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
