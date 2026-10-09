@@ -1,5 +1,5 @@
 import path from 'node:path';
-import {DEFAULT_DB_PATH, compactPrompt, getOverview, importWorkspace, listItems, listReports, openDatabase, workspaceIdFor, writeFixedReport} from './lib.ts';
+import {DEFAULT_DB_PATH, checkSources, compactPrompt, getOverview, importWorkspace, listItems, listReports, openDatabase, workspaceIdFor} from './lib.ts';
 
 type JsonRpcRequest = {
   jsonrpc: '2.0';
@@ -13,7 +13,7 @@ type McpOptions = {dbPath?: string; headers?: Record<string, string | undefined>
 
 export const LEGACY_PROTOCOL_VERSION = '2025-11-25';
 export const MODERN_PROTOCOL_VERSION = '2026-07-28';
-export const SERVER_INFO = {name: 'context-hub', version: '0.2.0'};
+export const SERVER_INFO = {name: 'context-hub', version: '0.3.0'};
 
 const readOnly = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false};
 const writesLocalData = {readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false};
@@ -21,50 +21,50 @@ const writesLocalData = {readOnlyHint: false, destructiveHint: false, idempotent
 export const TOOL_DEFINITIONS = [
   {
     name: 'context_hub_list_workspaces',
-    description: 'List locally imported scheduled-task workspaces and their compact-memory paths.',
+    description: '列出已导入的定时任务工作区及其源目录、automation、memory 和 compact context 路径。',
     inputSchema: {type: 'object', properties: {}, additionalProperties: false},
     annotations: readOnly,
   },
   {
     name: 'context_hub_overview',
-    description: 'Return counts, recent runs, recent reports, and memory-size metadata for one workspace.',
-    inputSchema: {type: 'object', properties: {workspace: {type: 'string', default: 'ai'}}, additionalProperties: false},
+    description: '返回一个工作区的运行数、报告数、来源数、最近报告和 memory/compact metadata；不读取报告正文。',
+    inputSchema: {type: 'object', properties: {workspace: {type: 'string', default: 'ai', description: '工作区 slug，例如 ai 或 ai-trending。'}}, additionalProperties: false},
     annotations: readOnly,
   },
   {
     name: 'context_hub_get_compact_context',
-    description: 'Return the minimal prompt-safe context for a workspace. Prefer this over reading raw memory or historical HTML.',
-    inputSchema: {type: 'object', properties: {workspace: {type: 'string', default: 'ai'}, limit: {type: 'integer', minimum: 1, maximum: 500, default: 80}}, additionalProperties: false},
+    description: '返回工作区的最小可注入上下文，包括近期报告指针和有限来源索引；不要用它替代完整 memory 或历史 HTML。',
+    inputSchema: {type: 'object', properties: {workspace: {type: 'string', default: 'ai', description: '工作区 slug，例如 ai 或 ai-trending。'}, limit: {type: 'integer', minimum: 1, maximum: 100, default: 20, description: '返回的近期来源条数上限。'}}, additionalProperties: false},
     annotations: readOnly,
   },
   {
     name: 'context_hub_search_reports',
-    description: 'Search normalized report metadata and summaries without loading original HTML.',
-    inputSchema: {type: 'object', properties: {workspace: {type: 'string', default: 'ai'}, query: {type: 'string', default: ''}, limit: {type: 'integer', minimum: 1, maximum: 100, default: 20}}, additionalProperties: false},
+    description: '按标题、类型或日期搜索报告 metadata/summary；不加载原始 HTML，适合定位单份历史报告。',
+    inputSchema: {type: 'object', properties: {workspace: {type: 'string', default: 'ai', description: '工作区 slug。'}, query: {type: 'string', default: '', description: '匹配标题、报告类型或日期的关键词；留空返回最近报告。'}, limit: {type: 'integer', minimum: 1, maximum: 100, default: 20, description: '返回结果数量上限。'}}, additionalProperties: false},
     annotations: readOnly,
   },
   {
     name: 'context_hub_search_sources',
-    description: 'Search the permanent URL/title dedup index for a workspace.',
-    inputSchema: {type: 'object', properties: {workspace: {type: 'string', default: 'ai'}, query: {type: 'string', default: ''}, limit: {type: 'integer', minimum: 1, maximum: 200, default: 40}}, additionalProperties: false},
+    description: '在工作区的永久 URL/title 来源索引中搜索来源；索引同时包含报告链接和序列化来源记录，返回 metadata，不读取报告正文。',
+    inputSchema: {type: 'object', properties: {workspace: {type: 'string', default: 'ai', description: '工作区 slug。'}, query: {type: 'string', default: '', description: '匹配来源标题、URL 或 provider 的关键词；留空返回最近来源。'}, limit: {type: 'integer', minimum: 1, maximum: 200, default: 40, description: '返回结果数量上限。'}}, additionalProperties: false},
+    annotations: readOnly,
+  },
+  {
+    name: 'context_hub_check_sources',
+    description: '批量检查候选 URL/title 是否在工作区排重窗口内出现；报告链接和序列化来源记录都属于权威历史，任一在窗口内匹配都会返回 eligible=false。返回 eligible、匹配记录、最近出现日期和 nextEligibleOn，不返回报告正文。',
+    inputSchema: {type: 'object', required: ['candidates'], properties: {workspace: {type: 'string', default: 'ai-trending', description: '用于排重的工作区 slug。'}, candidates: {type: 'array', minItems: 1, maxItems: 50, description: '待检查候选；每项必须有 URL，可选标题用于标准化标题匹配。', items: {type: 'object', required: ['url'], properties: {url: {type: 'string', description: '候选来源的规范 URL。'}, title: {type: 'string', description: '候选标题；可选，用于 URL 不同但标题相同的匹配。'}}, additionalProperties: false}}, windowDays: {type: 'integer', minimum: 1, maximum: 366, default: 60, description: '向当前日期回看的排重天数。'}, asOf: {type: 'string', description: '可选的核验日期，格式 YYYY-MM-DD；省略时使用当前 Asia/Shanghai 日期。'}}, additionalProperties: false},
     annotations: readOnly,
   },
   {
     name: 'context_hub_get_report',
-    description: 'Read one normalized report record. Full structured content is opt-in; raw source HTML is never returned by default.',
-    inputSchema: {type: 'object', required: ['reportId'], properties: {workspace: {type: 'string', default: 'ai'}, reportId: {type: 'string'}, includeContent: {type: 'boolean', default: false}}, additionalProperties: false},
+    description: '读取一份已索引报告的 metadata；仅在 includeContent=true 时返回解析后的结构化内容，默认不返回原始 HTML。',
+    inputSchema: {type: 'object', required: ['reportId'], properties: {workspace: {type: 'string', default: 'ai', description: '报告所属工作区 slug。'}, reportId: {type: 'string', description: 'context_hub_search_reports 或 overview 返回的报告 ID。'}, includeContent: {type: 'boolean', default: false, description: '是否附带解析后的结构化正文；只为复盘单份报告时开启。'}}, additionalProperties: false},
     annotations: readOnly,
   },
   {
     name: 'context_hub_sync_workspace',
-    description: 'Import local HTML reports and automation memory into SQLite, update dedup items, compact memory, and fixed report samples.',
-    inputSchema: {type: 'object', required: ['sourcePath', 'workspace', 'kind'], properties: {sourcePath: {type: 'string', description: 'Local report workspace directory'}, memoryPath: {type: 'string', description: 'Local automation memory.md path'}, workspace: {type: 'string', enum: ['ai', 'ai-trending']}, kind: {type: 'string', enum: ['deepread', 'trending', 'all']}, dbPath: {type: 'string'}}, additionalProperties: false},
-    annotations: writesLocalData,
-  },
-  {
-    name: 'context_hub_export_fixed_report',
-    description: 'Render one normalized report through the fixed self-contained HTML template.',
-    inputSchema: {type: 'object', required: ['reportId'], properties: {workspace: {type: 'string', default: 'ai'}, reportId: {type: 'string'}, outputPath: {type: 'string'}}, additionalProperties: false},
+    description: '将 Agent 生成的 HTML 和 automation memory 导入 SQLite，幂等更新报告/来源索引，并重写 compact memory 指针；不渲染或修改 HTML。',
+    inputSchema: {type: 'object', required: ['sourcePath', 'workspace', 'kind'], properties: {sourcePath: {type: 'string', description: '包含报告 HTML 的本地工作区目录。'}, memoryPath: {type: 'string', description: 'automation memory.md 的本地路径；可选。'}, workspace: {type: 'string', enum: ['ai', 'ai-trending'], description: '目标工作区 slug。'}, kind: {type: 'string', enum: ['deepread', 'trending', 'all'], description: '导入类型；决定报告解析和索引范围。'}, dbPath: {type: 'string', description: 'SQLite 文件绝对路径；省略时使用服务默认数据库。'}}, additionalProperties: false},
     annotations: writesLocalData,
   },
 ];
@@ -122,10 +122,11 @@ async function callTool(name: string, args: Record<string, any>, {dbPath = DEFAU
       return db.prepare(`SELECT id, slug, name, source_path AS sourcePath, automation_id AS automationId, status, schedule, memory_path AS memoryPath
         FROM workspaces ORDER BY updated_at DESC`).all();
     }
-    const workspaceId = workspaceOrThrow(db, input.workspace || 'ai');
+    const workspaceSlug = name === 'context_hub_check_sources' ? input.workspace || 'ai-trending' : input.workspace || 'ai';
+    const workspaceId = workspaceOrThrow(db, workspaceSlug);
     if (name === 'context_hub_overview') return getOverview(db, workspaceId);
     if (name === 'context_hub_get_compact_context') {
-      const limit = boundedInt(input.limit, 80, 500);
+      const limit = boundedInt(input.limit, 20, 100);
       const snapshot = db.prepare(`SELECT source_path AS sourcePath, source_chars AS sourceChars, item_count AS itemCount,
         compact_path AS compactPath, compact_sha256 AS compactSha256, created_at AS createdAt
         FROM memory_snapshots WHERE workspace_id = ? LIMIT 1`).get(workspaceId) ?? null;
@@ -139,16 +140,13 @@ async function callTool(name: string, args: Record<string, any>, {dbPath = DEFAU
       const results = listItems(db, workspaceId, String(input.query || ''));
       return {workspace: input.workspace || 'ai', results: results.slice(0, boundedInt(input.limit, 40, 200))};
     }
-    if (name === 'context_hub_get_report') return getReport(db, workspaceId, input.reportId, input.includeContent === true);
-    if (name === 'context_hub_export_fixed_report') {
-      const report = getReport(db, workspaceId, input.reportId, true);
-    const resolvedDbPath = input.dbPath ? path.resolve(input.dbPath) : dbPath;
-    const outputPath = input.outputPath
-        ? path.resolve(input.outputPath)
-        : path.join(path.dirname(resolvedDbPath), 'reports', `${path.basename(report.sourcePath, '.html')}.fixed.html`);
-      const written = await writeFixedReport({...report, content: report.content}, outputPath);
-      return {written, reportId: report.id, title: report.title, reportDate: report.reportDate};
+    if (name === 'context_hub_check_sources') {
+      const candidates = Array.isArray(input.candidates) ? input.candidates : [];
+      if (!candidates.length) throw new Error('candidates must contain at least one URL');
+      if (candidates.length > 50) throw new Error('candidates cannot contain more than 50 entries');
+      return {workspace: workspaceSlug, ...checkSources(db, workspaceId, candidates, input.windowDays, input.asOf)};
     }
+    if (name === 'context_hub_get_report') return getReport(db, workspaceId, input.reportId, input.includeContent === true);
     throw new Error(`unknown tool: ${name}`);
   } finally {
     db.close();

@@ -62,7 +62,6 @@ export interface ImportSummary {
   importedReports: number;
   uniqueSources: number;
   compactPath: string;
-  fixedReportPaths: string[];
 }
 
 type DatabaseHandle = DatabaseSync;
@@ -70,7 +69,6 @@ type DatabaseHandle = DatabaseSync;
 export const PROJECT_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 export const DEFAULT_DB_PATH = path.join(PROJECT_ROOT, 'data', 'context-hub.sqlite');
 export const DEFAULT_EXPORT_DIR = path.join(PROJECT_ROOT, 'data', 'exports');
-export const DEFAULT_REPORT_DIR = path.join(PROJECT_ROOT, 'data', 'reports');
 
 const now = () => new Date().toISOString();
 const digest = (value) => createHash('sha256').update(value).digest('hex');
@@ -104,6 +102,24 @@ function decodeEntities(value = '') {
 
 export function stripHtml(value: string = ''): string {
   return decodeEntities(value.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
+}
+
+export function normalizeTitle(value: string = ''): string {
+  return stripHtml(value).normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+
+function normalizeSourceUrl(value: string = ''): string {
+  try {
+    const parsed = new URL(value.trim());
+    parsed.hash = '';
+    if (parsed.hostname.toLowerCase() === 'github.com') {
+      parsed.search = '';
+      parsed.pathname = parsed.pathname.replace(/\/+$/, '').replace(/\.git$/i, '');
+    }
+    return parsed.toString().replace(/\/$/, '');
+  } catch {
+    return value.trim().replace(/\/+$/, '');
+  }
 }
 
 function allMatches(source, expression) {
@@ -385,21 +401,11 @@ export async function importWorkspace({sourceDir, memoryPath, dbPath = DEFAULT_D
   }
   db.close();
   const exportDir = path.join(path.dirname(dbPath), 'exports');
-  const reportDir = path.join(path.dirname(dbPath), 'reports');
   const compactPath = await exportCompactMemory({dbPath, workspaceId, outDir: exportDir});
-  const latestByKind = new Map();
-  for (const report of inserted) {
-    const previous = latestByKind.get(report.kind);
-    if (!previous || report.reportDate > previous.reportDate) latestByKind.set(report.kind, report);
-  }
-  const fixedReportPaths = [];
-  for (const report of latestByKind.values()) {
-    fixedReportPaths.push(await writeFixedReport(report, path.join(reportDir, `${path.basename(report.sourcePath, '.html')}.fixed.html`)));
-  }
   const countDb = openDatabase(dbPath);
   const sourceCount = countDb.prepare('SELECT COUNT(*) AS count FROM items WHERE workspace_id = ? AND url <> \'\'').get(workspaceId).count;
   countDb.close();
-  const summary = {workspaceId, kind, importedReports: inserted.length, uniqueSources: sourceCount, compactPath, fixedReportPaths};
+  const summary = {workspaceId, kind, importedReports: inserted.length, uniqueSources: sourceCount, compactPath};
   return summary;
 }
 
@@ -438,18 +444,96 @@ export function listItems(db: DatabaseHandle, workspaceId: string, query: string
 
 export function listReports(db: DatabaseHandle, workspaceId: string, query: string = ''): Record<string, unknown>[] {
   const term = `%${query}%`;
-  return db.prepare(`SELECT id, kind, title, report_date, source_path, sha256, content_json
-    FROM documents WHERE workspace_id = ? AND (title LIKE ? OR kind LIKE ? OR report_date LIKE ?)
-    ORDER BY report_date DESC, created_at DESC LIMIT 100`).all(workspaceId, term, term, term)
-    .map((report) => ({...report, content: JSON.parse(report.content_json || '{}'), content_json: undefined}));
+  return db.prepare(`SELECT d.id, d.kind, d.title, d.report_date, d.source_path, d.sha256,
+      COALESCE(r.summary, '') AS summary,
+      (SELECT COUNT(*) FROM links l WHERE l.document_id = d.id) AS source_count
+    FROM documents d LEFT JOIN runs r ON r.id = d.run_id
+    WHERE d.workspace_id = ? AND (d.title LIKE ? OR d.kind LIKE ? OR d.report_date LIKE ?)
+    ORDER BY d.report_date DESC, d.created_at DESC LIMIT 100`).all(workspaceId, term, term, term)
+    .map((report) => ({...report, sourceCount: report.source_count, source_count: undefined}));
+}
+
+function dateOnly(value: string): string {
+  return String(value || '').slice(0, 10);
+}
+
+function shiftDate(value: string, days: number): string {
+  const date = new Date(`${dateOnly(value)}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return '';
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function todayInShanghai(): string {
+  return new Intl.DateTimeFormat('en-CA', {timeZone: 'Asia/Shanghai'}).format(new Date());
+}
+
+function sourceHistory(db: DatabaseHandle, workspaceId: string): Record<string, unknown>[] {
+  return db.prepare(`WITH history AS (
+      SELECT i.id, i.kind, i.provider, i.title, i.url, i.published_at,
+        i.document_id AS documentId, i.updated_at AS lastUpdatedAt
+      FROM items i
+      WHERE i.workspace_id = ? AND i.url <> ''
+      UNION
+      SELECT 'report-link:' || l.id AS id, 'report-link' AS kind, '' AS provider,
+        l.label AS title, l.url, '' AS published_at, l.document_id AS documentId,
+        l.created_at AS lastUpdatedAt
+      FROM links l
+      WHERE l.workspace_id = ? AND l.url <> ''
+    )
+    SELECT h.id, h.kind, h.provider, h.title, h.url, h.published_at,
+      h.documentId, h.lastUpdatedAt,
+      MIN(d.report_date) AS firstSeenReportDate,
+      MAX(d.report_date) AS lastSeenReportDate
+    FROM history h
+    LEFT JOIN documents d ON d.id = h.documentId
+    GROUP BY h.id, h.kind, h.provider, h.title, h.url, h.published_at, h.documentId, h.lastUpdatedAt
+    ORDER BY COALESCE(lastSeenReportDate, lastUpdatedAt) DESC`).all(workspaceId, workspaceId);
+}
+
+export function checkSources(db: DatabaseHandle, workspaceId: string, candidates: Array<{url: string; title?: string}>, windowDays: number = 60, asOf: string = todayInShanghai()): Record<string, unknown> {
+  const boundedWindow = Math.max(1, Math.min(Number(windowDays) || 60, 366));
+  const reportDate = dateOnly(asOf) || todayInShanghai();
+  const cutoffDate = shiftDate(reportDate, -(boundedWindow - 1));
+  const history = sourceHistory(db, workspaceId);
+  const results = candidates.map((candidate) => {
+    const url = String(candidate.url || '').trim();
+    const urlKey = normalizeSourceUrl(url);
+    const title = String(candidate.title || '').trim();
+    const titleKey = normalizeTitle(title);
+    const matches = history.filter((item) => normalizeSourceUrl(String(item.url || '')) === urlKey || (titleKey && normalizeTitle(String(item.title || '')) === titleKey));
+    const recentMatches = matches.filter((item) => {
+      const lastSeen = dateOnly(String(item.lastSeenReportDate || item.lastUpdatedAt || ''));
+      return lastSeen && lastSeen >= cutoffDate && lastSeen <= reportDate;
+    });
+    const latestSeen = recentMatches.map((item) => dateOnly(String(item.lastSeenReportDate || item.lastUpdatedAt || ''))).sort().at(-1) || '';
+    const reasons = [...new Set(recentMatches.flatMap((item) => [normalizeSourceUrl(String(item.url || '')) === urlKey ? 'url' : '', titleKey && normalizeTitle(String(item.title || '')) === titleKey ? 'title' : ''].filter(Boolean)))];
+    return {
+      url,
+      title,
+      eligible: recentMatches.length === 0,
+      recentlySeen: recentMatches.length > 0,
+      reasons,
+      latestSeenReportDate: latestSeen || null,
+      nextEligibleOn: latestSeen ? shiftDate(latestSeen, boundedWindow) : null,
+      matches: recentMatches.slice(0, 5).map((item) => ({
+        id: item.id,
+        title: item.title,
+        url: item.url,
+        provider: item.provider,
+        firstSeenReportDate: item.firstSeenReportDate,
+        lastSeenReportDate: item.lastSeenReportDate,
+      })),
+    };
+  });
+  return {asOf: reportDate, windowDays: boundedWindow, cutoffDate, results};
 }
 
 export async function exportCompactMemory({dbPath = DEFAULT_DB_PATH, workspaceId, outDir = DEFAULT_EXPORT_DIR}: {dbPath?: string; workspaceId: string; outDir?: string}): Promise<string> {
   const db = openDatabase(dbPath);
   const workspace = db.prepare('SELECT * FROM workspaces WHERE id = ?').get(workspaceId);
   if (!workspace) throw new Error(`workspace not found: ${workspaceId}`);
-  const items = db.prepare(`SELECT provider, title, url, published_at, MIN(created_at) AS first_seen
-    FROM items WHERE workspace_id = ? AND url <> '' GROUP BY fingerprint ORDER BY first_seen ASC`).all(workspaceId);
+  const sourceCount = db.prepare(`SELECT COUNT(DISTINCT fingerprint) AS count FROM items WHERE workspace_id = ? AND url <> ''`).get(workspaceId).count;
   const reports = db.prepare(`SELECT kind, title, report_date, source_path FROM documents
     WHERE workspace_id = ? ORDER BY report_date DESC, created_at DESC LIMIT 10`).all(workspaceId);
   const body = [
@@ -458,18 +542,16 @@ export async function exportCompactMemory({dbPath = DEFAULT_DB_PATH, workspaceId
     `workspace: ${workspace.slug}`,
     `source: ${workspace.source_path}`,
     `generated_at: ${now()}`,
-    `dedup_items: ${items.length}`,
+    `dedup_items_in_database: ${sourceCount}`,
     '',
     '## 读取规则',
-    '- 定时任务只读取本文件，不读取历史 HTML 正文。',
-    '- 去重优先匹配 URL，其次匹配标准化标题；需要正文时再按 source_path 精确打开单个报告。',
-    '- 新运行结束后只追加新的结构化 item 和一行 run 摘要。',
+    '- 本文件只保存工作区指针和运行规则，不保存完整来源列表或历史正文。',
+    '- 去重通过 Context Hub MCP 查询 SQLite：先查 URL，再查标准化标题。',
+    '- 需要证据时只按 source_path 精确打开一份报告，不扫描全部历史 HTML。',
+    '- 新报告由 Agent 按既有 HTML 模板生成；同步只负责索引、序列化和更新本文件。',
     '',
     '## 最近报告',
     ...reports.map((report) => `- ${report.report_date || 'unknown'} | ${report.kind} | ${report.title} | ${report.source_path}`),
-    '',
-    '## 永久排重来源',
-    ...items.map((item) => `- ${item.provider || 'Unknown'} | ${item.title || 'Untitled'} | ${item.url} | first_seen=${item.first_seen}`),
     '',
   ].join('\n');
   await mkdir(outDir, {recursive: true});
@@ -481,7 +563,7 @@ export async function exportCompactMemory({dbPath = DEFAULT_DB_PATH, workspaceId
   return outPath;
 }
 
-export function compactPrompt(db: DatabaseHandle, workspaceId: string, limit: number = 80): string {
+export function compactPrompt(db: DatabaseHandle, workspaceId: string, limit: number = 20): string {
   const workspace = db.prepare('SELECT * FROM workspaces WHERE id = ?').get(workspaceId);
   const items = db.prepare(`SELECT provider, title, url FROM items WHERE workspace_id = ? AND url <> ''
     ORDER BY updated_at DESC LIMIT ?`).all(workspaceId, limit);
@@ -495,63 +577,3 @@ export function compactPrompt(db: DatabaseHandle, workspaceId: string, limit: nu
     ...items.map((item) => `- ${item.provider || 'Unknown'} | ${item.title || 'Untitled'} | ${item.url}`),
   ].join('\n');
 }
-
-function escapeHtml(value = '') {
-  return String(value).replace(/[&<>"']/g, (char) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
-}
-
-export function renderFixedReport(report: Partial<ParsedReport> & Record<string, any>): string {
-  const sections = (report.content?.sections ?? report.sections ?? []).filter((section) => section.title);
-  const items = report.content?.items ?? report.items ?? [];
-  const summary = report.content?.summary ?? report.summary ?? '';
-  const hero = report.content?.hero ?? report.hero ?? report.title ?? 'Untitled report';
-  const date = report.reportDate ?? report.content?.reportDate ?? '';
-  const kind = report.kind ?? report.content?.kind ?? 'report';
-  const sectionHtml = sections.map((section, index) => `
-      <section class="chapter">
-        <aside class="chapter-aside">
-          <div class="chapter-no">Chapter ${String(index + 1).padStart(2, '0')}</div>
-          <h2>${escapeHtml(section.title)}</h2>
-        </aside>
-        <div class="chapter-body">
-          ${(section.paragraphs ?? []).slice(0, 6).map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}
-          ${(section.bullets ?? []).length ? `<ul>${section.bullets.slice(0, 6).map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join('')}</ul>` : ''}
-        </div>
-      </section>`).join('');
-  const itemHtml = items.slice(0, 12).map((item) => `<li><span>${escapeHtml(item.provider || 'Source')}</span><a href="${escapeHtml(item.url)}">${escapeHtml(item.title || item.url)}</a></li>`).join('');
-  return `<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="generator" content="Context Hub fixed report template v1">
-  <title>${escapeHtml(report.title || 'Context Hub Report')}</title>
-  <style>${REPORT_CSS}</style>
-</head>
-<body>
-  <main class="wrap">
-    <article class="frame">
-      <header class="topbar"><div><b>Context Hub</b> / ${escapeHtml(kind)}</div><div>${escapeHtml(date)} · fixed template v1</div></header>
-      <section class="hero">
-        <div class="hero-copy"><div><div class="eyebrow">Serialized report / ${escapeHtml(kind)}</div><h1>${escapeHtml(hero)}</h1><p class="hero-note">${escapeHtml(summary || '本报告由结构化数据生成，正文与排重索引分离保存。')}</p></div><div class="caption">${escapeHtml(report.title || '')}</div></div>
-        <aside class="hero-meta"><div class="identity"><div class="name">Structured archive</div><div class="role">${sections.length} chapters · ${items.length} source links · hash ${escapeHtml((report.sha256 || '').slice(0, 12))}</div></div><p class="statement">历史内容可以被检索、去重和复用，但不会再作为下一次任务的默认上下文。</p></aside>
-      </section>
-      ${sectionHtml}
-      <section class="chapter sources-chapter"><aside class="chapter-aside"><div class="chapter-no">Evidence Index</div><h2>Sources</h2><p>来源链接以结构化 item 保存，正文只在需要时打开。</p></aside><div class="chapter-body"><ul class="source-list">${itemHtml || '<li><span>Empty</span>No external source links were extracted.</li>'}</ul></div></section>
-      <footer class="footer"><strong>Context Hub · fixed template v1</strong><span>生成时间 ${escapeHtml(now())} · source path ${escapeHtml(report.sourcePath || '')}</span></footer>
-    </article>
-  </main>
-</body>
-</html>`;
-}
-
-export async function writeFixedReport(report: Partial<ParsedReport> & Record<string, any>, outPath: string): Promise<string> {
-  await mkdir(path.dirname(outPath), {recursive: true});
-  await writeFile(outPath, renderFixedReport(report), 'utf8');
-  return outPath;
-}
-
-const REPORT_CSS = `
-:root{--bg:#f4f1eb;--paper:#fbfaf6;--ink:#171512;--muted:#6c665e;--line:#d8d0c3;--accent:#8f1d16;--deep:#171412;--max:1180px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:radial-gradient(circle at 16% 0%,rgba(143,29,22,.08),transparent 28%),linear-gradient(180deg,#f8f6f1 0%,var(--bg) 58%,#eee8dc 100%);font-family:ui-serif,"Iowan Old Style","Times New Roman","Noto Serif SC","Songti SC",serif;line-height:1.72}body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(17,16,14,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(17,16,14,.028) 1px,transparent 1px);background-size:56px 56px;mask-image:linear-gradient(180deg,rgba(0,0,0,.42),rgba(0,0,0,.08))}a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(143,29,22,.35);overflow-wrap:anywhere}.wrap{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:52px 28px 80px}.frame{border:1px solid var(--line);background:rgba(251,250,246,.78);box-shadow:0 34px 100px rgba(48,38,25,.12)}.topbar{display:flex;justify-content:space-between;gap:24px;padding:24px 28px;border-bottom:1px solid var(--line);font:12px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;color:var(--muted);letter-spacing:.08em}.topbar b{color:var(--ink)}.hero{display:grid;grid-template-columns:1.05fr .95fr;min-height:520px;border-bottom:1px solid var(--line)}.hero-copy{padding:68px 62px 52px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid var(--line)}.eyebrow,.chapter-no{font:800 12px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}h1{margin:28px 0 0;font-size:68px;line-height:.98;letter-spacing:-.055em;font-weight:500;overflow-wrap:anywhere}.hero-note{max-width:650px;margin:36px 0 0;font-size:20px;line-height:1.78;color:#322d27}.caption{font:12px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;color:#9c9388;text-transform:uppercase;letter-spacing:.08em}.hero-meta{padding:68px 52px 52px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(244,241,235,.4))}.identity{border-left:4px solid var(--accent);padding-left:22px}.identity .name{font-size:30px;font-weight:700}.identity .role{margin-top:12px;font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;color:var(--muted);overflow-wrap:anywhere}.statement{font-size:23px;line-height:1.58;margin:58px 0 0;color:#211d19}.chapter{display:grid;grid-template-columns:300px 1fr;border-bottom:1px solid var(--line)}.chapter-aside{padding:44px 34px;border-right:1px solid var(--line)}h2{margin:18px 0 0;font-size:34px;line-height:1.12;letter-spacing:-.045em;font-weight:500;overflow-wrap:anywhere}.chapter-aside p{margin:18px 0 0;color:var(--muted);font-size:15px}.chapter-body{padding:44px 54px;min-width:0}.chapter-body p{max-width:74ch;margin:0 0 18px;font-size:17px;color:#39332d}.chapter-body p:first-child{font-size:21px;line-height:1.7;color:#2c2721}.chapter-body ul,.source-list{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:12px}.chapter-body li{position:relative;padding-left:24px;color:#3c352e}.chapter-body li:before{content:"";position:absolute;left:0;top:.8em;width:9px;height:1px;background:var(--accent)}.sources-chapter .chapter-body{background:rgba(255,255,255,.28)}.source-list li{display:grid;grid-template-columns:150px 1fr;gap:24px;border-top:1px solid var(--line);padding:13px 0 0;font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif}.source-list li:before{display:none}.source-list span{color:var(--accent);font-weight:700}.footer{display:flex;justify-content:space-between;gap:24px;padding:24px 28px;background:var(--deep);color:#f8f3ea;font:12px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif}.footer span{color:rgba(248,243,234,.65);overflow-wrap:anywhere}@media(max-width:920px){.hero,.chapter{grid-template-columns:1fr}.hero-copy,.chapter-aside{border-right:0}.hero-copy{border-bottom:1px solid var(--line)}h1{font-size:56px}.footer{display:grid}.source-list li{grid-template-columns:1fr;gap:4px}}@media(max-width:560px){.wrap{padding:20px 12px 48px}.topbar{display:block}.topbar div+div{margin-top:10px}.hero-copy,.hero-meta,.chapter-body,.chapter-aside{padding:34px 24px}h1{font-size:43px}.hero-note,.chapter-body p:first-child{font-size:18px}.statement{font-size:20px}.chapter-body p{font-size:16px}.footer{padding:22px 24px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-`;
