@@ -25,11 +25,11 @@ function renderMemory(overview) {
   const original = Number(memory.source_chars || 0);
   const compact = Number((overview.counts || {}).uniqueSources || 0) * 120;
   const ratio = original ? Math.min(100, Math.max(6, Math.round((compact / original) * 100))) : 6;
-  $('#memory-card').innerHTML = `<div class="memory-numbers"><div><strong>${formatBytes(original)}</strong><small>历史 memory / source</small></div><div><strong>${formatNumber(memory.item_count)}</strong><small>已序列化排重条目</small></div></div><div><div class="memory-bar" role="progressbar" aria-label="compact index 相对原始 memory 的估算比例" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${ratio}"><span style="width:${ratio}%"></span></div><p class="memory-note">下一次运行读取 compact index，而不是把 ${formatBytes(original)} 的原始记忆重新塞进上下文。固定报告只在需要复盘时打开。</p></div>`;
+  $('#memory-card').innerHTML = `<div class="memory-numbers"><div><strong>${formatBytes(original)}</strong><small>历史 memory / source</small></div><div><strong>${formatNumber(memory.item_count)}</strong><small>已序列化排重条目</small></div></div><div><div class="memory-bar" role="progressbar" aria-label="compact index 相对原始 memory 的估算比例" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${ratio}"><span style="width:${ratio}%"></span></div><p class="memory-note">下一次运行只读取 compact 指针，再通过 MCP 查询 SQLite；不会把 ${formatBytes(original)} 的原始记忆重新塞进上下文。最终 HTML 由 Agent 按需打开或生成。</p></div>`;
 }
 
 function renderReports(reports = []) {
-  $('#report-list').innerHTML = reports.length ? reports.map((report) => `<article class="report-card"><div><div class="report-meta"><span class="kind">${escapeHtml(report.kind)}</span><span>${escapeHtml(report.report_date || '—')}</span></div><h3>${escapeHtml(report.title)}</h3><p>${escapeHtml(report.content?.summary || '已导入并保存为结构化 document。')}</p></div><div class="report-meta"><span>${formatNumber(report.content?.items?.length || 0)} sources</span><span>${escapeHtml(report.sha256.slice(0, 10))}</span></div></article>`).join('') : '<div class="empty">没有匹配的报告。</div>';
+  $('#report-list').innerHTML = reports.length ? reports.map((report) => `<article class="report-card"><div><div class="report-meta"><span class="kind">${escapeHtml(report.kind)}</span><span>${escapeHtml(report.report_date || '—')}</span></div><h3>${escapeHtml(report.title)}</h3><p>${escapeHtml(report.summary || '已导入并保存为结构化 document。')}</p></div><div class="report-meta"><span>${formatNumber(report.sourceCount || 0)} sources</span><span>${escapeHtml(report.sha256.slice(0, 10))}</span></div></article>`).join('') : '<div class="empty">没有匹配的报告。</div>';
 }
 
 function renderItems(items = []) {

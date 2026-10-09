@@ -10,7 +10,6 @@
   "scripts": {
     "init": "node --experimental-strip-types src/cli.ts init",
     "import": "node --experimental-strip-types src/cli.ts import",
-    "report": "node --experimental-strip-types src/cli.ts report",
     "memory": "node --experimental-strip-types src/cli.ts memory",
     "prompt": "node --experimental-strip-types src/cli.ts prompt",
     "stats": "node --experimental-strip-types src/cli.ts stats",

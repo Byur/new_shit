@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import path from 'node:path';
-import {mkdir} from 'node:fs/promises';
-import {DEFAULT_DB_PATH, DEFAULT_EXPORT_DIR, DEFAULT_REPORT_DIR, compactPrompt, exportCompactMemory, getOverview, importWorkspace, initDatabase, openDatabase, workspaceIdFor, writeFixedReport} from './lib.ts';
+import {DEFAULT_DB_PATH, DEFAULT_EXPORT_DIR, compactPrompt, exportCompactMemory, getOverview, importWorkspace, initDatabase, openDatabase, workspaceIdFor} from './lib.ts';
 
 type CliOptions = Record<string, string | boolean>;
 
@@ -22,7 +21,7 @@ function textOption(value: string | boolean | undefined): string | undefined {
 }
 
 function usage() {
-  console.log(`Context Hub\n\nCommands:\n  init\n  import --source <workspace-dir> --memory <memory.md>\n  report --workspace <slug>\n  memory --workspace <slug>\n  prompt --workspace <slug>\n  stats --workspace <slug>\n\nThe importer stores metadata and normalized source items in SQLite. It does not rewrite the source workspace or automation memory.`);
+  console.log(`Context Hub\n\nCommands:\n  init\n  import --source <workspace-dir> --memory <memory.md>\n  memory --workspace <slug>\n  prompt --workspace <slug>\n  stats --workspace <slug>\n\nThe importer stores metadata and normalized source items in SQLite. It does not render reports or rewrite the source workspace or automation memory.`);
 }
 
 const command = process.argv[2] ?? 'help';
@@ -46,17 +45,7 @@ try {
     const slug = options.workspace || 'ai';
     const workspaceId = workspaceIdFor(db, slug);
     if (!workspaceId) throw new Error(`workspace not found: ${slug}; run import first`);
-    if (command === 'report') {
-      const overview = getOverview(db, workspaceId);
-      const selected = options.document
-        ? db.prepare('SELECT * FROM documents WHERE id = ? AND workspace_id = ?').get(options.document, workspaceId)
-        : db.prepare('SELECT * FROM documents WHERE workspace_id = ? ORDER BY report_date DESC, created_at DESC LIMIT 1').get(workspaceId);
-      if (!selected) throw new Error('no report found');
-      const out = textOption(options.out);
-      const outPath = out ? path.resolve(out) : path.join(DEFAULT_REPORT_DIR, `${path.basename(selected.source_path, '.html')}.fixed.html`);
-      const written = await writeFixedReport({...selected, content: JSON.parse(selected.content_json || '{}')}, outPath);
-      console.log(JSON.stringify({written, source: selected.source_path, title: selected.title, date: selected.report_date}, null, 2));
-    } else if (command === 'memory') {
+    if (command === 'memory') {
       db.close();
       const out = textOption(options.out);
       console.log(await exportCompactMemory({dbPath, workspaceId, outDir: out ? path.resolve(out) : DEFAULT_EXPORT_DIR}));

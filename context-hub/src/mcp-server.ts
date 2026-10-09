@@ -3,6 +3,7 @@ import type {IncomingMessage, ServerResponse} from 'node:http';
 import path from 'node:path';
 import {DEFAULT_DB_PATH, initDatabase} from './lib.ts';
 import {handleMcpRequest} from './mcp.ts';
+import {handleGithubMcpRequest} from './github-mcp.ts';
 
 const port = Number(process.env.CONTEXT_HUB_MCP_PORT || 7777);
 const dbPath = process.env.CONTEXT_HUB_DB ? path.resolve(process.env.CONTEXT_HUB_DB) : DEFAULT_DB_PATH;
@@ -45,7 +46,8 @@ function readBody(request: IncomingMessage): Promise<string> {
 const server = createServer(async (request, response) => {
   headers(response);
   const requestUrl = new URL(request.url || '/', `http://${request.headers.host || '127.0.0.1'}`);
-  if (requestUrl.pathname !== '/mcp') return sendJson(response, {error: 'MCP endpoint is /mcp'}, 404);
+  const handler = requestUrl.pathname === '/mcp' ? handleMcpRequest : requestUrl.pathname === '/github/mcp' ? handleGithubMcpRequest : null;
+  if (!handler) return sendJson(response, {error: 'MCP endpoints are /mcp and /github/mcp'}, 404);
   if (request.method === 'OPTIONS') {
     response.writeHead(204);
     response.end();
@@ -63,7 +65,9 @@ const server = createServer(async (request, response) => {
   } catch (error) {
     return sendJson(response, {jsonrpc: '2.0', id: null, error: {code: -32700, message: error instanceof SyntaxError ? 'Parse error' : error.message}}, 400);
   }
-  const result = await handleMcpRequest(payload, {dbPath, headers: request.headers});
+  const result = requestUrl.pathname === '/mcp'
+    ? await handleMcpRequest(payload, {dbPath, headers: request.headers})
+    : await handler(payload);
   if (result === null || (Array.isArray(result) && result.length === 0)) {
     response.writeHead(202);
     response.end();
@@ -79,7 +83,7 @@ server.on('error', (error) => {
   process.exitCode = 1;
 });
 
-server.listen(port, '127.0.0.1', () => console.log(`Context Hub MCP server: http://127.0.0.1:${port}/mcp`));
+server.listen(port, '127.0.0.1', () => console.log(`Context Hub MCP server: http://127.0.0.1:${port}/mcp (GitHub CLI data: /github/mcp)`));
 
 function close() {
   server.close(() => process.exit(0));

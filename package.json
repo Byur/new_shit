@@ -21,7 +21,6 @@
     "remotion:render-story": "npm run render:story --workspace remotion",
     "context-hub:init": "npm run init --workspace context-hub",
     "context-hub:import": "npm run import --workspace context-hub",
-    "context-hub:report": "npm run report --workspace context-hub",
     "context-hub:memory": "npm run memory --workspace context-hub",
     "context-hub:prompt": "npm run prompt --workspace context-hub",
     "context-hub:stats": "npm run stats --workspace context-hub",

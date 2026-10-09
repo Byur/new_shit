@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp, readFile, writeFile} from 'node:fs/promises';
+import {existsSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {importWorkspace, openDatabase, parseHtmlReport, renderFixedReport} from '../src/lib.ts';
+import {importWorkspace, openDatabase, parseHtmlReport} from '../src/lib.ts';
 
 test('parser extracts normalized report data without preserving layout noise', () => {
   const html = '<title>Demo · 2026-08-05</title><h1>主线</h1><h2>章节一</h2><p>摘要</p><a href="https://openai.com/test">来源一</a>';
@@ -14,7 +15,7 @@ test('parser extracts normalized report data without preserving layout noise', (
   assert.equal(parsed.items[0].url, 'https://openai.com/test');
 });
 
-test('import creates SQLite records and fixed template output', async () => {
+test('import creates SQLite records and compact pointers without rendering HTML', async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), 'context-hub-'));
   const source = path.join(root, 'workspace');
   const output = path.join(root, 'data');
@@ -30,15 +31,9 @@ test('import creates SQLite records and fixed template output', async () => {
   assert.equal(db.prepare('select count(*) as count from documents').get().count, 2);
   assert.equal(db.prepare('select count(*) as count from items').get().count, 2);
   db.close();
-  const outputPath = result.fixedReportPaths[0];
-  const rendered = await readFile(outputPath, 'utf8');
-  assert.match(rendered, /Context Hub fixed report template v1/);
-  assert.match(rendered, /主线/);
-});
-
-test('fixed report renderer keeps external source links and mobile viewport', () => {
-  const html = renderFixedReport({title: 'Report', kind: 'deepread', reportDate: '2026-08-05', sha256: 'abc123', sourcePath: '/tmp/report.html', content: {hero: 'Hero', summary: 'Summary', sections: [{title: 'Chapter', paragraphs: ['Body']}], items: [{provider: 'OpenAI', title: 'Source', url: 'https://openai.com'}]}});
-  assert.match(html, /name="viewport"/);
-  assert.match(html, /https:\/\/openai\.com/);
-  assert.match(html, /Chapter/);
+  const compact = await readFile(result.compactPath, 'utf8');
+  assert.match(compact, /dedup_items_in_database: 2/);
+  assert.match(compact, /通过 Context Hub MCP 查询 SQLite/);
+  assert.doesNotMatch(compact, /https:\/\/anthropic\.com\/test/);
+  assert.equal(existsSync(path.join(output, 'reports')), false);
 });

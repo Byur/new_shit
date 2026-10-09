@@ -17,10 +17,10 @@
       <aside class="sidebar" aria-label="工作区导航">
         <div class="sidebar-label">WORKSPACES</div>
         <nav id="workspace-list" class="workspace-list"></nav>
-        <div class="sidebar-note"><span class="eyebrow">Context rule</span><p>只读 compact memory。正文按需打开，历史报告不自动回灌。</p></div>
+        <div class="sidebar-note"><span class="eyebrow">Context rule</span><p>先读 compact 指针，再通过 MCP 查 SQLite。正文按需打开，历史报告不自动回灌。</p></div>
       </aside>
       <main id="main" class="main" tabindex="-1">
-        <section class="page-intro"><div><div class="eyebrow">Local archive / context control</div><h1>把历史上下文变成<br><em>可查询的数据。</em></h1><p>报告保留完整证据，下一次运行只读取短索引、URL 指纹和最近运行摘要。</p></div><div class="intro-actions"><span class="pill pill-warm">fixed template v1</span><span class="pill">no cloud sync</span></div></section>
+        <section class="page-intro"><div><div class="eyebrow">Local archive / context control</div><h1>把历史上下文变成<br><em>可查询的数据。</em></h1><p>Agent 负责模板与内容，Context Hub 只保存排重数据、报告索引和最小上下文。</p></div><div class="intro-actions"><span class="pill pill-warm">agent-owned html</span><span class="pill">no cloud sync</span></div></section>
         <section id="metrics" class="metrics" aria-label="工作区指标"></section>
         <section class="section-grid">
           <section class="panel panel-wide"><div class="panel-head"><div><div class="eyebrow">Run ledger</div><h2>最近运行</h2></div><span class="panel-hint">source → structured rows</span></div><div class="table-wrap"><table><caption class="sr-only">最近导入的运行记录</caption><thead><tr><th scope="col">日期</th><th scope="col">类型</th><th scope="col">报告</th><th scope="col">状态</th><th scope="col">大小</th></tr></thead><tbody id="runs-table"></tbody></table></div></section>

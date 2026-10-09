@@ -6,7 +6,7 @@ new_shit 是一个使用 npm workspaces 管理的个人项目 monorepo。源码�
 
 | 子包 | 职责 | 包级文档 |
 | --- | --- | --- |
-| context-hub/ | TypeScript + Node.js 的 SQLite 数据层、固定 HTML 报告和 MCP 服务 | [context-hub/README.md](context-hub/README.md) |
+| context-hub/ | TypeScript + Node.js 的 SQLite 数据服务、上下文压缩和 MCP 服务 | [context-hub/README.md](context-hub/README.md) |
 | remotion/ | Remotion 视频源码、媒体、Studio、渲染脚本和视频 QA 产物 | [remotion/README.md](remotion/README.md) |
 | demos/ | 独立实验和可运行演示，不承担生产包职责 | [demos/README.md](demos/README.md) |
 
@@ -46,7 +46,7 @@ npm run motion-ai-kit:serve
 - remotion/out/：视频渲染和帧级 QA 产物。
 - remotion/output/：Remotion 项目的交付视频、转场对比和 QA 证据，默认由 remotion 包的 .gitignore 忽略。
 - demos/output/：demo 自己的浏览器验证和演示产物。
-- context-hub/data/：SQLite 数据库、compact memory 和固定模板 HTML 报告。
+- context-hub/data/：SQLite 数据库和 compact memory；最终 HTML 由 Agent 写入定时任务工作区。
 
 根目录不创建共享的 output/、build/ 或 out/ 目录。每个子包通过自己的 .gitignore 管理可再生或临时产物。
 
@@ -54,5 +54,5 @@ npm run motion-ai-kit:serve
 
 - 包内源码、脚本、配置和产物路径相对包根目录定义。
 - 需要长期维护的数据使用结构化 SQLite 记录，不把完整历史上下文反复写回 automation memory。
-- HTML 报告使用固定模板生成，报告数据和呈现层分离。
+- Agent 持有并复用固定 HTML 模板，Context Hub 只提供已获取信息的查询、去重和序列化服务。
 - 本地 MCP 服务默认监听 127.0.0.1:7777，使用后应停止服务。

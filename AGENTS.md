@@ -13,7 +13,7 @@
 - remotion/out/：渲染视频、帧导出和一次性 QA 结果。
 - remotion/output/：Remotion 本地交付物和 QA 证据，默认由 remotion 包的 .gitignore 忽略。
 - demos/output/：demo 的截图、浏览器验证和其他演示产物。
-- context-hub/data/：SQLite 数据库、compact memory、固定模板报告和导出数据。
+- context-hub/data/：SQLite 数据库、compact memory 和数据服务导出；不保存 Context Hub 渲染产物。
 - 禁止新建或恢复 monorepo 根目录的 output/、build/ 或 out/ 作为共享产物目录。
 - 新增可再生产物时，优先更新对应子包的 .gitignore；需要交付或审阅的证据才放入该子包的受控 output/。
 
@@ -21,7 +21,7 @@
 
 - 使用 TypeScript 编写，运行时使用 Node.js，不引入额外 TypeScript runtime。
 - MCP 服务默认监听 127.0.0.1:7777，endpoint 为 /mcp；完成调用后停止本地服务。
-- 固定 HTML 报告由 Context Hub 统一生成；定时任务优先读取 compact memory 或 MCP 返回的压缩上下文，不扫描全部历史报告。
+- Agent 负责掌握 HTML 模板、组织内容并生成最终 HTML；Context Hub 不生成报告、不维护第二套模板。定时任务优先通过 MCP 读取 compact memory 指针和 SQLite 排重数据，不扫描全部历史报告。
 - Context Hub 的详细 CLI、数据库和 automation 迁移约束见 context-hub/README.md 和 context-hub/skills/context-hub/SKILL.md。
 
 ## Remotion Skill Routing
