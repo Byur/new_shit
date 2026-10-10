@@ -9,18 +9,18 @@ Turn an approved learning direction into a Remotion video that has something cle
 
 ## Responsibility
 
-Own the narrative, script, storyboard, visual language, caption wording and editorial cue intent, pacing, creative implementation intent, and creative review criteria. Preserve the learning promise, scope boundary, and essential proof from the planning brief.
+Own the narrative, full spoken explanation (narration script), storyboard, visual language, caption wording and editorial cue intent, pacing, creative implementation intent, and creative review criteria. Preserve the learning promise, scope boundary, essential proof, and the reasoning bridges from the planning brief. Do not trade explanation depth for a shorter runtime or a cleaner-looking frame.
 
 Do not own Remotion API choices, caption synchronization code, frame calculations, code review, Studio operation, media handling, debugging, render commands, package upgrades, or technical delivery validation. Use `remotion-best-practices` for those responsibilities, `remotion-technical-guardrails` for project-specific continuity and render-mode constraints, and `remotion-studio-qa` for systematic playback, transition, flicker, and frame-level verification.
 
-Do not reopen topic selection, source research, or lesson scope simply to fill the video. Use `knowledge-planner` first when those decisions are unresolved.
+Do not reopen topic selection, source research, or lesson scope simply to fill the video. Use `knowledge-planner` first when those decisions are unresolved. If the approved brief is too skeletal to make its intended reasoning understandable, flag the missing bridge and request a targeted clarification or revision; do not silently turn the gaps into decorative scenes.
 
 ## Collaboration Order
 
 When this Skill and `remotion-best-practices` both apply, treat them as consecutive roles rather than competing owners:
 
 1. Confirm the approved learning direction; use `knowledge-planner` first if the topic, audience, evidence, or teaching scope is unresolved.
-2. Define the format proposition, narration, storyboard, subject-specific visual evidence, pacing, caption intent, and creative acceptance criteria before technical implementation choices are finalized.
+2. Check that the brief contains the reasoning bridges necessary to achieve its learning promise. Develop a complete explanatory narration and the subject-specific visual argument together; establish their teaching sufficiency before locking scene durations. Then define the format proposition, storyboard, pacing, caption intent, and creative acceptance criteria before technical implementation choices are finalized.
 3. Hand the approved creative brief to `remotion-best-practices` for Remotion structure, APIs, animation code, Studio operation, media handling, debugging, and rendering. Apply `remotion-technical-guardrails` alongside that implementation; it supplements rather than replaces the official Skill.
 4. Review the assembled preview for meaning, attention order, visual identity, and pacing. Let `remotion-studio-qa` own systematic playback stability, encoded-output review, and frame-level defect verification.
 
@@ -32,17 +32,43 @@ Direct for clarity and feeling. Find the visual event that embodies the idea: a 
 
 Aim by default for visual expression with tension, emotional pull, and memorable images. It should make the viewer feel a shift in scale, clarity, urgency, surprise, relief, or consequence when the idea calls for it, while keeping the concept easy to follow. Let the topic decide the form, scene count, pace, and asset mix. A good video may be spare or dense; it should never look like it is following a stock sequence.
 
+Do not interpret simplicity as short duration, fewer words, or fewer causal steps. Compress repeated explanations and visual clutter; protect the time and screen space needed to make a consequential idea comprehensible. When the idea needs a slower demonstration, let it unfold.
+
 Treat every line, visual, and transition as a choice. It should add meaning, direct attention, create rhythm, or give the viewer time to form the intended inference. Let important moments breathe rather than racing to cover material.
 
-Keep on-screen text economical and complementary to narration. Use the project's established visual system, scene primitives, caption treatment, and package manager. Keep Remotion frame state as the source of timing; add another animation runtime only when it solves a specific need the existing system cannot.
+Keep on-screen text economical and complementary to narration. Economical on-screen text does not imply terse narration, and short scene labels are not a substitute for a teaching script. Use the project's established visual system, scene primitives, caption treatment, and package manager. Keep Remotion frame state as the source of timing; add another animation runtime only when it solves a specific need the existing system cannot.
+
+## Explanatory Narration And Text Roles
+
+Own a complete, naturally spoken explanation rather than an outline of scene headings, slogans, or labels. Narration should carry the question being investigated, necessary assumptions, reasoning transitions, mechanism, limitations, and the conclusion where these need verbal explanation. The visual track should make the important claims observable and easier to grasp; it may carry spatial or perceptual information more efficiently than speech. Neither track should be a mere echo of the other.
+
+Treat these as distinct deliverables:
+
+- **Narration script:** the full words intended to be spoken, or an explicitly designated full explanatory text track if the project is deliberately silent. It must convey the main argument rather than merely introduce graphics.
+- **Captions:** readable transcription or intentional accessibility treatment of that narration; the technical skill owns synchronization.
+- **On-screen text:** economical labels, figures, headings, and editorial cues that support the image. Do not confuse these with the narration script.
+
+For a deliberately silent video, allocate enough visual and written explanation for the same promised learning outcome instead of silently converting narration into terse slogans. If a commissioned video calls for speech but the current pipeline cannot produce audio, retain the complete narration as an explicit deliverable, flag the missing audio, and do not claim the video itself communicates everything it cannot.
+
+Before approving the script, read its explanation without relying on scene titles or unseen animations: does it establish the key causal transitions? Then check the joint audio-visual sequence for what is best shown rather than said. Avoid padding speech with information that the visual already makes unambiguously clear.
+
+## Duration Derived From Teaching
+
+Do not begin with a preferred 60-, 90-, or 180-second format unless the user explicitly requests one. Develop the necessary explanation first, while iterating with visual demonstrations, then derive the runtime from spoken delivery, the time required to read essential visual details, changes in visual state, and intentional pauses. Scene count and template length are consequences, not budgets to fill.
+
+Make a plausible duration estimate from the actual narration draft and the planned visual beats; check it against the assembled playback, adjusting for pacing and comprehension rather than automatically trimming the script. A speech-rate calculation may be a starting point but is not a fixed target, and visual understanding may require additional time. When time and teaching scope conflict, request a narrower learning promise or surface the trade-off rather than dropping indispensable reasoning.
 
 ## Format Identity And Teaching Bridges
 
 Reuse the project's visual system as infrastructure, not as a default story shape. Before production, find a visual grammar that belongs to this subject: its scale, material, place, system, conflict, or point of view. Let that choice determine the composition, pacing, spatial logic, and moments of interruption. Do not carry a familiar title-left, diagram-right, caption-bottom layout from one topic to the next merely because it is available.
 
+For the pivotal teaching moments, consider genuinely different ways to carry the idea (for example an unfolding event, an object or spatial metaphor, a real artifact, or a diagram). Judge them by explanatory force, emotional effect, continuity, asset feasibility, and the opportunity for the viewer to infer the claim. Do this selectively, not as a mandatory multi-option worksheet for every scene. If the first convenient layout is best, use it deliberately.
+
 Write a short format proposition before storyboarding: what should the viewer see, feel, or follow in order to understand this subject, and what familiar explanatory treatment would fail to do it justice? Use it to make an affirmative creative choice, not to justify novelty for its own sake.
 
 For each important beat, name the visual evidence that is specific to the claim: an object, behavior, constraint, environment, trace, or transformation that lets the viewer infer the point. A generic comparison, process, or card layout is only useful when it is the clearest carrier of that evidence. If the topic nouns could be replaced with those of another video while the scene still works unchanged, revisit the scene's point of view, material, or action.
+
+Do not equate a teaching point with a new slide or scene. When several terms describe parts of one event or mechanism, consider letting the same situation evolve so the learner sees their relationship, rather than restarting the visual language for each definition.
 
 When a teaching claim crosses a meaningful conceptual distance, direct the bridge rather than presenting only its endpoints. Give the viewer enough of the condition, mechanism, result, and trade-off to follow the change. The bridge may be a sequence, a live transformation, a comparison, or a pause; choose the form that makes causality perceptible.
 
@@ -75,9 +101,15 @@ If you cannot say why a number is on screen in one clear sentence, remove it. A 
 
 ## Review And Delivery
 
+Creative sign-off includes learning integrity and runtime adequacy: can a viewer who watches the completed sequence explain the key mechanism or distinction, rather than merely recall its terminology? Is each indispensable reasoning bridge actually visible or understandable in narration? If the edit preserves the label but drops the cause, consequence, or boundary condition, repair the scene or return the missing requirement to `knowledge-planner`.
+
 Source review alone is not enough for creative sign-off. Using the preview or sampled frames supplied by the technical workflow, intentionally inspect the scenes and moments carrying the most meaning or creative risk, including fully assembled states and transitions where relevant. Apply judgment rather than a mechanical quota:
 
 - Is the intended attention order immediately clear?
+- Would the viewer understand why the central claim holds, or only remember a polished definition?
+- Did any essential causal step disappear between the planning brief, full narration, and final visual sequence?
+- Is there a complete narration script (or an explicitly sufficient silent-video explanation), clearly distinguished from captions and labels?
+- Can the viewer follow each important mechanism at the actual playback pace, or did the edit squeeze it into the available seconds?
 - Does the composition remain legible, balanced, and uncluttered?
 - Does the visual progression feel varied and purposeful, or has the video fallen into repetitive layouts and motion patterns?
 - Can the format proposition still be felt in the assembled scenes, or has the video fallen back to the project's default explanatory shell?

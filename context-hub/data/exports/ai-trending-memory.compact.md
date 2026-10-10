@@ -2,8 +2,8 @@
 
 workspace: ai-trending
 source: /Users/byur/Documents/优化是个好事
-generated_at: 2026-10-09T13:42:29.696Z
-dedup_items_in_database: 313
+generated_at: 2026-10-10T02:39:37.341Z
+dedup_items_in_database: 323
 
 ## 读取规则
 - 本文件只保存工作区指针和运行规则，不保存完整来源列表或历史正文。
@@ -12,6 +12,7 @@ dedup_items_in_database: 313
 - 新报告由 Agent 按既有 HTML 模板生成；同步只负责索引、序列化和更新本文件。
 
 ## 最近报告
+- 2026-10-10 | trending | AI Trending Daily · 2026-10-10 | /Users/byur/Documents/优化是个好事/ai-trending-2026-10-10.html
 - 2026-10-09 | trending | AI Trending Daily · 2026-10-09 | /Users/byur/Documents/优化是个好事/ai-trending-2026-10-09.html
 - 2026-08-05 | trending | AI Trending Daily · 2026-08-05 | /Users/byur/Documents/优化是个好事/ai-trending-2026-08-05.html
 - 2026-08-04 | trending | AI Trending Daily · 2026-08-04 | /Users/byur/Documents/优化是个好事/ai-trending-2026-08-04.html
@@ -21,4 +22,3 @@ dedup_items_in_database: 313
 - 2026-07-31 | trending | AI Trending Daily · 2026-07-31 | /Users/byur/Documents/优化是个好事/ai-trending-2026-07-31.html
 - 2026-07-30 | trending | AI Trending Daily · 2026-07-30 | /Users/byur/Documents/优化是个好事/ai-trending-2026-07-30.html
 - 2026-07-29 | trending | AI Trending Daily · 2026-07-29 | /Users/byur/Documents/优化是个好事/ai-trending-2026-07-29.html
-- 2026-07-28 | trending | AI Trending Daily · 2026-07-28 | /Users/byur/Documents/优化是个好事/ai-trending-2026-07-28.html

@@ -9,10 +9,6 @@ import {
 import { SkillConceptV2Video, skillConceptV2DurationInFrames } from "./SkillConceptV2Video";
 import { AgentAndSkillV2Video, agentAndSkillV2DurationInFrames } from "./AgentAndSkillV2Video";
 import {
-  StockJargonSystemVideo,
-  stockJargonSystemDurationInFrames,
-} from "./StockJargonSystemVideo";
-import {
   InternetRemakesIndustryVideo,
   internetRemakesIndustryDurationInFrames,
 } from "./InternetRemakesIndustryVideo";
@@ -56,15 +52,6 @@ export const RemotionRoot: React.FC = () => {
         id="WizzSafekeeperArchitecture"
         component={WizzSafekeeperArchitectureVideo}
         durationInFrames={wizzSafekeeperArchitectureDurationInFrames}
-        fps={30}
-        width={1920}
-        height={1080}
-      />
-
-      <Composition
-        id="StockJargonSystem"
-        component={StockJargonSystemVideo}
-        durationInFrames={stockJargonSystemDurationInFrames}
         fps={30}
         width={1920}
         height={1080}
