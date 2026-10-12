@@ -26,6 +26,7 @@
 
 ## Remotion Skill Routing
 
+- Remotion 视频默认画布为 1920 * 1080；除非用户明确指定其他尺寸，否则按此分辨率创建 Composition。
 - Use remotion-best-practices as the default entrypoint for Remotion code, APIs, Studio, media, debugging, rendering, upgrades, and technical review.
 - Use knowledge-planner for topic research, learning scope, and the approved teaching plan.
 - Use remotion-video-director for narrative, storyboard, visual language, pacing, caption intent, and creative acceptance criteria. It may be selected automatically when the request includes those concerns.
