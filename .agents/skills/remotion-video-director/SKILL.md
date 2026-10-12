@@ -1,64 +1,97 @@
 ---
-name: remotion-video-director
-description: Direct an approved teaching brief into complete narration, visual storytelling, storyboard, pacing, and creative acceptance for a Remotion video. Review the content actually used by the composition. Technical implementation and frame-level QA belong to their specialized Skills.
+name: knowledge-planner
+description: Shape a technical teaching topic into a clear learning direction, material strategy, and demo brief for articles, lessons, demos, presentations, or videos. Do not use for artifact-specific writing, scene direction, or implementation.
 ---
 
-# Remotion Video Director
+# Knowledge Planner
 
-Turn an approved learning direction into a video that is intellectually complete, compelling to follow, and easier to understand through the combined use of narration and visuals.
+Shape raw knowledge into a strong, teachable point of view before choosing its final medium. This skill serves articles, lessons, demos, presentations, and video; it is not limited to any one form.
 
-## Responsibility And Boundaries
+## Responsibility
 
-Own the spoken explanation, narrative continuity, subject-specific visual language, storyboard, editorial caption intent, pacing, and creative review. Preserve the Planner's learning promise, prerequisites, essential reasoning, scope, and evidentiary limits. Creative clarity must not come at the cost of missing explanations.
+Own the intellectual direction: what is genuinely worth teaching, who it serves, what the learner should leave with, what belongs outside the boundary, and what evidence makes the idea credible and tangible.
 
-`knowledge-planner` owns teaching requirements, source adequacy, and changes to the learning promise. When those are missing or unsupported, request a targeted Planner revision rather than silently inventing facts or changing scope.
+Do not own final prose, scene-by-scene direction, visual treatment, or implementation. Hand a compact creative brief to the workflow for the chosen medium. Use `remotion-video-director` only when that medium is a Remotion video.
 
-`remotion-best-practices` owns Remotion structure, APIs, coding, Studio operation, media, debugging, rendering, and upgrades. Apply `remotion-technical-guardrails` for project-specific technical constraints. `remotion-studio-qa` owns frame-level, layout/geometry, playback, flicker, caption-timing, encoded-output, and technical delivery verification. Creative review must not duplicate those checks or treat their success as proof of teaching quality.
+## Creative Judgment
 
-## Workflow And Creative Authority
+Seek a clear angle, not exhaustive coverage. A clear angle is a claim worth understanding, not merely a category under which facts can be listed. A strong teaching piece usually begins with a meaningful tension, misconception, contrast, capability shift, or decision that gives the learner a reason to care.
 
-1. **Interpret the teaching contract.** Confirm audience starting knowledge, concepts that must be introduced, causal bridges, evidence, and any uncertainties. Ask Planner to repair teaching gaps when necessary.
-2. **Develop the explanation and visual argument.** Build an intelligible narration and meaningful visual events together; establish what the viewer needs to know at each point. Choose the video's visual identity, narrative movement, key scenes, editorial cues, and duration based on this explanation, not on a preferred template length.
-3. **Hand off creative direction for implementation.** The coding agent may write or revise the actual narration, captions, and scene data while implementing. The Director retains creative authority over the effective content used in the composition; a draft brief is not approval of later code-authored content.
-4. **Review effective content and repair.** Inspect the narration and explanatory text the composition actually consumes, in viewing order. Return specific content defects to the coding agent and recheck the affected content after revision. If repairs require unsupported information or a scope change, request a targeted Planner revision.
-5. **Review the assembled creative result.** Evaluate understanding, attention, continuity, visual expression, and pacing using an available preview or supplied frames. Route technical defects to `remotion-studio-qa`; creative acceptance and technical acceptance are distinct.
+Use these as prompts for thought, never as a questionnaire:
 
-For technical-only requests, leave creative decisions unchanged and let the technical Skill lead. For creative-only requests, produce creative direction without claiming code or rendering acceptance.
+- What changes in the learner's mental model or ability?
+- What adjacent territory would dilute the point and should stay out?
+- What likely misunderstanding needs correcting?
+- What example, artifact, comparison, or small demo makes the central claim observable?
+- Which material is necessary to establish the claim, rather than merely decorative or comprehensive?
 
-## Narration, Visuals, And Duration
+Prefer a coherent progression over a catalogue of facts. Let the subject determine whether the natural movement is from problem to possibility, intuition to mechanism, confusion to distinction, or choice to consequence.
 
-A **narration script** is the complete language intended to be spoken, or an explicitly designated full explanatory text track for a deliberately silent video. It is not a sequence of slogans, headings, or labels. It should introduce indispensable concepts before relying on them, develop mechanisms and consequences, and connect the viewer's questions to justified conclusions. Explain the content itself before offering meta-advice about how to judge it.
+Do not mistake taxonomy for teaching. A request to explain a family of terms, concepts, or tools does not automatically call for an evenly weighted glossary. Identify the few distinctions or mechanisms that unlock the rest. Use a shared situation or evolving example when it reveals relationships; use a catalogue only when lookup or classification is itself the learning goal.
 
-**Captions** transcribe or provide intentional accessibility treatment of narration; their synchronization is technical. **On-screen text** consists of titles, labels, values, and editorial cues and should be economical. The three roles are not interchangeable. Visuals can convey spatial and perceptual facts more effectively than speech, so do not narrate the obvious, but do not let a striking graphic excuse an unexplained premise or missing causal step.
+Test the proposed angle against a concrete learner misconception or decision. Ask what the learner will now be able to explain, predict, distinguish, or do that a definition alone could not support. If the answer is merely that they can repeat a label, rethink the teaching approach.
 
-Read the narration as a continuous argument, not as isolated scene cards; then review what the joint audio-visual sequence makes understandable. An intentionally silent video needs sufficient visible explanation. If speech is intended but no audio is produced, keep the complete intended narration identifiable and disclose the missing audio; do not mistake terse subtitles for a finished spoken explanation.
+Keep factual claims honest. Distinguish verified facts from explanatory simplifications and personal interpretation; use reliable primary material when the subject is current or consequential.
 
-Derive duration from the amount of meaningful spoken explanation, visual changes the viewer must follow, reading time, and intentional pauses. Estimate from a real draft and refine against playback. No default 60/90/180-second cap, compulsory scene count, or minimum word quota. When runtime and teaching scope conflict, surface the trade-off or seek a narrower promise rather than silently dropping indispensable reasoning.
+## Learning Journey And Narrative Causality
 
-## Narrative And Visual Direction
+Plan a progression of understanding, not a sequence of topics. Ask what the learner first notices or assumes, what concrete event or contradiction makes that understanding inadequate, what new question this creates, and what explanation resolves it or exposes a further question. The successive teaching beats should earn their place through a change in the learner's understanding, not because the next term appears on a checklist.
 
-Build a progression the viewer experiences, not an illustrated outline. An ongoing transaction, experiment, question, changing model, or contrast may carry the narrative. Preserve its meaningful state: each beat should respond to what happened, reveal something, or create the next necessary question. Introduce terminology when it becomes useful, without withholding basic explanations merely to create suspense. A complete narration is not a string of longer definitions. Do not force fictional characters or plot twists on subjects that need proofs or comparisons.
+Where the subject supports it, follow a persistent situation, artifact, transaction, experiment, or problem whose state changes over time. Introduce terminology when the learner needs it to interpret the unfolding event; do not interrupt the event merely to define another label. Preserve consequential state across the journey: what changed, what remains unresolved, and why the next step matters. An example introduced at the beginning but discarded in the middle is not a throughline.
 
-Look for subject-specific visual evidence—an object, behavior, constraint, trace, environment, or transformation—rather than generic cards that simply restate speech. For pivotal moments, consider meaningfully different treatments and select for explanatory force, emotional effect, continuity, and feasible assets. Do not require a fixed number of options. Choose a clear format proposition before storyboarding: what must viewers see, feel, or follow that a generic slide treatment would miss?
+Do not force fictional characters or a conventional story arc onto topics that call for proofs, conceptual comparison, or experiments. The narrative thread may be a question, a changing model, an evolving example, or a series of increasingly discriminating observations. Favor the form that makes the reasoning necessary and engaging.
 
-Let visual form change when understanding changes: scale, composition, camera position, reveal, comparison, stillness, or rhythm may serve the point. Reuse the project's visual system and primitives without turning them into a fixed title-left / diagram-right / caption-bottom story shape. Repetition is welcome when it creates continuity or contrast, not when it turns every concept into another interchangeable card. A key visual event can create tension, surprise, relief, or clarity, but emotion without evidence does not count as learning.
+Make each central beat serve both narrative movement and substantive teaching: it should expose a genuine uncertainty, demonstrate a mechanism, test an assumption, or alter a consequential decision. Mere suspense, slogans, decorative conflict, and dramatized claims without evidence do not count as depth. If a proposed journey is lively but skips the causal mechanism, repair the explanation inside the journey rather than adding disconnected teaching slides.
 
-For a detail opening over a wider view, specify the primary focus, context that must remain recognizable, what should recede, and how attention moves in and out. For scene handoffs, specify the persistent conceptual or visual anchor, including the evolving state of recurring examples. Leave frame values, transitions, z-index geometry, and rendering correctness to the technical Skills.
+## Learner Prerequisites And Explanation Contract
 
-Numbers must do evidentiary work: establish what they measure, their unit/scope/time where relevant, and what inference they support or do not support. Do not use decorative statistics or fictional data disguised as observed fact.
+Establish the learner's likely starting knowledge before choosing the hook or the learning journey. For each indispensable term or assumption, distinguish what the learner plausibly already knows from what the lesson must establish. An unfamiliar term may appear as a question or hook, but explain its working meaning before using it to justify another claim. Do not ask beginners to judge the evidence for a hypothesis before they understand what the hypothesis asserts.
 
-Keep Remotion frame state as the timing source; introduce another animation runtime only for a specific unmet need. Technical selection and implementation remain with `remotion-best-practices`.
+Define an explanation contract for the few central ideas: the learner should know what the idea means in this context, what produces or constrains it, what observable consequence follows, and what the evidence does and does not warrant. Use only the parts relevant to the learning promise; the contract is a test of comprehension, not a compulsory section outline. In domains where intent cannot be inferred from observations, distinguish participants' interpretations from observable facts.
 
-## Review The Content Actually Used
+Avoid replacing teaching with meta-advice about how to think. Advice such as "check the evidence" only contributes after the learner has seen what the evidence is, how it changes the interpretation, and what remains uncertain. If a planned hook, story, or persuasive conclusion depends on an unexplained concept, repair the prerequisite and the underlying explanation before handing off.
 
-Review the **effective content** of the composition, not an independently maintained transcript. Do not require a duplicate `narration.md`. Read the authoritative narration or scene-data module and its consumers; if text lives in components, trace the relevant conditions to determine what is really heard or read and in what order. Temporary extraction is acceptable for inspection, not as a second editable source of truth.
+## Depth And Complexity
 
-Check the effective narrative against the Planner's teaching contract: prerequisite terms appear before dependent arguments; core mechanisms are explained rather than merely named; evidence supports conclusions; any recurring situation changes meaningfully; important limits are not lost; and the actual pace leaves time to understand. Read across scenes to detect polished but disconnected mini-lectures. Verify the explanatory track is really present in the chosen output mode, not merely imagined from a proposed script.
+Optimize for cognitive efficiency, not minimum length. Concision removes redundancy, decorative facts, and unnecessary difficulty; it does not remove the conditions, causal steps, examples, or qualifications needed for real understanding. A short explanation succeeds only if it is intellectually complete for the promised learning outcome.
 
-If review fails, name the affected concept or moment, missing prerequisite or reasoning, the learner understanding that must be restored, and the smallest meaningful content repair. Send that to the coding agent without prescribing code structure. Re-inspect the revised effective content. If the authoritative content changes after approval, revisit the affected creative review; a purely visual or technical change that leaves meaning intact does not require restarting the whole narrative review.
+Decide depth from the learner's distance to the conclusion, not from the amount of research collected or a preferred runtime. Give a topic more room when it asks the learner to replace a familiar mental model, follow several causal links, distinguish similar-looking mechanisms, or carry an idea into a new situation.
 
-## Creative Acceptance
+When a conclusion would otherwise arrive as a slogan, identify the missing bridge. Show only the intermediate conditions, mechanism, consequence, and trade-off needed for the learner to see why the conclusion follows. Compress familiar context; spend time where an unexamined jump would create false fluency.
 
-Using the actual preview or frames supplied by the technical workflow, examine the moments bearing the most meaning or creative risk. Judge whether the viewer can follow *why* the conclusions hold, whether the evolving question or situation genuinely advances, whether narration and image complement each other, whether visual attention and pacing support comprehension, and whether the format feels specific to this subject rather than a reusable slide shell. Also inspect whether a key claim has become an elegant slogan in place of an explanation.
+Before approving a learning direction, stress-test its central claim: can the learner follow why it is true, identify a relevant condition or boundary where it changes, and use the underlying mechanism to interpret a fresh concrete situation? The exact tests depend on the subject; do not force artificial counterexamples or applications. If the answer is no, repair the missing reasoning rather than shortening the explanation further. A teaching promise limited to recognizing or translating terms is appropriate when the user wants a glossary; do not quietly substitute that easier promise for a request to explain how something works.
 
-Record any unresolved **creative** risk and return content issues for revision. Report obvious technical symptoms to `remotion-studio-qa` rather than reproducing its frame calculations, geometric checks, or encoded-output acceptance. Do not claim final creative acceptance solely from an approved brief, a clean source build, or technical QA passing.
+Use the resulting learning burden to decide whether one piece should stay focused, become a deeper explainer, or become a series. Do not use a fixed scene count, duration, or case-study quota as a proxy for understanding. Narrowing scope should buy depth for the retained material, not license shallow treatment.
+
+## Teaching Sufficiency And Scope
+
+Optimize for sufficient understanding, not minimum coverage or minimum length. Naming, categorizing, or defining an idea is not proof that it has been taught. For each indispensable teaching claim, determine the conditions, mechanism, supporting evidence or demonstration, and reasoning the learner needs to understand why it holds. This is an internal test, not a required four-column output template; omit elements that the subject genuinely does not require.
+
+Trace the learning promise through a concrete comprehension test: what could the learner now explain, predict, distinguish, or decide in a fresh situation? If the proposed material supports only recognition of terms, deepen the mechanism or revise the learning promise. Do not add trivia, artificial cases, or verbose repetition to simulate depth.
+
+Assess the explanation burden before suggesting scope or a runtime for a video. Identify where a real demonstration, intermediate reasoning, careful qualification, or time to absorb a visual result is needed. Do not default to a short-form duration. If the user has specified a duration that is incompatible with sufficient teaching, surface that trade-off and recommend a narrower promise rather than silently omitting necessary reasoning. Exact narration and shot timing belong to the downstream director.
+
+
+## Materials And Demos
+
+Choose material because it carries meaning: it can establish a problem, reveal an abstraction, make a contrast felt, show a consequence, or prove a claim. Reduce rather than pad.
+
+Prefer examples with observable change or a consequential decision over static labels when teaching a mechanism. Keep facts, illustrative hypotheticals, and simulations clearly distinguished; never invent market or technical evidence to make a demonstration more dramatic.
+
+When a demo helps, make its value legible: identify the meaningful action or input, the visible result, and the inference the learner can draw. A narrow demo is enough when it exposes the intended idea; state simulations and omitted complexity plainly.
+
+## Output
+
+Deliver enough substance for the next creator to preserve the reasoning and assess the explanation burden: the learning promise, audience misconception or decision, scope, the evolving learner question or situation and its consequential changes, the causal or conceptual bridges that must survive adaptation, indispensable prerequisites and their introduction points, essential evidence or demo, and important uncertainties or simplifications. The format and level of detail should follow the subject, not a fixed template or an arbitrary brevity target.
+
+Do not hand off only headings and conclusions. For each essential bridge, state what makes the transition intelligible, the teaching evidence or demonstration it depends on, and what would be lost by compressing it into a slogan. Distinguish indispensable reasoning from optional enrichment so the director does not mistake a concise brief for permission to compress the lesson. Keep this compact when the topic is simple and detailed when the reasoning is demanding.
+
+## Quality Gate
+
+Own the final judgment of content depth and accuracy. Before handoff, critically review the plan from the intended learner’s starting knowledge, not merely against the plan’s own stated scope. Where useful, ask a separate reviewer or subagent to attempt a fresh-situation explanation using only the planned material; treat its feedback as evidence for revision, not as a mandatory delegation, report, or additional deliverable. If the test exposes a missing mechanism, prerequisite, or unsupported claim, revise the learning direction and its necessary reasoning before approving it. Do not lower the learning promise after drafting merely to make a thin outline pass.
+
+Before handoff, check whether the plan could be fulfilled by a polished sequence of labels, definitions, and generic comparisons. If so, it probably has not yet established sufficient teaching value. Rework the central example, mechanism, or learner transformation. Check whether the brief would allow a downstream director to replace reasoning with short on-screen slogans; if so, make the missing explanation requirements explicit. Do not add facts merely to increase density; deepen the few ideas that matter.
+
+Check prerequisite order and explanation sufficiency: can a first-time learner explain each central term before a later inference depends on it? Can they follow the actual mechanism, rather than merely repeat an instruction to be cautious? If not, repair the brief before handoff. The downstream director may request a targeted Planner revision when an implementation reveals a missing or unsupported teaching requirement.
+
+Check the continuity of the learning journey: after each important beat, can you say what the learner now knows, what changed in the central situation or model, and why the next question arises? If the beats can be freely shuffled without changing the understanding, investigate whether the plan is a disguised glossary. Do not artificially impose sequential causality when the subject genuinely consists of independent comparisons.
