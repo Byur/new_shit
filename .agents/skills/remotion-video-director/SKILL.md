@@ -38,6 +38,16 @@ Treat every line, visual, and transition as a choice. It should add meaning, dir
 
 Keep on-screen text economical and complementary to narration. Economical on-screen text does not imply terse narration, and short scene labels are not a substitute for a teaching script. Use the project's established visual system, scene primitives, caption treatment, and package manager. Keep Remotion frame state as the source of timing; add another animation runtime only when it solves a specific need the existing system cannot.
 
+## Narrative Continuity And Explanatory Momentum
+
+Direct an unfolding experience rather than illustrating an outline. Identify the persistent question, subject, object, or changing system carried across the video. When a beat ends, show what has changed, what remains uncertain, and why the next beat is worth watching. Where an evolving example is used, preserve its concrete state and consequences across scenes: do not reset the example each time a new term appears.
+
+Use explanation at the moment it becomes necessary. Let a visible event or meaningful question create demand for the next concept, then deliver the causal explanation with enough detail that the viewer can follow what happened and why. Do not postpone indispensable explanations for the sake of suspense, or add a story wrapper that contributes nothing to understanding.
+
+Maintain a continuous spoken argument as well as a continuous visual thread. Narration should connect consequences, decisions, discoveries, and qualifications across scene boundaries; avoid writing isolated mini-lectures with interchangeable scene introductions. A complete narration script is not a series of longer definitions. If the material becomes more thorough but loses its sense of progression, revise the structure rather than simply shortening the speech.
+
+Different subjects may call for a worked transaction, investigation, experiment, changing mental model, or conceptual proof. Choose the narrative device because it clarifies the subject, not because every lesson needs a protagonist or plot twist. Where a real-world process is simulated, keep the simplifying assumptions and factual limitations explicit.
+
 ## Explanatory Narration And Text Roles
 
 Own a complete, naturally spoken explanation rather than an outline of scene headings, slogans, or labels. Narration should carry the question being investigated, necessary assumptions, reasoning transitions, mechanism, limitations, and the conclusion where these need verbal explanation. The visual track should make the important claims observable and easier to grasp; it may carry spatial or perceptual information more efficiently than speech. Neither track should be a mere echo of the other.
@@ -50,7 +60,7 @@ Treat these as distinct deliverables:
 
 For a deliberately silent video, allocate enough visual and written explanation for the same promised learning outcome instead of silently converting narration into terse slogans. If a commissioned video calls for speech but the current pipeline cannot produce audio, retain the complete narration as an explicit deliverable, flag the missing audio, and do not claim the video itself communicates everything it cannot.
 
-Before approving the script, read its explanation without relying on scene titles or unseen animations: does it establish the key causal transitions? Then check the joint audio-visual sequence for what is best shown rather than said. Avoid padding speech with information that the visual already makes unambiguously clear.
+Before approving the script, read it continuously rather than as separate scene cards: does each passage follow from an unresolved question or consequence, and does the explanation work without relying on scene titles or unseen animations? does it establish the key causal transitions? Then check the joint audio-visual sequence for what is best shown rather than said. Avoid padding speech with information that the visual already makes unambiguously clear.
 
 ## Duration Derived From Teaching
 
@@ -91,7 +101,7 @@ When an overview remains visible while a detail opens, define a focus contract i
 - Give the focused detail its own readable territory. Do not place independent cards or panels over active overview labels, connectors, or nodes unless the overlap itself carries meaning.
 - State how attention enters and leaves the focus state so the implementation can preserve continuity.
 
-For every scene boundary, specify the persistent visual anchor or the first readable state of the incoming scene. A hard cut must not intentionally create a moment where all primary information disappears and then fades back in. Leave frame calculations and transition APIs to the technical Skills, but make the intended continuity explicit in the creative brief.
+For every scene boundary, specify the persistent visual anchor or the first readable state of the incoming scene. When a recurring situation is the teaching thread, carry its actual state into the next scene instead of starting another generic example. A hard cut must not intentionally create a moment where all primary information disappears and then fades back in. Leave frame calculations and transition APIs to the technical Skills, but make the intended continuity explicit in the creative brief.
 
 ## Evidence And Data
 
@@ -101,11 +111,14 @@ If you cannot say why a number is on screen in one clear sentence, remove it. A 
 
 ## Review And Delivery
 
-Creative sign-off includes learning integrity and runtime adequacy: can a viewer who watches the completed sequence explain the key mechanism or distinction, rather than merely recall its terminology? Is each indispensable reasoning bridge actually visible or understandable in narration? If the edit preserves the label but drops the cause, consequence, or boundary condition, repair the scene or return the missing requirement to `knowledge-planner`.
+Creative sign-off includes narrative continuity, learning integrity, and runtime adequacy: can a viewer who watches the completed sequence explain the key mechanism or distinction, rather than merely recall its terminology? Is each indispensable reasoning bridge actually visible or understandable in narration? If the edit preserves the label but drops the cause, consequence, or boundary condition, repair the scene or return the missing requirement to `knowledge-planner`.
 
 Source review alone is not enough for creative sign-off. Using the preview or sampled frames supplied by the technical workflow, intentionally inspect the scenes and moments carrying the most meaning or creative risk, including fully assembled states and transitions where relevant. Apply judgment rather than a mechanical quota:
 
 - Is the intended attention order immediately clear?
+- Does each major scene grow from the previous event, inference, or unanswered question, or could the chapters be arbitrarily rearranged?
+- If a recurring transaction, experiment, or situation was promised, does its state actually progress on screen and in narration?
+- Has stronger narration turned the video into disconnected illustrated lectures rather than one developing explanation?
 - Would the viewer understand why the central claim holds, or only remember a polished definition?
 - Did any essential causal step disappear between the planning brief, full narration, and final visual sequence?
 - Is there a complete narration script (or an explicitly sufficient silent-video explanation), clearly distinguished from captions and labels?

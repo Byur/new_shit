@@ -373,7 +373,13 @@ export const DeepSeekHarnessPluginsVideo: React.FC = () => {
   const sceneIndex = Math.min(sceneStarts.length - 1, sceneStarts.findIndex((start, index) => frame / fps < sceneEnds[index]) < 0 ? sceneStarts.length - 1 : sceneStarts.findIndex((start, index) => frame / fps < sceneEnds[index]));
   const Scene = sceneComponents[sceneIndex];
   return (
-    <AbsoluteFill style={{ backgroundColor: COLORS.bg, fontFamily: TYPOGRAPHY.fontFamily }}>
+    <AbsoluteFill
+      style={{
+        backgroundColor: COLORS.bg,
+        fontFamily: TYPOGRAPHY.fontFamily,
+        scale: 1.004,
+      }}
+    >
       <Scene frame={frame} />
       <Audio src={staticFile("deepseek-harness-plugins-narration.wav")} volume={1} premountFor={fps} />
       <div style={{ position: "absolute", left: 148, right: 148, bottom: 28, height: 3, background: COLORS.faint }}><div style={{ width: `${(frame / deepSeekHarnessPluginsDurationInFrames) * 100}%`, height: "100%", background: `linear-gradient(90deg, ${COLORS.cyan}, ${COLORS.green}, ${COLORS.yellow}, ${COLORS.coral}, ${COLORS.purple})` }} /></div>

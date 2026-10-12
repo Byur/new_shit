@@ -33,6 +33,16 @@ Test the proposed angle against a concrete learner misconception or decision. As
 
 Keep factual claims honest. Distinguish verified facts from explanatory simplifications and personal interpretation; use reliable primary material when the subject is current or consequential.
 
+## Learning Journey And Narrative Causality
+
+Plan a progression of understanding, not a sequence of topics. Ask what the learner first notices or assumes, what concrete event or contradiction makes that understanding inadequate, what new question this creates, and what explanation resolves it or exposes a further question. The successive teaching beats should earn their place through a change in the learner's understanding, not because the next term appears on a checklist.
+
+Where the subject supports it, follow a persistent situation, artifact, transaction, experiment, or problem whose state changes over time. Introduce terminology when the learner needs it to interpret the unfolding event; do not interrupt the event merely to define another label. Preserve consequential state across the journey: what changed, what remains unresolved, and why the next step matters. An example introduced at the beginning but discarded in the middle is not a throughline.
+
+Do not force fictional characters or a conventional story arc onto topics that call for proofs, conceptual comparison, or experiments. The narrative thread may be a question, a changing model, an evolving example, or a series of increasingly discriminating observations. Favor the form that makes the reasoning necessary and engaging.
+
+Make each central beat serve both narrative movement and substantive teaching: it should expose a genuine uncertainty, demonstrate a mechanism, test an assumption, or alter a consequential decision. Mere suspense, slogans, decorative conflict, and dramatized claims without evidence do not count as depth. If a proposed journey is lively but skips the causal mechanism, repair the explanation inside the journey rather than adding disconnected teaching slides.
+
 ## Depth And Complexity
 
 Optimize for cognitive efficiency, not minimum length. Concision removes redundancy, decorative facts, and unnecessary difficulty; it does not remove the conditions, causal steps, examples, or qualifications needed for real understanding. A short explanation succeeds only if it is intellectually complete for the promised learning outcome.
@@ -64,10 +74,12 @@ When a demo helps, make its value legible: identify the meaningful action or inp
 
 ## Output
 
-Deliver enough substance for the next creator to preserve the reasoning and assess the explanation burden: the learning promise, audience misconception or decision, scope, narrative spine, the causal or conceptual bridges that must survive adaptation, essential evidence or demo, and important uncertainties or simplifications. The format and level of detail should follow the subject, not a fixed template or an arbitrary brevity target.
+Deliver enough substance for the next creator to preserve the reasoning and assess the explanation burden: the learning promise, audience misconception or decision, scope, the evolving learner question or situation and its consequential changes, the causal or conceptual bridges that must survive adaptation, essential evidence or demo, and important uncertainties or simplifications. The format and level of detail should follow the subject, not a fixed template or an arbitrary brevity target.
 
 Do not hand off only headings and conclusions. For each essential bridge, state what makes the transition intelligible, the teaching evidence or demonstration it depends on, and what would be lost by compressing it into a slogan. Distinguish indispensable reasoning from optional enrichment so the director does not mistake a concise brief for permission to compress the lesson. Keep this compact when the topic is simple and detailed when the reasoning is demanding.
 
 ## Quality Gate
 
 Before handoff, check whether the plan could be fulfilled by a polished sequence of labels, definitions, and generic comparisons. If so, it probably has not yet established sufficient teaching value. Rework the central example, mechanism, or learner transformation. Check whether the brief would allow a downstream director to replace reasoning with short on-screen slogans; if so, make the missing explanation requirements explicit. Do not add facts merely to increase density; deepen the few ideas that matter.
+
+Check the continuity of the learning journey: after each important beat, can you say what the learner now knows, what changed in the central situation or model, and why the next question arises? If the beats can be freely shuffled without changing the understanding, investigate whether the plan is a disguised glossary. Do not artificially impose sequential causality when the subject genuinely consists of independent comparisons.

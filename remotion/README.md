@@ -18,6 +18,8 @@ npm run lint
 npm run render:story
 ~~~
 
+`npm run dev` 默认在 `http://localhost:3211` 启动 Remotion Studio；如需临时使用其他端口，可直接追加 Remotion CLI 参数。
+
 也可以从 monorepo 根目录使用 npm run remotion:dev、npm run remotion:build、npm run remotion:lint 和 npm run remotion:render-story。
 
 ## 目录约定
