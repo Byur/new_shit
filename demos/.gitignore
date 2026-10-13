@@ -3,5 +3,11 @@ node_modules/
 .env.*
 .DS_Store
 *.log
+
+# Package-local demo artifacts
+build/
+out/
+output/
+
 output/**/*.tmp
 output/**/*.part
