@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Audio, staticFile, useCurrentFrame} from 'remotion';
 import {AUDIO_SRC, L, totalFrames, unlockedAt} from './timing';
 import {highlightsAt, mapOpacityAt, markersAt, viewAt} from './camera';
-import {MapCanvas} from './components/MapCanvas';
+import {MapCanvas, project} from './components/MapCanvas';
 import {Header} from './components/Header';
 import {Captions, ProgressRail} from './components/Captions';
 import {Hook} from './acts/Hook';
@@ -25,6 +25,9 @@ export const coffeeDurationInFrames = totalFrames;
 export const CoffeeVideo: React.FC = () => {
   const frame = useCurrentFrame();
   const view = viewAt(frame);
+  /* the acts read geography through the same closed-form projection the SVG map
+     draws with, so an annotation can never disagree with the coastline */
+  const svgProject = (lon: number, lat: number) => project(view, lon, lat);
 
   return (
     <AbsoluteFill
@@ -44,9 +47,9 @@ export const CoffeeVideo: React.FC = () => {
       <Hook frame={frame} />
       <Species frame={frame} />
       <Variety frame={frame} />
-      <Geography frame={frame} view={view} />
+      <Geography frame={frame} project={svgProject} />
       <Process frame={frame} />
-      <Regions frame={frame} view={view} />
+      <Regions frame={frame} project={svgProject} />
       <Coda frame={frame} />
 
       <Header frame={frame} unlocked={unlockedAt(frame)} />

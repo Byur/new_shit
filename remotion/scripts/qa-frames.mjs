@@ -31,6 +31,9 @@ let planPath = null;
 let label = 'qa';
 let deltas = true;
 let compositionId = 'MarketSlangDecoded';
+/* A WebGL composition cannot be captured without being told to use a GPU backend;
+   the SVG compositions never needed this, so it is opt-in. */
+let gl = null;
 
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
@@ -38,6 +41,7 @@ for (let i = 0; i < args.length; i++) {
   else if (a === '--label') label = args[++i];
   else if (a === '--no-delta') deltas = false;
   else if (a === '--id') compositionId = args[++i];
+  else if (a === '--gl') gl = args[++i];
   else if (/^\d+$/.test(a)) frames.push(Number(a));
   else if (/^\d+-\d+$/.test(a)) {
     const [from, to] = a.split('-').map(Number);
@@ -58,6 +62,7 @@ if (planPath) {
   safeBox = plan.safe ?? null;
   label = plan.label ?? label;
   compositionId = plan.id ?? compositionId;
+  gl = plan.gl ?? gl;
 }
 
 if (frames.length === 0) {
@@ -75,7 +80,15 @@ const composition = await selectComposition({serveUrl, id: compositionId});
 const rendered = [];
 for (const frame of frames) {
   const out = path.join(OUT_DIR, `${label}-${String(frame).padStart(6, '0')}.png`);
-  await renderStill({composition, serveUrl, output: out, frame, overwrite: true});
+  await renderStill({
+    composition,
+    serveUrl,
+    output: out,
+    frame,
+    overwrite: true,
+    ...(gl ? {chromiumOptions: {gl}} : {}),
+    ...(gl ? {timeoutInMilliseconds: 180000} : {}),
+  });
   rendered.push({frame, file: out});
 }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {L, sceneEnd, sceneStart} from '../timing';
 import {enter, leave} from '../components/primitives';
 import {LAYOUT, theme} from '../theme';
-import {MapView, project} from '../components/MapCanvas';
+import {Projector} from '../components/MapCanvas';
 import {ActTitle, OriginCard} from '../components/panels';
 import {byKey} from '../data';
 
@@ -35,7 +35,7 @@ const CAMPS = [
   {name: '亚太', from: L('regions', 13) - 16, to: L('regions', 17) - 4, lon: 108, lat: 20, color: theme.robusta},
 ];
 
-export const Regions: React.FC<{frame: number; view: MapView}> = ({frame, view}) => {
+export const Regions: React.FC<{frame: number; project: Projector}> = ({frame, project}) => {
   const op = Math.min(enter(frame, sceneStart('regions') - 4, 18), leave(frame, sceneEnd('regions') + 6, 20));
   if (op <= 0.01) return null;
 
@@ -54,7 +54,7 @@ export const Regions: React.FC<{frame: number; view: MapView}> = ({frame, view})
         {CAMPS.map((c) => {
           const t = enter(frame, c.from, 20) * leave(frame, c.to, 20);
           if (t <= 0.01) return null;
-          const p = project(view, c.lon, c.lat);
+          const p = project(c.lon, c.lat);
           const lx = Math.min(Math.max(p.x, LAYOUT.map.left + 120), LAYOUT.map.right - 120);
           const ly = Math.min(Math.max(p.y - 26, LAYOUT.map.top + 54), LAYOUT.map.bottom - 26);
           return (

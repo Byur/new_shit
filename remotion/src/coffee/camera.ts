@@ -112,18 +112,23 @@ export const mapOpacityAt = (frame: number): number => {
  * Country highlights are additive rather than exclusive: two origins can be lit
  * at once while the camera sits between them, and each fades on its own ramp.
  */
-type Cue = {iso: string; color: string; from: number; to: number};
+export type Cue = {iso: string; color: string; from: number; to: number};
 
 const hue = (iso: string, color: string, from: number, to: number): Cue => ({iso, color, from, to});
 
-const CUES: Cue[] = [
+/**
+ * Exported because a tile engine has to pre-declare one layer per cue (a vector
+ * tile source cannot be given a new filter per frame cheaply), so the GL map
+ * needs the static cue list as well as the per-frame result.
+ */
+export const CUES: Cue[] = [
   hue('231', '#E3A34A', L('geography', 8), L('geography', 8) + 60),
-  hue('76', '#E3A34A', L('geography', 9), L('geography', 9) + 60),
+  hue('076', '#E3A34A', L('geography', 9), L('geography', 9) + 60),
   hue('704', '#E3A34A', L('geography', 10), L('geography', 10) + 60),
   hue('360', '#9C7B5E', L('process', 9), L('process', 11) + 40),
   hue('231', '#A8C46B', L('regions', 3), L('regions', 6) + 20),
   hue('404', '#A8C46B', L('regions', 5), L('regions', 6) + 20),
-  hue('76', '#E3A34A', L('regions', 8), L('regions', 9) + 30),
+  hue('076', '#E3A34A', L('regions', 8), L('regions', 9) + 30),
   hue('170', '#E3A34A', L('regions', 10), L('regions', 11) + 30),
   hue('320', '#E3A34A', L('regions', 12), L('regions', 12) + 120),
   hue('188', '#E3A34A', L('regions', 12), L('regions', 12) + 120),

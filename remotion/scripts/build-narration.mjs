@@ -200,8 +200,15 @@ const scenes = [];
 for (const scene of script.scenes) {
   const sceneStart = cursor;
   const lines = [];
-  scene.lines.forEach((display, indexInScene) => {
-    const spoken = toSpoken(display);
+  scene.lines.forEach((entry, indexInScene) => {
+    /*
+     * A line is either a plain string, or {display, spoken} when what should be
+     * read on screen is not what should be said out loud. That matters for
+     * terms like ABS: the caption should keep the abbreviation a viewer will
+     * recognise, while the voice says the Chinese name in full.
+     */
+    const display = typeof entry === 'string' ? entry : entry.display;
+    const spoken = toSpoken(typeof entry === 'string' ? display : (entry.spoken ?? display));
     const pcm = synthesise(spoken, voice, rate);
     const rawFrames = pcm.length / SAMPLES_PER_FRAME;
     const frames = Math.max(1, Math.round(rawFrames));

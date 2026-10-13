@@ -2,7 +2,7 @@ import React from 'react';
 import {L, sceneEnd, sceneStart} from '../timing';
 import {enter, leave} from '../components/primitives';
 import {LAYOUT, theme} from '../theme';
-import {MapView, project} from '../components/MapCanvas';
+import {Projector} from '../components/MapCanvas';
 import {AltitudeStrip, ActTitle} from '../components/panels';
 import {byKey} from '../data';
 
@@ -25,7 +25,7 @@ const CHAIN = [
  * temperature falls about 6.5 degrees per kilometre. That single number explains
  * why Ethiopia needs 2000 m where Brazil needs 1100 m.
  */
-export const Geography: React.FC<{frame: number; view: MapView}> = ({frame, view}) => {
+export const Geography: React.FC<{frame: number; project: Projector}> = ({frame, project}) => {
   const op = Math.min(enter(frame, sceneStart('geography') - 4, 18), leave(frame, sceneEnd('geography') + 6, 20));
   if (op <= 0.01) return null;
 
@@ -38,12 +38,12 @@ export const Geography: React.FC<{frame: number; view: MapView}> = ({frame, view
     return {label: c.label, low: o.altLow, high: o.altHigh, color: theme.altitude, note: c.note};
   });
 
-  const tropicN = project(view, -112, 23.5);
-  const tropicS = project(view, -112, -23.5);
-  const equator = project(view, -112, 0);
-  const beltC = project(view, 74, 0);
-  const frostLine = project(view, -48, -23.5);
-  const frostPt = project(view, -45, -19);
+  const tropicN = project(-112, 23.5);
+  const tropicS = project(-112, -23.5);
+  const equator = project(-112, 0);
+  const beltC = project(74, 0);
+  const frostLine = project(-48, -23.5);
+  const frostPt = project(-45, -19);
 
   return (
     <div style={{position: 'absolute', inset: 0, opacity: op, fontFamily: theme.font, pointerEvents: 'none'}}>

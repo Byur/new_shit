@@ -20,3 +20,11 @@ output/
 # Note: public/deepseek-harness-plugins-narration.wav predates this rule and is
 # already tracked, so it stays in the repository.
 public/*-narration.wav
+
+# public/maplibre-gl-worker.mjs IS tracked on purpose: MapLibre ships its worker
+# in its own dist, so keeping a copy in public/ removes unpkg.com from the render
+# path. It is one file and needs no build step.
+#
+# The basemap itself is NOT baked. Doing so saved only ~19 % of render time
+# because the network was never the bottleneck; the render fetches the style,
+# glyphs and 1.3 MB of tiles from demotiles.maplibre.org instead.

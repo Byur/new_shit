@@ -39,6 +39,18 @@ Treat every line, visual, and transition as a choice. It should add meaning, dir
 
 Keep on-screen text economical and complementary to narration. Economical on-screen text does not imply terse narration, and short scene labels are not a substitute for a teaching script. Use the project's established visual system, scene primitives, caption treatment, and package manager. Keep Remotion frame state as the source of timing; add another animation runtime only when it solves a specific need the existing system cannot.
 
+## Visual Evidence And Asset Exploration
+
+Choose visual media according to what the audience needs to observe, not according to what is easiest to construct in code. Treat Remotion as the composition and rendering medium, not as a creative boundary.
+
+When the subject involves physical objects, environments, people, or real-world processes, consider whether authentic footage, photography, existing illustrations, diagrams, or 3D assets can reveal appearance, scale, behavior, context, or mechanism more faithfully than a procedural reconstruction. The medium itself is not proof of a claim. Distinguish whether an asset is being used as evidence, illustration, or simulation, and communicate that distinction to viewers when confusion would affect understanding.
+
+Explore potentially useful assets early when their availability or constraints could change the visual concept. Let compelling evidence or source material inspire scenes, not merely fill predefined placeholders. Combine real-world material with animation, overlays, cutaways, or transformations when the combination makes otherwise hidden mechanisms understandable.
+
+Consider changes of perspective, spatial scale, or visual medium when the underlying knowledge calls for them. A shift from a real object to an internal mechanism, or from an observable phenomenon to an explanatory model, can itself become a meaningful narrative event.
+
+Choose assets for their explanatory value, not for variety or spectacle. Identify source and usage-rights considerations for proposed assets; leave verification and clearance to the relevant technical or media workflow. Do not make footage, 3D, or multiple media types mandatory; the Director defines the asset's explanatory role while acquisition, processing, and rights clearance remain with the relevant technical or media workflow.
+
 ## Narrative Continuity And Explanatory Momentum
 
 Direct an unfolding experience rather than illustrating an outline. Identify the persistent question, subject, object, or changing system carried across the video, and state what the viewer should newly notice, understand, anticipate, or feel as the sequence unfolds. When a beat ends, show what has changed, what remains uncertain, and why the next beat is worth watching. Where an evolving example is used, preserve its concrete state and consequences across scenes: do not reset the example each time a new term appears.
@@ -110,11 +122,17 @@ When a teaching claim crosses a meaningful conceptual distance, direct the bridg
 
 ## Visual Variety And Scene Rhythm
 
+Preserve visual continuity through meaningful relationships, not merely through persistent layouts or reusable scene shells.
+
+As the explanation develops, reconsider whether the current visual representation still offers the clearest view of what the audience needs to observe. A representation that works for introducing a system may become insufficient for explaining an internal mechanism, a change of scale, or a consequence.
+
+When that happens, change the viewer's perspective, focus, scale, or representation as needed. A transition from an overview to a detailed mechanism, and back to the system when useful, can preserve conceptual continuity without preserving the same composition.
+
+Do not introduce visual variation merely to avoid repetition. A sustained view is valuable when it continues to reveal meaningful changes. Change the visual approach when the explanation demands it, not according to a predetermined rhythm.
+
 Avoid repetitive scene construction. Do not let consecutive scenes fall into the same composition, motion pattern, or information shape unless repetition is intentionally used for comparison, continuity, or rhythm.
 
 Prefer meaningful visual progression over decorative variation. When narration introduces a relationship, process, comparison, quantity, transformation, or consequence, look for a visual representation rather than defaulting to another text-first scene.
-
-Across a sequence, let the visual language evolve when the idea evolves: through composition, scale, emphasis, spatial relationship, reveal, transformation, or asset type. Change is valuable only when it clarifies a new thought, shifts attention, or creates an intentional emotional beat. Motion itself is not required.
 
 Reuse established visual primitives when they remain the clearest expression of the idea. Do not invent a new visual device merely to avoid repetition.
 
@@ -155,6 +173,7 @@ Source review alone is not enough for creative sign-off. Using the preview or sa
 - Do narration, visible explanation, visual evidence, and scene timing compete for attention in a way that prevents understanding, including in a silent version?
 - Does the composition remain legible, balanced, and uncluttered?
 - Does the visual progression feel varied and purposeful, or has the video fallen into repetitive layouts and motion patterns?
+- When the visual approach changes, does the shift respond to a new mechanism, scale, consequence, or observational need rather than merely to variety? When it stays stable, does it continue to reveal meaningful change?
 - Can the format proposition still be felt in the assembled scenes, or has the video fallen back to the project's default explanatory shell?
 - Would a topic-noun replacement leave a key scene essentially unchanged? If so, strengthen the subject-specific visual evidence rather than adding decorative variation.
 - Do connectors, masks, and moving elements respect the spatial ownership of the objects they describe? Treat every connected object as a bounded surface: connectors must be computed or drawn edge-to-edge between intentional anchors, not center-to-center. Never rely on z-index alone to hide a connector behind a translucent surface; sample its assembled state and its draw-in motion.

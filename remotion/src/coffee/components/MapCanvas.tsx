@@ -47,6 +47,25 @@ export const project = (view: MapView, lon: number, lat: number) => {
   return {x: tx + worldX(lon) * scale, y: ty + worldY(lat) * scale};
 };
 
+/**
+ * Longitude/latitude to absolute composition coordinates.
+ *
+ * The acts take this rather than a `MapView` so that the projection can come
+ * from whichever renderer is drawing the map. The SVG map supplies a closed-form
+ * plate carree function; a tile engine has to supply its own, because the tiles
+ * and the annotations must agree or the annotations drift off the geography.
+ */
+export type Projector = (lon: number, lat: number) => {x: number; y: number};
+
+/**
+ * Natural Earth ids are numeric and zero-padded to three digits, but a cue
+ * naturally gets written as `'76'`. Normalising here rather than at the call
+ * sites is deliberate: a lookup miss draws nothing at all, which reads as
+ * "that country simply was not highlighted" and is invisible in review. Brazil
+ * was silently un-highlighted in two acts for exactly this reason.
+ */
+const isoKey = (iso: string) => iso.padStart(3, '0');
+
 export type MapMarker = {
   id: string;
   lon: number;
@@ -224,10 +243,10 @@ export const MapCanvas: React.FC<{
             : null}
 
           {highlights.map((h) =>
-            COUNTRIES[h.iso] ? (
+            COUNTRIES[isoKey(h.iso)] ? (
               <path
                 key={`h${h.iso}${h.color}`}
-                d={COUNTRIES[h.iso].d}
+                d={COUNTRIES[isoKey(h.iso)].d}
                 fill={h.color}
                 fillOpacity={h.opacity}
                 stroke={h.color}
