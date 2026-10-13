@@ -28,12 +28,38 @@ import {
   StockSlangExplainerVideo,
   stockSlangDurationInFrames,
 } from "./stock-slang/StockSlangExplainerVideo";
+import {
+  MarketSlangVideo,
+  marketSlangDurationInFrames,
+} from "./market-slang/MarketSlangVideo";
+import {
+  CoffeeVideo,
+  coffeeDurationInFrames,
+} from "./coffee/CoffeeVideo";
 
 // Each <Composition> is an entry in the sidebar!
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="CoffeeExplained"
+        component={CoffeeVideo}
+        durationInFrames={coffeeDurationInFrames}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
+      <Composition
+        id="MarketSlangDecoded"
+        component={MarketSlangVideo}
+        durationInFrames={marketSlangDurationInFrames}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
       <Composition
         id="StockSlangExplainer"
         component={StockSlangExplainerVideo}

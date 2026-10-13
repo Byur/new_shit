@@ -1,0 +1,915 @@
+{
+  "generatedFrom": "narration.script.json",
+  "voice": "Tingting",
+  "rate": 156,
+  "fps": 30,
+  "sampleRate": 22050,
+  "samplesPerFrame": 735,
+  "audioFile": "coffee-narration.wav",
+  "totalFrames": 14373,
+  "durationSeconds": 479.1,
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "钩子：产地写在正面，决策写在背面",
+      "startFrame": 24,
+      "endFrame": 989,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "你买一袋咖啡，正面写着产地。",
+          "spoken": "你买一袋咖啡，正面写着产地。",
+          "startFrame": 24,
+          "endFrame": 126,
+          "frames": 102,
+          "ms": 3390
+        },
+        {
+          "indexInScene": 1,
+          "display": "背面还有几行小字：品种、海拔、处理法。",
+          "spoken": "背面还有几行小字：品种、海拔、处理法。",
+          "startFrame": 133,
+          "endFrame": 283,
+          "frames": 150,
+          "ms": 4992
+        },
+        {
+          "indexInScene": 2,
+          "display": "大多数人只看正面。",
+          "spoken": "大多数人只看正面。",
+          "startFrame": 290,
+          "endFrame": 351,
+          "frames": 61,
+          "ms": 2043
+        },
+        {
+          "indexInScene": 3,
+          "display": "但喝到的，其实是背面那几行。",
+          "spoken": "但喝到的，其实是背面那几行。",
+          "startFrame": 358,
+          "endFrame": 459,
+          "frames": 101,
+          "ms": 3367
+        },
+        {
+          "indexInScene": 4,
+          "display": "因为产地本身不产生风味。",
+          "spoken": "因为产地本身不产生风味。",
+          "startFrame": 466,
+          "endFrame": 550,
+          "frames": 84,
+          "ms": 2786
+        },
+        {
+          "indexInScene": 5,
+          "display": "风味来自：什么品种，长在多高，摘下来怎么处理。",
+          "spoken": "风味来自：什么品种，长在多高，摘下来怎么处理。",
+          "startFrame": 557,
+          "endFrame": 728,
+          "frames": 171,
+          "ms": 5689
+        },
+        {
+          "indexInScene": 6,
+          "display": "这一期，我们把这几行字拆开。",
+          "spoken": "这一期，我们把这几行字拆开。",
+          "startFrame": 735,
+          "endFrame": 835,
+          "frames": 100,
+          "ms": 3344
+        },
+        {
+          "indexInScene": 7,
+          "display": "拆完你只看背面，就能判断杯子里是什么味道。",
+          "spoken": "拆完你只看背面，就能判断杯子里是什么味道。",
+          "startFrame": 842,
+          "endFrame": 989,
+          "frames": 147,
+          "ms": 4899
+        }
+      ]
+    },
+    {
+      "id": "species",
+      "title": "第一行 · 物种：风味上的缺点，是农业上的优点",
+      "startFrame": 1013,
+      "endFrame": 2967,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "第一行，物种。全世界的咖啡只有两个主角。",
+          "spoken": "第一行，物种。全世界的咖啡只有两个主角。",
+          "startFrame": 1013,
+          "endFrame": 1149,
+          "frames": 136,
+          "ms": 4528
+        },
+        {
+          "indexInScene": 1,
+          "display": "阿拉比卡，和罗布斯塔。",
+          "spoken": "阿拉比卡，和罗布斯塔。",
+          "startFrame": 1156,
+          "endFrame": 1235,
+          "frames": 79,
+          "ms": 2624
+        },
+        {
+          "indexInScene": 2,
+          "display": "差别最直观的，是两个数字。",
+          "spoken": "差别最直观的，是两个数字。",
+          "startFrame": 1242,
+          "endFrame": 1335,
+          "frames": 93,
+          "ms": 3088
+        },
+        {
+          "indexInScene": 3,
+          "display": "罗布斯塔的咖啡因，大约是阿拉比卡的两倍。",
+          "spoken": "罗布斯塔的咖啡因，大约是阿拉比卡的两倍。",
+          "startFrame": 1342,
+          "endFrame": 1479,
+          "frames": 137,
+          "ms": 4574
+        },
+        {
+          "indexInScene": 4,
+          "display": "咖啡因是苦的。",
+          "spoken": "咖啡因是苦的。",
+          "startFrame": 1486,
+          "endFrame": 1527,
+          "frames": 41,
+          "ms": 1370
+        },
+        {
+          "indexInScene": 5,
+          "display": "所以罗布斯塔更苦、更涩，有橡胶和泥土味。",
+          "spoken": "所以罗布斯塔更苦、更涩，有橡胶和泥土味。",
+          "startFrame": 1534,
+          "endFrame": 1688,
+          "frames": 154,
+          "ms": 5132
+        },
+        {
+          "indexInScene": 6,
+          "display": "但先别急着判它死刑。",
+          "spoken": "但先别急着判它死刑。",
+          "startFrame": 1695,
+          "endFrame": 1771,
+          "frames": 76,
+          "ms": 2531
+        },
+        {
+          "indexInScene": 7,
+          "display": "咖啡因和绿原酸，既是苦味来源，也是这棵树的化学防御。",
+          "spoken": "咖啡因和绿原酸，既是苦味来源，也是这棵树的化学防御。",
+          "startFrame": 1778,
+          "endFrame": 1974,
+          "frames": 196,
+          "ms": 6525
+        },
+        {
+          "indexInScene": 8,
+          "display": "含量越高，越多种昆虫不吃它。",
+          "spoken": "含量越高，越多种昆虫不吃它。",
+          "startFrame": 1981,
+          "endFrame": 2090,
+          "frames": 109,
+          "ms": 3646
+        },
+        {
+          "indexInScene": 9,
+          "display": "而抗病是另一套基因决定的能力，罗布斯塔碰巧两样都占。",
+          "spoken": "而抗病是另一套基因决定的能力，罗布斯塔碰巧两样都占。",
+          "startFrame": 2097,
+          "endFrame": 2282,
+          "frames": 185,
+          "ms": 6153
+        },
+        {
+          "indexInScene": 10,
+          "display": "风味上的缺点和农业上的优点，就长在同一个物种身上。",
+          "spoken": "风味上的缺点和农业上的优点，就长在同一个物种身上。",
+          "startFrame": 2289,
+          "endFrame": 2469,
+          "frames": 180,
+          "ms": 6014
+        },
+        {
+          "indexInScene": 11,
+          "display": "它还更耐热、更耐旱、产量更高、更便宜。",
+          "spoken": "它还更耐热、更耐旱、产量更高、更便宜。",
+          "startFrame": 2476,
+          "endFrame": 2626,
+          "frames": 150,
+          "ms": 4992
+        },
+        {
+          "indexInScene": 12,
+          "display": "今天全世界大约四成是罗布斯塔，占比还在涨。",
+          "spoken": "今天全世界大约四成是罗布斯塔，占比还在涨。",
+          "startFrame": 2633,
+          "endFrame": 2795,
+          "frames": 162,
+          "ms": 5387
+        },
+        {
+          "indexInScene": 13,
+          "display": "涨得最快的地方，恰恰是原本只种阿拉比卡的产区。",
+          "spoken": "涨得最快的地方，恰恰是原本只种阿拉比卡的产区。",
+          "startFrame": 2802,
+          "endFrame": 2967,
+          "frames": 165,
+          "ms": 5503
+        }
+      ]
+    },
+    {
+      "id": "variety",
+      "title": "第二行 · 品种：一次遗传瓶颈，一个抗病悖论",
+      "startFrame": 2991,
+      "endFrame": 5600,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "第二行，品种。这一行最容易被忽略。",
+          "spoken": "第二行，品种。这一行最容易被忽略。",
+          "startFrame": 2991,
+          "endFrame": 3109,
+          "frames": 118,
+          "ms": 3947
+        },
+        {
+          "indexInScene": 1,
+          "display": "咖啡的故乡是埃塞俄比亚，那里有上万种野生咖啡。",
+          "spoken": "咖啡的故乡是埃塞俄比亚，那里有上万种野生咖啡。",
+          "startFrame": 3116,
+          "endFrame": 3282,
+          "frames": 166,
+          "ms": 5526
+        },
+        {
+          "indexInScene": 2,
+          "display": "但今天全世界的阿拉比卡，几乎都来自几百年前被带出非洲的几棵。",
+          "spoken": "但今天全世界的阿拉比卡，几乎都来自几百年前被带出非洲的几棵。",
+          "startFrame": 3289,
+          "endFrame": 3508,
+          "frames": 219,
+          "ms": 7291
+        },
+        {
+          "indexInScene": 3,
+          "display": "一次严重的遗传瓶颈。",
+          "spoken": "一次严重的遗传瓶颈。",
+          "startFrame": 3515,
+          "endFrame": 3580,
+          "frames": 65,
+          "ms": 2183
+        },
+        {
+          "indexInScene": 4,
+          "display": "它们分成两条主干：铁皮卡，和波旁。",
+          "spoken": "它们分成两条主干：铁皮卡，和波旁。",
+          "startFrame": 3587,
+          "endFrame": 3725,
+          "frames": 138,
+          "ms": 4598
+        },
+        {
+          "indexInScene": 5,
+          "display": "铁皮卡到了爪哇，再到美洲；波旁留在留尼汪岛。",
+          "spoken": "铁皮卡到了爪哇，再到美洲；波旁留在留尼汪岛。",
+          "startFrame": 3732,
+          "endFrame": 3901,
+          "frames": 169,
+          "ms": 5642
+        },
+        {
+          "indexInScene": 6,
+          "display": "今天的卡杜拉、卡杜艾、帕卡马拉，都是这两支的突变或杂交。",
+          "spoken": "今天的卡杜拉、卡杜艾、帕卡马拉，都是这两支的突变或杂交。",
+          "startFrame": 3908,
+          "endFrame": 4125,
+          "frames": 217,
+          "ms": 7221
+        },
+        {
+          "indexInScene": 7,
+          "display": "1970 年代，叶锈病传入美洲，并在十来年里扩散到几乎所有产区。",
+          "spoken": "一千九百七十 年代，叶锈病传入美洲，并在十来年里扩散到几乎所有产区。",
+          "startFrame": 4132,
+          "endFrame": 4388,
+          "frames": 256,
+          "ms": 8522
+        },
+        {
+          "indexInScene": 8,
+          "display": "育种家找到了帝汶杂交，它身上带着罗布斯塔的血。",
+          "spoken": "育种家找到了帝汶杂交，它身上带着罗布斯塔的血。",
+          "startFrame": 4395,
+          "endFrame": 4562,
+          "frames": 167,
+          "ms": 5573
+        },
+        {
+          "indexInScene": 9,
+          "display": "帝汶杂交配上卡杜拉，就是卡蒂姆。",
+          "spoken": "帝汶杂交配上卡杜拉，就是卡蒂姆。",
+          "startFrame": 4569,
+          "endFrame": 4690,
+          "frames": 121,
+          "ms": 4040
+        },
+        {
+          "indexInScene": 10,
+          "display": "卡蒂姆抗病、高产，被大规模推广，但杯测分数经常偏低。",
+          "spoken": "卡蒂姆抗病、高产，被大规模推广，但杯测分数经常偏低。",
+          "startFrame": 4697,
+          "endFrame": 4904,
+          "frames": 207,
+          "ms": 6896
+        },
+        {
+          "indexInScene": 11,
+          "display": "抗病和风味，又一次是同一件事的两面。",
+          "spoken": "抗病和风味，又一次是同一件事的两面。",
+          "startFrame": 4911,
+          "endFrame": 5039,
+          "frames": 128,
+          "ms": 4273
+        },
+        {
+          "indexInScene": 12,
+          "display": "也有反例。格莎在中美洲躺了几十年，没人要。",
+          "spoken": "也有反例。格莎在中美洲躺了几十年，没人要。",
+          "startFrame": 5046,
+          "endFrame": 5198,
+          "frames": 152,
+          "ms": 5062
+        },
+        {
+          "indexInScene": 13,
+          "display": "直到有人在巴拿马 1600 米种下它，2004 年夺冠，拍卖价从此刷新纪录。",
+          "spoken": "直到有人在巴拿马 一千六百 米种下它，二千零四 年夺冠，拍卖价从此刷新纪录。",
+          "startFrame": 5205,
+          "endFrame": 5470,
+          "frames": 265,
+          "ms": 8824
+        },
+        {
+          "indexInScene": 14,
+          "display": "品种决定风味的上限，海拔负责兑现。",
+          "spoken": "品种决定风味的上限，海拔负责兑现。",
+          "startFrame": 5477,
+          "endFrame": 5600,
+          "frames": 123,
+          "ms": 4110
+        }
+      ]
+    },
+    {
+      "id": "geography",
+      "title": "第三行 · 海拔：为什么海拔可以替代纬度",
+      "startFrame": 5624,
+      "endFrame": 8046,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "第三行，海拔。这行最像玄学，其实最物理。",
+          "spoken": "第三行，海拔。这行最像玄学，其实最物理。",
+          "startFrame": 5624,
+          "endFrame": 5781,
+          "frames": 157,
+          "ms": 5225
+        },
+        {
+          "indexInScene": 1,
+          "display": "咖啡树只长在南北回归线之间，这条带子叫咖啡带。",
+          "spoken": "咖啡树只长在南北回归线之间，这条带子叫咖啡带。",
+          "startFrame": 5788,
+          "endFrame": 5966,
+          "frames": 178,
+          "ms": 5921
+        },
+        {
+          "indexInScene": 2,
+          "display": "因为它怕霜，零度以下就没命。",
+          "spoken": "因为它怕霜，零度以下就没命。",
+          "startFrame": 5973,
+          "endFrame": 6078,
+          "frames": 105,
+          "ms": 3506
+        },
+        {
+          "indexInScene": 3,
+          "display": "它还需要旱季和雨季交替，才能开花结果。",
+          "spoken": "它还需要旱季和雨季交替，才能开花结果。",
+          "startFrame": 6085,
+          "endFrame": 6229,
+          "frames": 144,
+          "ms": 4783
+        },
+        {
+          "indexInScene": 4,
+          "display": "但决定它能不能活的不是纬度，是温度。",
+          "spoken": "但决定它能不能活的不是纬度，是温度。",
+          "startFrame": 6236,
+          "endFrame": 6356,
+          "frames": 120,
+          "ms": 3994
+        },
+        {
+          "indexInScene": 5,
+          "display": "咖啡最喜欢的年均温，是 18 到 22 度。",
+          "spoken": "咖啡最喜欢的年均温，是 十八 到 二十二 度。",
+          "startFrame": 6363,
+          "endFrame": 6495,
+          "frames": 132,
+          "ms": 4412
+        },
+        {
+          "indexInScene": 6,
+          "display": "气温每升高 1000 米，大约降 6.5 度。",
+          "spoken": "气温每升高 一千 米，大约降 六点五 度。",
+          "startFrame": 6502,
+          "endFrame": 6623,
+          "frames": 121,
+          "ms": 4040
+        },
+        {
+          "indexInScene": 7,
+          "display": "所以海拔可以替代纬度。",
+          "spoken": "所以海拔可以替代纬度。",
+          "startFrame": 6630,
+          "endFrame": 6703,
+          "frames": 73,
+          "ms": 2438
+        },
+        {
+          "indexInScene": 8,
+          "display": "埃塞俄比亚在赤道边，阿拉比卡要种到 2000 米上下才够凉。",
+          "spoken": "埃塞俄比亚在赤道边，阿拉比卡要种到 二千 米上下才够凉。",
+          "startFrame": 6710,
+          "endFrame": 6906,
+          "frames": 196,
+          "ms": 6548
+        },
+        {
+          "indexInScene": 9,
+          "display": "巴西在南纬 18 度，1000 米左右就够。",
+          "spoken": "巴西在南纬 十八 度，一千 米左右就够。",
+          "startFrame": 6913,
+          "endFrame": 7033,
+          "frames": 120,
+          "ms": 3994
+        },
+        {
+          "indexInScene": 10,
+          "display": "越南更靠北，但 600 米只够种罗布斯塔。",
+          "spoken": "越南更靠北，但 六百 米只够种罗布斯塔。",
+          "startFrame": 7040,
+          "endFrame": 7174,
+          "frames": 134,
+          "ms": 4458
+        },
+        {
+          "indexInScene": 11,
+          "display": "同样是阿拉比卡，产地海拔可以差上一千米。",
+          "spoken": "同样是阿拉比卡，产地海拔可以差上一千米。",
+          "startFrame": 7181,
+          "endFrame": 7323,
+          "frames": 142,
+          "ms": 4737
+        },
+        {
+          "indexInScene": 12,
+          "display": "高海拔为什么好喝？熟得慢，糖分足，豆子密度高，酸质更亮。",
+          "spoken": "高海拔为什么好喝？熟得慢，糖分足，豆子密度高，酸质更亮。",
+          "startFrame": 7330,
+          "endFrame": 7540,
+          "frames": 210,
+          "ms": 6989
+        },
+        {
+          "indexInScene": 13,
+          "display": "但海拔也有上限。1994 年和 2021 年，巴西两次严重霜冻。",
+          "spoken": "但海拔也有上限。一千九百九十四 年和 二千零二十一 年，巴西两次严重霜冻。",
+          "startFrame": 7547,
+          "endFrame": 7800,
+          "frames": 253,
+          "ms": 8429
+        },
+        {
+          "indexInScene": 14,
+          "display": "国际咖啡价格都大幅跳涨，1994 年那一次，一年之内翻了一倍。",
+          "spoken": "国际咖啡价格都大幅跳涨，一千九百九十四 年那一次，一年之内翻了一倍。",
+          "startFrame": 7807,
+          "endFrame": 8046,
+          "frames": 239,
+          "ms": 7964
+        }
+      ]
+    },
+    {
+      "id": "process",
+      "title": "第四行 · 处理法：同一棵树，四个版本",
+      "startFrame": 8070,
+      "endFrame": 10223,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "第四行，处理法。这一行被严重低估。",
+          "spoken": "第四行，处理法。这一行被严重低估。",
+          "startFrame": 8070,
+          "endFrame": 8188,
+          "frames": 118,
+          "ms": 3947
+        },
+        {
+          "indexInScene": 1,
+          "display": "果子摘下来，24 小时内必须做决定。",
+          "spoken": "果子摘下来，二十四 小时内必须做决定。",
+          "startFrame": 8195,
+          "endFrame": 8325,
+          "frames": 130,
+          "ms": 4342
+        },
+        {
+          "indexInScene": 2,
+          "display": "第一，水洗。去皮，带果胶泡水发酵，洗净晒干。",
+          "spoken": "第一，水洗。去皮，带果胶泡水发酵，洗净晒干。",
+          "startFrame": 8332,
+          "endFrame": 8517,
+          "frames": 185,
+          "ms": 6153
+        },
+        {
+          "indexInScene": 3,
+          "display": "干净、酸亮、清晰，代价是耗水。",
+          "spoken": "干净、酸亮、清晰，代价是耗水。",
+          "startFrame": 8524,
+          "endFrame": 8652,
+          "frames": 128,
+          "ms": 4273
+        },
+        {
+          "indexInScene": 4,
+          "display": "第二，日晒。整颗果子铺开晒干。",
+          "spoken": "第二，日晒。整颗果子铺开晒干。",
+          "startFrame": 8659,
+          "endFrame": 8774,
+          "frames": 115,
+          "ms": 3831
+        },
+        {
+          "indexInScene": 5,
+          "display": "果肉的糖渗进豆子，更甜、更醇、果味更重。",
+          "spoken": "果肉的糖渗进豆子，更甜、更醇、果味更重。",
+          "startFrame": 8781,
+          "endFrame": 8938,
+          "frames": 157,
+          "ms": 5248
+        },
+        {
+          "indexInScene": 6,
+          "display": "缺点是翻晒不及时，就会发霉。",
+          "spoken": "缺点是翻晒不及时，就会发霉。",
+          "startFrame": 8945,
+          "endFrame": 9052,
+          "frames": 107,
+          "ms": 3576
+        },
+        {
+          "indexInScene": 7,
+          "display": "第三，蜜处理。去皮，留一部分果胶一起晒。",
+          "spoken": "第三，蜜处理。去皮，留一部分果胶一起晒。",
+          "startFrame": 9059,
+          "endFrame": 9207,
+          "frames": 148,
+          "ms": 4946
+        },
+        {
+          "indexInScene": 8,
+          "display": "它是水洗和日晒之间的连续区间。",
+          "spoken": "它是水洗和日晒之间的连续区间。",
+          "startFrame": 9214,
+          "endFrame": 9321,
+          "frames": 107,
+          "ms": 3576
+        },
+        {
+          "indexInScene": 9,
+          "display": "第四，湿刨法，只在印尼大规模使用。",
+          "spoken": "第四，湿刨法，只在印尼大规模使用。",
+          "startFrame": 9328,
+          "endFrame": 9454,
+          "frames": 126,
+          "ms": 4203
+        },
+        {
+          "indexInScene": 10,
+          "display": "雨季来得早，豆子来不及晒，只能带壳半干刨掉。",
+          "spoken": "雨季来得早，豆子来不及晒，只能带壳半干刨掉。",
+          "startFrame": 9461,
+          "endFrame": 9620,
+          "frames": 159,
+          "ms": 5294
+        },
+        {
+          "indexInScene": 11,
+          "display": "结果是酸度极低、醇厚度极高，带草本和泥土味，就是常说的苏门答腊味。",
+          "spoken": "结果是酸度极低、醇厚度极高，带草本和泥土味，就是常说的苏门答腊味。",
+          "startFrame": 9627,
+          "endFrame": 9875,
+          "frames": 248,
+          "ms": 8266
+        },
+        {
+          "indexInScene": 12,
+          "display": "还有第五种：装进密封罐控温发酵，叫厌氧发酵。",
+          "spoken": "还有第五种：装进密封罐控温发酵，叫厌氧发酵。",
+          "startFrame": 9882,
+          "endFrame": 10051,
+          "frames": 169,
+          "ms": 5642
+        },
+        {
+          "indexInScene": 13,
+          "display": "一棵树，同一天的果子，四种处理，就是四支豆子。",
+          "spoken": "一棵树，同一天的果子，四种处理，就是四支豆子。",
+          "startFrame": 10058,
+          "endFrame": 10223,
+          "frames": 165,
+          "ms": 5503
+        }
+      ]
+    },
+    {
+      "id": "regions",
+      "title": "回到地图：三大阵营，一套解释",
+      "startFrame": 10247,
+      "endFrame": 13011,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "四行字都齐了。回到地图。",
+          "spoken": "四行字都齐了。回到地图。",
+          "startFrame": 10247,
+          "endFrame": 10333,
+          "frames": 86,
+          "ms": 2856
+        },
+        {
+          "indexInScene": 1,
+          "display": "全世界的产区，分成三大阵营。",
+          "spoken": "全世界的产区，分成三大阵营。",
+          "startFrame": 10340,
+          "endFrame": 10447,
+          "frames": 107,
+          "ms": 3553
+        },
+        {
+          "indexInScene": 2,
+          "display": "第一个阵营，非洲。",
+          "spoken": "第一个阵营，非洲。",
+          "startFrame": 10454,
+          "endFrame": 10517,
+          "frames": 63,
+          "ms": 2090
+        },
+        {
+          "indexInScene": 3,
+          "display": "埃塞俄比亚是原产地，野生种，海拔 1900 到 2200 米。",
+          "spoken": "埃塞俄比亚是原产地，野生种，海拔 一千九百 到 二千二百 米。",
+          "startFrame": 10524,
+          "endFrame": 10726,
+          "frames": 202,
+          "ms": 6734
+        },
+        {
+          "indexInScene": 4,
+          "display": "花香、柑橘、茶感，酸质非常高。",
+          "spoken": "花香、柑橘、茶感，酸质非常高。",
+          "startFrame": 10733,
+          "endFrame": 10861,
+          "frames": 128,
+          "ms": 4273
+        },
+        {
+          "indexInScene": 5,
+          "display": "肯尼亚用 SL28 和 SL34，加双重水洗。",
+          "spoken": "肯尼亚用 SL二十八 和 SL三十四，加双重水洗。",
+          "startFrame": 10868,
+          "endFrame": 11081,
+          "frames": 213,
+          "ms": 7105
+        },
+        {
+          "indexInScene": 6,
+          "display": "酸得像黑加仑，强烈而且有结构。",
+          "spoken": "酸得像黑加仑，强烈而且有结构。",
+          "startFrame": 11088,
+          "endFrame": 11204,
+          "frames": 116,
+          "ms": 3878
+        },
+        {
+          "indexInScene": 7,
+          "display": "第二个阵营，拉丁美洲。",
+          "spoken": "第二个阵营，拉丁美洲。",
+          "startFrame": 11211,
+          "endFrame": 11288,
+          "frames": 77,
+          "ms": 2577
+        },
+        {
+          "indexInScene": 8,
+          "display": "巴西是第一大产国，但海拔只有 800 到 1200 米。",
+          "spoken": "巴西是第一大产国，但海拔只有 八百 到 一千二百 米。",
+          "startFrame": 11295,
+          "endFrame": 11457,
+          "frames": 162,
+          "ms": 5387
+        },
+        {
+          "indexInScene": 9,
+          "display": "所以是坚果、巧克力、低酸，意式拼配的骨架。",
+          "spoken": "所以是坚果、巧克力、低酸，意式拼配的骨架。",
+          "startFrame": 11464,
+          "endFrame": 11628,
+          "frames": 164,
+          "ms": 5457
+        },
+        {
+          "indexInScene": 10,
+          "display": "哥伦比亚海拔 1200 到 1900 米，主力是卡斯蒂略和卡杜拉。",
+          "spoken": "哥伦比亚海拔 一千二百 到 一千九百 米，主力是卡斯蒂略和卡杜拉。",
+          "startFrame": 11635,
+          "endFrame": 11845,
+          "frames": 210,
+          "ms": 6989
+        },
+        {
+          "indexInScene": 11,
+          "display": "水洗，均衡、干净、焦糖甜，最标准的参照物。",
+          "spoken": "水洗，均衡、干净、焦糖甜，最标准的参照物。",
+          "startFrame": 11852,
+          "endFrame": 12028,
+          "frames": 176,
+          "ms": 5851
+        },
+        {
+          "indexInScene": 12,
+          "display": "再往北，危地马拉、哥斯达黎加、巴拿马，风味更细致。",
+          "spoken": "再往北，危地马拉、哥斯达黎加、巴拿马，风味更细致。",
+          "startFrame": 12035,
+          "endFrame": 12223,
+          "frames": 188,
+          "ms": 6269
+        },
+        {
+          "indexInScene": 13,
+          "display": "第三个阵营，亚太。",
+          "spoken": "第三个阵营，亚太。",
+          "startFrame": 12230,
+          "endFrame": 12297,
+          "frames": 67,
+          "ms": 2229
+        },
+        {
+          "indexInScene": 14,
+          "display": "越南是第二大产国，也是最大的罗布斯塔产国。",
+          "spoken": "越南是第二大产国，也是最大的罗布斯塔产国。",
+          "startFrame": 12304,
+          "endFrame": 12454,
+          "frames": 150,
+          "ms": 4992
+        },
+        {
+          "indexInScene": 15,
+          "display": "这些豆子大多进了速溶和拼配。",
+          "spoken": "这些豆子大多进了速溶和拼配。",
+          "startFrame": 12461,
+          "endFrame": 12559,
+          "frames": 98,
+          "ms": 3251
+        },
+        {
+          "indexInScene": 16,
+          "display": "印尼就是湿刨法，低酸厚重。云南海拔 1000 到 1700 米，主力卡蒂姆，正在转向精品。",
+          "spoken": "印尼就是湿刨法，低酸厚重。云南海拔 一千 到 一千七百 米，主力卡蒂姆，正在转向精品。",
+          "startFrame": 12566,
+          "endFrame": 12868,
+          "frames": 302,
+          "ms": 10054
+        },
+        {
+          "indexInScene": 17,
+          "display": "每个产区的风味，都能用那四行字解释完。",
+          "spoken": "每个产区的风味，都能用那四行字解释完。",
+          "startFrame": 12875,
+          "endFrame": 13011,
+          "frames": 136,
+          "ms": 4528
+        }
+      ]
+    },
+    {
+      "id": "coda",
+      "title": "收束：四个问题，替代一个产地名",
+      "startFrame": 13035,
+      "endFrame": 14307,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "最后，怎么把它变成你自己的判断。",
+          "spoken": "最后，怎么把它变成你自己的判断。",
+          "startFrame": 13035,
+          "endFrame": 13146,
+          "frames": 111,
+          "ms": 3692
+        },
+        {
+          "indexInScene": 1,
+          "display": "行业里有一套标准打分法，叫杯测。",
+          "spoken": "行业里有一套标准打分法，叫杯测。",
+          "startFrame": 13153,
+          "endFrame": 13271,
+          "frames": 118,
+          "ms": 3947
+        },
+        {
+          "indexInScene": 2,
+          "display": "十项指标加总，80 分以上叫精品咖啡。",
+          "spoken": "十项指标加总，八十 分以上叫精品咖啡。",
+          "startFrame": 13278,
+          "endFrame": 13417,
+          "frames": 139,
+          "ms": 4644
+        },
+        {
+          "indexInScene": 3,
+          "display": "分数越高，价格越贵。",
+          "spoken": "分数越高，价格越贵。",
+          "startFrame": 13424,
+          "endFrame": 13499,
+          "frames": 75,
+          "ms": 2485
+        },
+        {
+          "indexInScene": 4,
+          "display": "但分数是别人的舌头，四行字是你能自己推的。",
+          "spoken": "但分数是别人的舌头，四行字是你能自己推的。",
+          "startFrame": 13506,
+          "endFrame": 13649,
+          "frames": 143,
+          "ms": 4760
+        },
+        {
+          "indexInScene": 5,
+          "display": "所以下次拿起一袋豆子，先翻到背面。",
+          "spoken": "所以下次拿起一袋豆子，先翻到背面。",
+          "startFrame": 13656,
+          "endFrame": 13782,
+          "frames": 126,
+          "ms": 4203
+        },
+        {
+          "indexInScene": 6,
+          "display": "问四个问题：什么物种，什么品种，多高，怎么处理。",
+          "spoken": "问四个问题：什么物种，什么品种，多高，怎么处理。",
+          "startFrame": 13789,
+          "endFrame": 13963,
+          "frames": 174,
+          "ms": 5805
+        },
+        {
+          "indexInScene": 7,
+          "display": "答案凑齐，你基本就知道杯子里是什么味道了。",
+          "spoken": "答案凑齐，你基本就知道杯子里是什么味道了。",
+          "startFrame": 13970,
+          "endFrame": 14107,
+          "frames": 137,
+          "ms": 4551
+        },
+        {
+          "indexInScene": 8,
+          "display": "产地只是一个缩写。",
+          "spoken": "产地只是一个缩写。",
+          "startFrame": 14114,
+          "endFrame": 14170,
+          "frames": 56,
+          "ms": 1858
+        },
+        {
+          "indexInScene": 9,
+          "display": "决定风味的，是缩写背后没写出来的东西。",
+          "spoken": "决定风味的，是缩写背后没写出来的东西。",
+          "startFrame": 14177,
+          "endFrame": 14307,
+          "frames": 130,
+          "ms": 4342
+        }
+      ]
+    }
+  ]
+}
