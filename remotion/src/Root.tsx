@@ -36,6 +36,10 @@ import {
   CoffeeVideo,
   coffeeDurationInFrames,
 } from "./coffee/CoffeeVideo";
+import {
+  CoffeeVideoGL,
+  coffeeDurationInFramesGL,
+} from "./coffee/CoffeeVideoGL";
 
 // Each <Composition> is an entry in the sidebar!
 
@@ -46,6 +50,15 @@ export const RemotionRoot: React.FC = () => {
         id="CoffeeExplained"
         component={CoffeeVideo}
         durationInFrames={coffeeDurationInFrames}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
+      <Composition
+        id="CoffeeExplainedGL"
+        component={CoffeeVideoGL}
+        durationInFrames={coffeeDurationInFramesGL}
         fps={30}
         width={1920}
         height={1080}

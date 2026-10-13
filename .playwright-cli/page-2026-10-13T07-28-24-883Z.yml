@@ -1,0 +1,21 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - generic:
+        - generic: 制动计时
+        - generic: 0.000s
+      - generic:
+        - generic: 距路障
+        - generic: 2597m
+    - generic:
+      - generic:
+        - text: "0"
+        - generic: km/h
+    - generic:
+      - generic: 踏板力度
+      - generic: 1612N
+      - generic: 0 N
+    - button "刹车" [disabled] [ref=e49]
+  - generic: "3"
+  - text: â—† â—† â—† â—†
+  - generic: 正在生成 3D 场景…

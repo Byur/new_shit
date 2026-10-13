@@ -1,0 +1,21 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e7]:
+    - generic [ref=e8]: 新款也被OTA了？没关系，我们一年能造三款车
+    - heading "极限刹车挑战" [level=1] [ref=e9]
+    - paragraph [ref=e10]: 越快踩，越快停。别把刹车踏板踩断。
+    - list [ref=e11]:
+      - listitem [ref=e12]: â—†车辆自动全力加速，100 km/h 后才能踩刹车
+      - listitem [ref=e13]: â—†一踩下刹车，动力立即切断；按得越久，力度越大
+      - listitem [ref=e14]: â—†力度达到 1612 N 刹车踏板断裂，整车翻滚失败
+      - listitem [ref=e15]: â—†得分 = 刹车初速度² ÷ 刹停用时，越高越好
+    - button "开始挑战" [ref=e17] [cursor=pointer]
+    - button "音效：开" [ref=e18] [cursor=pointer]
+    - generic [ref=e19]:
+      - generic [ref=e20]: Language
+      - combobox "Language" [ref=e21] [cursor=pointer]:
+        - option "简体中文" [selected]
+        - option "繁體中文"
+        - option "English"
+        - option "日本語"
+    - paragraph [ref=e22]: 按住空格 / 鼠标左键踩刹车
+  - generic: 正在生成 3D 场景…
