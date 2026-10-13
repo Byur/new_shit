@@ -35,7 +35,10 @@
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
-    "render:story": "bash render-wizz-story.sh"
+    "render:story": "bash render-wizz-story.sh",
+    "narration:build": "node scripts/build-narration.mjs",
+    "qa:frames": "node scripts/qa-frames.mjs --plan scripts/qa-plan.json",
+    "render:market-slang": "remotion render MarketSlangDecoded out/market-slang-decoded.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p --audio-codec=aac --audio-bitrate=192k"
   },
   "sideEffects": [
     "*.css"

@@ -13,3 +13,10 @@ dist/
 build/
 out/
 output/
+
+# Generated narration masters. They are a build input for rendering, but they are
+# reproducible from src/<project>/narration.script.json on macOS:
+#   npm run narration:build -- --project coffee
+# Note: public/deepseek-harness-plugins-narration.wav predates this rule and is
+# already tracked, so it stays in the repository.
+public/*-narration.wav
