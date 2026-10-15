@@ -1,0 +1,1885 @@
+{
+  "generatedFrom": "narration.script.json",
+  "voice": "Tingting",
+  "rate": 156,
+  "fps": 30,
+  "sampleRate": 22050,
+  "samplesPerFrame": 735,
+  "audioFile": "enso-narration.wav",
+  "totalFrames": 34194,
+  "durationSeconds": 1139.8,
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "钩子：两个同时成立的数字",
+      "startFrame": 24,
+      "endFrame": 2102,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "2026年10月8日，美国气候预测中心发布了一份厄尔尼诺公告。",
+          "spoken": "二零二六年十月八日，美国气候预测中心发布了一份厄尔尼诺公告。",
+          "startFrame": 24,
+          "endFrame": 222,
+          "frames": 198,
+          "ms": 6611
+        },
+        {
+          "indexInScene": 1,
+          "display": "它说，这次事件有可能超过1950年以来的每一次记录。",
+          "spoken": "它说，这次事件有可能超过一九五零年以来的每一次记录。",
+          "startFrame": 229,
+          "endFrame": 397,
+          "frames": 168,
+          "ms": 5587
+        },
+        {
+          "indexInScene": 2,
+          "display": "给出的概率是83%。",
+          "spoken": "给出的概率是百分之八十三。",
+          "startFrame": 404,
+          "endFrame": 484,
+          "frames": 80,
+          "ms": 2669
+        },
+        {
+          "indexInScene": 3,
+          "display": "同一周，世界气象组织说，赤道中东太平洋的海温，预计会达到有观测以来的最高值。",
+          "spoken": "同一周，世界气象组织说，赤道中东太平洋的海温，预计会达到有观测以来的最高值。",
+          "startFrame": 491,
+          "endFrame": 751,
+          "frames": 260,
+          "ms": 8664
+        },
+        {
+          "indexInScene": 4,
+          "display": "而四个月前，世界银行的粮食价格预测，只有2.5%的涨幅。",
+          "spoken": "而四个月前，世界银行的粮食价格预测，只有百分之二点五的涨幅。",
+          "startFrame": 758,
+          "endFrame": 958,
+          "frames": 200,
+          "ms": 6681
+        },
+        {
+          "indexInScene": 5,
+          "display": "但它加了一句：风险牢牢偏向上行。",
+          "spoken": "但它加了一句：风险牢牢偏向上行。",
+          "startFrame": 965,
+          "endFrame": 1082,
+          "frames": 117,
+          "ms": 3905
+        },
+        {
+          "indexInScene": 6,
+          "display": "一边是破纪录的海水温度，一边是温和的价格预测。",
+          "spoken": "一边是破纪录的海水温度，一边是温和的价格预测。",
+          "startFrame": 1089,
+          "endFrame": 1237,
+          "frames": 148,
+          "ms": 4926
+        },
+        {
+          "indexInScene": 7,
+          "display": "这两个数字之间的落差，就是这一期要讲的事。",
+          "spoken": "这两个数字之间的落差，就是这一期要讲的事。",
+          "startFrame": 1244,
+          "endFrame": 1379,
+          "frames": 135,
+          "ms": 4492
+        },
+        {
+          "indexInScene": 8,
+          "display": "先说一个几乎所有人都搞错的点。",
+          "spoken": "先说一个几乎所有人都搞错的点。",
+          "startFrame": 1386,
+          "endFrame": 1484,
+          "frames": 98,
+          "ms": 3253
+        },
+        {
+          "indexInScene": 9,
+          "display": "厄尔尼诺不是地球发烧，拉尼娜也不是地球着凉。",
+          "spoken": "厄尔尼诺不是地球发烧，拉尼娜也不是地球着凉。",
+          "startFrame": 1491,
+          "endFrame": 1642,
+          "frames": 151,
+          "ms": 5023
+        },
+        {
+          "indexInScene": 10,
+          "display": "它们不是两种灾害，是同一台机器的两个档位。",
+          "spoken": "它们不是两种灾害，是同一台机器的两个档位。",
+          "startFrame": 1649,
+          "endFrame": 1790,
+          "frames": 141,
+          "ms": 4693
+        },
+        {
+          "indexInScene": 11,
+          "display": "这台机器不生产热。它只做一件事：重新分配。",
+          "spoken": "这台机器不生产热。它只做一件事：重新分配。",
+          "startFrame": 1797,
+          "endFrame": 1950,
+          "frames": 153,
+          "ms": 5084
+        },
+        {
+          "indexInScene": 12,
+          "display": "它重新分配的，最后是雨，以及跟着雨走的钱。",
+          "spoken": "它重新分配的，最后是雨，以及跟着雨走的钱。",
+          "startFrame": 1957,
+          "endFrame": 2102,
+          "frames": 145,
+          "ms": 4844
+        }
+      ]
+    },
+    {
+      "id": "machine",
+      "title": "机器：一片没有陆地的一万八千公里",
+      "startFrame": 2128,
+      "endFrame": 9646,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "先看这台机器装在哪儿。",
+          "spoken": "先看这台机器装在哪儿。",
+          "startFrame": 2128,
+          "endFrame": 2203,
+          "frames": 75,
+          "ms": 2510
+        },
+        {
+          "indexInScene": 1,
+          "display": "沿赤道，从苏门答腊到南美洲西岸，中间连续162个经度，大约18000公里。",
+          "spoken": "沿赤道，从苏门答腊到南美洲西岸，中间连续一百六十二个经度，大约18000公里。",
+          "startFrame": 2210,
+          "endFrame": 2467,
+          "frames": 257,
+          "ms": 8572
+        },
+        {
+          "indexInScene": 2,
+          "display": "在这段距离里，赤道上没有任何一块陆地。",
+          "spoken": "在这段距离里，赤道上没有任何一块陆地。",
+          "startFrame": 2474,
+          "endFrame": 2599,
+          "frames": 125,
+          "ms": 4154
+        },
+        {
+          "indexInScene": 3,
+          "display": "这是地球上最宽的一片连续水面。厄尔尼诺只发生在太平洋，原因就在这里。",
+          "spoken": "这是地球上最宽的一片连续水面。厄尔尼诺只发生在太平洋，原因就在这里。",
+          "startFrame": 2606,
+          "endFrame": 2838,
+          "frames": 232,
+          "ms": 7742
+        },
+        {
+          "indexInScene": 4,
+          "display": "正常年份，东南信风从东往西吹，把表层的暖水一路推到西边堆起来。",
+          "spoken": "正常年份，东南信风从东往西吹，把表层的暖水一路推到西边堆起来。",
+          "startFrame": 2845,
+          "endFrame": 3070,
+          "frames": 225,
+          "ms": 7487
+        },
+        {
+          "indexInScene": 5,
+          "display": "结果是，西太平洋的海平面比东太平洋高出大约半米。",
+          "spoken": "结果是，西太平洋的海平面比东太平洋高出大约半米。",
+          "startFrame": 3077,
+          "endFrame": 3242,
+          "frames": 165,
+          "ms": 5508
+        },
+        {
+          "indexInScene": 6,
+          "display": "暖水在西边堆积，把温跃层压到大约160米深。温跃层就是暖水和冷水之间的分界。",
+          "spoken": "暖水在西边堆积，把温跃层压到大约一百六十米深。温跃层就是暖水和冷水之间的分界。",
+          "startFrame": 3249,
+          "endFrame": 3512,
+          "frames": 263,
+          "ms": 8771
+        },
+        {
+          "indexInScene": 7,
+          "display": "东边正好相反。风把表层水推走，深层的冷水涌升上来。",
+          "spoken": "东边正好相反。风把表层水推走，深层的冷水涌升上来。",
+          "startFrame": 3519,
+          "endFrame": 3704,
+          "frames": 185,
+          "ms": 6181
+        },
+        {
+          "indexInScene": 8,
+          "display": "所以秘鲁外海的水温，比同纬度的西太平洋低6到8度。",
+          "spoken": "所以秘鲁外海的水温，比同纬度的西太平洋低六到八度。",
+          "startFrame": 3711,
+          "endFrame": 3871,
+          "frames": 160,
+          "ms": 5331
+        },
+        {
+          "indexInScene": 9,
+          "display": "到这里，它还只是一个关于水的问题。但下一步，它变成了一个关于天气的问题。",
+          "spoken": "到这里，它还只是一个关于水的问题。但下一步，它变成了一个关于天气的问题。",
+          "startFrame": 3878,
+          "endFrame": 4105,
+          "frames": 227,
+          "ms": 7574
+        },
+        {
+          "indexInScene": 10,
+          "display": "暖水加热它上面的空气，空气受热上升，形成对流。",
+          "spoken": "暖水加热它上面的空气，空气受热上升，形成对流。",
+          "startFrame": 4112,
+          "endFrame": 4284,
+          "frames": 172,
+          "ms": 5729
+        },
+        {
+          "indexInScene": 11,
+          "display": "冷水上方的空气下沉，干燥，不下雨。",
+          "spoken": "冷水上方的空气下沉，干燥，不下雨。",
+          "startFrame": 4291,
+          "endFrame": 4415,
+          "frames": 124,
+          "ms": 4124
+        },
+        {
+          "indexInScene": 12,
+          "display": "于是同一时刻，印尼在下雨，而秘鲁是沙漠。",
+          "spoken": "于是同一时刻，印尼在下雨，而秘鲁是沙漠。",
+          "startFrame": 4422,
+          "endFrame": 4560,
+          "frames": 138,
+          "ms": 4611
+        },
+        {
+          "indexInScene": 13,
+          "display": "赤道太平洋上空因此形成一个环流圈，西边上升，东边下沉，它叫沃克环流。",
+          "spoken": "赤道太平洋上空因此形成一个环流圈，西边上升，东边下沉，它叫沃克环流。",
+          "startFrame": 4567,
+          "endFrame": 4823,
+          "frames": 256,
+          "ms": 8541
+        },
+        {
+          "indexInScene": 14,
+          "display": "请记住一句话，它是这一期的钥匙：雨，跟着暖水走。",
+          "spoken": "请记住一句话，它是这一期的钥匙：雨，跟着暖水走。",
+          "startFrame": 4830,
+          "endFrame": 4992,
+          "frames": 162,
+          "ms": 5404
+        },
+        {
+          "indexInScene": 15,
+          "display": "现在，让信风变弱一档。",
+          "spoken": "现在，让信风变弱一档。",
+          "startFrame": 4999,
+          "endFrame": 5079,
+          "frames": 80,
+          "ms": 2673
+        },
+        {
+          "indexInScene": 16,
+          "display": "堆在西边的暖水失去支撑，开始向东滑动。",
+          "spoken": "堆在西边的暖水失去支撑，开始向东滑动。",
+          "startFrame": 5086,
+          "endFrame": 5222,
+          "frames": 136,
+          "ms": 4521
+        },
+        {
+          "indexInScene": 17,
+          "display": "它不是一夜之间滑过去的。它是一道波，向东传，要走一到两个月，叫开尔文波。",
+          "spoken": "它不是一夜之间滑过去的。它是一道波，向东传，要走一到两个月，叫开尔文波。",
+          "startFrame": 5229,
+          "endFrame": 5477,
+          "frames": 248,
+          "ms": 8258
+        },
+        {
+          "indexInScene": 18,
+          "display": "暖池东移，雨带就跟着东移。",
+          "spoken": "暖池东移，雨带就跟着东移。",
+          "startFrame": 5484,
+          "endFrame": 5572,
+          "frames": 88,
+          "ms": 2931
+        },
+        {
+          "indexInScene": 19,
+          "display": "印尼开始干旱，而秘鲁的沙漠开始发洪水。",
+          "spoken": "印尼开始干旱，而秘鲁的沙漠开始发洪水。",
+          "startFrame": 5579,
+          "endFrame": 5708,
+          "frames": 129,
+          "ms": 4311
+        },
+        {
+          "indexInScene": 20,
+          "display": "同时，东边的涌升被压住，冷水上不来。",
+          "spoken": "同时，东边的涌升被压住，冷水上不来。",
+          "startFrame": 5715,
+          "endFrame": 5842,
+          "frames": 127,
+          "ms": 4240
+        },
+        {
+          "indexInScene": 21,
+          "display": "鳀鱼是一种只能待在冷水里的鱼。它离开了秘鲁外海。",
+          "spoken": "鳀鱼是一种只能待在冷水里的鱼。它离开了秘鲁外海。",
+          "startFrame": 5849,
+          "endFrame": 5999,
+          "frames": 150,
+          "ms": 4996
+        },
+        {
+          "indexInScene": 22,
+          "display": "这就是厄尔尼诺。名字来自秘鲁渔民，意思是圣婴。",
+          "spoken": "这就是厄尔尼诺。名字来自秘鲁渔民，意思是圣婴。",
+          "startFrame": 6006,
+          "endFrame": 6159,
+          "frames": 153,
+          "ms": 5084
+        },
+        {
+          "indexInScene": 23,
+          "display": "反过来，如果信风比平时更强。",
+          "spoken": "反过来，如果信风比平时更强。",
+          "startFrame": 6166,
+          "endFrame": 6271,
+          "frames": 105,
+          "ms": 3509
+        },
+        {
+          "indexInScene": 24,
+          "display": "暖水被更猛地吹到西边，东边的冷水更冷，涌升更旺。",
+          "spoken": "暖水被更猛地吹到西边，东边的冷水更冷，涌升更旺。",
+          "startFrame": 6278,
+          "endFrame": 6443,
+          "frames": 165,
+          "ms": 5509
+        },
+        {
+          "indexInScene": 25,
+          "display": "这叫拉尼娜，西班牙语里的小女孩。",
+          "spoken": "这叫拉尼娜，西班牙语里的小女孩。",
+          "startFrame": 6450,
+          "endFrame": 6554,
+          "frames": 104,
+          "ms": 3458
+        },
+        {
+          "indexInScene": 26,
+          "display": "现在问一个更关键的问题：为什么它会自己来回摆，而不是卡在一边？",
+          "spoken": "现在问一个更关键的问题：为什么它会自己来回摆，而不是卡在一边？",
+          "startFrame": 6561,
+          "endFrame": 6763,
+          "frames": 202,
+          "ms": 6748
+        },
+        {
+          "indexInScene": 27,
+          "display": "因为这里有一个正反馈。",
+          "spoken": "因为这里有一个正反馈。",
+          "startFrame": 6770,
+          "endFrame": 6836,
+          "frames": 66,
+          "ms": 2198
+        },
+        {
+          "indexInScene": 28,
+          "display": "信风变弱，暖水东移，东边变暖，东西温差变小，于是信风更弱。",
+          "spoken": "信风变弱，暖水东移，东边变暖，东西温差变小，于是信风更弱。",
+          "startFrame": 6843,
+          "endFrame": 7062,
+          "frames": 219,
+          "ms": 7294
+        },
+        {
+          "indexInScene": 29,
+          "display": "这个循环叫比耶克内斯反馈，它会自己加速。",
+          "spoken": "这个循环叫比耶克内斯反馈，它会自己加速。",
+          "startFrame": 7069,
+          "endFrame": 7207,
+          "frames": 138,
+          "ms": 4608
+        },
+        {
+          "indexInScene": 30,
+          "display": "但它不能永远加速，因为海洋有记忆。",
+          "spoken": "但它不能永远加速，因为海洋有记忆。",
+          "startFrame": 7214,
+          "endFrame": 7329,
+          "frames": 115,
+          "ms": 3847
+        },
+        {
+          "indexInScene": 31,
+          "display": "暖水东移之后，西边的暖水变少，对流减弱，信风重新恢复。",
+          "spoken": "暖水东移之后，西边的暖水变少，对流减弱，信风重新恢复。",
+          "startFrame": 7336,
+          "endFrame": 7538,
+          "frames": 202,
+          "ms": 6739
+        },
+        {
+          "indexInScene": 32,
+          "display": "同时，东移的暖水在东边界被反射回来，变成一道往西传的冷波。",
+          "spoken": "同时，东移的暖水在东边界被反射回来，变成一道往西传的冷波。",
+          "startFrame": 7545,
+          "endFrame": 7745,
+          "frames": 200,
+          "ms": 6679
+        },
+        {
+          "indexInScene": 33,
+          "display": "一个正反馈，加上一个延迟的负反馈，得到的就是一个振荡器。",
+          "spoken": "一个正反馈，加上一个延迟的负反馈，得到的就是一个振荡器。",
+          "startFrame": 7752,
+          "endFrame": 7931,
+          "frames": 179,
+          "ms": 5971
+        },
+        {
+          "indexInScene": 34,
+          "display": "这就是为什么它叫涛动，而不是一次事件。它的周期也不规则，2到7年，没有稳定节拍。",
+          "spoken": "这就是为什么它叫涛动，而不是一次事件。它的周期也不规则，二到七年，没有稳定节拍。",
+          "startFrame": 7938,
+          "endFrame": 8213,
+          "frames": 275,
+          "ms": 9159
+        },
+        {
+          "indexInScene": 35,
+          "display": "但这个不规则的振荡器，有一个很珍贵的性质。",
+          "spoken": "但这个不规则的振荡器，有一个很珍贵的性质。",
+          "startFrame": 8220,
+          "endFrame": 8343,
+          "frames": 123,
+          "ms": 4114
+        },
+        {
+          "indexInScene": 36,
+          "display": "它是气候系统里可预报性最高的现象之一，但有效的预报时效只有大约半年。",
+          "spoken": "它是气候系统里可预报性最高的现象之一，但有效的预报时效只有大约半年。",
+          "startFrame": 8350,
+          "endFrame": 8578,
+          "frames": 228,
+          "ms": 7596
+        },
+        {
+          "indexInScene": 37,
+          "display": "而且这份技巧随季节变化很大。",
+          "spoken": "而且这份技巧随季节变化很大。",
+          "startFrame": 8585,
+          "endFrame": 8683,
+          "frames": 98,
+          "ms": 3256
+        },
+        {
+          "indexInScene": 38,
+          "display": "10月发出的预报，能解释第二年11月到1月海温变化的90%。5月发出的，只能解释50%。",
+          "spoken": "十月发出的预报，能解释第二年十一月到一月海温变化的百分之九十。五月发出的，只能解释百分之五十。",
+          "startFrame": 8690,
+          "endFrame": 8997,
+          "frames": 307,
+          "ms": 10218
+        },
+        {
+          "indexInScene": 39,
+          "display": "因为北半球春季，太平洋的海温梯度最弱，海洋和大气的耦合也最松。",
+          "spoken": "因为北半球春季，太平洋的海温梯度最弱，海洋和大气的耦合也最松。",
+          "startFrame": 9004,
+          "endFrame": 9220,
+          "frames": 216,
+          "ms": 7190
+        },
+        {
+          "indexInScene": 40,
+          "display": "这段时间叫春季可预报性障碍。它是一段低谷，不是一堵墙。",
+          "spoken": "这段时间叫春季可预报性障碍。它是一段低谷，不是一堵墙。",
+          "startFrame": 9227,
+          "endFrame": 9416,
+          "frames": 189,
+          "ms": 6303
+        },
+        {
+          "indexInScene": 41,
+          "display": "记住这两件事：它能被提前看到，但看不远。市场正是围着这一点转的。",
+          "spoken": "记住这两件事：它能被提前看到，但看不远。市场正是围着这一点转的。",
+          "startFrame": 9423,
+          "endFrame": 9646,
+          "frames": 223,
+          "ms": 7424
+        }
+      ]
+    },
+    {
+      "id": "teleconnect",
+      "title": "再分配：雨从哪儿搬到了哪儿",
+      "startFrame": 9672,
+      "endFrame": 12395,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "到这里，故事还都在太平洋里。",
+          "spoken": "到这里，故事还都在太平洋里。",
+          "startFrame": 9672,
+          "endFrame": 9763,
+          "frames": 91,
+          "ms": 3046
+        },
+        {
+          "indexInScene": 1,
+          "display": "但大气不在乎国界。",
+          "spoken": "但大气不在乎国界。",
+          "startFrame": 9770,
+          "endFrame": 9829,
+          "frames": 59,
+          "ms": 1966
+        },
+        {
+          "indexInScene": 2,
+          "display": "暖池的位置一变，全球的上升支和下沉支都要重新排队。",
+          "spoken": "暖池的位置一变，全球的上升支和下沉支都要重新排队。",
+          "startFrame": 9836,
+          "endFrame": 10010,
+          "frames": 174,
+          "ms": 5799
+        },
+        {
+          "indexInScene": 3,
+          "display": "这种远程的联动，叫遥相关。",
+          "spoken": "这种远程的联动，叫遥相关。",
+          "startFrame": 10017,
+          "endFrame": 10109,
+          "frames": 92,
+          "ms": 3075
+        },
+        {
+          "indexInScene": 4,
+          "display": "一次强厄尔尼诺，会同时做几件事。",
+          "spoken": "一次强厄尔尼诺，会同时做几件事。",
+          "startFrame": 10116,
+          "endFrame": 10231,
+          "frames": 115,
+          "ms": 3823
+        },
+        {
+          "indexInScene": 5,
+          "display": "它把雨从印尼、澳大利亚、印度和东南亚搬走。",
+          "spoken": "它把雨从印尼、澳大利亚、印度和东南亚搬走。",
+          "startFrame": 10238,
+          "endFrame": 10381,
+          "frames": 143,
+          "ms": 4775
+        },
+        {
+          "indexInScene": 6,
+          "display": "搬到赤道中东太平洋、秘鲁和厄瓜多尔。",
+          "spoken": "搬到赤道中东太平洋、秘鲁和厄瓜多尔。",
+          "startFrame": 10388,
+          "endFrame": 10507,
+          "frames": 119,
+          "ms": 3982
+        },
+        {
+          "indexInScene": 7,
+          "display": "它让巴拿马和哥斯达黎加变干。",
+          "spoken": "它让巴拿马和哥斯达黎加变干。",
+          "startFrame": 10514,
+          "endFrame": 10605,
+          "frames": 91,
+          "ms": 3033
+        },
+        {
+          "indexInScene": 8,
+          "display": "它让巴西南部和阿根廷变湿，让非洲南部的雨季消失。",
+          "spoken": "它让巴西南部和阿根廷变湿，让非洲南部的雨季消失。",
+          "startFrame": 10612,
+          "endFrame": 10769,
+          "frames": 157,
+          "ms": 5227
+        },
+        {
+          "indexInScene": 9,
+          "display": "而非洲之角，反而是大雨。",
+          "spoken": "而非洲之角，反而是大雨。",
+          "startFrame": 10776,
+          "endFrame": 10860,
+          "frames": 84,
+          "ms": 2792
+        },
+        {
+          "indexInScene": 10,
+          "display": "拉尼娜基本是它的镜像，但不完全对称。",
+          "spoken": "拉尼娜基本是它的镜像，但不完全对称。",
+          "startFrame": 10867,
+          "endFrame": 10989,
+          "frames": 122,
+          "ms": 4077
+        },
+        {
+          "indexInScene": 11,
+          "display": "所以关键的问题从来不是哪里会变热。",
+          "spoken": "所以关键的问题从来不是哪里会变热。",
+          "startFrame": 10996,
+          "endFrame": 11103,
+          "frames": 107,
+          "ms": 3566
+        },
+        {
+          "indexInScene": 12,
+          "display": "而是雨从哪儿，搬到了哪儿。",
+          "spoken": "而是雨从哪儿，搬到了哪儿。",
+          "startFrame": 11110,
+          "endFrame": 11184,
+          "frames": 74,
+          "ms": 2478
+        },
+        {
+          "indexInScene": 13,
+          "display": "现在，把这张气候地图，换成一张经济地图。",
+          "spoken": "现在，把这张气候地图，换成一张经济地图。",
+          "startFrame": 11191,
+          "endFrame": 11339,
+          "frames": 148,
+          "ms": 4937
+        },
+        {
+          "indexInScene": 14,
+          "display": "印尼和马来西亚，供应全球大约85%的棕榈油。",
+          "spoken": "印尼和马来西亚，供应全球大约百分之八十五的棕榈油。",
+          "startFrame": 11346,
+          "endFrame": 11507,
+          "frames": 161,
+          "ms": 5367
+        },
+        {
+          "indexInScene": 15,
+          "display": "澳大利亚，供应全球海运焦煤贸易的60%。",
+          "spoken": "澳大利亚，供应全球海运焦煤贸易的百分之六十。",
+          "startFrame": 11514,
+          "endFrame": 11665,
+          "frames": 151,
+          "ms": 5023
+        },
+        {
+          "indexInScene": 16,
+          "display": "科特迪瓦和加纳，供应全球大约60%的可可。",
+          "spoken": "科特迪瓦和加纳，供应全球大约百分之六十的可可。",
+          "startFrame": 11672,
+          "endFrame": 11823,
+          "frames": 151,
+          "ms": 5019
+        },
+        {
+          "indexInScene": 17,
+          "display": "巴西，占全球阿拉比卡咖啡的三分之一以上。",
+          "spoken": "巴西，占全球阿拉比卡咖啡的三分之一以上。",
+          "startFrame": 11830,
+          "endFrame": 11966,
+          "frames": 136,
+          "ms": 4539
+        },
+        {
+          "indexInScene": 18,
+          "display": "当雨搬走的方向，正好和这几个方向重合。",
+          "spoken": "当雨搬走的方向，正好和这几个方向重合。",
+          "startFrame": 11973,
+          "endFrame": 12106,
+          "frames": 133,
+          "ms": 4428
+        },
+        {
+          "indexInScene": 19,
+          "display": "一次海洋温度的变化，就变成了一张账单。",
+          "spoken": "一次海洋温度的变化，就变成了一张账单。",
+          "startFrame": 12113,
+          "endFrame": 12236,
+          "frames": 123,
+          "ms": 4090
+        },
+        {
+          "indexInScene": 20,
+          "display": "这台机器进入市场的入口，不是天气，是集中度。",
+          "spoken": "这台机器进入市场的入口，不是天气，是集中度。",
+          "startFrame": 12243,
+          "endFrame": 12395,
+          "frames": 152,
+          "ms": 5061
+        }
+      ]
+    },
+    {
+      "id": "grain",
+      "title": "1972：一次干旱，一次崩盘，和一场抢购",
+      "startFrame": 12421,
+      "endFrame": 16376,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "第一次，我们把时间拨回1972年。",
+          "spoken": "第一次，我们把时间拨回一九七二年。",
+          "startFrame": 12421,
+          "endFrame": 12533,
+          "frames": 112,
+          "ms": 3720
+        },
+        {
+          "indexInScene": 1,
+          "display": "那一年，太平洋在厄尔尼诺这一档上，而且同时有几个地方遭了旱。",
+          "spoken": "那一年，太平洋在厄尔尼诺这一档上，而且同时有几个地方遭了旱。",
+          "startFrame": 12540,
+          "endFrame": 12745,
+          "frames": 205,
+          "ms": 6820
+        },
+        {
+          "indexInScene": 2,
+          "display": "苏联、萨赫勒、印度、澳大利亚，都在那一年减产。",
+          "spoken": "苏联、萨赫勒、印度、澳大利亚，都在那一年减产。",
+          "startFrame": 12752,
+          "endFrame": 12921,
+          "frames": 169,
+          "ms": 5621
+        },
+        {
+          "indexInScene": 3,
+          "display": "其中苏联的小麦产量掉了13%。",
+          "spoken": "其中苏联的小麦产量掉了百分之十三。",
+          "startFrame": 12928,
+          "endFrame": 13042,
+          "frames": 114,
+          "ms": 3790
+        },
+        {
+          "indexInScene": 4,
+          "display": "与此同时，南美洲西岸发生了一件更奇怪的事：秘鲁的鳀鱼捕捞量崩了。",
+          "spoken": "与此同时，南美洲西岸发生了一件更奇怪的事：秘鲁的鳀鱼捕捞量崩了。",
+          "startFrame": 13049,
+          "endFrame": 13258,
+          "frames": 209,
+          "ms": 6957
+        },
+        {
+          "indexInScene": 5,
+          "display": "这种鱼的捕捞量曾经是世界第一。1970年是1240万吨。",
+          "spoken": "这种鱼的捕捞量曾经是世界第一。一九七零年是一千二百四十万吨。",
+          "startFrame": 13265,
+          "endFrame": 13463,
+          "frames": 198,
+          "ms": 6605
+        },
+        {
+          "indexInScene": 6,
+          "display": "1971年还有1030万吨。",
+          "spoken": "一九七一年还有一千零三十万吨。",
+          "startFrame": 13470,
+          "endFrame": 13572,
+          "frames": 102,
+          "ms": 3393
+        },
+        {
+          "indexInScene": 7,
+          "display": "1972年只剩440万吨，1973年不到200万吨。",
+          "spoken": "一九七二年只剩四百四十万吨，一九七三年不到二百万吨。",
+          "startFrame": 13579,
+          "endFrame": 13761,
+          "frames": 182,
+          "ms": 6075
+        },
+        {
+          "indexInScene": 8,
+          "display": "原因有两层。表层是厄尔尼诺：冷水不上来了，鱼走了。",
+          "spoken": "原因有两层。表层是厄尔尼诺：冷水不上来了，鱼走了。",
+          "startFrame": 13768,
+          "endFrame": 13939,
+          "frames": 171,
+          "ms": 5714
+        },
+        {
+          "indexInScene": 9,
+          "display": "但底层是：这支船队早就捞得太多了，鱼群本来就已经很薄。",
+          "spoken": "但底层是：这支船队早就捞得太多了，鱼群本来就已经很薄。",
+          "startFrame": 13946,
+          "endFrame": 14133,
+          "frames": 187,
+          "ms": 6227
+        },
+        {
+          "indexInScene": 10,
+          "display": "这就是第一个要小心的地方。不是每一次崩盘，都只有一个原因。",
+          "spoken": "这就是第一个要小心的地方。不是每一次崩盘，都只有一个原因。",
+          "startFrame": 14140,
+          "endFrame": 14322,
+          "frames": 182,
+          "ms": 6071
+        },
+        {
+          "indexInScene": 11,
+          "display": "好，回到粮食。",
+          "spoken": "好，回到粮食。",
+          "startFrame": 14329,
+          "endFrame": 14383,
+          "frames": 54,
+          "ms": 1784
+        },
+        {
+          "indexInScene": 12,
+          "display": "1972年7月，苏联在几周之内，从美国买走了一千万吨以上的小麦。",
+          "spoken": "一九七二年七月，苏联在几周之内，从美国买走了一千万吨以上的小麦。",
+          "startFrame": 14390,
+          "endFrame": 14612,
+          "frames": 222,
+          "ms": 7387
+        },
+        {
+          "indexInScene": 13,
+          "display": "而且它是分散在几家私人粮商手里悄悄买的，买完之后消息才公开。",
+          "spoken": "而且它是分散在几家私人粮商手里悄悄买的，买完之后消息才公开。",
+          "startFrame": 14619,
+          "endFrame": 14839,
+          "frames": 220,
+          "ms": 7319
+        },
+        {
+          "indexInScene": 14,
+          "display": "美国小麦价格从每蒲式耳1.51美元，涨到1974年初的5.5美元以上。",
+          "spoken": "美国小麦价格从每蒲式耳一点五一美元，涨到一九七四年初的五点五美元以上。",
+          "startFrame": 14846,
+          "endFrame": 15084,
+          "frames": 238,
+          "ms": 7922
+        },
+        {
+          "indexInScene": 15,
+          "display": "不到两年，翻了三倍多。",
+          "spoken": "不到两年，翻了三倍多。",
+          "startFrame": 15091,
+          "endFrame": 15170,
+          "frames": 79,
+          "ms": 2647
+        },
+        {
+          "indexInScene": 16,
+          "display": "1973年6月，尼克松政府对大豆实施了为期60天的出口禁运。",
+          "spoken": "一九七三年六月，尼克松政府对大豆实施了为期六十天的出口禁运。",
+          "startFrame": 15177,
+          "endFrame": 15381,
+          "frames": 204,
+          "ms": 6807
+        },
+        {
+          "indexInScene": 17,
+          "display": "请注意这条链条上的每一环。",
+          "spoken": "请注意这条链条上的每一环。",
+          "startFrame": 15388,
+          "endFrame": 15477,
+          "frames": 89,
+          "ms": 2954
+        },
+        {
+          "indexInScene": 18,
+          "display": "旱灾发生在苏联，但买单的动作一瞬间就跨过了国界。",
+          "spoken": "旱灾发生在苏联，但买单的动作一瞬间就跨过了国界。",
+          "startFrame": 15484,
+          "endFrame": 15648,
+          "frames": 164,
+          "ms": 5464
+        },
+        {
+          "indexInScene": 19,
+          "display": "鳀鱼崩在秘鲁，可影响的是全球饲料成本，因为鱼粉是养鸡养猪的蛋白来源。",
+          "spoken": "鳀鱼崩在秘鲁，可影响的是全球饲料成本，因为鱼粉是养鸡养猪的蛋白来源。",
+          "startFrame": 15655,
+          "endFrame": 15892,
+          "frames": 237,
+          "ms": 7887
+        },
+        {
+          "indexInScene": 20,
+          "display": "真正让价格失控的，不是干旱本身。",
+          "spoken": "真正让价格失控的，不是干旱本身。",
+          "startFrame": 15899,
+          "endFrame": 16010,
+          "frames": 111,
+          "ms": 3691
+        },
+        {
+          "indexInScene": 21,
+          "display": "是本来就薄的库存，加上一次巨大的、集中的、突然的采购。",
+          "spoken": "是本来就薄的库存，加上一次巨大的、集中的、突然的采购。",
+          "startFrame": 16017,
+          "endFrame": 16198,
+          "frames": 181,
+          "ms": 6027
+        },
+        {
+          "indexInScene": 22,
+          "display": "这是第一道和第二道闸门：库存有多薄，供给有多集中。",
+          "spoken": "这是第一道和第二道闸门：库存有多薄，供给有多集中。",
+          "startFrame": 16205,
+          "endFrame": 16376,
+          "frames": 171,
+          "ms": 5711
+        }
+      ]
+    },
+    {
+      "id": "palm",
+      "title": "1997：市场交易的是预报，不是天气",
+      "startFrame": 16402,
+      "endFrame": 19839,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "二十五年后，同一台机器换到了同一个档位，但结果很不一样。",
+          "spoken": "二十五年后，同一台机器换到了同一个档位，但结果很不一样。",
+          "startFrame": 16402,
+          "endFrame": 16585,
+          "frames": 183,
+          "ms": 6089
+        },
+        {
+          "indexInScene": 1,
+          "display": "1997年，暖池东移得非常快。",
+          "spoken": "一九九七年，暖池东移得非常快。",
+          "startFrame": 16592,
+          "endFrame": 16698,
+          "frames": 106,
+          "ms": 3533
+        },
+        {
+          "indexInScene": 2,
+          "display": "印尼和马来西亚的雨季推迟，然后旱季来了。",
+          "spoken": "印尼和马来西亚的雨季推迟，然后旱季来了。",
+          "startFrame": 16705,
+          "endFrame": 16837,
+          "frames": 132,
+          "ms": 4392
+        },
+        {
+          "indexInScene": 3,
+          "display": "从1997年下半年到1998年，印尼发生了大范围森林火灾。",
+          "spoken": "从一九九七年下半年到一九九八年，印尼发生了大范围森林火灾。",
+          "startFrame": 16844,
+          "endFrame": 17050,
+          "frames": 206,
+          "ms": 6869
+        },
+        {
+          "indexInScene": 4,
+          "display": "过火面积的估计，从400万公顷到1200万公顷不等。最常被引用的是970万公顷。",
+          "spoken": "过火面积的估计，从四百万公顷到一千二百万公顷不等。最常被引用的是九百七十万公顷。",
+          "startFrame": 17057,
+          "endFrame": 17333,
+          "frames": 276,
+          "ms": 9194
+        },
+        {
+          "indexInScene": 5,
+          "display": "这种量级的估计差异，本身就是气候归因的常态。",
+          "spoken": "这种量级的估计差异，本身就是气候归因的常态。",
+          "startFrame": 17340,
+          "endFrame": 17484,
+          "frames": 144,
+          "ms": 4794
+        },
+        {
+          "indexInScene": 6,
+          "display": "棕榈油是印尼和马来西亚的产物。干旱一来，产量预期下调，价格上行。",
+          "spoken": "棕榈油是印尼和马来西亚的产物。干旱一来，产量预期下调，价格上行。",
+          "startFrame": 17491,
+          "endFrame": 17718,
+          "frames": 227,
+          "ms": 7551
+        },
+        {
+          "indexInScene": 7,
+          "display": "但这一段最值得看的不是价格，是时间。",
+          "spoken": "但这一段最值得看的不是价格，是时间。",
+          "startFrame": 17725,
+          "endFrame": 17846,
+          "frames": 121,
+          "ms": 4033
+        },
+        {
+          "indexInScene": 8,
+          "display": "1982到1983年的那次超强厄尔尼诺，几乎没有被预报出来，它是事后才被认识的。",
+          "spoken": "一千九百八十二到一九八三年的那次超强厄尔尼诺，几乎没有被预报出来，它是事后才被认识的。",
+          "startFrame": 17853,
+          "endFrame": 18133,
+          "frames": 280,
+          "ms": 9338
+        },
+        {
+          "indexInScene": 9,
+          "display": "而1997到1998年这一次，提前好几个月就被多个模式抓住了。",
+          "spoken": "而一千九百九十七到一九九八年这一次，提前好几个月就被多个模式抓住了。",
+          "startFrame": 18140,
+          "endFrame": 18363,
+          "frames": 223,
+          "ms": 7424
+        },
+        {
+          "indexInScene": 10,
+          "display": "结果就是，期货市场在干旱真正影响产量之前，就已经把价格推上去了。",
+          "spoken": "结果就是，期货市场在干旱真正影响产量之前，就已经把价格推上去了。",
+          "startFrame": 18370,
+          "endFrame": 18600,
+          "frames": 230,
+          "ms": 7679
+        },
+        {
+          "indexInScene": 11,
+          "display": "这是气候进入金融市场的核心方式。",
+          "spoken": "这是气候进入金融市场的核心方式。",
+          "startFrame": 18607,
+          "endFrame": 18711,
+          "frames": 104,
+          "ms": 3470
+        },
+        {
+          "indexInScene": 12,
+          "display": "价格交易的不是天气，是对天气的预期。",
+          "spoken": "价格交易的不是天气，是对天气的预期。",
+          "startFrame": 18718,
+          "endFrame": 18840,
+          "frames": 122,
+          "ms": 4080
+        },
+        {
+          "indexInScene": 13,
+          "display": "由此得到一个反直觉的结论。",
+          "spoken": "由此得到一个反直觉的结论。",
+          "startFrame": 18847,
+          "endFrame": 18925,
+          "frames": 78,
+          "ms": 2616
+        },
+        {
+          "indexInScene": 14,
+          "display": "一次被提前预报的强事件，价格冲击可能反而更小，因为大家已经站好了位置。",
+          "spoken": "一次被提前预报的强事件，价格冲击可能反而更小，因为大家已经站好了位置。",
+          "startFrame": 18932,
+          "endFrame": 19174,
+          "frames": 242,
+          "ms": 8061
+        },
+        {
+          "indexInScene": 15,
+          "display": "而一次没被预报到的中等事件，可能造成更大的意外。",
+          "spoken": "而一次没被预报到的中等事件，可能造成更大的意外。",
+          "startFrame": 19181,
+          "endFrame": 19336,
+          "frames": 155,
+          "ms": 5160
+        },
+        {
+          "indexInScene": 16,
+          "display": "顺便说一句，1998年成了当时有记录以来最热的一年。",
+          "spoken": "顺便说一句，一九九八年成了当时有记录以来最热的一年。",
+          "startFrame": 19343,
+          "endFrame": 19515,
+          "frames": 172,
+          "ms": 5725
+        },
+        {
+          "indexInScene": 17,
+          "display": "厄尔尼诺不制造热，它只是把海洋里储存的热释放出来。",
+          "spoken": "厄尔尼诺不制造热，它只是把海洋里储存的热释放出来。",
+          "startFrame": 19522,
+          "endFrame": 19685,
+          "frames": 163,
+          "ms": 5441
+        },
+        {
+          "indexInScene": 18,
+          "display": "所以一次强厄尔尼诺之后，往往跟着一个气温纪录。",
+          "spoken": "所以一次强厄尔尼诺之后，往往跟着一个气温纪录。",
+          "startFrame": 19692,
+          "endFrame": 19839,
+          "frames": 147,
+          "ms": 4902
+        }
+      ]
+    },
+    {
+      "id": "coal",
+      "title": "2011：从煤矿，到面包，再到街头",
+      "startFrame": 19865,
+      "endFrame": 24104,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "拉尼娜那一档，也有一个非常干净的例子。",
+          "spoken": "拉尼娜那一档，也有一个非常干净的例子。",
+          "startFrame": 19865,
+          "endFrame": 19977,
+          "frames": 112,
+          "ms": 3717
+        },
+        {
+          "indexInScene": 1,
+          "display": "2010年底到2011年初，澳大利亚昆士兰遭遇了持续数月的极端降雨和洪水。",
+          "spoken": "二零一零年底到二零一一年初，澳大利亚昆士兰遭遇了持续数月的极端降雨和洪水。",
+          "startFrame": 19984,
+          "endFrame": 20225,
+          "frames": 241,
+          "ms": 8039
+        },
+        {
+          "indexInScene": 2,
+          "display": "布里斯班被淹。更关键的是，博文盆地的煤矿被淹了。",
+          "spoken": "布里斯班被淹。更关键的是，博文盆地的煤矿被淹了。",
+          "startFrame": 20232,
+          "endFrame": 20386,
+          "frames": 154,
+          "ms": 5120
+        },
+        {
+          "indexInScene": 3,
+          "display": "澳大利亚供应全球海运焦煤贸易的60%，博文盆地是它的核心。",
+          "spoken": "澳大利亚供应全球海运焦煤贸易的百分之六十，博文盆地是它的核心。",
+          "startFrame": 20393,
+          "endFrame": 20602,
+          "frames": 209,
+          "ms": 6962
+        },
+        {
+          "indexInScene": 4,
+          "display": "矿淹了，铁路断了，港口停了。炼钢的煤运不出去。",
+          "spoken": "矿淹了，铁路断了，港口停了。炼钢的煤运不出去。",
+          "startFrame": 20609,
+          "endFrame": 20762,
+          "frames": 153,
+          "ms": 5101
+        },
+        {
+          "indexInScene": 5,
+          "display": "优质硬焦煤的季度基准价，从每吨225美元左右涨到330美元，一个季度上涨47%。",
+          "spoken": "优质硬焦煤的季度基准价，从每吨二百二十五美元左右涨到三百三十美元，一个季度上涨百分之四十七。",
+          "startFrame": 20769,
+          "endFrame": 21080,
+          "frames": 311,
+          "ms": 10370
+        },
+        {
+          "indexInScene": 6,
+          "display": "2011年第一季度，澳大利亚焦煤出口环比下降32%。",
+          "spoken": "二零一一年第一季度，澳大利亚焦煤出口环比下降百分之三十二。",
+          "startFrame": 21087,
+          "endFrame": 21277,
+          "frames": 190,
+          "ms": 6333
+        },
+        {
+          "indexInScene": 7,
+          "display": "这一次，没有需求变化，只有物理中断。",
+          "spoken": "这一次，没有需求变化，只有物理中断。",
+          "startFrame": 21284,
+          "endFrame": 21405,
+          "frames": 121,
+          "ms": 4039
+        },
+        {
+          "indexInScene": 8,
+          "display": "同一年，还有第二条线。",
+          "spoken": "同一年，还有第二条线。",
+          "startFrame": 21412,
+          "endFrame": 21492,
+          "frames": 80,
+          "ms": 2673
+        },
+        {
+          "indexInScene": 9,
+          "display": "拉尼娜让全球粮食市场同时收紧。",
+          "spoken": "拉尼娜让全球粮食市场同时收紧。",
+          "startFrame": 21499,
+          "endFrame": 21605,
+          "frames": 106,
+          "ms": 3543
+        },
+        {
+          "indexInScene": 10,
+          "display": "2011年2月，联合国粮农组织的食品价格指数达到236点，是1990年有统计以来的最高值。",
+          "spoken": "二零一一年二月，联合国粮农组织的食品价格指数达到二百三十六点，是一九九零年有统计以来的最高值。",
+          "startFrame": 21612,
+          "endFrame": 21924,
+          "frames": 312,
+          "ms": 10396
+        },
+        {
+          "indexInScene": 11,
+          "display": "到这里，还只是商品变贵。但下一步才是关键。",
+          "spoken": "到这里，还只是商品变贵。但下一步才是关键。",
+          "startFrame": 21931,
+          "endFrame": 22076,
+          "frames": 145,
+          "ms": 4822
+        },
+        {
+          "indexInScene": 12,
+          "display": "食品在发达国家家庭支出里大约占10%到15%。",
+          "spoken": "食品在发达国家家庭支出里大约占百分之十到百分之十五。",
+          "startFrame": 22083,
+          "endFrame": 22254,
+          "frames": 171,
+          "ms": 5702
+        },
+        {
+          "indexInScene": 13,
+          "display": "在新兴市场国家，这个比例是30%到40%。低收入国家可以到48%。",
+          "spoken": "在新兴市场国家，这个比例是百分之三十到百分之四十。低收入国家可以到百分之四十八。",
+          "startFrame": 22261,
+          "endFrame": 22521,
+          "frames": 260,
+          "ms": 8671
+        },
+        {
+          "indexInScene": 14,
+          "display": "同样的国际粮价涨幅，传导到不同国家的物价指数里，幅度完全不同。",
+          "spoken": "同样的国际粮价涨幅，传导到不同国家的物价指数里，幅度完全不同。",
+          "startFrame": 22528,
+          "endFrame": 22740,
+          "frames": 212,
+          "ms": 7062
+        },
+        {
+          "indexInScene": 15,
+          "display": "而在食品占比高的国家，物价上涨会迅速变成政治问题。",
+          "spoken": "而在食品占比高的国家，物价上涨会迅速变成政治问题。",
+          "startFrame": 22747,
+          "endFrame": 22924,
+          "frames": 177,
+          "ms": 5915
+        },
+        {
+          "indexInScene": 16,
+          "display": "国际货币基金组织的研究发现，粮价上涨会显著提高骚乱和动荡的概率，在低收入国家最明显。",
+          "spoken": "国际货币基金组织的研究发现，粮价上涨会显著提高骚乱和动荡的概率，在低收入国家最明显。",
+          "startFrame": 22931,
+          "endFrame": 23215,
+          "frames": 284,
+          "ms": 9461
+        },
+        {
+          "indexInScene": 17,
+          "display": "2011年这一轮，它和失业、压制、不平等一起，成了阿拉伯之春的推手之一。",
+          "spoken": "二零一一年这一轮，它和失业、压制、不平等一起，成了阿拉伯之春的推手之一。",
+          "startFrame": 23222,
+          "endFrame": 23463,
+          "frames": 241,
+          "ms": 8028
+        },
+        {
+          "indexInScene": 18,
+          "display": "请注意，是推手之一，不是唯一原因。",
+          "spoken": "请注意，是推手之一，不是唯一原因。",
+          "startFrame": 23470,
+          "endFrame": 23591,
+          "frames": 121,
+          "ms": 4022
+        },
+        {
+          "indexInScene": 19,
+          "display": "所以这条链条的完整形态是：海温、降雨、收成和运输、商品价格、食品价格、物价指数、街头。",
+          "spoken": "所以这条链条的完整形态是：海温、降雨、收成和运输、商品价格、食品价格、物价指数、街头。",
+          "startFrame": 23598,
+          "endFrame": 23928,
+          "frames": 330,
+          "ms": 10997
+        },
+        {
+          "indexInScene": 20,
+          "display": "它不需要每一步都很强。它需要的是每一步都朝同一个方向。",
+          "spoken": "它不需要每一步都很强。它需要的是每一步都朝同一个方向。",
+          "startFrame": 23935,
+          "endFrame": 24104,
+          "frames": 169,
+          "ms": 5645
+        }
+      ]
+    },
+    {
+      "id": "split",
+      "title": "2026：同一个厄尔尼诺，两个相反的方向",
+      "startFrame": 24130,
+      "endFrame": 28051,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "现在，我要讲这一期最重要的一件事。",
+          "spoken": "现在，我要讲这一期最重要的一件事。",
+          "startFrame": 24130,
+          "endFrame": 24243,
+          "frames": 113,
+          "ms": 3764
+        },
+        {
+          "indexInScene": 1,
+          "display": "我们把时间拨到2026年。",
+          "spoken": "我们把时间拨到二零二六年。",
+          "startFrame": 24250,
+          "endFrame": 24332,
+          "frames": 82,
+          "ms": 2721
+        },
+        {
+          "indexInScene": 2,
+          "display": "这一年，太平洋处在1950年以来最强的厄尔尼诺的开头。",
+          "spoken": "这一年，太平洋处在一九五零年以来最强的厄尔尼诺的开头。",
+          "startFrame": 24339,
+          "endFrame": 24515,
+          "frames": 176,
+          "ms": 5850
+        },
+        {
+          "indexInScene": 3,
+          "display": "那么，什么东西涨价了？",
+          "spoken": "那么，什么东西涨价了？",
+          "startFrame": 24522,
+          "endFrame": 24591,
+          "frames": 69,
+          "ms": 2304
+        },
+        {
+          "indexInScene": 4,
+          "display": "糖，一个月涨了16%。大米，一年涨了61%。可可，从二月的低点几乎翻倍。",
+          "spoken": "糖，一个月涨了百分之十六。大米，一年涨了百分之六十一。可可，从二月的低点几乎翻倍。",
+          "startFrame": 24598,
+          "endFrame": 24870,
+          "frames": 272,
+          "ms": 9082
+        },
+        {
+          "indexInScene": 5,
+          "display": "但同样在这一年，阿拉比卡咖啡的价格，比一年前低了24.5%。",
+          "spoken": "但同样在这一年，阿拉比卡咖啡的价格，比一年前低了百分之二十四点五。",
+          "startFrame": 24877,
+          "endFrame": 25097,
+          "frames": 220,
+          "ms": 7330
+        },
+        {
+          "indexInScene": 6,
+          "display": "而棕榈油的库存创下历史新高，价格被压住。",
+          "spoken": "而棕榈油的库存创下历史新高，价格被压住。",
+          "startFrame": 25104,
+          "endFrame": 25239,
+          "frames": 135,
+          "ms": 4498
+        },
+        {
+          "indexInScene": 7,
+          "display": "为什么同一个厄尔尼诺，会把东西推向两个相反的方向？",
+          "spoken": "为什么同一个厄尔尼诺，会把东西推向两个相反的方向？",
+          "startFrame": 25246,
+          "endFrame": 25408,
+          "frames": 162,
+          "ms": 5390
+        },
+        {
+          "indexInScene": 8,
+          "display": "因为厄尔尼诺不制造涨价。它只做一件事，就是搬雨。",
+          "spoken": "因为厄尔尼诺不制造涨价。它只做一件事，就是搬雨。",
+          "startFrame": 25415,
+          "endFrame": 25574,
+          "frames": 159,
+          "ms": 5298
+        },
+        {
+          "indexInScene": 9,
+          "display": "雨被搬走的地方减产，雨被搬到的地方增产。",
+          "spoken": "雨被搬走的地方减产，雨被搬到的地方增产。",
+          "startFrame": 25581,
+          "endFrame": 25715,
+          "frames": 134,
+          "ms": 4460
+        },
+        {
+          "indexInScene": 10,
+          "display": "而市场价格反映的，是这两件事的结果，再减去库存。",
+          "spoken": "而市场价格反映的，是这两件事的结果，再减去库存。",
+          "startFrame": 25722,
+          "endFrame": 25894,
+          "frames": 172,
+          "ms": 5740
+        },
+        {
+          "indexInScene": 11,
+          "display": "印度季风是2009年以来最弱的一次，降雨比常年少15%。",
+          "spoken": "印度季风是二零零九年以来最弱的一次，降雨比常年少百分之十五。",
+          "startFrame": 25901,
+          "endFrame": 26096,
+          "frames": 195,
+          "ms": 6505
+        },
+        {
+          "indexInScene": 12,
+          "display": "印度占全球大米出口的40%以上。所以大米涨。",
+          "spoken": "印度占全球大米出口的百分之四十以上。所以大米涨。",
+          "startFrame": 26103,
+          "endFrame": 26261,
+          "frames": 158,
+          "ms": 5251
+        },
+        {
+          "indexInScene": 13,
+          "display": "巴西南部被搬来了雨。2026年巴西咖啡收成6760万袋，历史最高，同比增长19.6%。",
+          "spoken": "巴西南部被搬来了雨。二零二六年巴西咖啡收成六千七百六十万袋，历史最高，同比增长百分之十九点六。",
+          "startFrame": 26268,
+          "endFrame": 26588,
+          "frames": 320,
+          "ms": 10681
+        },
+        {
+          "indexInScene": 14,
+          "display": "所以咖啡跌。",
+          "spoken": "所以咖啡跌。",
+          "startFrame": 26595,
+          "endFrame": 26638,
+          "frames": 43,
+          "ms": 1419
+        },
+        {
+          "indexInScene": 15,
+          "display": "马来西亚和印尼的雨确实少了。",
+          "spoken": "马来西亚和印尼的雨确实少了。",
+          "startFrame": 26645,
+          "endFrame": 26733,
+          "frames": 88,
+          "ms": 2930
+        },
+        {
+          "indexInScene": 16,
+          "display": "但2026年9月，马来西亚的棕榈油库存升到351万吨，也是历史最高。",
+          "spoken": "但二零二六年九月，马来西亚的棕榈油库存升到三百五十一万吨，也是历史最高。",
+          "startFrame": 26740,
+          "endFrame": 26983,
+          "frames": 243,
+          "ms": 8085
+        },
+        {
+          "indexInScene": 17,
+          "display": "库存把干旱的影响吸收掉了。所以棕榈油不涨。",
+          "spoken": "库存把干旱的影响吸收掉了。所以棕榈油不涨。",
+          "startFrame": 26990,
+          "endFrame": 27129,
+          "frames": 139,
+          "ms": 4635
+        },
+        {
+          "indexInScene": 18,
+          "display": "现在，你手里有工具了。",
+          "spoken": "现在，你手里有工具了。",
+          "startFrame": 27136,
+          "endFrame": 27209,
+          "frames": 73,
+          "ms": 2429
+        },
+        {
+          "indexInScene": 19,
+          "display": "一次气候冲击要走到价格上，必须连过四道闸门。",
+          "spoken": "一次气候冲击要走到价格上，必须连过四道闸门。",
+          "startFrame": 27216,
+          "endFrame": 27372,
+          "frames": 156,
+          "ms": 5217
+        },
+        {
+          "indexInScene": 20,
+          "display": "第一，雨搬到了哪里。第二，那个产区的全球份额是多少。",
+          "spoken": "第一，雨搬到了哪里。第二，那个产区的全球份额是多少。",
+          "startFrame": 27379,
+          "endFrame": 27552,
+          "frames": 173,
+          "ms": 5763
+        },
+        {
+          "indexInScene": 21,
+          "display": "第三，库存有多薄。第四，市场提前定价了多少。",
+          "spoken": "第三，库存有多薄。第四，市场提前定价了多少。",
+          "startFrame": 27559,
+          "endFrame": 27722,
+          "frames": 163,
+          "ms": 5438
+        },
+        {
+          "indexInScene": 22,
+          "display": "四道都过，它才会变成账单。缺任何一道，它可能什么都不发生。",
+          "spoken": "四道都过，它才会变成账单。缺任何一道，它可能什么都不发生。",
+          "startFrame": 27729,
+          "endFrame": 27930,
+          "frames": 201,
+          "ms": 6712
+        },
+        {
+          "indexInScene": 23,
+          "display": "这四道闸门，就是这一期的全部内容。",
+          "spoken": "这四道闸门，就是这一期的全部内容。",
+          "startFrame": 27937,
+          "endFrame": 28051,
+          "frames": 114,
+          "ms": 3783
+        }
+      ]
+    },
+    {
+      "id": "live",
+      "title": "现在：五个月的提前量，和叠起来的风险",
+      "startFrame": 28077,
+      "endFrame": 32244,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "现在我们回到开头那两个数字之间的落差。",
+          "spoken": "现在我们回到开头那两个数字之间的落差。",
+          "startFrame": 28077,
+          "endFrame": 28201,
+          "frames": 124,
+          "ms": 4136
+        },
+        {
+          "indexInScene": 1,
+          "display": "一边是破纪录的海温，一边是2.5%的价格预测。",
+          "spoken": "一边是破纪录的海温，一边是百分之二点五的价格预测。",
+          "startFrame": 28208,
+          "endFrame": 28367,
+          "frames": 159,
+          "ms": 5309
+        },
+        {
+          "indexInScene": 2,
+          "display": "为什么它们可以同时成立？",
+          "spoken": "为什么它们可以同时成立？",
+          "startFrame": 28374,
+          "endFrame": 28446,
+          "frames": 72,
+          "ms": 2407
+        },
+        {
+          "indexInScene": 3,
+          "display": "答案在第四道闸门：市场提前定价了多少。",
+          "spoken": "答案在第四道闸门：市场提前定价了多少。",
+          "startFrame": 28453,
+          "endFrame": 28589,
+          "frames": 136,
+          "ms": 4532
+        },
+        {
+          "indexInScene": 4,
+          "display": "对于这一次事件，机构的时间表是这样的。",
+          "spoken": "对于这一次事件，机构的时间表是这样的。",
+          "startFrame": 28596,
+          "endFrame": 28714,
+          "frames": 118,
+          "ms": 3929
+        },
+        {
+          "indexInScene": 5,
+          "display": "4月24日，世界气象组织说，厄尔尼诺的可能性在上升。",
+          "spoken": "四月二十四日，世界气象组织说，厄尔尼诺的可能性在上升。",
+          "startFrame": 28721,
+          "endFrame": 28906,
+          "frames": 185,
+          "ms": 6155
+        },
+        {
+          "indexInScene": 6,
+          "display": "6月2日，它说，请为厄尔尼诺做准备。",
+          "spoken": "六月二日，它说，请为厄尔尼诺做准备。",
+          "startFrame": 28913,
+          "endFrame": 29036,
+          "frames": 123,
+          "ms": 4092
+        },
+        {
+          "indexInScene": 7,
+          "display": "7月3日，它说事件会加强。7月31日，它说会很强。",
+          "spoken": "七月三日，它说事件会加强。七月三十一日，它说会很强。",
+          "startFrame": 29043,
+          "endFrame": 29233,
+          "frames": 190,
+          "ms": 6344
+        },
+        {
+          "indexInScene": 8,
+          "display": "9月3日，它说会变得极强，并推高2027年的极端天气风险。",
+          "spoken": "九月三日，它说会变得极强，并推高二零二七年的极端天气风险。",
+          "startFrame": 29240,
+          "endFrame": 29441,
+          "frames": 201,
+          "ms": 6716
+        },
+        {
+          "indexInScene": 9,
+          "display": "也就是说，在预计的12月峰值之前，机构提前了大约5个月。",
+          "spoken": "也就是说，在预计的十二月峰值之前，机构提前了大约五个月。",
+          "startFrame": 29448,
+          "endFrame": 29633,
+          "frames": 185,
+          "ms": 6169
+        },
+        {
+          "indexInScene": 10,
+          "display": "5个月，就是市场可以提前定价的时间。",
+          "spoken": "五个月，就是市场可以提前定价的时间。",
+          "startFrame": 29640,
+          "endFrame": 29760,
+          "frames": 120,
+          "ms": 3998
+        },
+        {
+          "indexInScene": 11,
+          "display": "但世界银行列出的是另一件事。",
+          "spoken": "但世界银行列出的是另一件事。",
+          "startFrame": 29767,
+          "endFrame": 29856,
+          "frames": 89,
+          "ms": 2953
+        },
+        {
+          "indexInScene": 12,
+          "display": "他们把今年粮食价格的基准预测定在2.5%，然后列出了四个上行风险。",
+          "spoken": "他们把今年粮食价格的基准预测定在百分之二点五，然后列出了四个上行风险。",
+          "startFrame": 29863,
+          "endFrame": 30093,
+          "frames": 230,
+          "ms": 7677
+        },
+        {
+          "indexInScene": 13,
+          "display": "更强的厄尔尼诺、更高的化肥和能源成本、生物燃料需求，以及出口限制。",
+          "spoken": "更强的厄尔尼诺、更高的化肥和能源成本、生物燃料需求，以及出口限制。",
+          "startFrame": 30100,
+          "endFrame": 30326,
+          "frames": 226,
+          "ms": 7545
+        },
+        {
+          "indexInScene": 14,
+          "display": "任何一个单独出现，市场都能消化。",
+          "spoken": "任何一个单独出现，市场都能消化。",
+          "startFrame": 30333,
+          "endFrame": 30443,
+          "frames": 110,
+          "ms": 3652
+        },
+        {
+          "indexInScene": 15,
+          "display": "麻烦的是它们同时出现，因为出口限制会放大其他所有冲击。",
+          "spoken": "麻烦的是它们同时出现，因为出口限制会放大其他所有冲击。",
+          "startFrame": 30450,
+          "endFrame": 30634,
+          "frames": 184,
+          "ms": 6146
+        },
+        {
+          "indexInScene": 16,
+          "display": "2008年和2022年的经验都是：一旦有国家开始禁止出口，价格会跳得比基本面更高。",
+          "spoken": "二零零八年和二零二二年的经验都是：一旦有国家开始禁止出口，价格会跳得比基本面更高。",
+          "startFrame": 30641,
+          "endFrame": 30913,
+          "frames": 272,
+          "ms": 9061
+        },
+        {
+          "indexInScene": 17,
+          "display": "最后，关于归因，我要说一句诚实的话。",
+          "spoken": "最后，关于归因，我要说一句诚实的话。",
+          "startFrame": 30920,
+          "endFrame": 31043,
+          "frames": 123,
+          "ms": 4091
+        },
+        {
+          "indexInScene": 18,
+          "display": "安联研究指出，过去每一次超级厄尔尼诺期间，标普500都是上涨的。",
+          "spoken": "安联研究指出，过去每一次超级厄尔尼诺期间，标普五百都是上涨的。",
+          "startFrame": 31050,
+          "endFrame": 31264,
+          "frames": 214,
+          "ms": 7125
+        },
+        {
+          "indexInScene": 19,
+          "display": "涨的原因是宏观环境，不是气候。",
+          "spoken": "涨的原因是宏观环境，不是气候。",
+          "startFrame": 31271,
+          "endFrame": 31372,
+          "frames": 101,
+          "ms": 3366
+        },
+        {
+          "indexInScene": 20,
+          "display": "他们还发现，粮食进口国在峰值后12到18个月会跑输大盘；但信号太弱，不足以单独归因。",
+          "spoken": "他们还发现，粮食进口国在峰值后十二到十八个月会跑输大盘；但信号太弱，不足以单独归因。",
+          "startFrame": 31379,
+          "endFrame": 31677,
+          "frames": 298,
+          "ms": 9929
+        },
+        {
+          "indexInScene": 21,
+          "display": "所以更准确的说法是：厄尔尼诺通常不是危机的起因，它是那个把其他风险叠加上去的放大器。",
+          "spoken": "所以更准确的说法是：厄尔尼诺通常不是危机的起因，它是那个把其他风险叠加上去的放大器。",
+          "startFrame": 31684,
+          "endFrame": 31964,
+          "frames": 280,
+          "ms": 9325
+        },
+        {
+          "indexInScene": 22,
+          "display": "而这一次，2026年8月的海温异常在920个月的记录里排第十高，而且它还在上升。",
+          "spoken": "而这一次，二零二六年八月的海温异常在九百二十个月的记录里排第十高，而且它还在上升。",
+          "startFrame": 31971,
+          "endFrame": 32244,
+          "frames": 273,
+          "ms": 9084
+        }
+      ]
+    },
+    {
+      "id": "coda",
+      "title": "收束：四个问题",
+      "startFrame": 32270,
+      "endFrame": 34116,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "所以，下一次你看到厄尔尼诺这三个字。",
+          "spoken": "所以，下一次你看到厄尔尼诺这三个字。",
+          "startFrame": 32270,
+          "endFrame": 32391,
+          "frames": 121,
+          "ms": 4019
+        },
+        {
+          "indexInScene": 1,
+          "display": "不要问会不会变热。",
+          "spoken": "不要问会不会变热。",
+          "startFrame": 32398,
+          "endFrame": 32454,
+          "frames": 56,
+          "ms": 1881
+        },
+        {
+          "indexInScene": 2,
+          "display": "问四个问题。",
+          "spoken": "问四个问题。",
+          "startFrame": 32461,
+          "endFrame": 32501,
+          "frames": 40,
+          "ms": 1339
+        },
+        {
+          "indexInScene": 3,
+          "display": "第一，这一相的雨，是从哪个产区搬走的。",
+          "spoken": "第一，这一相的雨，是从哪个产区搬走的。",
+          "startFrame": 32508,
+          "endFrame": 32632,
+          "frames": 124,
+          "ms": 4149
+        },
+        {
+          "indexInScene": 4,
+          "display": "第二，那个产区占全球供给多少。是5%，还是60%。",
+          "spoken": "第二，那个产区占全球供给多少。是百分之五，还是百分之六十。",
+          "startFrame": 32639,
+          "endFrame": 32840,
+          "frames": 201,
+          "ms": 6715
+        },
+        {
+          "indexInScene": 5,
+          "display": "第三，库存有多薄。有没有替代产地，能不能补种。",
+          "spoken": "第三，库存有多薄。有没有替代产地，能不能补种。",
+          "startFrame": 32847,
+          "endFrame": 33006,
+          "frames": 159,
+          "ms": 5310
+        },
+        {
+          "indexInScene": 6,
+          "display": "第四，预报提前多久出现，价格已经走了多少。",
+          "spoken": "第四，预报提前多久出现，价格已经走了多少。",
+          "startFrame": 33013,
+          "endFrame": 33164,
+          "frames": 151,
+          "ms": 5032
+        },
+        {
+          "indexInScene": 7,
+          "display": "四道闸门都打开，一次海洋温度的变化，才会变成一张账单。",
+          "spoken": "四道闸门都打开，一次海洋温度的变化，才会变成一张账单。",
+          "startFrame": 33171,
+          "endFrame": 33356,
+          "frames": 185,
+          "ms": 6167
+        },
+        {
+          "indexInScene": 8,
+          "display": "缺任何一道，它可能什么都不会发生。",
+          "spoken": "缺任何一道，它可能什么都不会发生。",
+          "startFrame": 33363,
+          "endFrame": 33476,
+          "frames": 113,
+          "ms": 3780
+        },
+        {
+          "indexInScene": 9,
+          "display": "这台机器本身，是气候系统里可预报性最高的现象之一。",
+          "spoken": "这台机器本身，是气候系统里可预报性最高的现象之一。",
+          "startFrame": 33483,
+          "endFrame": 33661,
+          "frames": 178,
+          "ms": 5931
+        },
+        {
+          "indexInScene": 10,
+          "display": "但它预报的是概率，不是命运。",
+          "spoken": "但它预报的是概率，不是命运。",
+          "startFrame": 33668,
+          "endFrame": 33754,
+          "frames": 86,
+          "ms": 2860
+        },
+        {
+          "indexInScene": 11,
+          "display": "它也不制造热，它只是把海洋里储存的热，重新分配一次。",
+          "spoken": "它也不制造热，它只是把海洋里储存的热，重新分配一次。",
+          "startFrame": 33761,
+          "endFrame": 33936,
+          "frames": 175,
+          "ms": 5843
+        },
+        {
+          "indexInScene": 12,
+          "display": "而它重新分配的，最后是雨。",
+          "spoken": "而它重新分配的，最后是雨。",
+          "startFrame": 33943,
+          "endFrame": 34033,
+          "frames": 90,
+          "ms": 3012
+        },
+        {
+          "indexInScene": 13,
+          "display": "以及跟着雨走的，那一切。",
+          "spoken": "以及跟着雨走的，那一切。",
+          "startFrame": 34040,
+          "endFrame": 34116,
+          "frames": 76,
+          "ms": 2535
+        }
+      ]
+    }
+  ]
+}
