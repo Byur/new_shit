@@ -1,0 +1,715 @@
+5/27/03
+1
+A History of the University of Washington Department of
+Aeronautics and Astronautics 1917-2003
+J. Lee,* D.S. Eberhardt,† R.E. Breidenthal,‡ and A.P. Bruckner§
+Department of Aeronautics & Astronautics
+University of Washington, Box 352400
+Seattle, WA 98195-2400
+The Department
+The University of Washington’s Department of Aeronautics and Astronautics was one of
+the first aeronautical engineering departments in the nation, and one of the seven originally
+established with the help of the Guggenheim Fund for the Advancement of Aeronautics. It offers
+the only aerospace degree program in the Pacific Northwest, a region whose aerospace industry
+has been a major contributor to the technological development, economic vitality and the
+security of the United States.  Educators and researchers in the Department over the years have
+made numerous contributions in all major areas of aerospace engineering.  Graduates at all
+degree levels, have been successful and valued in industry at the local, national, and international
+levels, as well as in government organizations and institutions of higher learning.
+Bill Boeing and the Early Years
+In 1903, the year of the Wright Brothers’ first powered flight, a man interested in
+establishing a timber business on the West Coast moved to Seattle after leaving Yale.  Little did
+he know it at the time, but he was destined to change the face of aviation and the Pacific
+Northwest forever.  His name was William E. Boeing.  It is with this man that the story of
+aeronautics at the University of Washington begins.
+The first airplane flight in Seattle took
+place March 11, 1910, when Charles K.
+Hamilton flew a Curtiss Reims Racer before a
+large crowd of eager onlookers at what was then
+called The Meadows, a low-lying strip of land
+by the Duwamish River, south of downtown.1
+This location is now occupied by Boeing Field,
+otherwise known as King County Airport.  It is
+not known whether Bill Boeing was present at
+this  event,  but  what  is  certain  is  that  he
+witnessed flying demonstrations in Los Angeles
+that same year, and was fascinated by what he
+saw.2  For the next few years he tried to hitch a
+ride in an airplane, finally getting his wish on
+July 4, 1915, in a two-seater float plane on
+Fig. 1   March 11, 1910, the first airplane flight in
+Seattle, at The Meadows.  Aircraft is a
+Curtiss Reims Racer.  Pilot is Charles K.
+Hamilton.
+* Graduate Student
+† Associate Professor
+‡ Professor
+§ Professor, Department Chair
+5/27/03
+2
+Lake Washington.  Boeing caught the flying bug, and soon decided to start producing his own
+airplanes.  Together with Navy Lieutenant Conrad Westervelt and Herb Munter, Boeing
+designed and built his first airplane, a float plane named the B&W.  Shortly thereafter, on July
+15, 1916, Boeing incorporated his aircraft manufacturing business as Pacific Aero Products
+Company, a name he changed to Boeing Airplane Company the following year.  In early 1917,
+Boeing hired two students, Clairmont L. Egtvedt and Philip G. Johnson, from the University of
+Washington, to be his engineering staff.   Though Egtvedt and Johnson were trained in
+mechanical engineering, and eventually became two of the most influential men in aviation
+history, their lack of formal background in aeronautics started Boeing thinking.3
+To build a successful airplane company, Boeing realized that he needed trained
+aeronautical engineers and a facility to test new airplanes.  Boeing devised a way to kill two
+birds with one stone. He decided to donate a wind tunnel to the University of Washington on the
+condition that the University develop an aeronautics curriculum.4
+Design and construction of the new wind tunnel started in 1917, supervised by Assistant
+Professor John W. Miller, then of the Civil Engineering department.  Miller’s interest in flight
+dated back to before the Wright brothers’ famous flight.  He had started experimenting with
+gliders in 1895 and developed his first powered airplane in 1909.5  Miller later became the first
+person to take an aerial photograph of the University of Washington campus.6
+As a first step toward fulfilling
+the University’s end of the bargain, the
+Civil Engineering department offered
+an airplane structures class in the
+spring of 1917.  Taught by Miller, this
+was the first aviation-related course
+offered at the University.4   This class,
+however, was not destined to go any
+further.  As a result of his work with
+Bill Boeing on the wind tunnel project,
+Miller resigned from the University in
+the summer of 1917 to become Chief
+Engineer at the newly renamed Boeing
+Airplane Company.6
+Concurrent with this turn of
+events, the Mechanical Engineering
+department began a search for a new
+faculty  member  to  implement  and
+Fig. 2   The Boeing Wind Tunnel at the University of
+Washington (c.1918).  Clairmont Egtvedt is
+third from left.  This facility is still in use but
+with a modern 3’x3’ wind tunnel inside.
+instruct a complete aeronautics curriculum.  This search led to the hiring of Frank McKone for
+the 1917-1918 academic year.  Per Boeing’s specifications, McKone organized classes in basic
+aviation, aircraft design, aerial propulsion, and wind tunnel testing.7  He taught these classes for
+just one year before leaving the University.6
+The gap created by McKone’s departure lasted for three months and was filled by
+McKone’s predecessor, John W. Miller.  The University had been desperate for an aeronautics
+professor, and with the end of World War I, Miller seems to have lost interest in work at Boeing.
+To sweeten the deal, Henry Suzzallo, president of the University, apparently promised Miller
+5/27/03
+3
+that, although he would initially be an Assistant Professor, he would be almost immediately
+promoted to the rank of Associate Professor.  For some reason, this promise was not fulfilled,
+and Miller was not promoted.   As a result, Miller again resigned from the University after
+teaching for only two academic quarters.4, 6
+With Miller’s departure, the University was again left with no one to teach aeronautics.
+As a result no classes on this topic were taught for the next two years.  Little did anybody know
+at the time, but the man to fill this void was already right under their noses, teaching electrical
+engineering.  As it turned out, this individual was destined to not only fill the aeronautics
+teaching void, but also to play a key role in the development of aeronautics at the University of
+Washington for the next 30 years; a man whose legacy continues to be felt even today. His name
+was Frederick Kurt Kirsten.
+Enter Fred Kirsten
+Born in Germany, Kirsten came to America in 1902 aboard an old sailing schooner.8  At
+the encouragement of a friend, he began studying electrical engineering at the University of
+Washington, graduating magna cum laude in 1909.4     In 1915, he joined the faculty as an
+Assistant Professor in Electrical Engineering.  By 1923 Kirsten had been promoted to full
+Professor.
+By nature Kirsten was an inventor.  His most famous aeronautics-related invention was
+that of the cycloidal propeller, which Kirsten spent over 20 years trying to perfect for use on
+airplanes.  At one point, he teamed up with Bill Boeing to further develop cycloidal propellers
+for both aeronautical and marine applications. Boeing put up $175,000 of his own money to start
+a company with Kirsten.  However, the concept eventually proved to be impractical in
+aeronautical applications, and the Kirsten-Boeing company failed.  It should, however, be noted
+that cycloidal propellers were viable as a marine propulsion system.3  Even today, some tugboats
+are equipped with them.
+Outside of his contributions to aeronautics, Kirsten invented everything from lights for
+airports to World War II air-raid sirens.  Although he took out more than 100 patents, many of
+his non-aeronautical inventions9 are now forgotten. There is, however, one exception, the
+“Kirsten Pipe.”   Kirsten had been a cigarette smoker and, while visiting his doctor about a
+persistent cough, he was told to quit smoking cigarettes.  Kirsten went home and decided to
+design a pipe.  The heat-absorbing aluminum stem of this pipe delivered a “delightfully cool,
+clean smoke.”  Kirsten demonstrated the pipe to his doctor who is reported to have told Kirsten
+that he could smoke it on one condition: that he made one for him.  Kirsten started a company to
+manufacture his “perfect pipe,” 10 and over the years made a substantial amount of money selling
+them. They are still manufactured today, in Seattle, and the company is still in the family.11
+Kirsten’s personality was one of extreme confidence.  According to one of his former
+students, “Kirsten was a great man, you could just ask him.”   An article in The  Daily, the
+University’s newspaper, stated that Kirsten was “about as meek as a General Sherman tank.”12
+Kirsten was extremely proud of his work and very dedicated to it.  He could be the best of
+friends to those who took interest in his work, and a powerful adversary to those who criticized
+it.  It was Kirsten’s personality that gave him the driving force that would enable him to
+accomplish so much.
+5/27/03
+4
+Founding a Department
+Kirsten began teaching aeronautics courses at the beginning of the 1921-1922 academic
+year.  He undoubtedly gave the courses a face-lift, but they basically remained the same as when
+Miller had taught them. Over the next four years very few changes would be made.
+In  early  1926,  the  University opened  a  dialog  with  Harry  Guggenheim and  the
+Guggenheim Fund for the Advancement of Aeronautics, in an attempt to procure funds to
+establish a school of aeronautics. At that time the Guggenheim Fund, founded by Harry’s father
+Daniel, had already provided grants for similar schools at New York University, Caltech, MIT,
+Stanford, and the University of Michigan.13  In its communications with Guggenheim, the
+University stressed its strong ties with Boeing and Naval Aviation, the Boeing Wind Tunnel on
+campus, and the promising development of Kirsten’s cycloidal propeller.4
+In 1927, a proposal for a $450,000 grant was submitted to the Guggenheims.  They
+balked at the large amount of the request, but kept the matter under consideration.     The
+University again approached the Guggenheims in 1928.  This time, the University’s approach
+was highly organized.  After the first request, the Guggenheims had been given time to
+investigate the University’s background and existing facilities.  Bill Boeing wrote to the
+Guggenheims on behalf of the University.  Most importantly, in the 1928 proposal, the
+University was asking only $290,000, just enough to construct a building to house the new
+department.  The Guggenheims were sold.  On June 15, 1928, the trustees of the Guggenheim
+Fund approved a grant of $290,000 for the construction of an aeronautics building on the
+University of Washington campus.  This grant was contingent on receiving funding from the
+State of Washington to properly equip the new building.  The state legislature approved this
+funding in early 1929.13  Construction began soon thereafter.14
+The 1927-1928 academic year saw the first evidence of the preparations for the new
+department. Design work had begun on the new aeronautics building.  John W. Miller, who had
+been serving as the secretary of the Guggenheim Fund board of trustees, had again returned to
+the University, and for the first time the aeronautics faculty consisted of more than one man.
+With two professors, the course offerings were expanded from five to eight.  Support from the
+Boeing Airplane Company was evident, as some of these courses featured supplemental lectures
+from some of Boeing’s best engineers, such as Claire Egtvedt and C.N. Monteith.6  In July 1929,
+Professor Everett O. Eastwood was named the head of the department, thus marking its official
+beginning.15  The building was completed in the spring of the following year.16
+Fig. 3   The Department’s Founding Fathers.  Left to Right:  Bill Boeing, John W. Miller,
+Frederick K. Kirsten, Everett O. Eastwood.
+5/27/03
+5
+Eastwood was the very model of a “modern” mechanical engineer.  He had a hand in
+almost everything. Educated at MIT, he joined the University of Washington in 1905 as the head
+of the Mechanical Engineering Department.  He had developed the first master plan for the
+University of Washington campus, and served as the University’s engineering consultant.
+Eastwood's appointment as head of the department seems to have originally been one of
+expedience.  He was a competent administrator, and a good organizer; just the kind of person to
+get the new department up and running, but really nothing more.  Eastwood never showed any
+particular interest in flight, either professionally or personally.13  In fact, Eastwood never actually
+taught any aeronautics classes at all.  This fact would later become a matter of some controversy.
+While these concerns led to two attempts to replace him as head of Aeronautics, he remained
+head of both departments until 1946, a year before his retirement from the University
+On
+October
+5,
+1929,
+the
+Department of Aeronautical Engineering
+officially opened its doors.17  There were
+four original faculty members: Miller,
+Kirsten, Eastwood, and Fred Eastman,
+who was hired earlier that year as an
+instructor, but would soon be given a
+professorship.*    Twelve different courses
+were offered in the 1929-1930 academic
+year, leading to a degree in Aeronautical
+Engineering.
+The Daniel J. Guggenheim
+Aeronautics Hall was dedicated. on April
+11, 1930.  In the words of the University
+of Washington’s newspaper, The Daily,
+Fig. 4
+Guggenheim Hall in 1931.
+(CF Todd Coll., PNW Coll. UW #14680)
+the Tudor-Gothic building was “architecturally perfect.”18  The building included room for six
+small instructional wind tunnels in the basement, only one of which was ever built.  It is known
+as the Venturi Tunnel and is still in operation.  The building housed a large laboratory with two
+full-sized airplanes and a number of  aero-engines so  that students could have hands-on
+experience with “the real thing.”  The building also sported a 355-seat auditorium which was
+designed not only to hold classes, but also to enable the Department to
+host large public lectures on aeronautics.
+Everybody wanted a piece of the new building.  In addition to
+being the home of Aeronautical Engineering, the Civil and Electrical
+Engineering departments, the College of Engineering Administration,
+and the Engineering Library were also housed in Guggenheim Hall.19
+The early 1930’s were a time of evolution for the new
+department. Changes to the curriculum were constantly being made.  In
+1930, the Department awarded its first five Bachelor of Science in
+Aeronautical Engineering degrees; in 1931 there were 11 graduates and
+Fig. 5   Fred Eastman
+by 1933 this number had jumped to 28.  However, the Depression took
+* Fred Eastman served the department until his retirement in 1970.  He was Chair from 1946 to 1952.  On February
+10, 2003, he celebrated his 99th birthday.
+5/27/03
+6
+its toll, and from 1933 to 1939 an average of about 16 students graduated per year.  Unlike other
+Guggenheim schools, such as Caltech and MIT, most of the Department’s emphasis at this time
+was on teaching rather than research.  The research that did go on was mostly applied research,
+such as Eastman’s work on wind tunnel balances and Kirsten’s cycloidal propellers.13
+The Wind Tunnel Years
+The years from the mid-1930’s until 1960 can best be characterized as the Kirsten Wind
+Tunnel years. Although the tunnel still is used regularly today, it was this period that established
+it as a world-class facility.   Throughout this era, faculty and students played a key role in
+operating the wind tunnel. Faculty had played a major part in its construction, and students were
+hired to operate the tunnel.  In some cases, students who worked in the tunnel continued as
+technical staff and later were hired as faculty.
+During the early 1930’s, Fred Kirsten was
+eager to test his “Cycloplane,” his cycloidal
+propeller aircraft concept.  In 1934 he approached
+the   Graduate Aeronautical  Laboratories  at  the
+California Institute of Technology (GALCIT) to use
+their wind tunnel for this purpose.  He was quoted a
+price of $200/day, which was much more than he
+could afford.  At the time, GALCIT had the only
+wind tunnel of any practical size on the west coast.
+So, in 1935, Kirsten proposed a new wind tunnel for
+the University of Washington.20
+The proposal, “An Aerodynamic Laboratory
+(Wind Tunnel) on the Campus of the University of
+Washington, Seattle, Washington,” was for a wind
+tunnel with an 8x12-foot test section and a
+maximum speed of 250 mph.  When completed, the
+tunnel would be one of only two capable of such
+speed.   The proposal was for $120,000, of which
+$54,000 was requested of the federal Public Works
+Administration (PWA). The remaining $66,000
+Fig. 6   Kirsten with his “Cycloplane” in the
+wind tunnel that now bears his name.
+would  come  from  other  sources:  $40,000  from  the  Washington  State  Budget  Relief
+Administration, and $26,000 from Boeing, given as a loan against future rentals, at $15/hour.20
+It is interesting to review some of the salient points made in the proposal.  One was a
+barb aimed at GALCIT’s high cost to other universities and its essentially holding a monopoly
+for testing on the west coast.  Another was the training of students and staff for research.  The
+wind tunnel would “allow them to contribute in considerable measure to the advancement of a
+new engineering field.”  Also it was pointed out that the department could not support graduate
+students because they had to go elsewhere to find facilities to do their research.  Finally, it was
+added that Boeing was sending its work to the east coast and GALCIT at considerable cost.  It is
+interesting to note that the tunnel was envisioned to operate with a student crew, as it still does
+today.
+5/27/03
+7
+Construction began in January 1936 and, due to mild weather, progressed rapidly.  The
+tunnel was completed in early autumn of that year.  However, it needed much work before it
+would be ready for serious testing.  In order to reduce cost, a decision was made to build a dual
+return tunnel that used two 500-hp motors rather than a single return with a 1000-hp motor.
+Much of the design, supervision and construction was done in house;   an ingenious
+electromagnetic balance was designed by Fred Eastman and the 14 wooden fan blades were
+carved in Guggenheim Hall’s machine shop.  Kirsten’s dedication was so great, he even had his
+son sanding fan blades.10
+No  formal  records  appear  to  exist
+regarding the work done between the fall of
+1936 and early 1939 but a “diary” indicates
+Boeing  tested  their  model  307  Stratoliner
+extensively.21  It appears that a shakedown
+period was going on concurrently with the
+Boeing tests. Notes indicate a few startup
+glitches, such as the loss of one set of seven
+blades due to a loose spinner.  There are some
+interesting articles that were published in The
+Daily, the University’s newspaper: one article,
+dated January 28, 1938 had the headline
+“Wind Tunnel Air Goes Wrong Way,” and
+alluded to flow problems due to the merging of
+the two return streams.   Formal test records
+did not start until March, 1939, when a test on
+the North American AT-6 “Texan” became the
+first entry in the official run log.21
+Fig. 7   The Kirsten Wind Tunnel under
+construction, March 1936.
+The University of Washington Aeronautical Laboratory (UWAL), as it has come to be
+known, began testing furiously once it was open for commercial use.  In 1939, a total of 21 tests
+programs were performed, which included Boeing, Lockheed, Davis, and Consolidated.  Two
+vehicles that occupied the facility for much of the year were the Lockheed Constellation and the
+Boeing 307 Stratoliner.  An interesting historical test from an aerodynamics standpoint was the
+testing of the Davis wing, used and tested on the Consolidated B-24 that year.  The Davis wing
+was a poorly understood laminar flow wing, which performed exceptionally well in the wind
+tunnel but not in flight.  It was not until years later that it was understood that the peculiar
+behavior in the operational environment was due to the flow becoming turbulent due to surface
+irregularities.
+In 1940 the tunnel had 39 tests, with Boeing, Lockheed, North American, Consolidated,
+and Grumman all paying visits. The bulk of Boeing’s testing was on the B-29, with some testing
+of upgrades to the B-17.21    Lockheed tested the XP-49, which was an upgraded, pressurized
+version of their P-38.  North American brought a model of their P-51 wing in secrecy from
+southern California.  Throughout WWII, the tunnel saw constant action.  The only breaks from
+military testing were in 1941 to perform post-collapse analysis of the Tacoma Narrows Bridge
+and then in 1942 to finally let Kirsten test his Cycloplane. It is somewhat of an irony that it took
+until 1942 for Kirsten to get testing time after starting with GALCIT in 1934.  A big moment for
+5/27/03
+8
+UWAL occurred in July 1941, when, the construction loan from Boeing was paid off.22  It took
+only two years of operation to fulfill the commitment of the $26,000 of testing to Boeing.
+Fig. 8  Famous early UWAL Tests. Clockwise from top left: Boeing Model 307 Stratoliner,
+Boeing B-29, Boeing B-47, Lockheed P-38.
+Military testing dominated the run logs of UWAL throughout the late 1940’s.  Some
+notable tests include the B-47 and the P-85 “Goblin”.  Boeing and McDonnell show up
+extensively in the tunnel logs.  In 1948, the wind tunnel was officially named the Kirsten Wind
+Tunnel, after the man who had worked so hard to get it built.
+As the 1950’s progressed, Boeing started to become the exclusive customer in the tunnel.
+Aircraft such as the B-47, B-52, KC-135 and 707 were tested. By the end of the decade it is rare
+to find an entry in the run logs that is not a Boeing test.  A strong relationship between Boeing
+and the Aeronautics Department blossomed during this period.  For the next 30 years, UWAL
+would host most of Boeing’s low-speed wind tunnel testing.
+Interestingly, Fred Kirsten, who had been so instrumental in procuring the wind tunnel
+for the department, was never its Director. Edmund L. Ryder, an instructor, was appointed as the
+first director, but held the post only briefly.  He left the University in 1937 to help start the
+Boeing Aeronautical School in Oakland, California.  Ryder was replaced by Fred Eastman, who
+had designed the tunnel’s balance.  Sometime during the mid- to late 1940’s the directorship of
+the tunnel transferred to James Dwinnell, a 1939 graduate of the department who had joined the
+faculty in 1941.
+Up and Running
+Although the Kirsten Wind Tunnel dominates the period from the mid 1930’s to about
+1960, there were other changes in the Department. In the late ‘30s the department began to offer
+5/27/03
+9
+flying courses under the sponsorship of the Civil Aeronautics Administration.  In 1939 there
+were 350 applicants for 30 flight training spots.23  After the U.S. entered WWII, the Navy
+sponsored the flight training.  Throughout the war, the department trained 1200 people for the
+war effort, including 25 women, with E.O. Eastwood in charge.
+Courses toward a Master of Aeronautical Engineering (MAE) degree were first offered
+during the 1946-47 academic year as a “fifth-year” program.  However, the first graduates with
+MAE degrees did not appear until 1948.  The Master’s program grew until it represented
+approximately one third of the student body by the end of the 1950’s.  The Ph.D. degree was
+offered for the first time during the 1959-1960 academic year.  Eight students entered this new
+program that year.
+The size of the Department during this time can be best characterized by “slow growth”.
+The Department had a regular faculty of five throughout the period 1935-1945.   Eastwood
+stepped down as department head in 1946 and retired in 1947, and Kirsten retired in 1951 (he
+died shortly thereafter, in 1952, at the age of 67).  A faculty position was added during the late
+1940’s reflecting the addition of the MAE program in 1946, and then two more during the next
+10  years,  probably  due  to  the  growth  of  the  graduate  program.
+Course  offerings  for
+undergraduates increased slightly during the period, while the graduate program increased course
+offerings dramatically during the late 1940’s.24
+Following the departure of James Dwinnell for Boeing in 1950, the management of
+UWAL was taken over by Robert G. Joppa, a 1945 graduate of the department.  Joppa had
+stayed on after graduation to work at the wind tunnel, and in 1949 was hired as a part-time
+instructor and part-time research associate at UWAL.  He went on to teach many courses,
+including flight testing and airplane design, until his retirement in 1988.  In 1967 the helm of
+UWAL was handed to William H. Rae, Jr., (’53, M.S. ’59) who had started as a research
+instructor in 1956.  He continued as head of UWAL until his untimely death in 1993.  Rae was
+co-author with Alan Pope of the 2nd edition of the well-known book Low Speed Wind Tunnel
+Testing, and was a founding member of the Subsonic Aerodynamic Testing Association
+(SATA).25
+Another faculty member of note during
+this time was Victor Ganzer, a 1941 graduate of
+the department, who first worked at NACA on the
+P-38 and later at Boeing, where he contributed to
+the aerodynamic design of the B-47.  In 1947 he
+accepted a faculty position in the department and
+taught here until his retirement in 1977.  It was he
+who initiated the department’s course in
+engineering flight testing.   In 1953 Ganzer
+acquired a surplus NACA single-engine Fairchild
+24W for the department.  This airplane was later
+replaced by a Beech D18, which the department
+Fig. 9  Robert A. Joppa   Fig. 10  Victor Ganzer
+continued to own and operate for the flight test course until the late 1980’s.  Today, the course
+still exists, but an airplane is leased. From 1953 to 1957 Ganzer served as department head.
+5/27/03
+10
+Finite Elements
+During the 1950's new airplane configurations, using swept and low aspect ratio wings,
+strained the capabilities of classical structural analytical methods.  At the same time, computing
+power was first becoming available to engineers.  In the mid-1950’s two senior structural
+engineers at Boeing, M.J. Turner and L.J. Topp; a visiting professor from Berkeley, R.W.
+Clough; and Harold C. Martin, from the UW Aeronautical Department, began a collaborative
+effort to make use of the computer in structural analysis.  Their concept was to divide a complex
+wing into many simple triangular or rectangular pieces and construct a global solution for
+deformation and loads on the wing.  Their pioneering research paper “Stiffness and Deflection
+Analysis of Complex Structures,” was published in 1956, in the Journal of the Aeronautical
+Sciences.26
+Martin continued to work on the method, expanding it to a
+wide variety of problems.   Students of Martin also continued to
+expand the concepts, and courses were offered on the subject. In the
+abstract to the 1956 paper, Martin and his coauthors state:
+“Considerable extension of the material presented in the paper is
+possible.”  That prediction has come true beyond their wildest
+dreams.  What they developed became known as the finite element
+method (FEM), and is the basis for a majority of the commercial
+structural analysis tools available today.  FEM is also found in
+commercial tools for heat transfer and fluid dynamics.
+Explosive Growth
+Fig. 11   Harold C. Martin
+In late 1960, with eight faculty members, the department initiated an external search for a
+new head. John H. Bollard, a member of the aeronautics faculty at Purdue, known for his work
+on aircraft and spacecraft structures, came to the forefront.  Bollard, a native of New Zealand,
+impressed everyone with his expertise, enthusiasm, and people-skills.  He was offered the
+position and accepted, taking up his new post in August 1961.  He was only 33 years old.
+Bollard immediately set out to build and expand
+the department. Times were good: the state’s economy
+was healthy, support for the University in the
+Legislature was strong, and NASA was burgeoning as a
+result of President Kennedy’s May 25, 1961 speech
+before Congress, committing the nation to land a man
+on the Moon before the end of the decade.  They were
+heady days, indeed, and Bollard took full advantage of
+the situation.  During the next nine years, with Bollard
+at the helm, the department doubled the size of its
+faculty, greatly increased the annual research budget,
+secured new equipment for the instructional labs,
+revamped the curriculum to include space-oriented
+courses,  added  the  word  “Astronautics”  to  the
+Fig. 12 John H. Bollard
+department’s name, and initiated the planning for the
+Aerospace Research Laboratory (ARL) to be housed in
+a new building bearing that name.  This laboratory was
+5/27/03
+11
+to be devoted to advanced, multidisciplinary aerospace engineering research.   Bollard and
+Ganzer approached NASA for the funds to build the new facility and, in early 1966, began the
+search for its director. NASA granted the University $1.5 Million for the new building.
+The search for the director of ARL netted the
+Department’s most notable hire during this period,
+Abraham Hertzberg.     Already well-known
+internationally for his work in high-energy gasdynamics
+and re-entry physics, and his development of shock
+tubes and shock tunnels, Hertzberg was head of the
+Aerodynamics Research Department at the Cornell
+Aeronautical Laboratory in Buffalo, NY.  His name was
+first put forward by Arnold Goldburg, of the AVCO
+Everett Research Laboratory (Goldburg soon thereafter
+moved to Boeing to head the Flight Sciences laboratory
+at the Boeing Scientific Research Laboratory).
+Hertzberg was unhappy with his situation at Cornell,
+and was looking for a new position.   The chemistry
+between  him,  the  department’s  faculty,  and  Dean
+Charles H. Norris worked, and Hertzberg started his
+new post in the summer of 1966.
+Fig. 13 Abraham Hertzberg
+Initially, ARL, as a program, was located in Guggenheim Hall, as was Hertzberg; he had
+a staff of one, himself, but that didn’t last long.  Not only did he dive into the new building
+project but he also brought on board several new faculty, starting with David Russell and Walter
+Christiansen from JPL, both of whom would later go on to serve as department chairs.
+Construction began in 1967 and was completed in 1969.  The new building was located adjacent
+to Guggenheim Hall. All the laboratory spaces in ARL were windowless because so much of the
+research that was to occupy it for the next two decades was oriented around gas-dynamic and
+chemical lasers, and other optical research.  Three of the four floors of the building, plus the
+basement were occupied by research directed by Hertzberg and his colleagues.  The third floor
+was assigned to the University’s budding Bioengineering Program.
+A spacious basement laboratory was
+devoted to a large shock tube installation.
+Other lab spaces housed Ludwieg tubes,
+chemical lasers, gasdynamic lasers, shear layer
+test facilities, and a picosecond laser facility
+that one of the new faculty used for
+bioengineering-related research.  ARL became
+a truly interdisciplinary facility, with
+participating faculty drawn from Aeronautics
+and Astronautics, Nuclear, Mechanical, and
+Electrical Engineering, and Physics.   The
+research income generated by Hertzberg and
+his colleagues soon overtook that generated by
+Fig. 14   The Aerospace Research Laboratory
+(ARL), later renamed to Aerospace and
+Engineering Research Building (AERB).
+aero/astro faculty not associated with ARL.
+One of Hertzberg’s interests had been
+5/27/03
+12
+the application of lasers to controlled thermonuclear fusion, i.e., the laser heating of plasmas, and
+he initiated a small program in this area at ARL soon after the building was completed.  He and
+collaborators John M. Dawson of Princeton University and Ray E. Kidder of Lawrence
+Livermore, and their colleagues, presented a paper titled “Controlled Fusion Using Long-
+Wavelength Laser Heating with Magnetic Confinement,” at  the Esfahan Symposium on
+Fundamental and Applied Laser Physics in Esfahan, Iran, in late summer 1971.27  This seminal
+paper established the firm foundations of the fusion program at ARL, which continues to this
+day.
+Bust and Recovery
+As the 1960’s came to a close, trouble was brewing in the aerospace industry.  The first
+lunar landings had taken place but the Nixon Administration canceled the last four Apollo
+missions.  Military spending declined with the winding down of the Vietnam War, inflation
+reared its head, and the economy began to weaken.  Boeing’s workforce started to decline from
+its high of 100,800 in 1967.  In 1971 the Federal Government withdrew its funding of the Boeing
+Supersonic Transport program, and Boeing shed many more workers, ultimately reducing its
+payroll by more than 60,000.   Because Boeing was the Seattle area’s largest employer, the
+impact of these layoffs on the local economy was severe.  It was in April 1971 that two realtors
+erected a billboard near SeaTac Airport, with the words “Will the last person leaving Seattle turn
+out the lights.”  The downturn in the aerospace industry, coupled with the faltering economy,
+was also felt state-wide, resulting in significant cuts to the University’s state funding base.
+Not surprisingly, enrollment in the department plummeted. In 1972, the graduating class
+had only 12 members, a number not seen since the very earliest days of the department more
+than 40 years previously.  Gradually, however, enrollment began to rise, and by 1976 the
+department had 30 graduates  Despite the rocky start to the ‘70s, the number of faculty in the
+department, including non-tenure-track faculty, remained stable and even grew to 19 in 1975.
+John Bollard stepped down as department Chair in 1976, and was replaced by Ellis Dill,
+who nine months later left to accept the position of Dean of Engineering at Rutgers University, a
+post he held for 25 years. David Russell assumed the helm of the department in 1977 and served
+in that role until 1992, when he was succeeded by Walter Christiansen.  In 1975, the name of
+ARL was changed to Aerospace and Energetics Research Program (AERP), to better reflect the
+nature of the research that was being conducted there, and the name of the building was changed
+to Aerospace and Engineering Research Building AERB).  Abe Hertzberg continued as Director
+until his retirement in 1993.  He remained active in research, despite gradually failing health,
+until he passed away in March 2003.
+In 1979, Bollard, together with James Mueller of the Department of Material Science,
+was appointed by NASA to an independent, 12-member advisory committee formed to
+investigate problems with the thermal protection tiles on the Space Shuttle.28  On the flight of the
+Shuttle Columbia from California to Cape Kennedy, atop its 747 carrier aircraft, more than 5000
+of the tiles had fallen off.  During two years of intensive research, Mueller, Bollard, and their
+colleagues discovered the fundamental initial cause of the tile attachment failure and the
+subsequent mechanics of detachment, and developed engineering solutions that were adopted by
+NASA.  Their success resulted in special commendations from NASA, the State Legislature, the
+Governor, and the University.
+5/27/03
+13
+Holding the Course
+During the decades of the ‘80’s and ‘90’s, the Department was of relatively constant
+faculty size with student enrollment influenced by the roller coaster of the aerospace industry.
+This stable faculty population was fortunate, at least for those students who happened to enter
+during a lean period.  By the time of their graduation, the job market was frequently strong with
+few applicants competing for many openings.
+At the start of 1980, the Department had 20 faculty (including two supported on research)
+and 200 students.  The aerospace industry reached a local minimum in the early 1980’s,
+mimicking the previous decade, and then expanded rapidly.  Classrooms were bursting by 1985,
+with strong demand for the Department’s graduates.  During this time undergraduate admission
+became highly competitive. In 1982, despite another budget crisis, the University created a new
+department, Applied Mathematics, which occupied the fourth floor of Guggenheim Hall.  The
+faculty for this new entity were drawn from Arts and Sciences and Engineering.  Three faculty
+from Aeronautics and Astronautics, Carl Pearson, Jirair Kevorkian, and Juris Vagners, were
+among them. About a decade later, Vagners rejoined Aeronautics and Astronautics.
+Boeing’s continued use of the Kirsten wind tunnel resulted in a decision to help the
+University modernize it.  Gearing up for the 757 and 767 programs, Boeing donated $2,000,000
+to upgrade the computer systems.  A computer/operations room was added to the roof, using
+UWAL reserve funds, and two PDP 11/70 computers were purchased to process data.
+The department gained a world-class authority in computational fluid dynamics when
+Robert McCormick from NASA Ames joined the faculty in 1981.  He remained on the faculty
+for three years before returning to the Bay Area to accept a position at Stanford.   In 1983
+Hertzberg, together with colleagues Adam Bruckner (who would become department chair in
+1998) and David Bogdanoff, created and developed the concept of the ram accelerator
+hypervelocity launcher.  The initial successes of this work led to the establishment of similar
+laboratories throughout the world.   Other notable research accomplishments came from the
+department’s fluid dynamics and structures groups, in the areas of turbulence and vortex
+dynamics (Robert Breidenthal, Mitsuru Kurosaka, et al.), in fracture mechanics and composite
+materials (Kuen Lin et al.), and in multidisciplinary design optimization (Eli Livne).
+A major event in the early 1990’s was the voluntary fission of the Nuclear Engineering
+Department, due to a lack of students.  The Dean assigned the newly homeless faculty to other
+departments within the College of Engineering.  Thomas Jarboe, joined the Aeronautics and
+Astronautics Department, and was followed later by several other plasma researchers.  Their
+work has emphasized the development of magnetic confinement fusion with an ultimate goal of
+commercial electricity production.  Because of the large scale of the experiments, much of their
+research is conducted at an industrial site off campus, in Redmond, WA, across Lake
+Washington. This facility, known as the Redmond Plasma Physics Laboratory (RPPL), has been
+headed by Alan Hoffman since its inception in 1992.  Plasma research oriented toward space
+propulsion grew out of these efforts later in the decade.
+Also in the early 1990’s, UWAL went through a financial crisis, when Boeing decided to
+move its low-speed wind tunnel testing elsewhere in order to achieve higher Reynolds numbers.
+This left a large income void at a time when the staff was geared towards multiple shift support.
+The entire staff was transferred to other departments or chose to retire, as the tunnel’s future was
+in doubt.  During 1993-1994 there were only a handful of tests run by students and a temporary,
+5/27/03
+14
+part-time director.  A “Last Wind” party was held and it was announced that the tunnel would
+close its doors forever.  However, the Kirsten wind tunnel gained a second wind, and things
+began to pick up.  The doors were kept open and tunnel operations were restructured to be more
+automated, with a leaner staff.   A decade later, UWAL is operating at over 80% customer
+utilization with a wide variety of customers, including Boeing.
+During the second half of the decade several faculty in the department (Juris Vagners,
+Scott Eberhardt, Eli Livne, and Uy-Loi Ly) began a research initiative in the area of unmanned
+autonomous vehicles (UAV), in collaboration with Insitu, a small company located in Bingen,
+WA, and with ARA, an Australian firm. Funding was provided by the Office of Naval Research.
+To demonstrate the capabilities of small UAV’s, the group attempted the first crossing of the
+North Atlantic Ocean by a UAV in the summer of 1998.  Four of the small aircraft were
+launched from Newfoundland in August.  One of them, “Laima,” named after a mythological
+goddess of good fortune, landed safely in Benbecula, a Scottish Island, 26 hours and 45 minutes
+after it had taken off.  This remarkable feat marked the first transatlantic crossing by a UAV of
+any size, and did much to expand the department’s activities and visibility in the UAV area.
+Laima was put on permanent display at Seattle’s Museum of Flight the following year.
+On the education front, as part of an expanded outreach effort, the department in 1997
+began to offer a new course, AA101, Introduction to Air and Space Vehicles, aimed at non-
+engineering freshmen.  Using balsa wood gliders, computer flight simulators, and water-bottle
+rockets, instead of mathematical equations, it introduced students to the rudiments of flight and
+rocketry, and their history.  The class became very popular across the University’s entire
+undergraduate population.
+In autumn 1998, for the first time in more than 20 years, the department established an
+external Visiting Committee and formulated a strategic plan.  Part of this plan was to restructure
+the department along lines that emphasize the systems aspects of aerospace engineering, namely
+aeronautical systems, space systems, and energy systems.   The traditional areas of
+aerodynamics/fluids, structures, controls, and propulsion, plus plasma science, fell under these
+“umbrellas.” The result was a greater degree of collaboration among the faculty, both within the
+department and with colleagues throughout the College of Engineering and the University.  In
+addition, the undergraduate curriculum was restructured to require more prerequisites, provide
+more hands-on laboratory and design experiences, encourage collaborative learning, and expose
+students to systems concepts.
+The New Millenium
+At the beginning of the 2000-2001 academic year, there were 19 faculty (including three
+supported on research), 92 undergraduates, and 82 graduate students.   True to form, at the
+beginning of the decade, the aerospace industry roller coaster began heading downward again,
+mirroring the downturn in the economy and the aftermath of September 11, 2001.  Nonetheless,
+student demand increased, perhaps because other engineering fields were also relatively soft.
+By 1999, faculty hired in the boom years of the 1960’s were rapidly beginning to retire.
+Over a three year period, the department hired seven replacements, including the first woman,
+Kristi Morgansen, who was brought in with a Clare Boothe Luce endowed professorship.  On
+average, the department faculty has not been this young since the go-go years of the space
+program in the 1960’s.
+5/27/03
+15
+Over the decades, the fraction of women students has slowly increased. The first one was
+Rose Lunn, who graduated in 1937 at the top of her class and later went on to an illustrious
+career at North American Aviation.29  It is typical of the difficulties experienced by many
+professional women in those days that when Lunn was first hired, she was assigned secretarial
+duties. It took quite some effort on her part to convince her supervisors that she was capable of a
+lot more than typing!  Even with strong recruitment efforts, the fraction of undergraduates in the
+department who are women is still only about 15%, roughly the same as in other aerospace
+programs nationwide.
+The Department Makes Good
+Early on, Boeing made an investment in aeronautics at the University.  Over time, that
+investment began to pay off.  In 1926, all but one member of Boeing’s engineering department
+were University of Washington graduates.   Even into the 1940’s, the majority of Boeing’s
+engineers came from the University.  It is no exaggeration to say that the Boeing Company was
+built by University of Washington graduates.  Almost every Boeing airplane project has had a
+University of Washington Aeronautics alum at the helm.  Any history of the Boeing Company
+includes names of alumni such as Maynard Pennell (’31), George Martin (’31), George Snyder
+(’31), Jack Steiner (’40), William Hamilton (’41, M.S. ’48), Joseph Sutter (’43), and Lynn
+Olason (’43).29
+Boeing is not the only place where Aeronautics alumni made an impact. Scott Crossfield
+(’49, M.S. ‘50) was the first man to successfully break Mach 2, and was heavily involved in the
+design and testing of the X-15.   George Jeffs (’45) headed Rockwell’s Apollo and Shuttle
+programs, and George Solomon (‘49) became Executive Vice President of TRW.  Robert Hage
+(’39) is best known as the co-author of the classic text, Airplane Performance, Stability, and
+Control.  Dale Myers (’43) served as NASA Associate Administrator with responsibility for the
+Apollo, Skylab and Shuttle programs.  Moustafa Chahine (’56) was Chief Scientist at Caltech’s
+Jet Propulsion Laboratory for many years.  On the less technical side, Gregory “Pappy”
+Boyington (’34), leader of the famed Black Sheep Squadron during WW II, also earned an
+engineering degree from the Department.
+Since 1978, three Aeronautics alumni, Jack Steiner, George Jeffs, and Joe Sutter, have
+been selected by the University of Washington as Alumnus Summa Laude Dignatus, the
+University of Washington’s highest honor bestowed on its alumni.30  Very few departments at
+the University can boast of this many alumni of such distinction.
+Fig. 15   Some  distinguished  University  of  Washington  Aeronautics  alumni.
+Left to right: Jack Steiner, George Jeffs, Joe Sutter, Scott Crossfield.
+5/27/03
+16
+Acknowledgements
+The authors are deeply indebted to their colleague, David A. Russell, for his very helpful
+suggestions on the manuscript.
+References
+1 The Seattle Times, March 11-13, 1910.  See also  http://www.historylink.org/output.CFM?file_ID=366
+2 Serling, R.J., Legend & Legacy, St. Martin’s Press, New York, 1992, Ch.1.  See also
+http://www.historylink.org/_output.CFM?file_ID=2042
+3 Redding, R., and Yenne, B., Boeing: Planemaker to the World, Thunder Bay Press, reprinted ed., 1997.
+4 A Century of Educating Engineers, University of Washington College of Engineering, 1998.
+5 The Daily, University of Washington newspaper, February 12, 1936.
+6 University of Washington Archives, W.U. President, Accession No. 71-31, Box118, Folder 2.
+7 University of Washington Course Catalogs, 1917-1921, 1927.
+8 Levinson, M., “F.K. Kirsten, Illegal Immigrant Extraordinary: The Aeronautical Years, 1920-1938,” Journal of the
+West, Vol. XXX, No 1, January 1991, pp. 18-29.
+9 The Daily, University of Washington, ca. February 1942.
+10 Richard Gahan (former son-in-law to Gene Kirsten), private communication, 2003.
+11 Kirsten Pipe Company, Seattle, WA,  http://www.kirstenpipe.com/company.htm
+12 The Daily, University of Washington, February 25, 1943.
+13 Hallion, R.P., Legacy of Flight: The Guggenheim Contribution to American Aviation, University of Washington
+Press, Seattle, 1977.
+14 University of Washington Facilities Records,  http://www.washington.edu/admin/facserv/records/services.html
+15 The Daily, University of Washington, ca. July 1929.
+16 The Seattle Times, April 20, 1930
+17 The Daily, University of Washington, October 7, 1929.
+18 The Daily, University of Washington, ca. February 1930.
+19 Kramer, A., Sylvester, R., Colcor, J., and Seabloom, R., Civil Engineering: 1898-1998, University of Washington,
+1998, p. 37.
+20 “Application of the University of Washington, for a grant to provide for the construction and equipping of an
+Aero Dynamic Laboratory (Wind Tunnel),” proposal submitted to the Federal Emergency Administration of Public
+Works, August 28, 1935.
+21 University of Washington Aeronautical Laboratory run logs, 1938-39.
+22 The Daily, University of Washington, ca. July 1941.
+23 The Daily, University of Washington, ca. 1940.
+24 University of Washington Course Catalog, 1935, 1940, 1945, 1950, 1955, 1960.
+25 Subsonic Aerodynamic Testing Association, http://www.sata.aero/
+26 Turner, M.J., Clough, R.W., Martin, H.C., and Topp, L.J., “Stiffness and Deflection Analysis of Complex
+Structures, “ Journal of the Aeronautical Sciences, Vol. 23, No. 9, 1956, pp. 805-854.
+27 Dawson, J.M., Kruer, W.L., Hertzberg, A., Vlases, G.C., Ahlstrom, H.G., Steinhauer, L.C., Kidder, R.E.,
+“Controlled Fusion Using Long-Wavelength Laser Heating with Magnetic Confinement,” in Fundamental and
+Applied Laser Physics, Feld, M.S., Javan, A., and Kurnit, N.A., eds., Proceedings of the Esfahan Symposium,
+Esfahan, Iran, Aug. 29 – Sept. 5, 1971, Wiley, New York, 1973, pp.119-140.
+28 Illman, D.L., Pathbreakers: A Century of Excellence in Science & Technology at the University of Washington,
+Office of Research, University of Washington, 1996, pp. 197-200.
+29 Distinguished Alumni, Department of Aeronautics and Astronautics, University of Washington,
+http://www.aa.washington.edu/people/alumni/award/index.shtml.
+30 UW Alumni Association, Alumni Awards, http://www.cac.washington.edu/alumni/awards/asld/.

@@ -1,0 +1,188 @@
+
+ The Tacoma Narrows Bridge collapse - Physics Today 
+ Account 
+ Sign In 
+ Sign Out 
+ Subscribe to PT 
+ Back 
+ PT Jobs", "title": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://students.aip.org/", "text":"SPS & Sigma Pi Sigma", "title": "", "isAdditional": false , "isHat": false , "items": [] } ] },{"href":"https://physicstoday.aip.org/issue-archive", "text":"Issue Archive", "title": "", "isAdditional": false , "isHat": false , "items": [] },{"href":"https://physicstoday.aip.org/about", "text":"About", "title": "", "isAdditional": false , "isHat": false , "items": [ {"href":"https://physicstoday.aip.org/about", "text":"About", "title": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://physicstoday.aip.org/advertising", "text":"Advertising with PT ", "title": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://physicstoday.aip.org/about/contact", "text":"Contact Us", "title": "", "isAdditional": false , "isHat": false , "items": [] } ] }]}'>
+ Sections 
+ MORE FROM AIP 
+ more from AIP 
+ News & Analysis 
+ AIP Publishing 
+ AIP Foundation 
+ PT Jobs", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://students.aip.org/", "text":"SPS & Sigma Pi Sigma", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] } ] },{"href":"https://physicstoday.aip.org/issue-archive", "text":"Issue Archive", "title": "", "isActive": "false", "isAdditional": false , "isHat": false , "items": [] },{"href":"https://physicstoday.aip.org/about", "text":"About", "title": "", "isActive": "false", "isAdditional": false , "isHat": false , "items": [ {"href":"https://physicstoday.aip.org/about", "text":"About", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://physicstoday.aip.org/advertising", "text":"Advertising with PT ", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://physicstoday.aip.org/about/contact", "text":"Contact Us", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] } ] }]}'>
+ Latest 
+ Topics 
+ Webinars 
+ Advance Your Career 
+ Careers 
+ PT Jobs 
+ SPS & Sigma Pi Sigma 
+ Issue Archive 
+ About 
+ About 
+ Advertising with PT 
+ Contact Us 
+ more from AIP 
+ News & Analysis 
+ AIP Publishing 
+ AIP Foundation 
+ PT Jobs", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://students.aip.org/", "text":"SPS & Sigma Pi Sigma", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] } ] },{"href":"https://physicstoday.aip.org/issue-archive", "text":"Issue Archive", "title": "", "isActive": "false", "isAdditional": false , "isHat": false , "items": [] },{"href":"https://physicstoday.aip.org/about", "text":"About", "title": "", "isActive": "false", "isAdditional": false , "isHat": false , "items": [ {"href":"https://physicstoday.aip.org/about", "text":"About", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://physicstoday.aip.org/advertising", "text":"Advertising with PT ", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] }, {"href":"https://physicstoday.aip.org/about/contact", "text":"Contact Us", "title": "", "isActive": "", "isAdditional": false , "isHat": false , "items": [] } ] }]}'>
+ Latest 
+ Topics 
+ Webinars 
+ Advance Your Career 
+ Careers 
+ PT Jobs 
+ SPS & Sigma Pi Sigma 
+ Issue Archive 
+ About 
+ About 
+ Advertising with PT 
+ Contact Us 
+ more from AIP 
+ News & Analysis 
+ AIP Publishing 
+ AIP Foundation 
+ Share 
+ BlueSky 
+ LinkedIn 
+ Facebook 
+ -->
+ Twitter 
+-->
+ -->
+ Email 
+ Download 
+ Quick Study 
+ / 
+ Article
+ The Tacoma Narrows Bridge collapse 
+ NOV 01, 2015
+ Many physicists and physics students have seen videos of the famous bridge disaster that occurred 75 years ago this month. Some of what they saw was misleading.
+ DOI: 10.1063/PT.3.2991 
+ Donald W. Olson 
+ Steven F. Wolf 
+ Joseph M. Hook 
+ On 7 November 1940 the Tacoma Narrows Bridge in Washington State collapsed during a gale. The remarkable oscillations of its long and slender center span in the months leading up to the catastrophe earned the bridge the moniker “Galloping Gertie.” The disaster is especially well known because of dramatic film footage taken the day of the collapse. Decades later the film was converted to video formats, but we have discovered that the conversion was not always faithful. Disaster film The original 16-mm motion picture record of the events was created by four people: bridge official Walter Miles; professional photographers Barney Elliott and T. Harbine Monroe from the Camera Shop in Tacoma; and Frederick Burt Farquharson, an engineering professor at the University of Washington and consultant regarding the bridge oscillations. Typically, the 16-mm cameras operated at 16 frames per second when recording silent films and at 24 fps when recording sound, though they sometimes ran at speeds slower or faster than those. In addition to his camera, Farquharson had a surveyor’s transit, reference targets that he arranged to have set up along the bridge, and a stopwatch to determine the period of the oscillations. On the morning of 7 November, the bridge oscillated vertically until a few minutes after 10 o’clock, at which time Farquharson observed a sudden change to the torsional, or twisting, motion captured in panel a of the figure . Elliott filmed Farquharson walking near the nodal line—the stationary line about which the twisting occurred—as the professor attempted unsuccessfully to save a dog stuck in an automobile stalled on the center span. The bridge withstood the torsional stresses for only about an hour. At 11:02am a 600-foot section of roadway broke loose and fell into Puget Sound (see figure panel b), and about six minutes later almost all the remaining center span dropped. Monroe managed to capture part of the collapse. 
+ The collapse of the Tacoma Narrows Bridge , 7 November 1940. (a) This image obtained at 10:45am shows the roadway of the bridge twisting about the center line. (b) Within 20 minutes, a 600-foot section of roadway fell into Puget Sound. The car visible in both panels is a 1936 Studebaker abandoned by reporter Leonard Coatsworth, whose daughter’s dog was left in the back seat. Frederick Burt Farquharson tried to save the dog, but the frightened animal would not leave the car and bit Farquharson viciously. The dog was the only casualty of the bridge collapse. (Panel b courtesy of the Library of Congress.) 
+ View larger 
+ The collapse of the Tacoma Narrows Bridge , 7 November 1940. (a) This image obtained at 10:45am shows the roadway of the bridge twisting about the center line. (b) Within 20 minutes, a 600-foot section of roadway fell into Puget Sound. The car visible in both panels is a 1936 Studebaker abandoned by reporter Leonard Coatsworth, whose daughter’s dog was left in the back seat. Frederick Burt Farquharson tried to save the dog, but the frightened animal would not leave the car and bit Farquharson viciously. The dog was the only casualty of the bridge collapse. (Panel b courtesy of the Library of Congress.) 
+ Download 
+ In the early 1960s, physicist Franklin Miller Jr created a series of physics films, distributed in cartridges that played in Technicolor film-loop projectors. Miller converted 16-mm footage of the bridge collapse to 8-mm format for what became the best known of his films. Most physics teachers and students from the 1960s, 1970s, and even into the 1980s have a vivid recollection of the flickering images cast by the film-loop projector as the bridge twisted and collapsed. Counting frames proves that each 16-mm film frame was copied to a single 8-mm film frame. Silent running Video formats such as videodisc, VHS, and DVD generate video fields at rates near 30 fps. In 1982 physicists Robert Fuller, Dean Zollman, and Thomas Campbell produced a videodisc containing Miller’s film, additional archival film footage, and interactive material. The American Association of Physics Teachers (AAPT) published some of the material from the videodisc as a VHS videotape in 1989 and in both VHS and DVD formats in 2000. The technicians making the conversion from film to video assumed that all the 16-mm cameras were running at the sound speed of 24 fps, and they knew that video displays would operate at 30 fps. Therefore, they converted every four film frames to five video frames by a process known as telecine. As part of the process, video scans are interlaced—that is, created in two separate scans, one for odd lines and one for even lines—and some video frames are created as a hybrid mixture of two film frames. Those techniques are intended to make the action appear natural and at normal speed. When the last torsional vibrations before collapse are stepped through frame by frame, the resulting count is 100 video frames per oscillation. At a running speed of 30 fps, that is equivalent to a period of 3 ⅓ seconds and a frequency of 18 cycles per minute—values that can be confirmed by watching the video with a stopwatch in hand. But the period and the frequency observed in the video are definitely wrong. In 1949 Farquharson published his stopwatch observations of the last oscillations of 7 November 1940; he measured a frequency of 12 cycles per minute and a period of five seconds. The frequency seen in the videos is too high by 50%. A “reverse telecine” reveals the reason. The original 16-mm and 8-mm films had 80 film frames per oscillation, four-fifths the video’s 100 frames per oscillation. The frame rate for the original 16-mm camera can therefore be calculated as (80 film frames)/(5 s) = 16 fps, the rate commonly used for silent 16-mm films. The surprising conclusion is that viewers playing any of the video formats have a mistaken impression of the bridge’s motions. Because the telecine conversion was done by assuming that all the 16-mm cameras were running at the sound speed of 24 fps, the video formats show the torsional oscillations significantly sped up over the majestic 12- cycles-per-minute oscillations measured by eyewitnesses on 7 November 1940. A different kind of analysis is required for the collapse sequence filmed by Monroe. Plan and elevation drawings of the bridge provide dimensions and distances that set a length scale for each film frame. The filmed accelerations of roadway sections dropping into Puget Sound match the acceleration of gravity only if Monroe’s 16-mm camera was running at 24 fps, the speed assumed for the telecine conversion. Therefore, viewers of the video formats see the collapse sequence at the speed observed by eyewitnesses 75 years ago. The rise and fall of resonance Was the bridge collapse caused by resonance? That assertion perhaps first appeared in a newspaper article, “A great bridge falls,” published in the New York Times on 9 November 1940: “Time successive taps correctly and soon the pendulum swings with its maximum amplitude. So with this bridge. What physicists call resonance was established.” Miller’s film loop included a title screen, “Nov. 7, 1940, 10:00 AM. Start of resonance vibration of bridge in torsional mode.” The textbooks written by David Halliday and Robert Resnick in the early 1960s enlivened the section on resonance with photographs of the Tacoma Narrows Bridge and concluded that the “wind produced a fluctuating resultant force in resonance with a natural frequency of the structure.” But subsequent authors have rejected the resonance explanation, and their perspective is gradually spreading to the physics community. The user’s guide for the current AAPT DVD states the bridge collapse “was not a case of resonance.” Bernard Feldman likewise concluded in a 2003 article for the Physics Teacher that for the torsional oscillation mode, there was “no resonance behavior in the amplitude as a function of the wind velocity.” An important source for both the AAPT user’s guide and for Feldman was a 1991 American Journal of Physics article by K. Yusuf Billah and Robert Scanlan. According to the two engineers, the failure of the bridge was related to a wind-driven amplification of the torsional oscillation that, unlike a resonance, increases monotonically with increasing wind speed. The fluid dynamics behind that amplification is complicated, but one key element, as described by physicists Daniel Green and William Unruh, is the creation of large-scale vortices above and below the roadway, or deck, of the bridge. Nowadays, bridges are constructed to be rigid and to have mechanisms that damp oscillations. Sometimes they include a slot in the middle of the deck to alleviate pressure differences above and below the road. The Armistice Day storm The strong winds in the Tacoma Narrows on 7 November 1940 were related to a remarkable low-pressure system that followed a track across the country and four days later produced the Armistice Day storm, one of the greatest storms ever to strike the Great Lakes region. For example, when the storm reached Illinois, the headline on the front page of the Chicago Tribune included the words “Heaviest winds in this century smash at city.” Additional details of the film and video analysis can be found in the November 2015 issue of the Physics Teacher , which also includes further description of the Armistice Day storm and the strong winds that earlier had caused the Tacoma Narrows Bridge to oscillate, twist, and collapse into the waters below. 
+ We are grateful for research assistance from Russell Doescher, Richard Hobbs, Margaret Vaverek, and Dean Zollman. 
+ References
+ 1. K. Y. Billah, R. H. Scanlan, “Resonance, Tacoma Narrows Bridge failure, and undergraduate physics textbooks,” Am. J. Phys. 59 , 118 (1991). https://doi.org/10.1119/1.16590 
+ 2. B. J. Feldman, “What to say about the Tacoma Narrows Bridge to your introductory physics class,” Phys. Teach. 41 , 92 (2003). https://doi.org/10.1119/1.1542045 
+ 3. D. Green, W. G. Unruh, “The failure of the Tacoma Bridge: A physical model,” Am. J. Phys. 74 , 706 (2006). https://doi.org/10.1119/1.2201854 
+ 4. D. W. Olson, S. F. Wolf, J. M. Hook, R. L. Doescher, “The Tacoma Narrows Bridge collapse on film and video,” Phys. Teach. 53 , 461 (2015). https://doi.org/10.1119/1.4933145 
+ 5. Twin Views of the Tacoma Narrows Bridge Collapse , DVD and user’s guide, R. G. Fuller, C. R. Lang, R. H. Lang, eds., American Association of Physics Teachers (2000). 
+ More about the authors
+ Don Olson is a professor of physics and Joey Hook is an undergraduate physics major at Texas State University in San Marcos. Steve Wolf is an assistant professor of physics at East Carolina University in Greenville, North Carolina. 
+ © 2015 American Institute of Physics
+ Related content 
+ Quick Study 
+ / 
+ Article
+ What did the Liberty Bell sound like? 
+ After collecting experimental data from a replica of the renowned bell, researchers used a technique called modal analysis to model its acoustic properties.
+ October 05, 2026 10:50 AM 
+ Quick Study 
+ / 
+ Article
+ How and why to measure a quantum state 
+ With quantum state tomography, researchers in the booming field of quantum information science are able to characterize essential operations and devices.
+ August 25, 2026 03:42 PM 
+ Quick Study 
+ / 
+ Article
+ Rivers in the sky 
+ Atmospheric rivers transport huge volumes of water great distances across the globe, and climate change could extend their reach.
+ July 24, 2026 04:20 PM 
+ Quick Study 
+ / 
+ Article
+ A peek into the physics of squeaky sneakers 
+ When rubber-soled shoes skid on a hardwood floor, slip pulses travel between the two surfaces at high speeds to produce the familiar sound.
+ June 30, 2026 11:20 AM 
+ This Content Appeared In 
+ Volume 68, Number 11 
+ Get PT newsletters in your inbox 
+ PT The Week in Physics 
+ A collection of PT's content from the previous week delivered every Monday. 
+ One email per week 
+ PT New Issue Alert 
+ Be notified about the new issue with links to highlights and the full TOC. 
+ One email per month 
+ PT Webinars & White Papers 
+ The latest webinars, white papers and other informational resources. 
+ 1 to 2 emails per week 
+ Sign Up 
+ By signing up you agree to allow AIP to send you email newsletters.
+ You further agree to our
+ privacy policy 
+ and terms of service .
+ Physics Today , published by AIP, is the trusted source for news and insights in the physical sciences. 
+ As a 501(c)(3) non-profit, AIP is a federation that advances the success of our Member Societies and an institute that engages in research and analysis to empower positive change in the physical sciences. The mission of AIP (American Institute of Physics) is to advance, promote, and serve the physical sciences for the benefit of humanity. ISSN 0031-9228 | EISSN 1945-0699 
+ Support Our Mission 
+ BlueSky
+ linkedin
+ facebook
+ instagram
+ Stay in touch 
+ AIP at American Center for Physics - MD 
+ 1 Physics Ellipse Drive College Park, MD 20740
+ AIP at American Center for Physics - DC 
+ 555 12th Street NW Suite 250 Washington, DC 20004
+ Contact Us 
+ AIP Publishing 
+ 1305 Walt Whitman Road Suite 110 Melville, NY 11747 +1 516.576.2200
+ Contact Us 
+ Member societies 
+ ACA: The Structural Science Society 
+ Acoustical Society of America 
+ American Association of Physicists in Medicine 
+ American Association of Physics Teachers 
+ American Astronomical Society 
+ American Meteorological Society 
+ American Physical Society 
+ AVS: Science & Technology of Materials, Interfaces and Processing 
+ Optica 
+ The Society of Rheology 
+ BlueSky
+ linkedin
+ facebook
+ instagram
+ Physics Today , published by AIP, is the trusted source for news and insights in the physical sciences. 
+ As a 501(c)(3) non-profit, AIP is a federation that advances the success of our Member Societies and an institute that engages in research and analysis to empower positive change in the physical sciences. The mission of AIP (American Institute of Physics) is to advance, promote, and serve the physical sciences for the benefit of humanity. ISSN 0031-9228 | EISSN 1945-0699 
+ Support Our Mission 
+ Member societies 
+ ACA: The Structural Science Society 
+ Acoustical Society of America 
+ American Association of Physicists in Medicine 
+ American Association of Physics Teachers 
+ American Astronomical Society 
+ American Meteorological Society 
+ American Physical Society 
+ AVS: Science & Technology of Materials, Interfaces and Processing 
+ Optica 
+ The Society of Rheology 
+ Stay in touch 
+ AIP at American Center for Physics - MD 
+ 1 Physics Ellipse Drive College Park, MD 20740
+ AIP at American Center for Physics - DC 
+ 555 12th Street NW Suite 250 Washington, DC 20004
+ Contact Us 
+ AIP Publishing 
+ 1305 Walt Whitman Road Suite 110 Melville, NY 11747 +1 516.576.2200
+ Contact Us 
+ BlueSky
+ linkedin
+ facebook
+ instagram
+ Working at AIP 
+ Policies & Procedures 
+ Privacy Policy 
+ © 2026 American Institute of Physics 

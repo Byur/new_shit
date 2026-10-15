@@ -1,0 +1,1840 @@
+{
+  "generatedFrom": "narration.script.json",
+  "voice": "Tingting",
+  "rate": 156,
+  "fps": 30,
+  "sampleRate": 22050,
+  "samplesPerFrame": 735,
+  "audioFile": "tacoma-narration.wav",
+  "totalFrames": 23437,
+  "durationSeconds": 781.23,
+  "scenes": [
+    {
+      "id": "cold-open",
+      "title": "钩子：它只活了四个月",
+      "startFrame": 24,
+      "endFrame": 1201,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "一九四零年，一座大桥在风中轻轻摇动。",
+          "spoken": "一九四零年，一座大桥在风中轻轻摇动。",
+          "startFrame": 24,
+          "endFrame": 163,
+          "frames": 139,
+          "ms": 4621
+        },
+        {
+          "indexInScene": 1,
+          "display": "工程师说，这是正常现象，它足够坚固。",
+          "spoken": "工程师说，这是正常现象，它足够坚固。",
+          "startFrame": 170,
+          "endFrame": 306,
+          "frames": 136,
+          "ms": 4528
+        },
+        {
+          "indexInScene": 2,
+          "display": "但它只活了四个月。",
+          "spoken": "但它只活了四个月。",
+          "startFrame": 313,
+          "endFrame": 368,
+          "frames": 55,
+          "ms": 1834
+        },
+        {
+          "indexInScene": 3,
+          "display": "它在通车一百二十九天之后，自己散开了。",
+          "spoken": "它在通车一百二十九天之后，自己散开了。",
+          "startFrame": 375,
+          "endFrame": 511,
+          "frames": 136,
+          "ms": 4528
+        },
+        {
+          "indexInScene": 4,
+          "display": "从那天起，一座小桥成了工程史上最著名的一课。",
+          "spoken": "从那天起，一座小桥成了工程史上最著名的一课。",
+          "startFrame": 518,
+          "endFrame": 683,
+          "frames": 165,
+          "ms": 5503
+        },
+        {
+          "indexInScene": 5,
+          "display": "先说结局：桥面被扭断，中跨掉进海峡。",
+          "spoken": "先说结局：桥面被扭断，中跨掉进海峡。",
+          "startFrame": 690,
+          "endFrame": 843,
+          "frames": 153,
+          "ms": 5108
+        },
+        {
+          "indexInScene": 6,
+          "display": "再说条件：那天的风，连大风都算不上。",
+          "spoken": "再说条件：那天的风，连大风都算不上。",
+          "startFrame": 850,
+          "endFrame": 994,
+          "frames": 144,
+          "ms": 4783
+        },
+        {
+          "indexInScene": 7,
+          "display": "最后说问题：为什么一座算得没错的桥，会自己把自己撕开？",
+          "spoken": "最后说问题：为什么一座算得没错的桥，会自己把自己撕开？",
+          "startFrame": 1001,
+          "endFrame": 1201,
+          "frames": 200,
+          "ms": 6664
+        }
+      ]
+    },
+    {
+      "id": "archive",
+      "title": "它曾经是骄傲",
+      "startFrame": 1225,
+      "endFrame": 2223,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "这座桥是塔科马海峡大桥，在美国华盛顿州。",
+          "spoken": "这座桥是塔科马海峡大桥，在美国华盛顿州。",
+          "startFrame": 1225,
+          "endFrame": 1381,
+          "frames": 156,
+          "ms": 5201
+        },
+        {
+          "indexInScene": 1,
+          "display": "通车的时候，它是世界第三长的悬索桥。",
+          "spoken": "通车的时候，它是世界第三长的悬索桥。",
+          "startFrame": 1388,
+          "endFrame": 1521,
+          "frames": 133,
+          "ms": 4435
+        },
+        {
+          "indexInScene": 2,
+          "display": "主跨八百五十三米。",
+          "spoken": "主跨八百五十三米。",
+          "startFrame": 1528,
+          "endFrame": 1591,
+          "frames": 63,
+          "ms": 2090
+        },
+        {
+          "indexInScene": 3,
+          "display": "设计者是当时最受尊敬的一批桥梁工程师。",
+          "spoken": "设计者是当时最受尊敬的一批桥梁工程师。",
+          "startFrame": 1598,
+          "endFrame": 1737,
+          "frames": 139,
+          "ms": 4621
+        },
+        {
+          "indexInScene": 4,
+          "display": "他们用的是当年最先进的计算方法。",
+          "spoken": "他们用的是当年最先进的计算方法。",
+          "startFrame": 1744,
+          "endFrame": 1852,
+          "frames": 108,
+          "ms": 3599
+        },
+        {
+          "indexInScene": 5,
+          "display": "他们算出来的结论是：这座桥足够安全。",
+          "spoken": "他们算出来的结论是：这座桥足够安全。",
+          "startFrame": 1859,
+          "endFrame": 1993,
+          "frames": 134,
+          "ms": 4458
+        },
+        {
+          "indexInScene": 6,
+          "display": "所以这不是一个无知的错误。",
+          "spoken": "所以这不是一个无知的错误。",
+          "startFrame": 2000,
+          "endFrame": 2079,
+          "frames": 79,
+          "ms": 2647
+        },
+        {
+          "indexInScene": 7,
+          "display": "这一点很重要，后面的故事会因此变得奇怪。",
+          "spoken": "这一点很重要，后面的故事会因此变得奇怪。",
+          "startFrame": 2086,
+          "endFrame": 2223,
+          "frames": 137,
+          "ms": 4551
+        }
+      ]
+    },
+    {
+      "id": "theory",
+      "title": "他们算的是对的问题吗",
+      "startFrame": 2247,
+      "endFrame": 3226,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "十九世纪造悬索桥，靠的是经验。",
+          "spoken": "十九世纪造悬索桥，靠的是经验。",
+          "startFrame": 2247,
+          "endFrame": 2364,
+          "frames": 117,
+          "ms": 3901
+        },
+        {
+          "indexInScene": 1,
+          "display": "桥塌过好几次，人们才开始认真算。",
+          "spoken": "桥塌过好几次，人们才开始认真算。",
+          "startFrame": 2371,
+          "endFrame": 2494,
+          "frames": 123,
+          "ms": 4087
+        },
+        {
+          "indexInScene": 2,
+          "display": "到一九四零年，工程师有了一套新工具，叫挠度理论。",
+          "spoken": "到一九四零年，工程师有了一套新工具，叫挠度理论。",
+          "startFrame": 2501,
+          "endFrame": 2679,
+          "frames": 178,
+          "ms": 5921
+        },
+        {
+          "indexInScene": 3,
+          "display": "它能算出桥面在自重和车辆下会下垂多少。",
+          "spoken": "它能算出桥面在自重和车辆下会下垂多少。",
+          "startFrame": 2686,
+          "endFrame": 2833,
+          "frames": 147,
+          "ms": 4899
+        },
+        {
+          "indexInScene": 4,
+          "display": "塔科马就是用它设计的。",
+          "spoken": "塔科马就是用它设计的。",
+          "startFrame": 2840,
+          "endFrame": 2910,
+          "frames": 70,
+          "ms": 2345
+        },
+        {
+          "indexInScene": 5,
+          "display": "所以按当时的标准，这座桥的强度没有问题。",
+          "spoken": "所以按当时的标准，这座桥的强度没有问题。",
+          "startFrame": 2917,
+          "endFrame": 3061,
+          "frames": 144,
+          "ms": 4807
+        },
+        {
+          "indexInScene": 6,
+          "display": "真正的问题是：他们问的那个问题，本身就不完整。",
+          "spoken": "真正的问题是：他们问的那个问题，本身就不完整。",
+          "startFrame": 3068,
+          "endFrame": 3226,
+          "frames": 158,
+          "ms": 5271
+        }
+      ]
+    },
+    {
+      "id": "gertie",
+      "title": "一座会跳舞的桥",
+      "startFrame": 3250,
+      "endFrame": 4597,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "桥一通车，人们就发现它会摇。",
+          "spoken": "桥一通车，人们就发现它会摇。",
+          "startFrame": 3250,
+          "endFrame": 3353,
+          "frames": 103,
+          "ms": 3437
+        },
+        {
+          "indexInScene": 1,
+          "display": "在普通的风里，桥面就会上下起伏。",
+          "spoken": "在普通的风里，桥面就会上下起伏。",
+          "startFrame": 3360,
+          "endFrame": 3482,
+          "frames": 122,
+          "ms": 4064
+        },
+        {
+          "indexInScene": 2,
+          "display": "最厉害的时候，桥面会整段整段地上下起伏。",
+          "spoken": "最厉害的时候，桥面会整段整段地上下起伏。",
+          "startFrame": 3489,
+          "endFrame": 3643,
+          "frames": 154,
+          "ms": 5132
+        },
+        {
+          "indexInScene": 3,
+          "display": "司机开过去，会觉得像坐船。",
+          "spoken": "司机开过去，会觉得像坐船。",
+          "startFrame": 3650,
+          "endFrame": 3752,
+          "frames": 102,
+          "ms": 3390
+        },
+        {
+          "indexInScene": 4,
+          "display": "有司机说，前面的车会忽然消失一下，再出现。",
+          "spoken": "有司机说，前面的车会忽然消失一下，再出现。",
+          "startFrame": 3759,
+          "endFrame": 3922,
+          "frames": 163,
+          "ms": 5434
+        },
+        {
+          "indexInScene": 5,
+          "display": "于是它有了一个外号：跳舞的格蒂。",
+          "spoken": "于是它有了一个外号：跳舞的格蒂。",
+          "startFrame": 3929,
+          "endFrame": 4033,
+          "frames": 104,
+          "ms": 3460
+        },
+        {
+          "indexInScene": 6,
+          "display": "工程师试过补救。",
+          "spoken": "工程师试过补救。",
+          "startFrame": 4040,
+          "endFrame": 4095,
+          "frames": 55,
+          "ms": 1834
+        },
+        {
+          "indexInScene": 7,
+          "display": "他们在桥面中央加了拉索，把桥面往下拉住。",
+          "spoken": "他们在桥面中央加了拉索，把桥面往下拉住。",
+          "startFrame": 4102,
+          "endFrame": 4252,
+          "frames": 150,
+          "ms": 5016
+        },
+        {
+          "indexInScene": 8,
+          "display": "那些拉索很快就绷断了。",
+          "spoken": "那些拉索很快就绷断了。",
+          "startFrame": 4259,
+          "endFrame": 4336,
+          "frames": 77,
+          "ms": 2554
+        },
+        {
+          "indexInScene": 9,
+          "display": "他们又装了液压减振器。",
+          "spoken": "他们又装了液压减振器。",
+          "startFrame": 4343,
+          "endFrame": 4415,
+          "frames": 72,
+          "ms": 2415
+        },
+        {
+          "indexInScene": 10,
+          "display": "减振器也失效了。",
+          "spoken": "减振器也失效了。",
+          "startFrame": 4422,
+          "endFrame": 4476,
+          "frames": 54,
+          "ms": 1811
+        },
+        {
+          "indexInScene": 11,
+          "display": "桥还在摇，而且变得越来越容易摇。",
+          "spoken": "桥还在摇，而且变得越来越容易摇。",
+          "startFrame": 4483,
+          "endFrame": 4597,
+          "frames": 114,
+          "ms": 3808
+        }
+      ]
+    },
+    {
+      "id": "collapse",
+      "title": "那一天：一九四零年十一月七日",
+      "startFrame": 4621,
+      "endFrame": 5930,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "那天上午，风不大，大概每小时六十八公里。",
+          "spoken": "那天上午，风不大，大概每小时六十八公里。",
+          "startFrame": 4621,
+          "endFrame": 4768,
+          "frames": 147,
+          "ms": 4899
+        },
+        {
+          "indexInScene": 1,
+          "display": "但桥开始摇，而且这次的摇法不一样。",
+          "spoken": "但桥开始摇，而且这次的摇法不一样。",
+          "startFrame": 4775,
+          "endFrame": 4896,
+          "frames": 121,
+          "ms": 4017
+        },
+        {
+          "indexInScene": 2,
+          "display": "桥面开始扭转：一边翘起来，另一边沉下去。",
+          "spoken": "桥面开始扭转：一边翘起来，另一边沉下去。",
+          "startFrame": 4903,
+          "endFrame": 5063,
+          "frames": 160,
+          "ms": 5317
+        },
+        {
+          "indexInScene": 3,
+          "display": "扭转越来越大，两侧各摆到三十五度左右。",
+          "spoken": "扭转越来越大，两侧各摆到三十五度左右。",
+          "startFrame": 5070,
+          "endFrame": 5211,
+          "frames": 141,
+          "ms": 4690
+        },
+        {
+          "indexInScene": 4,
+          "display": "汽车在桥面上侧滑，轮胎离开地面。",
+          "spoken": "汽车在桥面上侧滑，轮胎离开地面。",
+          "startFrame": 5218,
+          "endFrame": 5346,
+          "frames": 128,
+          "ms": 4273
+        },
+        {
+          "indexInScene": 5,
+          "display": "桥面像一条被拧动的毛巾。",
+          "spoken": "桥面像一条被拧动的毛巾。",
+          "startFrame": 5353,
+          "endFrame": 5440,
+          "frames": 87,
+          "ms": 2903
+        },
+        {
+          "indexInScene": 6,
+          "display": "这个动作持续了将近半个小时。",
+          "spoken": "这个动作持续了将近半个小时。",
+          "startFrame": 5447,
+          "endFrame": 5543,
+          "frames": 96,
+          "ms": 3204
+        },
+        {
+          "indexInScene": 7,
+          "display": "有人从岸边把它拍了下来。",
+          "spoken": "有人从岸边把它拍了下来。",
+          "startFrame": 5550,
+          "endFrame": 5634,
+          "frames": 84,
+          "ms": 2810
+        },
+        {
+          "indexInScene": 8,
+          "display": "然后，桥面中段被撕开。",
+          "spoken": "然后，桥面中段被撕开。",
+          "startFrame": 5641,
+          "endFrame": 5732,
+          "frames": 91,
+          "ms": 3042
+        },
+        {
+          "indexInScene": 9,
+          "display": "一段，又一段，落进海里。",
+          "spoken": "一段，又一段，落进海里。",
+          "startFrame": 5739,
+          "endFrame": 5827,
+          "frames": 88,
+          "ms": 2949
+        },
+        {
+          "indexInScene": 10,
+          "display": "一座桥，在风里解散了自己。",
+          "spoken": "一座桥，在风里解散了自己。",
+          "startFrame": 5834,
+          "endFrame": 5930,
+          "frames": 96,
+          "ms": 3204
+        }
+      ]
+    },
+    {
+      "id": "storm",
+      "title": "第一个误解：是风太大了吗",
+      "startFrame": 5954,
+      "endFrame": 7223,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "很多人第一个想到的原因，是风太大了。",
+          "spoken": "很多人第一个想到的原因，是风太大了。",
+          "startFrame": 5954,
+          "endFrame": 6077,
+          "frames": 123,
+          "ms": 4087
+        },
+        {
+          "indexInScene": 1,
+          "display": "也许是设计的时候低估了极端天气。",
+          "spoken": "也许是设计的时候低估了极端天气。",
+          "startFrame": 6084,
+          "endFrame": 6192,
+          "frames": 108,
+          "ms": 3599
+        },
+        {
+          "indexInScene": 2,
+          "display": "但数据不支持这个想法。",
+          "spoken": "但数据不支持这个想法。",
+          "startFrame": 6199,
+          "endFrame": 6272,
+          "frames": 73,
+          "ms": 2438
+        },
+        {
+          "indexInScene": 3,
+          "display": "当天的风速，只有每小时六十八公里。",
+          "spoken": "当天的风速，只有每小时六十八公里。",
+          "startFrame": 6279,
+          "endFrame": 6396,
+          "frames": 117,
+          "ms": 3901
+        },
+        {
+          "indexInScene": 4,
+          "display": "这个风速，连一个普通的大风天都算不上。",
+          "spoken": "这个风速，连一个普通的大风天都算不上。",
+          "startFrame": 6403,
+          "endFrame": 6535,
+          "frames": 132,
+          "ms": 4389
+        },
+        {
+          "indexInScene": 5,
+          "display": "更关键的证据在振幅里。",
+          "spoken": "更关键的证据在振幅里。",
+          "startFrame": 6542,
+          "endFrame": 6615,
+          "frames": 73,
+          "ms": 2438
+        },
+        {
+          "indexInScene": 6,
+          "display": "如果风在把桥推倒，振幅应该跟着风一起涨。",
+          "spoken": "如果风在把桥推倒，振幅应该跟着风一起涨。",
+          "startFrame": 6622,
+          "endFrame": 6772,
+          "frames": 150,
+          "ms": 5016
+        },
+        {
+          "indexInScene": 7,
+          "display": "这座桥设计时，是按每小时一百九十公里的风算的。",
+          "spoken": "这座桥设计时，是按每小时一百九十公里的风算的。",
+          "startFrame": 6779,
+          "endFrame": 6944,
+          "frames": 165,
+          "ms": 5503
+        },
+        {
+          "indexInScene": 8,
+          "display": "它之前还扛过一场更大的风。",
+          "spoken": "它之前还扛过一场更大的风。",
+          "startFrame": 6951,
+          "endFrame": 7045,
+          "frames": 94,
+          "ms": 3135
+        },
+        {
+          "indexInScene": 9,
+          "display": "但记录显示：风几乎没变，桥的振幅却自己在涨。",
+          "spoken": "但记录显示：风几乎没变，桥的振幅却自己在涨。",
+          "startFrame": 7052,
+          "endFrame": 7223,
+          "frames": 171,
+          "ms": 5712
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "title": "第二个误解：不是被推倒的",
+      "startFrame": 7247,
+      "endFrame": 8434,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "第二个误解，是以为这座桥不够结实。",
+          "spoken": "第二个误解，是以为这座桥不够结实。",
+          "startFrame": 7247,
+          "endFrame": 7367,
+          "frames": 120,
+          "ms": 3994
+        },
+        {
+          "indexInScene": 1,
+          "display": "如果风是在推桥，那加厚加重加粗就该解决问题。",
+          "spoken": "如果风是在推桥，那加厚加重加粗就该解决问题。",
+          "startFrame": 7374,
+          "endFrame": 7545,
+          "frames": 171,
+          "ms": 5712
+        },
+        {
+          "indexInScene": 2,
+          "display": "可是风并没有把桥整座推走。",
+          "spoken": "可是风并没有把桥整座推走。",
+          "startFrame": 7552,
+          "endFrame": 7647,
+          "frames": 95,
+          "ms": 3181
+        },
+        {
+          "indexInScene": 3,
+          "display": "桥塔没有倒，主缆也没有断。",
+          "spoken": "桥塔没有倒，主缆也没有断。",
+          "startFrame": 7654,
+          "endFrame": 7747,
+          "frames": 93,
+          "ms": 3088
+        },
+        {
+          "indexInScene": 4,
+          "display": "是桥面自己动起来，动到自己散架。",
+          "spoken": "是桥面自己动起来，动到自己散架。",
+          "startFrame": 7754,
+          "endFrame": 7874,
+          "frames": 120,
+          "ms": 3994
+        },
+        {
+          "indexInScene": 5,
+          "display": "普通的桥，风从上面过去就走了。",
+          "spoken": "普通的桥，风从上面过去就走了。",
+          "startFrame": 7881,
+          "endFrame": 7992,
+          "frames": 111,
+          "ms": 3692
+        },
+        {
+          "indexInScene": 6,
+          "display": "塔科马的桥面不一样，它是一整块实心的板。",
+          "spoken": "塔科马的桥面不一样，它是一整块实心的板。",
+          "startFrame": 7999,
+          "endFrame": 8137,
+          "frames": 138,
+          "ms": 4598
+        },
+        {
+          "indexInScene": 7,
+          "display": "风推它，它不躲，反而开始回应。",
+          "spoken": "风推它，它不躲，反而开始回应。",
+          "startFrame": 8144,
+          "endFrame": 8265,
+          "frames": 121,
+          "ms": 4017
+        },
+        {
+          "indexInScene": 8,
+          "display": "一旦开始回应，风就不再是外力，而变成了燃料。",
+          "spoken": "一旦开始回应，风就不再是外力，而变成了燃料。",
+          "startFrame": 8272,
+          "endFrame": 8434,
+          "frames": 162,
+          "ms": 5410
+        }
+      ]
+    },
+    {
+      "id": "two-motions",
+      "title": "两种运动，两本账",
+      "startFrame": 8458,
+      "endFrame": 9590,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "要理解那天发生了什么，先看这座桥会怎么动。",
+          "spoken": "要理解那天发生了什么，先看这座桥会怎么动。",
+          "startFrame": 8458,
+          "endFrame": 8608,
+          "frames": 150,
+          "ms": 5016
+        },
+        {
+          "indexInScene": 1,
+          "display": "它有两种基本的运动方式。",
+          "spoken": "它有两种基本的运动方式。",
+          "startFrame": 8615,
+          "endFrame": 8693,
+          "frames": 78,
+          "ms": 2601
+        },
+        {
+          "indexInScene": 2,
+          "display": "第一种是上下起伏，英文叫 heave。",
+          "spoken": "第一种是上下起伏，英文叫 heave。",
+          "startFrame": 8700,
+          "endFrame": 8809,
+          "frames": 109,
+          "ms": 3646
+        },
+        {
+          "indexInScene": 3,
+          "display": "第二种是扭转，英文叫 torsion。",
+          "spoken": "第二种是扭转，英文叫 torsion。",
+          "startFrame": 8816,
+          "endFrame": 8911,
+          "frames": 95,
+          "ms": 3158
+        },
+        {
+          "indexInScene": 4,
+          "display": "上下起伏，桥面像水面一样波动。",
+          "spoken": "上下起伏，桥面像水面一样波动。",
+          "startFrame": 8918,
+          "endFrame": 9039,
+          "frames": 121,
+          "ms": 4017
+        },
+        {
+          "indexInScene": 5,
+          "display": "扭转，是桥面的一边翘起，另一边沉下。",
+          "spoken": "扭转，是桥面的一边翘起，另一边沉下。",
+          "startFrame": 9046,
+          "endFrame": 9187,
+          "frames": 141,
+          "ms": 4690
+        },
+        {
+          "indexInScene": 6,
+          "display": "一开始，桥主要在上下起伏。",
+          "spoken": "一开始，桥主要在上下起伏。",
+          "startFrame": 9194,
+          "endFrame": 9298,
+          "frames": 104,
+          "ms": 3460
+        },
+        {
+          "indexInScene": 7,
+          "display": "但真正致命的，是扭转。",
+          "spoken": "但真正致命的，是扭转。",
+          "startFrame": 9305,
+          "endFrame": 9381,
+          "frames": 76,
+          "ms": 2531
+        },
+        {
+          "indexInScene": 8,
+          "display": "上下运动你一眼就能看见。",
+          "spoken": "上下运动你一眼就能看见。",
+          "startFrame": 9388,
+          "endFrame": 9475,
+          "frames": 87,
+          "ms": 2903
+        },
+        {
+          "indexInScene": 9,
+          "display": "扭转是安静的，可它才是那把刀。",
+          "spoken": "扭转是安静的，可它才是那把刀。",
+          "startFrame": 9482,
+          "endFrame": 9590,
+          "frames": 108,
+          "ms": 3599
+        }
+      ]
+    },
+    {
+      "id": "stiffness",
+      "title": "缆索管不住扭转",
+      "startFrame": 9614,
+      "endFrame": 11000,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "现在问一个关键问题：这两种运动，靠什么抵抗？",
+          "spoken": "现在问一个关键问题：这两种运动，靠什么抵抗？",
+          "startFrame": 9614,
+          "endFrame": 9774,
+          "frames": 160,
+          "ms": 5341
+        },
+        {
+          "indexInScene": 1,
+          "display": "上下起伏，主要靠主缆和吊索。",
+          "spoken": "上下起伏，主要靠主缆和吊索。",
+          "startFrame": 9781,
+          "endFrame": 9892,
+          "frames": 111,
+          "ms": 3692
+        },
+        {
+          "indexInScene": 2,
+          "display": "主缆被拉长，就会把桥面拉回来。",
+          "spoken": "主缆被拉长，就会把桥面拉回来。",
+          "startFrame": 9899,
+          "endFrame": 10013,
+          "frames": 114,
+          "ms": 3785
+        },
+        {
+          "indexInScene": 3,
+          "display": "所以抗起伏的刚度，来自缆索的几何形状。",
+          "spoken": "所以抗起伏的刚度，来自缆索的几何形状。",
+          "startFrame": 10020,
+          "endFrame": 10154,
+          "frames": 134,
+          "ms": 4458
+        },
+        {
+          "indexInScene": 4,
+          "display": "但扭转不一样。",
+          "spoken": "但扭转不一样。",
+          "startFrame": 10161,
+          "endFrame": 10203,
+          "frames": 42,
+          "ms": 1393
+        },
+        {
+          "indexInScene": 5,
+          "display": "主缆对扭转几乎没有帮助。",
+          "spoken": "主缆对扭转几乎没有帮助。",
+          "startFrame": 10210,
+          "endFrame": 10291,
+          "frames": 81,
+          "ms": 2694
+        },
+        {
+          "indexInScene": 6,
+          "display": "抗扭的刚度，几乎只来自桥面自己那根很浅的加劲梁。",
+          "spoken": "抗扭的刚度，几乎只来自桥面自己那根很浅的加劲梁。",
+          "startFrame": 10298,
+          "endFrame": 10471,
+          "frames": 173,
+          "ms": 5782
+        },
+        {
+          "indexInScene": 7,
+          "display": "塔科马的加劲梁，只有八英尺深。",
+          "spoken": "塔科马的加劲梁，只有八英尺深。",
+          "startFrame": 10478,
+          "endFrame": 10588,
+          "frames": 110,
+          "ms": 3669
+        },
+        {
+          "indexInScene": 8,
+          "display": "对一座八百多米长的桥来说，这薄得像一片刀。",
+          "spoken": "对一座八百多米长的桥来说，这薄得像一片刀。",
+          "startFrame": 10595,
+          "endFrame": 10744,
+          "frames": 149,
+          "ms": 4969
+        },
+        {
+          "indexInScene": 9,
+          "display": "同样，扭转时的能量损失也极小。",
+          "spoken": "同样，扭转时的能量损失也极小。",
+          "startFrame": 10751,
+          "endFrame": 10861,
+          "frames": 110,
+          "ms": 3669
+        },
+        {
+          "indexInScene": 10,
+          "display": "所以扭转一旦被激发，就不容易停下来。",
+          "spoken": "所以扭转一旦被激发，就不容易停下来。",
+          "startFrame": 10868,
+          "endFrame": 11000,
+          "frames": 132,
+          "ms": 4389
+        }
+      ]
+    },
+    {
+      "id": "wind",
+      "title": "风是什么样的",
+      "startFrame": 11024,
+      "endFrame": 11767,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "接下来要认识对手。",
+          "spoken": "接下来要认识对手。",
+          "startFrame": 11024,
+          "endFrame": 11086,
+          "frames": 62,
+          "ms": 2067
+        },
+        {
+          "indexInScene": 1,
+          "display": "风不是一股稳定、有节奏的气流。",
+          "spoken": "风不是一股稳定、有节奏的气流。",
+          "startFrame": 11093,
+          "endFrame": 11198,
+          "frames": 105,
+          "ms": 3506
+        },
+        {
+          "indexInScene": 2,
+          "display": "风里混着各种尺度的湍流。",
+          "spoken": "风里混着各种尺度的湍流。",
+          "startFrame": 11205,
+          "endFrame": 11286,
+          "frames": 81,
+          "ms": 2694
+        },
+        {
+          "indexInScene": 3,
+          "display": "有大阵风，有中等大小的涡旋，还有很碎的脉动。",
+          "spoken": "有大阵风，有中等大小的涡旋，还有很碎的脉动。",
+          "startFrame": 11293,
+          "endFrame": 11457,
+          "frames": 164,
+          "ms": 5457
+        },
+        {
+          "indexInScene": 4,
+          "display": "它们一起到达，没有单一的周期。",
+          "spoken": "它们一起到达，没有单一的周期。",
+          "startFrame": 11464,
+          "endFrame": 11563,
+          "frames": 99,
+          "ms": 3297
+        },
+        {
+          "indexInScene": 5,
+          "display": "这一点很关键。",
+          "spoken": "这一点很关键。",
+          "startFrame": 11570,
+          "endFrame": 11615,
+          "frames": 45,
+          "ms": 1486
+        },
+        {
+          "indexInScene": 6,
+          "display": "因为一个力要有节奏地推你，它自己得先有节奏。",
+          "spoken": "因为一个力要有节奏地推你，它自己得先有节奏。",
+          "startFrame": 11622,
+          "endFrame": 11767,
+          "frames": 145,
+          "ms": 4830
+        }
+      ]
+    },
+    {
+      "id": "resonance",
+      "title": "最流行的错答案",
+      "startFrame": 11791,
+      "endFrame": 13445,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "现在可以谈那个最流行的解释了。",
+          "spoken": "现在可以谈那个最流行的解释了。",
+          "startFrame": 11791,
+          "endFrame": 11888,
+          "frames": 97,
+          "ms": 3228
+        },
+        {
+          "indexInScene": 1,
+          "display": "很多人说：风在推桥，而且推的节奏刚好合上了桥的节拍。",
+          "spoken": "很多人说：风在推桥，而且推的节奏刚好合上了桥的节拍。",
+          "startFrame": 11895,
+          "endFrame": 12100,
+          "frames": 205,
+          "ms": 6827
+        },
+        {
+          "indexInScene": 2,
+          "display": "就像推秋千，每次都在对的时间推一下。",
+          "spoken": "就像推秋千，每次都在对的时间推一下。",
+          "startFrame": 12107,
+          "endFrame": 12245,
+          "frames": 138,
+          "ms": 4598
+        },
+        {
+          "indexInScene": 3,
+          "display": "这个说法看起来很合理，也很熟悉。",
+          "spoken": "这个说法看起来很合理，也很熟悉。",
+          "startFrame": 12252,
+          "endFrame": 12364,
+          "frames": 112,
+          "ms": 3738
+        },
+        {
+          "indexInScene": 4,
+          "display": "但它第一个问题，就出在节奏这两个字上。",
+          "spoken": "但它第一个问题，就出在节奏这两个字上。",
+          "startFrame": 12371,
+          "endFrame": 12508,
+          "frames": 137,
+          "ms": 4551
+        },
+        {
+          "indexInScene": 5,
+          "display": "风没有节奏，它不是按节拍吹的。",
+          "spoken": "风没有节奏，它不是按节拍吹的。",
+          "startFrame": 12515,
+          "endFrame": 12618,
+          "frames": 103,
+          "ms": 3437
+        },
+        {
+          "indexInScene": 6,
+          "display": "所以这个解释从第一步就站不稳。",
+          "spoken": "所以这个解释从第一步就站不稳。",
+          "startFrame": 12625,
+          "endFrame": 12724,
+          "frames": 99,
+          "ms": 3297
+        },
+        {
+          "indexInScene": 7,
+          "display": "再想一步：把桥的自然频率调高一点，或者调低一点。",
+          "spoken": "再想一步：把桥的自然频率调高一点，或者调低一点。",
+          "startFrame": 12731,
+          "endFrame": 12908,
+          "frames": 177,
+          "ms": 5898
+        },
+        {
+          "indexInScene": 8,
+          "display": "你会发现，问题根本不会消失。",
+          "spoken": "你会发现，问题根本不会消失。",
+          "startFrame": 12915,
+          "endFrame": 13021,
+          "frames": 106,
+          "ms": 3529
+        },
+        {
+          "indexInScene": 9,
+          "display": "因为不管频率调到多少，风里都有对应的成分。",
+          "spoken": "因为不管频率调到多少，风里都有对应的成分。",
+          "startFrame": 13028,
+          "endFrame": 13176,
+          "frames": 148,
+          "ms": 4923
+        },
+        {
+          "indexInScene": 10,
+          "display": "风不是来跟桥合拍的。",
+          "spoken": "风不是来跟桥合拍的。",
+          "startFrame": 13183,
+          "endFrame": 13252,
+          "frames": 69,
+          "ms": 2299
+        },
+        {
+          "indexInScene": 11,
+          "display": "风是来给桥供能的。",
+          "spoken": "风是来给桥供能的。",
+          "startFrame": 13259,
+          "endFrame": 13322,
+          "frames": 63,
+          "ms": 2090
+        },
+        {
+          "indexInScene": 12,
+          "display": "所以共振这个词，解释不了这件事。",
+          "spoken": "所以共振这个词，解释不了这件事。",
+          "startFrame": 13329,
+          "endFrame": 13445,
+          "frames": 116,
+          "ms": 3855
+        }
+      ]
+    },
+    {
+      "id": "two-freedoms",
+      "title": "没有人按节拍推它",
+      "startFrame": 13469,
+      "endFrame": 14591,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "但真正的区别，比频率对不对更深。",
+          "spoken": "但真正的区别，比频率对不对更深。",
+          "startFrame": 13469,
+          "endFrame": 13581,
+          "frames": 112,
+          "ms": 3738
+        },
+        {
+          "indexInScene": 1,
+          "display": "秋千需要有人在外面按节拍推。",
+          "spoken": "秋千需要有人在外面按节拍推。",
+          "startFrame": 13588,
+          "endFrame": 13695,
+          "frames": 107,
+          "ms": 3553
+        },
+        {
+          "indexInScene": 2,
+          "display": "如果没有人推，秋千一定会停。",
+          "spoken": "如果没有人推，秋千一定会停。",
+          "startFrame": 13702,
+          "endFrame": 13809,
+          "frames": 107,
+          "ms": 3576
+        },
+        {
+          "indexInScene": 3,
+          "display": "那天的桥，没有人在推它。",
+          "spoken": "那天的桥，没有人在推它。",
+          "startFrame": 13816,
+          "endFrame": 13905,
+          "frames": 89,
+          "ms": 2972
+        },
+        {
+          "indexInScene": 4,
+          "display": "风是稳定的，几乎没有变化。",
+          "spoken": "风是稳定的，几乎没有变化。",
+          "startFrame": 13912,
+          "endFrame": 14003,
+          "frames": 91,
+          "ms": 3019
+        },
+        {
+          "indexInScene": 5,
+          "display": "可它的扭转却越来越大。",
+          "spoken": "可它的扭转却越来越大。",
+          "startFrame": 14010,
+          "endFrame": 14083,
+          "frames": 73,
+          "ms": 2438
+        },
+        {
+          "indexInScene": 6,
+          "display": "这说明，让桥动起来的能量，来自桥自己。",
+          "spoken": "这说明，让桥动起来的能量，来自桥自己。",
+          "startFrame": 14090,
+          "endFrame": 14234,
+          "frames": 144,
+          "ms": 4783
+        },
+        {
+          "indexInScene": 7,
+          "display": "桥面一边转，一边把自己转进更大的转动里。",
+          "spoken": "桥面一边转，一边把自己转进更大的转动里。",
+          "startFrame": 14241,
+          "endFrame": 14386,
+          "frames": 145,
+          "ms": 4830
+        },
+        {
+          "indexInScene": 8,
+          "display": "这种运动有个名字：自激振荡。",
+          "spoken": "这种运动有个名字：自激振荡。",
+          "startFrame": 14393,
+          "endFrame": 14489,
+          "frames": 96,
+          "ms": 3204
+        },
+        {
+          "indexInScene": 9,
+          "display": "英文叫 self-excited oscillation。",
+          "spoken": "英文叫 self-excited oscillation。",
+          "startFrame": 14496,
+          "endFrame": 14591,
+          "frames": 95,
+          "ms": 3158
+        }
+      ]
+    },
+    {
+      "id": "plate",
+      "title": "实心板就成了一片机翼",
+      "startFrame": 14615,
+      "endFrame": 15847,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "现在看最关键的细节：那个截面。",
+          "spoken": "现在看最关键的细节：那个截面。",
+          "startFrame": 14615,
+          "endFrame": 14721,
+          "frames": 106,
+          "ms": 3529
+        },
+        {
+          "indexInScene": 1,
+          "display": "塔科马的桥面，是一整块实心的钢板梁。",
+          "spoken": "塔科马的桥面，是一整块实心的钢板梁。",
+          "startFrame": 14728,
+          "endFrame": 14860,
+          "frames": 132,
+          "ms": 4412
+        },
+        {
+          "indexInScene": 2,
+          "display": "风穿不过去，只能从上下两边绕过去。",
+          "spoken": "风穿不过去，只能从上下两边绕过去。",
+          "startFrame": 14867,
+          "endFrame": 15001,
+          "frames": 134,
+          "ms": 4458
+        },
+        {
+          "indexInScene": 3,
+          "display": "当桥面转到某个角度，这块板就变成了一片机翼。",
+          "spoken": "当桥面转到某个角度，这块板就变成了一片机翼。",
+          "startFrame": 15008,
+          "endFrame": 15175,
+          "frames": 167,
+          "ms": 5573
+        },
+        {
+          "indexInScene": 4,
+          "display": "它会产生升力，也会产生很大的扭力矩。",
+          "spoken": "它会产生升力，也会产生很大的扭力矩。",
+          "startFrame": 15182,
+          "endFrame": 15314,
+          "frames": 132,
+          "ms": 4389
+        },
+        {
+          "indexInScene": 5,
+          "display": "关键在这个力矩的方向。",
+          "spoken": "关键在这个力矩的方向。",
+          "startFrame": 15321,
+          "endFrame": 15390,
+          "frames": 69,
+          "ms": 2299
+        },
+        {
+          "indexInScene": 6,
+          "display": "板往上翘的时候，风的力矩也往同一个方向推。",
+          "spoken": "板往上翘的时候，风的力矩也往同一个方向推。",
+          "startFrame": 15397,
+          "endFrame": 15549,
+          "frames": 152,
+          "ms": 5062
+        },
+        {
+          "indexInScene": 7,
+          "display": "板往下沉的时候，力矩同样跟着转。",
+          "spoken": "板往下沉的时候，力矩同样跟着转。",
+          "startFrame": 15556,
+          "endFrame": 15667,
+          "frames": 111,
+          "ms": 3692
+        },
+        {
+          "indexInScene": 8,
+          "display": "所以空气不是想把它压回去。",
+          "spoken": "所以空气不是想把它压回去。",
+          "startFrame": 15674,
+          "endFrame": 15767,
+          "frames": 93,
+          "ms": 3112
+        },
+        {
+          "indexInScene": 9,
+          "display": "空气是在帮它继续转。",
+          "spoken": "空气是在帮它继续转。",
+          "startFrame": 15774,
+          "endFrame": 15847,
+          "frames": 73,
+          "ms": 2438
+        }
+      ]
+    },
+    {
+      "id": "coupling",
+      "title": "两个自由度互相喂养",
+      "startFrame": 15871,
+      "endFrame": 17230,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "到这里，可以把两种运动连起来了。",
+          "spoken": "到这里，可以把两种运动连起来了。",
+          "startFrame": 15871,
+          "endFrame": 15978,
+          "frames": 107,
+          "ms": 3576
+        },
+        {
+          "indexInScene": 1,
+          "display": "桥面的起伏，会改变风的迎角。",
+          "spoken": "桥面的起伏，会改变风的迎角。",
+          "startFrame": 15985,
+          "endFrame": 16090,
+          "frames": 105,
+          "ms": 3506
+        },
+        {
+          "indexInScene": 2,
+          "display": "迎角变了，反过来又产生扭力矩。",
+          "spoken": "迎角变了，反过来又产生扭力矩。",
+          "startFrame": 16097,
+          "endFrame": 16208,
+          "frames": 111,
+          "ms": 3692
+        },
+        {
+          "indexInScene": 3,
+          "display": "扭力矩让桥面转动。",
+          "spoken": "扭力矩让桥面转动。",
+          "startFrame": 16215,
+          "endFrame": 16280,
+          "frames": 65,
+          "ms": 2183
+        },
+        {
+          "indexInScene": 4,
+          "display": "转动又改变了迎角，也改变了起伏。",
+          "spoken": "转动又改变了迎角，也改变了起伏。",
+          "startFrame": 16287,
+          "endFrame": 16403,
+          "frames": 116,
+          "ms": 3855
+        },
+        {
+          "indexInScene": 5,
+          "display": "于是上下和扭转，被风耦合在一起，互相喂养。",
+          "spoken": "于是上下和扭转，被风耦合在一起，互相喂养。",
+          "startFrame": 16410,
+          "endFrame": 16574,
+          "frames": 164,
+          "ms": 5457
+        },
+        {
+          "indexInScene": 6,
+          "display": "一开始，摇摆需要的能量大于风能提供的能量。",
+          "spoken": "一开始，摇摆需要的能量大于风能提供的能量。",
+          "startFrame": 16581,
+          "endFrame": 16726,
+          "frames": 145,
+          "ms": 4830
+        },
+        {
+          "indexInScene": 7,
+          "display": "所以它只是在轻轻地上下起伏。",
+          "spoken": "所以它只是在轻轻地上下起伏。",
+          "startFrame": 16733,
+          "endFrame": 16840,
+          "frames": 107,
+          "ms": 3576
+        },
+        {
+          "indexInScene": 8,
+          "display": "当风速越过某一个值，这笔账就反了过来。",
+          "spoken": "当风速越过某一个值，这笔账就反了过来。",
+          "startFrame": 16847,
+          "endFrame": 16981,
+          "frames": 134,
+          "ms": 4481
+        },
+        {
+          "indexInScene": 9,
+          "display": "能量开始净流入，运动就开始成长。",
+          "spoken": "能量开始净流入，运动就开始成长。",
+          "startFrame": 16988,
+          "endFrame": 17108,
+          "frames": 120,
+          "ms": 3994
+        },
+        {
+          "indexInScene": 10,
+          "display": "它先长大，然后换了一种长大方式。",
+          "spoken": "它先长大，然后换了一种长大方式。",
+          "startFrame": 17115,
+          "endFrame": 17230,
+          "frames": 115,
+          "ms": 3831
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "title": "空气每一个周期都在做功",
+      "startFrame": 17254,
+      "endFrame": 18561,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "回到秋千，换一种玩法。",
+          "spoken": "回到秋千，换一种玩法。",
+          "startFrame": 17254,
+          "endFrame": 17340,
+          "frames": 86,
+          "ms": 2879
+        },
+        {
+          "indexInScene": 1,
+          "display": "这一次，没有人推秋千。",
+          "spoken": "这一次，没有人推秋千。",
+          "startFrame": 17347,
+          "endFrame": 17429,
+          "frames": 82,
+          "ms": 2740
+        },
+        {
+          "indexInScene": 2,
+          "display": "荡秋千的人自己改变重心的位置。",
+          "spoken": "荡秋千的人自己改变重心的位置。",
+          "startFrame": 17436,
+          "endFrame": 17536,
+          "frames": 100,
+          "ms": 3320
+        },
+        {
+          "indexInScene": 3,
+          "display": "每一次摆动，他都偷偷往里加一点能量。",
+          "spoken": "每一次摆动，他都偷偷往里加一点能量。",
+          "startFrame": 17543,
+          "endFrame": 17670,
+          "frames": 127,
+          "ms": 4249
+        },
+        {
+          "indexInScene": 4,
+          "display": "结果是：秋千越荡越高，而且不需要任何人。",
+          "spoken": "结果是：秋千越荡越高，而且不需要任何人。",
+          "startFrame": 17677,
+          "endFrame": 17833,
+          "frames": 156,
+          "ms": 5201
+        },
+        {
+          "indexInScene": 5,
+          "display": "那天的桥，做的就是这件事。",
+          "spoken": "那天的桥，做的就是这件事。",
+          "startFrame": 17840,
+          "endFrame": 17935,
+          "frames": 95,
+          "ms": 3158
+        },
+        {
+          "indexInScene": 6,
+          "display": "每一次扭转，空气都往里加一点能量。",
+          "spoken": "每一次扭转，空气都往里加一点能量。",
+          "startFrame": 17942,
+          "endFrame": 18067,
+          "frames": 125,
+          "ms": 4156
+        },
+        {
+          "indexInScene": 7,
+          "display": "加进去的，比结构自己耗掉的更多。",
+          "spoken": "加进去的，比结构自己耗掉的更多。",
+          "startFrame": 18074,
+          "endFrame": 18182,
+          "frames": 108,
+          "ms": 3599
+        },
+        {
+          "indexInScene": 8,
+          "display": "差额一点一点累积。",
+          "spoken": "差额一点一点累积。",
+          "startFrame": 18189,
+          "endFrame": 18250,
+          "frames": 61,
+          "ms": 2020
+        },
+        {
+          "indexInScene": 9,
+          "display": "这就是负阻尼。",
+          "spoken": "这就是负阻尼。",
+          "startFrame": 18257,
+          "endFrame": 18304,
+          "frames": 47,
+          "ms": 1556
+        },
+        {
+          "indexInScene": 10,
+          "display": "在正常结构里，阻尼把能量拿走，所以运动最终会停。",
+          "spoken": "在正常结构里，阻尼把能量拿走，所以运动最终会停。",
+          "startFrame": 18311,
+          "endFrame": 18493,
+          "frames": 182,
+          "ms": 6060
+        },
+        {
+          "indexInScene": 11,
+          "display": "在这里，符号反了。",
+          "spoken": "在这里，符号反了。",
+          "startFrame": 18500,
+          "endFrame": 18561,
+          "frames": 61,
+          "ms": 2020
+        }
+      ]
+    },
+    {
+      "id": "threshold",
+      "title": "临界速度",
+      "startFrame": 18585,
+      "endFrame": 19858,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "现在可以把整个故事压缩成一个数字。",
+          "spoken": "现在可以把整个故事压缩成一个数字。",
+          "startFrame": 18585,
+          "endFrame": 18698,
+          "frames": 113,
+          "ms": 3762
+        },
+        {
+          "indexInScene": 1,
+          "display": "风速有一个临界值，大约每小时六十公里。",
+          "spoken": "风速有一个临界值，大约每小时六十公里。",
+          "startFrame": 18705,
+          "endFrame": 18837,
+          "frames": 132,
+          "ms": 4412
+        },
+        {
+          "indexInScene": 2,
+          "display": "低于它，阻尼还是正的。",
+          "spoken": "低于它，阻尼还是正的。",
+          "startFrame": 18844,
+          "endFrame": 18919,
+          "frames": 75,
+          "ms": 2485
+        },
+        {
+          "indexInScene": 3,
+          "display": "桥上任何一个扰动都会被吃掉，桥安静下来。",
+          "spoken": "桥上任何一个扰动都会被吃掉，桥安静下来。",
+          "startFrame": 18926,
+          "endFrame": 19074,
+          "frames": 148,
+          "ms": 4923
+        },
+        {
+          "indexInScene": 4,
+          "display": "高于它，净阻尼变成负的。",
+          "spoken": "高于它，净阻尼变成负的。",
+          "startFrame": 19081,
+          "endFrame": 19165,
+          "frames": 84,
+          "ms": 2810
+        },
+        {
+          "indexInScene": 5,
+          "display": "扰动不再消失，反而一次比一次大。",
+          "spoken": "扰动不再消失，反而一次比一次大。",
+          "startFrame": 19172,
+          "endFrame": 19288,
+          "frames": 116,
+          "ms": 3855
+        },
+        {
+          "indexInScene": 6,
+          "display": "振幅一直涨，直到结构自己撑不住。",
+          "spoken": "振幅一直涨，直到结构自己撑不住。",
+          "startFrame": 19295,
+          "endFrame": 19406,
+          "frames": 111,
+          "ms": 3692
+        },
+        {
+          "indexInScene": 7,
+          "display": "这不是被撞坏，这是稳定性失效。",
+          "spoken": "这不是被撞坏，这是稳定性失效。",
+          "startFrame": 19413,
+          "endFrame": 19524,
+          "frames": 111,
+          "ms": 3692
+        },
+        {
+          "indexInScene": 8,
+          "display": "英文叫 flutter，中文常说颤振。",
+          "spoken": "英文叫 flutter，中文常说颤振。",
+          "startFrame": 19531,
+          "endFrame": 19631,
+          "frames": 100,
+          "ms": 3320
+        },
+        {
+          "indexInScene": 9,
+          "display": "那天的风，刚好越过了这条线。",
+          "spoken": "那天的风，刚好越过了这条线。",
+          "startFrame": 19638,
+          "endFrame": 19740,
+          "frames": 102,
+          "ms": 3413
+        },
+        {
+          "indexInScene": 10,
+          "display": "所以它不需要很大，它只需要足够。",
+          "spoken": "所以它不需要很大，它只需要足够。",
+          "startFrame": 19747,
+          "endFrame": 19858,
+          "frames": 111,
+          "ms": 3692
+        }
+      ]
+    },
+    {
+      "id": "fix",
+      "title": "验证与修复",
+      "startFrame": 19882,
+      "endFrame": 21973,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "还有一个细节，让这个故事更难受。",
+          "spoken": "还有一个细节，让这个故事更难受。",
+          "startFrame": 19882,
+          "endFrame": 19985,
+          "frames": 103,
+          "ms": 3437
+        },
+        {
+          "indexInScene": 1,
+          "display": "坍塌前五天，一份风洞报告才刚刚写完。",
+          "spoken": "坍塌前五天，一份风洞报告才刚刚写完。",
+          "startFrame": 19992,
+          "endFrame": 20135,
+          "frames": 143,
+          "ms": 4760
+        },
+        {
+          "indexInScene": 2,
+          "display": "华盛顿大学的法夸尔森教授，用缩尺模型做了试验。",
+          "spoken": "华盛顿大学的法夸尔森教授，用缩尺模型做了试验。",
+          "startFrame": 20142,
+          "endFrame": 20313,
+          "frames": 171,
+          "ms": 5712
+        },
+        {
+          "indexInScene": 3,
+          "display": "同一个模型，同样的风速，只换一种桥面截面。",
+          "spoken": "同一个模型，同样的风速，只换一种桥面截面。",
+          "startFrame": 20320,
+          "endFrame": 20475,
+          "frames": 155,
+          "ms": 5178
+        },
+        {
+          "indexInScene": 4,
+          "display": "实心的那块开始扭转，而且越扭越大。",
+          "spoken": "实心的那块开始扭转，而且越扭越大。",
+          "startFrame": 20482,
+          "endFrame": 20608,
+          "frames": 126,
+          "ms": 4203
+        },
+        {
+          "indexInScene": 5,
+          "display": "换成开敞的截面，它几乎不动。",
+          "spoken": "换成开敞的截面，它几乎不动。",
+          "startFrame": 20615,
+          "endFrame": 20720,
+          "frames": 105,
+          "ms": 3506
+        },
+        {
+          "indexInScene": 6,
+          "display": "结论是：让空气能穿过桥面，再把截面做得更流线。",
+          "spoken": "结论是：让空气能穿过桥面，再把截面做得更流线。",
+          "startFrame": 20727,
+          "endFrame": 20905,
+          "frames": 178,
+          "ms": 5921
+        },
+        {
+          "indexInScene": 7,
+          "display": "这两条都只是建议，当时并没有装上桥。",
+          "spoken": "这两条都只是建议，当时并没有装上桥。",
+          "startFrame": 20912,
+          "endFrame": 21049,
+          "frames": 137,
+          "ms": 4574
+        },
+        {
+          "indexInScene": 8,
+          "display": "答案已经到了，只是晚了五天。",
+          "spoken": "答案已经到了，只是晚了五天。",
+          "startFrame": 21056,
+          "endFrame": 21152,
+          "frames": 96,
+          "ms": 3204
+        },
+        {
+          "indexInScene": 9,
+          "display": "战后重建新桥的时候，工程师照做了。",
+          "spoken": "战后重建新桥的时候，工程师照做了。",
+          "startFrame": 21159,
+          "endFrame": 21285,
+          "frames": 126,
+          "ms": 4203
+        },
+        {
+          "indexInScene": 10,
+          "display": "加劲梁从两米四加深到十米，变成真正的桁架。",
+          "spoken": "加劲梁从两米四加深到十米，变成真正的桁架。",
+          "startFrame": 21292,
+          "endFrame": 21447,
+          "frames": 155,
+          "ms": 5178
+        },
+        {
+          "indexInScene": 11,
+          "display": "桥面改成开敞的格栅，风可以穿过去。",
+          "spoken": "桥面改成开敞的格栅，风可以穿过去。",
+          "startFrame": 21454,
+          "endFrame": 21588,
+          "frames": 134,
+          "ms": 4458
+        },
+        {
+          "indexInScene": 12,
+          "display": "而且这一次，风洞试验成了必需的一道工序。",
+          "spoken": "而且这一次，风洞试验成了必需的一道工序。",
+          "startFrame": 21595,
+          "endFrame": 21732,
+          "frames": 137,
+          "ms": 4574
+        },
+        {
+          "indexInScene": 13,
+          "display": "一九五零年，新桥通车，一直用到现在。",
+          "spoken": "一九五零年，新桥通车，一直用到现在。",
+          "startFrame": 21739,
+          "endFrame": 21880,
+          "frames": 141,
+          "ms": 4714
+        },
+        {
+          "indexInScene": 14,
+          "display": "差别不在强度，在形状。",
+          "spoken": "差别不在强度，在形状。",
+          "startFrame": 21887,
+          "endFrame": 21973,
+          "frames": 86,
+          "ms": 2856
+        }
+      ]
+    },
+    {
+      "id": "coda",
+      "title": "一句话",
+      "startFrame": 21997,
+      "endFrame": 23371,
+      "lines": [
+        {
+          "indexInScene": 0,
+          "display": "现在回到一开始那个问题。",
+          "spoken": "现在回到一开始那个问题。",
+          "startFrame": 21997,
+          "endFrame": 22080,
+          "frames": 83,
+          "ms": 2763
+        },
+        {
+          "indexInScene": 1,
+          "display": "那座桥不是很弱，它的强度足够。",
+          "spoken": "那座桥不是很弱，它的强度足够。",
+          "startFrame": 22087,
+          "endFrame": 22194,
+          "frames": 107,
+          "ms": 3576
+        },
+        {
+          "indexInScene": 2,
+          "display": "它的错误，在于它太会从风里拿能量。",
+          "spoken": "它的错误，在于它太会从风里拿能量。",
+          "startFrame": 22201,
+          "endFrame": 22324,
+          "frames": 123,
+          "ms": 4110
+        },
+        {
+          "indexInScene": 3,
+          "display": "风不大，但它越过了临界速度。",
+          "spoken": "风不大，但它越过了临界速度。",
+          "startFrame": 22331,
+          "endFrame": 22426,
+          "frames": 95,
+          "ms": 3181
+        },
+        {
+          "indexInScene": 4,
+          "display": "它也不需要和桥共振。",
+          "spoken": "它也不需要和桥共振。",
+          "startFrame": 22433,
+          "endFrame": 22501,
+          "frames": 68,
+          "ms": 2276
+        },
+        {
+          "indexInScene": 5,
+          "display": "它只需要桥面愿意跟着转。",
+          "spoken": "它只需要桥面愿意跟着转。",
+          "startFrame": 22508,
+          "endFrame": 22594,
+          "frames": 86,
+          "ms": 2856
+        },
+        {
+          "indexInScene": 6,
+          "display": "实心的截面，把一阵普通的风变成了一股长久的力量。",
+          "spoken": "实心的截面，把一阵普通的风变成了一股长久的力量。",
+          "startFrame": 22601,
+          "endFrame": 22764,
+          "frames": 163,
+          "ms": 5434
+        },
+        {
+          "indexInScene": 7,
+          "display": "所以修好它的方法，不是造得更结实。",
+          "spoken": "所以修好它的方法，不是造得更结实。",
+          "startFrame": 22771,
+          "endFrame": 22889,
+          "frames": 118,
+          "ms": 3947
+        },
+        {
+          "indexInScene": 8,
+          "display": "而是让空气有地方可以去。",
+          "spoken": "而是让空气有地方可以去。",
+          "startFrame": 22896,
+          "endFrame": 22977,
+          "frames": 81,
+          "ms": 2694
+        },
+        {
+          "indexInScene": 9,
+          "display": "一座桥的失败，改变了后来大跨度桥梁的设计规则。",
+          "spoken": "一座桥的失败，改变了后来大跨度桥梁的设计规则。",
+          "startFrame": 22984,
+          "endFrame": 23146,
+          "frames": 162,
+          "ms": 5387
+        },
+        {
+          "indexInScene": 10,
+          "display": "工程师不再只问：它够不够强。",
+          "spoken": "工程师不再只问：它够不够强。",
+          "startFrame": 23153,
+          "endFrame": 23253,
+          "frames": 100,
+          "ms": 3344
+        },
+        {
+          "indexInScene": 11,
+          "display": "他们开始问：它会不会自己开始动。",
+          "spoken": "他们开始问：它会不会自己开始动。",
+          "startFrame": 23260,
+          "endFrame": 23371,
+          "frames": 111,
+          "ms": 3692
+        }
+      ]
+    }
+  ]
+}

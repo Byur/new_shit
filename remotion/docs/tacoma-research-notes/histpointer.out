@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Tacoma Narrows Bridge Ruins</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name = "format-detection" content = "telephone=no">
+<link rel="canonical" href="https://historypointer.com/nris/resource/92001068/">
+<meta name="description" content="Tacoma Narrows Bridge Ruins, Tacoma, Washington">
+<meta name="og:description" content="Tacoma Narrows Bridge Ruins, Tacoma, Washington">
+<link rel="stylesheet" href="/static/bower_components/normalize-css/normalize.css">
+
+<script src="/static/bower_components/prefixfree/prefixfree.min.js"></script>
+<script src="/static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.js"></script>
+<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-hash/v0.2.1/leaflet-hash.js"></script>
+<script src="/static/scripts/hp.js"></script>
+<script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-minimap/v1.0.0/Control.MiniMap.js"></script>
+<script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
+
+<link rel="stylesheet" href="/static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link href="https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox.js/plugins/leaflet-minimap/v1.0.0/Control.MiniMap.css" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.mapbox.css" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/css/font-awesome.min.css" rel="stylesheet">
+
+<!-- your CSS should be LAST -->
+<link rel="stylesheet" href="/static/stylesheets/navbar-fixed-top.css">
+<link rel="stylesheet" href="/static/stylesheets/styles.css">
+<script
+  src="https://cdn.telemetrydeck.com/websdk/telemetrydeck.min.js"
+  data-app-id="A0B7D39C-B003-496D-AB3C-9955DC4A4941"></script>
+
+<script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
+<script type="text/javascript">
+var
+_sf_async_config={uid:10684,domain:"historypointer.com",useCanonical:true};
+(function(){
+  function loadChartbeat() {
+    window._sf_endpt=(new Date()).getTime();
+    var e = document.createElement('script');
+    e.setAttribute('language', 'javascript');
+    e.setAttribute('type', 'text/javascript');
+    e.setAttribute('src', '//static.chartbeat.com/js/chartbeat.js');
+    document.body.appendChild(e);
+  }
+  var oldonload = window.onload;
+  window.onload = (typeof window.onload != 'function') ?
+     loadChartbeat : function() { oldonload(); loadChartbeat(); };
+})();
+
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LMXEG26K1H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LMXEG26K1H');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3333752249986693"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- Fixed navbar -->
+<nav class="navbar navbar-fixed-top navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand hidden-xs" href="/">HistoryPointer</a>
+    </div>
+    <div class="navbar-header visible-xs">
+      <a class="navbar-brand" href="/">HistoryPointer</a>
+    </div>
+    <ul class="nav navbar-nav">
+<li>
+            <form class="navbar-form navbar-left" role="search" method="POST" action="/nris/search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Keyword or NRIS number" name="query" size=40>
+		    <div class="input-group-btn">
+                    <button type="submit" class="btn btn-default">
+                       <span class="glyphicon glyphicon-search"></span>
+		    </button>
+		    </div>
+		</div>
+            </form>
+</li>
+<li class="hidden-xs">
+            <ul class="nav navbar-nav navbar-left">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Shortcuts<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a href="/nris/newestSites.html">Newest listings</a></li>
+                        <!-- <li class="nav-item"><a href="/nris/weeklyLists.html">Weekly Updates</a></li> -->
+                        <li class="nav-item"><a href="/nris/multiplesList.html">Multiple
+                        Property Submissions List</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li class="nav-item"><a href="/resources.html" id="sitesMapLink">Cultural Resources Map</a></li>
+                        <li class="nav-item"><a href="/multiples.html"
+                        id="groupsMapLink">Multiple Property Submissions Map</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li class="nav-item"><a href="/nris/removed.html">Removed from Historic Register</a></li>
+                    </ul>
+                </li>
+            </ul>
+</li>
+        <li class="nav navbar-nav align-top hidden-xs hidden-sm"><a href="https://apps.apple.com/us/app/historypointer/id463895470"><img src="/static/images/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" alt="Apple iOS App Store link"></a></li>
+        <li class="nav navbar-nav align-top hidden-xs hidden-sm"><a href="/feed/newest.atom"><img src="/static/images/800px-Feed-icon.svg.png" height=44 alt="Atom feed"></a></li>
+    </ul>
+  </div>
+</nav>
+<script>
+  (function () {
+    function setBodyPad() {
+      var nb = document.querySelector('.navbar.navbar-fixed-top');
+      if (!nb) return;
+      document.body.style.paddingTop = nb.offsetHeight + 'px';
+    }
+    window.addEventListener('load', setBodyPad);
+    window.addEventListener('resize', setBodyPad);
+  })();
+</script>
+<div class="container">
+<div class="row"><div class="col-xs-12"
+		      itemtype="https://schema.org/Map" id="map"></div></div>
+<div id="maprow" class="row"><div class="col-xs-12">
+<p><button id="nearbySitesButton" type="button" class="btn btn-default">Nearby sites</button>
+<button id="nearbyGroupsButton" type="button" class="btn btn-default">Nearby groups</button>
+</p>
+</div></div>
+
+
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1IjoiaGFsbXVlbGxlciIsImEiOiJqT2Z6ckRRIn0.Qolt7JtOhsSeIYUkPQ20ig';
+
+var map = L.mapbox.map('map').setView([37.8, -96], 4);
+basicMapSetup(map);
+
+addSingleSiteLayer(map, "92001068" );
+
+
+map.fitBounds([[47.26391877200007,-122.55815163799997], [47.273452631000055,-122.545865704]],{maxZoom:14});
+
+
+addMiniMap(map)
+$('#nearbySitesButton').on('click', function (e) {
+    var targetURL= wfsRoot() + "/resources.html" + L.Hash.formatHash(map);
+    window.open(targetURL, "_self");
+})
+$('#nearbyGroupsButton').on('click', function (e) {
+    var targetURL= wfsRoot() + "/multiples.html" + L.Hash.formatHash(map);
+    window.open(targetURL, "_self");
+})
+
+
+//var popup = L.popup();
+
+
+
+
+
+</script>
+<div class="row">
+  <div id="customhtml" class="page-text col-xs-12 col-md-6">
+<div itemtype="https://schema.org/Place">
+<h2>Tacoma Narrows Bridge Ruins</h2>
+
+<p><span itemprop="address"
+	 itemtype="https://schema.org/PostalAddress">
+    
+    <span itemprop="streetAddress">
+      WA 16 over the Tacoma Narrows</span>,
+    <span itemprop="addressLocality"><a href='/nris/city/Washington/Tacoma'>Tacoma</a></span>,
+    <span itemprop="addressRegion"><a href='/nris/state/Washington'>Washington.</a>
+      County/parish:&nbsp;<a href='/nris/county/Washington/Pierce'>Pierce</a>.<span></p>
+
+<p>
+
+</p>
+
+
+<p>Added to the National Register of Historic Places
+  August 31, 1992. NRIS 92001068.</p>
+
+
+
+
+
+1 contributing site.
+
+
+
+
+
+<p>Also known as: <ul>
+    <li>Galloping Gertie</li>
+    
+</ul></p>
+
+
+<h4>From Wikipedia:</h3>
+<dl>
+  
+  <dt><a href='https://en.wikipedia.org/w/index.php?curid=301135'>Tacoma Narrows Bridge (1940)</a></dt>
+  <dd> <p class="mw-empty-elt">
+
+</p>
+
+
+<p>The <b>1940 Tacoma Narrows Bridge</b>, the first bridge at this location, was a suspension bridge in the U.S. state of Washington that spanned the Tacoma Narrows strait of Puget Sound between Tacoma and the Kitsap Peninsula. It opened to traffic on July 1, 1940, and dramatically collapsed into Puget Sound on November 7 of the same year. The bridge's collapse has been described as "spectacular" and in subsequent decades "has attracted the attention of engineers, physicists, and mathematicians". Throughout its short existence, it was the world's third-longest suspension bridge by main span, behind the Golden Gate Bridge and the George Washington Bridge.
+</p><p>Construction began in September 1938. From the time the deck was built, it began to move vertically in windy conditions, so construction workers nicknamed the bridge "Galloping Gertie". The motion continued after the bridge opened to the public, despite several damping measures. The bridge's main span finally collapsed in 40-mile-per-hour (64 km/h) winds on the morning of November 7, 1940, as the deck oscillated in an alternating twisting motion that gradually increased in amplitude until the deck tore apart. The violent swaying and eventual collapse resulted in the death of a cocker spaniel named "Tubby", as well as inflicting injuries on people fleeing the disintegrating bridge or attempting to rescue the stranded dog.
+</p><p>Efforts to replace the bridge were delayed by US involvement in World War II, as well as engineering and finance issues, but in 1950, a new Tacoma Narrows Bridge opened in the same location, using the original bridge's tower pedestals and cable anchorages. The portion of the bridge that fell into the water now serves as an artificial reef.
+</p><p>The bridge's collapse had a lasting effect on science and engineering. In many physics textbooks, the event is presented as an example of elementary forced mechanical resonance, but it was more complicated in reality; the bridge collapsed because moderate winds produced aeroelastic flutter that was self-exciting and unbounded: for any constant sustained wind speed above about 35 mph (56 km/h), the amplitude of the (torsional) flutter oscillation would continuously increase, with a negative damping factor, i.e., a reinforcing effect, opposite to damping. The collapse boosted research into bridge aerodynamics-aeroelastics, which has influenced the designs of all later long-span bridges.
+</p> <a href='https://en.wikipedia.org/w/index.php?curid=301135'>(read more...)</a></dd>
+  
+</dl>
+
+
+
+
+
+
+<p>National Park Service documentation: <a href='https://catalog.archives.gov/id/75613049'>https://catalog.archives.gov/id/75613049</a></p>
+
+</div>
+</div>
+</body>
+</html>

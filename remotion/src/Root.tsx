@@ -33,6 +33,10 @@ import {
   marketSlangDurationInFrames,
 } from "./market-slang/MarketSlangVideo";
 import {
+  TacomaVideo,
+  tacomaDurationInFrames,
+} from "./tacoma/TacomaVideo";
+import {
   CoffeeVideo,
   coffeeDurationInFrames,
 } from "./coffee/CoffeeVideo";
@@ -46,6 +50,15 @@ import {
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="TacomaNarrows"
+        component={TacomaVideo}
+        durationInFrames={tacomaDurationInFrames}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
       <Composition
         id="CoffeeExplained"
         component={CoffeeVideo}

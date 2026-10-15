@@ -1,0 +1,2994 @@
+HIST
+624 5097
+ANDREW
+1952
+1·
+J
+WA STATE DOT LIBRARY
+II I II 1111111111111111 11111111111111 IIII IIII II 1111111111111111111
+3 3166 0005 4642 4
+FINAL REPORT
+on
+TACOMA NARROWS BRIDGE
+Tacoma, Washington
+by
+CHAS. E. ANDREW
+Principal Consulting Engineer
+June 1952
+Washington State
+Department of Transportation
+UbnQ
+Anaua B. LANm.m. Governor
+Cluiirtfl4flofA•th.orU•
+STATE OF WASHINGTON
+W. A. Buacm, Director of Hiah'Wa78
+Chief En11inetw of A•thorit1t
+Cun YIIII.LB. State Auditor
+Auditor of A1dhorit•
+H. D. VAN EATON, Director of
+Public Institutions
+J'mao11■ K. KUYEDmALL. Chairman
+Pl&blic S~ Cotnmuriotl
+J'. W. HOOVBB,
+Secretars, of Avth.oriti,
+WASHINGTON TOLL BRIDGE AUTHORITY
+TRANSPORTATION BUILDING
+OLYMPIA, WASHINGTON
+TACOMA NARROWS BRIDGE
+P. o. Box 1583
+Tacoma, 1, Washington
+June 30, 1952
+Mr. W. A. Bugge
+Director of High~s
+Transportation Buil.ding
+O~pia, Washington
+Dear Sir:
+I have the honor to transmit herewith the
+final report on the design, construction and costs
+of the Tacoma Narrows Bridge.
+Respectful~ submitted,
+~/~
+Chas. E. Andrew
+PRINCIPAL CONSULTING ENGINEER
+WASHINGTON TOLL BRIDGE AUTHORITY
+MEMBERS OF
+WASHINGTON TOLL BRIDGE AUTHORITY
+OLYMPIA, WASHINGTON
+ARTHUR B. LANGLIE, Governor
+Chairman of Authority
+CLIFF YELLE, State Attditor
+Auditor of Authority
+JEROME K. KUYKENDALL, Chairman
+Public Service Commission
+W. A. BUGGE, Director of Highways
+Chief Engineer of Authority
+H. D. VAN EATON
+Director of Pttblic Institutions
+J. W. HOOVER
+Secretary of Authority
+5
+BOARD OF CONSULTANTS
+CHAS. E. ANDREW ___________________ ___________________________________ Chairman and
+Principal Consttlting Engineer
+GLENN B. WOODRUFF ______________________________________ Consttlting Engineer
+JOHN I. PARCEL _____________________ __________________________ Consttlting Engineer
+DR. THEODOR VON KARMAN ____________________ Consulting Aerodynamicist
+ENGINEERING STAFF
+CHAS. E. ANDREW ________________________________________________ Principal Engineer
+DEXTER R. SMITH _____________________________________________ Engineer of Design
+N. E. OLSON ______________ · _______________________________________ Asst. Design Engineer
+E. H. THOMAS _________________________________________________ Asst. Design Engineer
+K. B. ARKIN __ --·-------------------------- ________ Chief of Sttrvey and Inspection
+MODEL STUDIES
+at
+UNIVERSITY OF WASHINGTON
+F. B. FARQUHARSON ___________ ---------------------- ______________________ . Directot
+GEO. S. VINCENT _ _______ . Representing Public Roads Administr,ition
+FRED C. SMITH-
+---
+--- --- -
+__ . __ _ _________________ Assistant
+7
+CONTENTS
+•
+PART
+BRIEF HISTORY OF FIRST TACOMA NARR0\VS BRIDGE
+PART II
+INSURANCE
+REMOVAL OF REMAINING PORTIONS OF THE STRUCTURE
+PART Ill
+DECISION TO REBUILD THE BRIDGE
+DESIGN AND RESEARCH ON NEW STRUCTURE
+DESIGN OF THE NEW STRUCTURE
+BOND ISSUE
+RECEIPT OF BIDS AND CONTRACTS LET
+GENERAL STATEMENT COVERING CONSTRUCTION
+PERSONNEL
+PART IV
+BEHAVIOR OF STRUCTURE SINCE OPENING
+ORIGINAL ESTIMATE OF INCOME AND TRAFFIC
+and
+Ac'TUAL TRAFFIC OCCURRING
+TRAFFIC TABLES
+APPENDIX
+BIDDERS
+FINAL ESTIMATES
+LAYOUT AND SECTIONS
+COST STATEMENT
+IMPORT ANT DIMENSIONS OF BRIDGE
+ILLUSTRATIONS
+9
+FOREWORD
+•
+81s REPORT primarily concerns the physi-
+cal makeup, design, construction and costs of the Tacoma
+Narrows Bridge. The present structure replaces an earlier
+bridge at the same site which failed spectacularly from
+vibrations induced by aerodynamic forces in the windstream.
+Also, the present structure utilizes some portions of the
+original bridge modified to fit the revised dimensions and
+loadings. In order to more fully explain the conditions
+facing the designers of the new bridge, a brief history of
+the first Tacoma Narrows Bridge, its design and construc-
+tion, failure and dismantling is included herein.
+11
+PART I
+BRIEF HISTORY
+OF
+FIRST TACOMA NARROWS BRIDGE
+For many years prior to the construction of the first Tacoma Narrows
+Bridge, it had become quite evident that a crossing of The Narrows was a
+public necessity in order to eliminate this formidable barrier with its deep,
+swift tidal waters which separated Tacoma from the large undeveloped area
+to the west and served only by an inadequate ferry system. Private interests
+had attempted to promote and build a crossing on a location to the south of
+the present bridge but were unsuccessful. The 1947 Legislature, recognizing
+the need for this and other bridges, passed a law creating the Washington
+Toll Bridge Authority with full powers to finance, construct and operate
+toll bridges.
+Immediately after the creation of the Authority, the Pierce County Com-
+missioners requested the Authority to investigate and proceed with the build-
+ing of such a bridge. An appropriation of $25,000 was made by the Legislature
+to make a study of the problem. Such a study was completed on May 23, 1938
+and on that date an application was submitted to the Public Works Administra-
+tion requesting a grant of funds to assist in the design and construction of
+such a structure.
+Preliminary plans for the structure consisted, in brief, of a suspension
+bridge with a central span of 2800 feet and side spans of 1100 feet each with
+an open stiffening truss 25 feet in depth. The bridge provided a two lane road-
+way and two sidewalks; deep piers of the cellular caisson type were used.
+PW A had approved a grant of forty-five per cent of the cost but required
+that the State employ a board of independent consultants to check plans. As
+a result the firm of Moran & Proctor was employed for the substructure, and
+Leon S. Moisseiff for the superstructure. This Board made a complete change
+in both the superstructure and substructure, substituting an entirely different
+type of foundation and using a shallow plate girder, eight feet in depth, for
+the stiffening of the superstructure instead of the deep, open truss contemplated
+by the State and shown on the grant application.
+These amended plans were approved by PW A and bids asked to be
+opened on September 2, 19.38. Only one bid was received. It was unopened
+and was later learned to have been approximately $750,000 above the monies
+available.
+13
+At this point, the Director of Highways called in the Consulting Board
+which had been appointed on the Lake Washington Bridge, asking them to
+review the plans upon which bids had been received and attempt to make
+modifications which might reduce costs sufficiently to come within available
+funds. This Board consisted of Chas. E. Andrew, Chairman; R. B. McMinn,
+R.H. Thompson, and Luther E. Gregory.
+The main piers, with some modifications, were changed back to the
+cellular, bottom type first shown. Time did not permit a complete review of
+the superstructure as the deadline for PW A aid expired on December 3 1,
+1938; however, a change in the floor system and deck made a substantial saving.
+The modified plans were approved by PW A and bids again opened on
+September 27, 1938. The low bid in the amount of $5,594,730.40 was within
+the funds available and was accepted. The Pacific Bridge Company was low
+bidder; the Bethlehem Steel Company was an associate contractor who furn-
+ished and erected the steel and wire. The bridge was opened to traffic on July
+1, 1940.
+During the construction period and prior to steel fabrication, evidence
+of aerodynamic instability was reported on the Whitestone Bridge which was
+of similar form and construction. The last appointed Board of Consultants
+and the Director of Highways at once questioned the advisability of proceed-
+ing with the bridge superstructure, as then designed, because of its even more
+slender and lighter construction than that of the Whitestone Bridge. They
+were assured, however, by the original designer and consultant, who was
+considered to be the highest authority on suspension bridges, that a simple
+means had been devised to correct the instability of the Whitestone Bridge
+which could be applied, if necessary, to the Tacoma Narrows Bridge. Upon
+such advice, construction proceeded according to plan; however, as soon as
+floor forms were started, noticeable oscillation occurred. This oscillation steadily
+increased while the bridge floor was placed, varying in intensity in accordance
+with wind conditions. Finally on November 7, 1940, the superstructure failed
+and a large part of the bridge floor and stiffening girders fell into the Sound
+leaving the cables and towers with the side span floor system still standing.
+The total cost of the first bridge as of March 5, 1941, although not
+entirely completed at the time of failure, is shown in the following statement
+of costs.
+14
+STATEMENT OF COSTS INCURRED
+as of
+March 5, 1941
+Account 1
+Preliminary Expense
+Account 2
+Land, Right-of-way, Easements .
+.
+Account 3
+Construction
+Account 4
+Engineering, Inspection, Supervision
+.
+Engineering Fees .
+.
+Account 5
+Administration
+Legal
+Account 6
+Interest during Construction .
+.
+Other Accounts
+Interest on Bonds
+.
+.
+3,438.79
+7.00
+5,991,694.33
+200,182.96
+168,460.12
+27,418.11
+3,792.26
+164,551.21
+68,593.75
+TOTAL COSTS
+.
+.
+$6,618,138.53
+The bridge was financed by an outright grant of funds from the Public
+Works Administration of the U.S. government in the amount of $2,894,958.86
+and the proceeds from the sale of $3,750,000 revenue of bonds.
+15
+PART II
+INSURANCE
+The original bridge was covered by insurance of the "All Coverage Type"
+and by "Use and Occupancy." Soon after the failure, both the State and In-
+surance Underwriters appointed individual boards to determine the amount
+of loss. The Stace Board consisted of the following members:
+L. ]. Sverdrup, Chairman
+Francis Donaldson
+Russel G . Cone
+The Underwriters' Board comprised the following:
+Clifford E. Paine, Chairman
+Hardy Cross
+Shortridge H ardesty
+Holton D. Robinson
+W ilbur M. Wilson
+The report of the Scace Board was submitted on June 26, 194 1 and filed
+in Olympia. Their report of estimated loss was $4,297,098.00.
+The Underwriters' Board report was filed on June 2, 194 1 and their re-
+port of estimated loss was $1,800,000.00. Copy of the Underwriters' report
+is on file in Olympia.
+The wide variation between these reports is quite evident. Boch reports
+were submitted to the Scace and rhe several insurance companies involved.
+After studying the report, the insurance companies submitted an offer of $4,000,-
+000 plus salvage, which was accepted by the State. Use and Occupancy insur-
+ance in the amount of $240,000 was paid promptly by the carriers shortly after
+the failure. These amounts paid the bond holders in full with considerable
+funds remaining.
+REMOVAL OF REMAINING PORTIONS OF THE STRUCTURE
+As previously stated, the piers, anchorages, rowers, side span floor systems
+and west approach remained standing after the failure. The anchorages, piers
+and the greater part of the west approach were unharmed. The towers and
+cables were damaged co such an extent that they had no value except for
+salvage and at the same time constituted a menace to navigation. It, therefore,
+16
+became necessary to remove the towers and cables. This could have been ac-
+complished by simply cutting the strands at the anchorages and allowing them
+to fall into the sound, the water being of such great depth that no menace to
+navigation would have remained. However, because of the great need of metal
+and scrap in the war effort existing at the time, it was decided to salvage the
+steel and wire. To accomplish this end, a cost plus contract was awarded the
+]. H. Pomeroy and Company, Incorporated, in December 1940 for removal
+of the balance of suspended structure remaining after failure. In August 1942
+a contract was let to J. Philip Murphy and Woodworth Company for removal
+of cables and towers.
+The removal of the cables was an extremely hazardous and difficult op-
+eration requiring ingenuity on the part of the engineers and contractor. It was
+the first time a suspension bridge cable of any magnitude had been removed
+without the use of catwalks. The dismantling was accomplished without the
+loss of life or major injury.
+The State realized a return of $295,726.36 from salvage, the total cost
+of removal being $646,661.83, resulting in a net cost of $350,935.47. This
+amount is far below what the removal cost would have been had it been delayed
+until the contract for the new bridge was let due to increase in labor costs and
+decrease in scrap prices.
+17
+PART Ill
+DECISION TO REBUILD THE BRIDGE
+There was a great increase in traffic over the former bridge, as compared
+with that which had used the ferries. This increase averaged 145 % during the
+four months of operation and con.firmed the public necessity for a bridge over
+The Narrows. As a result the Toll Bridge Authority by resolution in June 1941
+requested the Director of Highways to determine whether or not it was pos-
+sible and feasible to rebuild the crossing with a bridge which would be safe
+and .financially sound.
+DESIGN AND RESEARCH ON NEW STRUCTURE
+Engineers in charge realized they were confronted with a new and dif-
+ferent problem which was without precedent. The question of aerodynamic
+stability in bridge design had not been investigated. In order to pursue such
+an investigation, a Consulting Board was appointed consisting of Sverdrup &
+Parcel of St. Louis and Glenn B. Woodruff of San Francisco, as members, with
+Chas. E. Andrew as Chairman. Dr. Theodor von Karman of the California
+Institute of Technology was appointed as special aerodynamic consultant. The
+Board's first meeting was held in the fall of 1941.
+In the meantime, a design department was formed under the direction
+of Chas. E. Andrew. Tentative plans were developed based upon all the avail-
+able information in the field of aerodynamics, most of which applied to the
+design of airplanes. It soon became quite evident that the science as applied to
+airplanes, which are moving objects not in fixed position and fully susceptible
+to streamlining, was quite different than that which could be applied to a fixed
+blunt object such as a bridge. Only fundamental considerations could be used.
+Certain aerodynamic laws were diametrically opposite. It became necessary,
+beyond a certain point, to develop new theories and techniques. The problem,
+therefore, became a question of original research. The outstanding development
+of the airplane in recent years had been accomplished by a more or less "cut
+. and try" method. A plane was designed and flown; if it did not meet require-
+ments its design was changed and flight repeated until a satisfactory result was
+obtained. In more recent years the process was simplified and cheapened by the
+use of scaled models tested in artificial wind streams developed by wind tunnels.
+It seemed logical to follow the latter process in the design of the bridge.
+A wind tunnel sufficiently large to test a 1 to 50 scale model was designed and
+built at the University of Washington. As bridge designs were developed they
+were tested in the tunnel. Many changes in design were necessary before the
+desired degree of stability was obtained by test.
+18
+The design of the bridge and original research transpired wholly within
+the period of the second World War and were greatly handicapped by lack of
+personnel and difficulty in obtaining necessary materials with the result that
+approximately four years were spent in the process. We are, however, con-
+fident that the results fully justified the effort. This conclusion has been verified
+by the fact that the bridge, as now constructed, withstood wind velocities on
+several occasions during January, February and March of 1951 as high as 75
+miles per hour without any visible sign of vertical or torsional oscillation.
+Several unique details of design developed in these studies were used in the
+final plans. The great volume of design studies and test data would require
+too much space to recount in this report. Details of the final design are shown
+on the contract plans and a full account of model tests is given in reports now
+being compiled at the University of Washington where the tests were made.
+All designs were made in the design department, organized for that pur-
+pose in Tacoma, and model tests of these designs were conducted in a specially
+constructed wind tunnel at the University of Washington with some check
+tests being made at the California Institute of Technology at Pasadena, Cali-
+fornia. The cost of model tests was financed jointly by the Washington Toll
+Bridge Authority and the Public Roads Administration; each public bcdy
+assuming approximately one-half the cost which amounted to $88,341.37.
+Design of the New Structure
+(a) Fo1tndt1tions and To'll'ers. The failure of the former bridge caused
+co damage to the main piers and anchorages and only minor damage to the
+west approach structure. Since these portions of the bridge had a value of about
+$3,000,000, it was quite necessary they should be utilized, if possible, in the
+design for the new structure. The main piers were carefully examined by divers
+both inside and out with no evidence of injury being found.
+The former bridge, a two lane structure, was designed with tower legs
+39 feet apart at their tops battering to 50 foot centers at their bases. Towers
+for the new structure of four lanes, requiring a cable spacing of 60 feet, were
+designed with vertical legs. This required the former tower pedestals to be
+removed and new pedestals constructed at 60 foot centers. The piers, as orginally
+constructed, provided ample room for this purpose; in fact, shifting the tower
+pedestals resulted in a better distribution of load to the main walls of the piers
+than was previously achieved.
+The question then arose as to whether or not the added load of a four
+lane bridge would cause excessive foundation pressures. Piers of this type and
+depth ( 225 feet for Pier 5 and 17 5 feet for Pier .:{ below mean low water) arc:
+many times heavier in actual buoyant weight than the superstructure which
+19
+they support. In addition to being designed for stability under full load, they
+must be able to resist stress during construction when towers are "free-standing"
+and such other factors as ship collision and tidal forces. It was found in this
+case that the actual dead load foundation pressures were increased only ap-
+proximately six per cent by the added weight of the new superstructure.
+Since the foundation material consists of clean sand, gravel and boulders
+in which the piers were deeply embedded, an increase of six per cent was con-
+sidered of little consequence. The dead load pressure, as the bridge now stands,
+does not exceed 15,300 lbs./sq. ft.
+Seventeen recorded earthquakes had occurred in this area since the original
+piers were constructed in 1939. Five of these quakes were of 5 or greater in-
+rensity measured on the Mercalli Scale, while two in 1946 were rated 7. In
+addition to these earthquakes, the destruction of the original bridge undoubtedly
+imposed lateral forces and pressures on the foundation material of a much
+greater intensity than will likely occur under the new structure. Very accurate
+surveys since the failure have indicated no movement whatsoever, lateral or
+vertical, occurred in the main piers.
+After due consideration of all the factors involved, the Board of Consulting
+Engineers decided that no modification of the existing channel piers was neces-
+sary below the top slab.
+An independent study of these piers was made in 1946 and 1947 by F. M.
+Masters of the consulting firm of Modjeski and Masters, Harrisburg, Pennsyl-
+vania. Their report dated January 10, 1947 substantiated the conclusions of the
+Consulting Board.
+Soundings taken around the channel piers during 1940 and later in 1946
+indicated that some scour had occurred, principally at Pier 4 ( the west pier).
+Class "C" riprap was included in the construction contract for the future pro-
+tection of the piers against such scour.
+As previously stated, design of the new bridge involved removal of the
+old ped.~stals and construction of new pedestals at 60 foot centers. The former
+pedestals were constructed to elevation +23.1 feet which was 15.6 feet above
+high tide. This had proven too low an elevation as salt water spray had started
+serious corrosion at the base of the old towers. The new pedestals were designed
+to the elevation of +40.0 feet raising the base of the new tower steel 32.5
+feet above maximum high tide.
+An interesting innovation was developed in the design of these pedestals
+to secure a true level plane surface on their tops. Such a surface is necessary
+for setting of base slabs and insuring verticality of rowers. To obtain such a
+plane ( approximately 20 fr. hy 10 ft.) previous similar construction required
+20
+considerable grinding and finishing of the final surface, sometimes involving
+several weeks of delicate work. The following method was devised and employed
+for the constn1ction of these pedestals:
+Before pouring the upper portion of pedestals, a structural steel frame
+was set up from elevation 26.0 to approximately 12 inches below the finished
+surface. The upper portion of pedestals was then poured with the exception of
+12 inches under the surface on which tower base plates were to be set. Adjusting
+screws and screed bars were then placed and attached to structural frame. Screed
+bars were 4 x ½ inch steel bars machined finished on top edge to 0.008 inches
+from a straight line. Screed bars were placed on approximately 20 inch centers
+forming a checkerboard pattern over the entire surface to be finished. Adjusting
+links provided with 8 and 12 pitch stock provided very accurate setting of the
+finished edge of screed bars.
+Specifications provided for pouring Class "A" concrete in this area to a
+plane ½ inch below top of screeds. A layer of 1 to 2 mortar was then placed
+and struck off 1 / 16 inch above the screeds. This mortar surfa~e was allowed
+to harden about six hours when the entire surface was dressed down by steel
+straight edges to the elevation of the steel screeds. It might be mentioned here
+that the above method proved very satisfactory in obtaining a perfectly true
+surface.
+Very little modification was necessary on the other existing piers. Ap-
+proximately 500 cu. yds. of concrete was added to Pier No. 3 at the westerly
+end of the suspended structure to provide the additional weight required for
+the cable holddowns. At Pier No. 6, the easterly end of the suspended structure,
+it was necessary to widen the body of the pier in addition to adding weight for
+holddowns. Pjers Nos. 1 and 2, under the existing west approach structure,
+required no modification.
+The anchorages, while uninjured by the collapse of the former bridge,
+had relatively less value than the piers for the following reasons:
+1. They were of insufficient weight to resist the horizontal pull of the
+new bridge cables.
+2. The embedded eyebars were at 39 foot centers whereas the new bridge
+cables would require them to be 60 feet apart.
+It therefore became necessary to remove a large yardage of concrete from
+each side of the blocks to provide room for embedment of the new eyebars
+and utilize the weight of the remaining concrete. Consequently, a considerable
+amount of the anchorages became a liability rather than an asset.
+21
+Both anchorages are of the gravity type depending wholly upon friction
+to resist the horizontal pull of the cables. To supply the additional weight re-
+quired for the new bridge cables and provide space for the new eyebar anchors,
+it was first necessary to remove approximately 11,000 cubic yards of concrete
+from the sides of the anchorages by drilling and shooting down to the top of
+the main foundation blocks. These foundation blocks were then widened eight
+feet outward on each side of the anchorage to provide additional width for
+the new anchor bars. The foundation block and body of anchorage were further
+enlarged by adding 20 feet to the back for the full height and width with the
+result that after the new anchor bars were set and embedded in concrete, a
+complete .. horseshoe" of new concrete encompassed the old concrete core.
+The new concrete was designed to be poured in alternating blocks of 150 to
+220 cubic yards to relieve shrinkage stresses as much as possible.
+The anchorages are designed for a coefficient of friction against cable pull
+of approximately 0.34, their respective weights being in the order of 54,000
+tons each.
+An interesting problem arose at Piers 4 and 5 ( the main channel piers)
+in making provision for tower erection. The maximum bending stresses in the
+towers occur during erection when they are .. free standing" and subject to
+maximum wind load and other lateral forces. The usual method for resisting
+free standing tower moments is through use of structural anchors and anchor
+bolts deeply embedded in the concrete. To develop new anchors of this type, it
+would have been necessary to modify the entire top of the piers well below
+water line in order to engage the necessary weight. Such a procedure would have
+been extremely expensive and of little value after completion of the bridge.
+As designed, the original structural steel anchors, even though eccentric
+with the new towers, were preserved as far as practical during removal of the
+old pedestals. The new pedestals were enlarged sufficiently to encompass them
+and additional overturning resistance provided by a system of structural steel
+outriggers which in effect greatly increased the width of tower bases.
+This arrangement proved to be entirely successful as evidenced by the
+fact that the east tower was free standing at its full height of 462 feet when
+the most severe recorded earthquake in the area occurred on April 13, 1949.
+The tower suffered no damage during the earthquake although one cable saddle,
+which had been temporarily blocked on to its top, was thrown clear of the pier.
+The outriggers were of course temporary and were removed after cable
+spinning and a certain stage of superstructure erection had been reached. Pic-
+tures of the arrangement are shown in appendix.
+Tower No. 3 of the original bridge, at the west end of the suspended
+structure, was undamaged by the collapse. It also served as a support for the
+22
+4 5 0 foot west approach structure which was slightly damaged. It was estimated
+that approximately $200,000 could be saved by incorporating these portions
+of the old bridge in the new structure.
+In order to accomplish this, one new intermediate strut was added to
+Tower 3 approximately 100 feet from its base to stiffen and strenghthen the
+tower legs. The top strut was deepened and extended outside the tower legs
+forming box griders to which holddown cables for the new structure were
+fastened.
+( b) S11perstmct11re. Grades for the new structure were established to fit
+the west approach with minor adjustments, as well as to provide the required
+clearance for navigation and symmetry of the new bridge. These approach grades
+are 3.00% and extend over both side spans to the main towers with a 2800
+foot vertical curve making up the grade on the main span between towers.
+This 3 .00 % grade fitted the west approach spans, as reconstructed, at the
+anchorage end of the approach. The original west approach grade was 2.5888%
+and adjustment to the new grade was accomplished by raising the Tower 3
+end of the approach girders to fit the new grade and placing new bearings at
+Bents 1 and 2 of the approach structure.
+The original west approach structure was a through plate girder, con-
+tinuous over three 150 foot spans between Tower 3 and the anchorage. Girders
+were on 4 3 foot centers and accommodated two traffic lanes with 7 foot side-
+walks. Roadway and sidewalk slabs were of standard hard rock concrete.
+This approach structure was redesigned to accommodate four traffic lanes
+by raising the floorbeams and stringers to the top of main girders and in effect
+redesigning it to a deck plate girder structure. The use of lightweight concrete
+slab reduced the dead load sufficiently so that the structure was capable of
+carrying four lanes of live load. Sidewalk brackets and stringers were added
+outside of the main girders.
+Damage to the original approach structure was principally confined to
+the ends of several floorbeams where the cables had injured them during col-
+lapse of main span. Damaged portions of these floorbeams were cut off and
+new material spliced on during reconstruction.
+The original east approach structure extending for 210 feet between Pier
+6 and the east anchorage was of reinforced concrete. It had suffered little dam-
+age during collapse but of course could not be re-used to fit new grades and
+a four lane roadway. It was therefor entirely removed and a new reinforced
+concrete structure designed to fit the four lane structure and merge into the
+six traffic lanes at the toll gates.
+23
+In designing the suspended spans for the new bridge it was felt that every
+possible precaution should be taken to insure against any possibility of notice-
+able motion occurring in the structure. Such a design would not only insure the
+.financial success. of the project but also serve to re-establish public confidence
+in major bridge construction and the engineering profession in general which
+undoubtedly had suffered due to collapse of the former bridge.
+One of the main contributing factors causing collapse of the former
+bridge was its extreme flexibility. In the final design for the new bridge, the
+stiffening trusses are on 60 foot centers with a depth of 3 3 feet center to center
+of chords. Trusses of the new bridge have an average moment of inertia of
+6,890,000 ins. 4 as compared to 120,400 ins. 4 for the original bridge. This fol-
+lows what might be called the conservative practice of suspension bridge design
+in providing maximum stiffness and depth within live load stress limitations.
+All parts of the suspended structure were designed with the view of re-
+ducing areas exposed to the wind as much as possible. This is especially notice-
+able in handrail, curbs and floorbeams. Floorbeams are trussed type, principally
+composed of six-inch beam sections with a depth of eleven feet. A considerable
+saving in steel was also made through the use of this type floorbeam instead
+of the conventional girder type floorbeam.
+Another departure from usual past practice was the use of a double lateral
+system of bracing in the planes of the top and bottom chords. This greatly in-
+creased the torsional rigidity of the suspended structure.
+An entirely new innovation in suspension bridge design was introduced
+through the use of open gratings as longitudinal slots at curb lines and between
+roadway lanes. The curb slots are nineteen inches in width and the roadway
+slots are thirty-three inches wide separating the four concrete slab traffic lanes
+of nine foot width. The slots were designed to be fabricated from five-inch
+I-Beam-Lok open floor grating with six-inch channel edges. The main mem-
+bers of the grating were cut to extend two inches through holes punched in
+upper and lower parts of the channel edge beams. Hoop-shaped anchor straps
+were welded to the prongs and extended approximately twelve inches into the
+concrete slab. These served effectively to splice the open grating to the rein-
+forced concrete slab and caused the slab to act continuously over all stringers.
+Because of the rather radical departure of the above roadway floor from
+conventional design, a section of such a slab was constructed on similarly spaced
+stringers with strain gages attached to reinforcing bars, anchor straps and mem-
+bers of slotted gratings. Various positions of wheel loads were tested and, even
+with overloading to approximately 13 5 ';r, comparatively low steel stresses
+were recorded with no signs of cracking in concrete at any point. The low
+24
+stresses recorded under these loadings were probably due to the channel edge
+beams of open gratings serving as distributing beams or, in other words, serv-
+ing to transfer superimposed loads over a greater area of slab than would be
+possible under ordinary reinforced concrete slab construction.
+Extensive studies were made of various slotted deck designs in the wind
+tunnel at the University of Washington. During the course of these investi-
+gations it soon became apparent that such a deck possessed inherent charac-
+teristics of great value in stabilizing the structure. The final deck design used
+represented what appeared co be the proper proportions best suited for the
+structure. A completely open-grated deck for such a long structure was con-
+sidered objectionable for several reasons.
+The curb slots were designed with integral curb. Supports of trimmed
+seven-inch tee-sections spaced at approximately five foot centers were welded
+to the top of main members of the grating. These in turn supported a five-
+inch standard pipe curb centered twelve inches above the surface of roadway
+and welded to supports. The resulting curb presents a very sturdy appearance
+offering little resistance to wind.
+A secondary benefit derived from use of slotted deck design is its effec-
+tiveness as traffic separators or lane markers. An errant driver's attention is
+immediately alerted if he leaves his lane and his wheels cross onto the grating
+of the slots.
+The design for the suspended structure also includes external energy ab-
+sorbing devices consisting of oil-filled hydraulic cylinders at the towers and
+as diagonal ties between the trusses and cable at the center of the main span.
+They are designed to act as dampening devices under the comparative rapid
+motion of oscillation while offering little resistance to the slower motion or
+deflections occuring from live loads or temperature changes.
+( c) C1bles. In the design of a suspension bridge the various parts of the
+structure are rather closely inter-related. The dead load of the suspended struc-
+ture and its resistance to wind pressure is immediately transferred to the cable
+which supports it and, in turn, to the rowers, piers and anchorages supporting
+the cable. Thus any saving of weight or exposed area in the suspended struc-
+ture reflects savings in design for other parts of the structure.
+For this reason it was decided to use a lightweight aggregate concrete
+for the roadway and sidewalk slabs on the suspended structure. Specifications
+called for a design mix of three-quarter inch maximum coarse, intermediate
+and fine lightweight aggregates with the addition of natural sand and eight
+sacks of cement per cubic yard to produce a concrete of not to exceed 120
+pounds per cubic foot and provide a compressive strength of not less than
+25
+thirty-six hundred pounds per square inch at 28 days. Actual design mix av-
+eraged about 118 lbs/cu.ft. in weight, and test cylinders showed a minimum
+compressive strength of 4500 lbs/sq.in. after 28 days.
+In order to further reduce the size of main cables and keep the pull on the
+anchorages to a minimum, a sag ratio of 1 : 10 for main span was adopted as
+compared to 1: 12 for the former bridge. While this necessitated an increase
+in height of towers it reflected considerable saving in cost of anchorages and
+cables.
+The main cables are composed of nineteen strands of four hundred fifty-
+eight ( 458) No. 6 gage wires providing an area of two hundred fifty-two
+( 2 5 2) square inches of steel. Design stresses in cable wire were 70,000 lbs.
+per square inch due to dead load alone or 78,000 lbs. per square inch for com-
+bined loading. Specifications required a minimum tensile strength of 220,000
+lbs. per square inch of gross section with a yield point of 150,000 lbs. per
+square inch. The final compressed cable was computed to have a diameter of
+twenty and one-eighth ( 20 Vs ) inches.
+Anchor bars and adjusting links were designed of structural carbon steel
+with welded pin plates. Specifications provided for annealing of bars after
+welding. Anchor bars and strands splayed from a theoretical point approxi-
+mately 28 feet vertically in 135 feet and 16 feet horizontally in 140 feet. The
+bars and adjusting links extend approximately sixty-two feet into the main
+body of the anchorages.
+The strand shoes were also designed of structural carbon steel. They are
+three and seven-eighths inches thick and grooved to a depth of one and three-
+fourths inches to provide a minimum inside diameter of twenty-six inches around
+which the main cable wires are looped.
+Cable saddles at the towers are structural carbon steel of a welded web-
+type design. The curved cable trough is constructed to a center line cable radius
+of thirteen feet. The curved base of the cable saddle as well as the upper cable
+retainer castings are finished in grooves to fit the contour of the lower and
+upper strands as they lie in the saddle. Zinc fillers approximately six inches
+long strung on one-fourth inch wire rope fill the interstices between the strands
+through the saddle.
+Cable bands as originally designed were to consist of cast steel hanger
+saddles welded to structural steel bands. This was later revised and the entire
+bands were made of cast steel with interior surfaces given a medium rough
+finish.
+The stiffening truss is supported at each interior panel point by four 1.Ys
+inch hanger ropes except at the center jacks where I !Ii inch ropes are used.
+26
+Holddowns at Tower No. 3 are composed of eight 2Ys inch ropes and at Pier
+No. 6 are composed of eight I¾ inch ropes. The holddown bands are designed
+in two sections with ring connections to provide for slight angle change in
+main cable. Suspender ropes were pre-stressed to fifty per cent of their ultimate
+strength.
+No. 9 annealed double galvanized steel wire with an ultimate strength
+of 85,000 psi was used for wrapping the main cables. Wrapping was applied
+over red lead paste with a minimum wire tension at approximately 450 pounds.
+Cable band bolts were carbon manganese high tensile steel with a mini-
+mum tensile strength requirement of 110,000 psi.
+One-inch handropes with vertical stanchions at each cable band were
+placed on the cables and extend for the full length of stiffening trusses.
+BOND ISSUE
+The estimate of cost, including all charges, made just prior to construc-
+tion was $13,738,000 for which a bond issue of $14,000,000 was provided.
+Bonds were sold through a syndicate headed by A. C. Allyn & Company
+of New York City and Chicago, and carried an interest rate of 3¾ % with a
+bond discount of 5 %. Net proceeds of the bond issue were as follows:
+Bond Issue .
+Bond Discount at 5 %
+Accrued Interest on Sale
+Int. on Rev. Bond Fund
+Int. on Construction Fund .
+.
+Discount on Constr. Invest.
+Int. paid on Constr. Invest
+Prem. paid on Constr. Invest.
+27
+$700,000.00
+25,463.27
+31,838.32
+65,816.19
+823,117.67
+$14,000,000.00
+61,250.00
+26,023.43
+322,609.21
+14,409,882.64
+-823,117.67
+$13,586,764.97
+RECEIPT OF BIDS
+AND
+CONTRACTS LET
+The design plans were completed early in 1947 but due to delay in ar-
+ranging for the necessary insurance it was not until August 13, 1947 that bids
+could be advertised. Sealed bids were received by the Director of Highways
+to be opened on October 15, 194 7.
+Bids were requested under two schedules, the first comprising in general
+all concrete in piers, anchorages, approaches and deck together with structural
+steel in towers and stiffening truss, reconstruction of west approach and elec-
+trical work. Schedule two was made up of all cable and hanger work together
+with anchor bars and adjusting links embedded in the anchorages.
+Low bid on Schedule 1 was submitted by the Bethlehem Pacific Coast
+Steel Corporation totalling $8,263,902.92. Low bid on Schedule 2 was sub-
+mitted by the John A. Roebling's Sons Company of California totalling $2,-
+932,681.27. The low bid for construction thus amounted to $11,196,584.19.
+An extension of time for awarding of contract was granted by the low
+bidders to allow additional time required for the sale of the bond issue. Con-
+tracts were finally awarded on March 31, 1948 to the Bethlehem Pacific Coast
+Steel Corporation for work under Schedule 1, and on April 3, 1948 to the John
+A. Roebling's Sons Company of California for work under Schedule 2. Actual
+construction on Schedule 1 was started on April 8, 1948.
+Under Schedule I, a subcontract was let to Woodworth & Company of
+Tacoma for various items covering all roadway and structural excavation, re-
+moval of existing concrete, furnishing and placing all concrete and reinforc-
+ing steel in piers, anchorages, approaches and deck, riprapping of main piers,
+the toll booths and administration buildings and other miscellaneous items.
+Other subcontractors under Schedule 1 were the E. L. Watson Company of
+Tacoma for painting of all structural steel and miscellaneous painting, and
+the McPhail Engineering Company of Tacoma for furnishing and installing
+lighting and electrical equipment, metal lamp posts, tower elevators and toll
+collecting equipment.
+Actual construction under Schedule 2 was started by the John A. Roe-
+bling's Sons Company of California on December 1, 1948. Subcontract under
+this schedule was let to the H. P. Fisher and Sons Company of Seattle for
+painting of cable hangers, cable bands and miscellaneous steel items.
+28
+GENERAL STATEMENT COVERING CONSTRUCTION
+SPECIAL EVENTS AND SAFETY REGULATIONS
+Construction was started promptly after contracts were awarded. The
+contract a wards were delayed, however, for a period of ninety days after opening
+of bids due to difficulties encountered in obtaining insurance and completing
+financial arrangements. This delay made it necessary for the State to request
+an extension of the limiting date of award after bid opening from the Con-
+tractors and to some extent upset the construction time schedule as originally
+planned; the most serious result being the advancing of cable spinning from
+a favorable to an extremely unfavorable period of weather.
+All concrete work, including anchorage enlargements, pier modifications,
+concrete approaches and bridge floor ,vas performed in a very efficient and
+satisfactory manner by Woodworth & Company under subcontract from Beth-
+lehem Pacific Coast Steel Corporation. The only unusual type of work in this
+connection was the removal of some 12,000 cubic yards of concrete from the
+existing anchorages of the former bridge to make way for the placing of new
+anchor bars and enlargement of the anchorages to sustain the increased hori-
+zontal pull of the new and heavier bridge cables; likewise, the removal of tower
+pedestals from the main piers and construction of new ones to accommodate
+the wider and heavier towers required.
+The original design of the concrete floor slabs did not specify the use of
+a wearing surface other than the concrete itself. Subsequent study of the abra-
+sive qualities of lightweight concrete led to the use, in final construction, of
+an asphaltic wearing surface. The thickness of this wearing surface was limited
+by conditions of the original design to ~/8 of an inch. Had these restrictions not
+been present, a somewhat greater thickness would have been used. However,
+after one and one-half years usage under heavy truck traffic no sign of edge
+raveling or loosing is evident, due probably to the fact that all edges are steel
+armored and to the careful bonding co the concrete surface.
+Formation of true planes for tower bases was simplified to a considerable
+extent over the conventional method of grinding by use of the steel grid de-
+scribed under "Design." Tower erection was accomplished by means of the
+conventional "crawler crane" method.
+An excellent job of fabrication was done by the Bethlehem Pacific Coast
+Steel Corporation on the towers with the result that when the towers were
+erected to full height their length was within a few thousandths of design di-
+mension. This result was greatly expedited by the fact that specifications re-
+quired all tower splice plates be removed in the placing of tower cells using
+only the corner angles as guides for position. In this manner all dire and scale
+could be removed prior to contact and all tower joints brought to true bearing
+quickly and exactly with all rivet holes fair.
+No tower top planing was necessary as all inequalities from a true plane
+could be made up by means of thin stainless steel shims.
+On April 13, 1949, during the erection of Tower 5, an unusual incident
+occurred. Both tower legs were erected to full height with the exception of the
+top cross struts. Just before noon of that day the most severe earthquake of
+modern times in the northwest occurred reaching an acceleration of 8 % of
+gravity.
+The contractor had lifted the cable saddle to the top of the south leg
+and had blocked it on timber cribbing about four feet above the tower top some
+510 feet above the water level. The free standing tower was of course subject
+to a considerable amplitude in vibration which dislodged the saddle weighing
+about twenty-one tons and pitched it into the Sound in approximately 140 feet
+of water. In its descent the saddle crashed through a large work barge anchored
+to the south end of the pier sinking it and losing a considerable amount of
+contractor's equipment. Fortunately no fatalities occurred and only two men
+were slightly injured.
+The saddle was subsequently recovered by divers and after straightening
+a small corner bend in the base was again placed on the tower. No damage
+was done to the tower.
+On June 7, 1949, a fire occurred at Pier 4 during tower erection. The
+fire destroyed the creosoted timber fender beyond repair with only slight dam-
+age to the tower steel, buckling a few plates near the base and blistering some
+paint areas. However, the contractor suffered considerable loss in equipment.
+Lacer the fender was completely rebuilt, the loss being partially covered
+by insurance.
+Stiffening truss erection was accomplished by placing individual mem-
+bers rather than by lifting assembled sections from the water as in the original
+bridge. Four rolling derricks were used, starting each way from the towers.
+As the erection advanced, materials and members were delivered over rail
+track from the towers to each of the derricks. Member connections were made
+as holes became fair. No unusual event occurred during erection of the trusses.
+Cable spinning was seriously delayed by the severe weather conditions
+which existed during the fall and winter 1949-1950. Almost continuous rain
+and snow fell for a period of six weeks accompanied hy considerable wind.
+As spinning advanced, when weather permitted, the cables in their unsqueezed
+condition hecarne fulJ of ice and snow \Vith the result that the squeezing and
+30
+wrapping could not be accomplished until the cables thawed out. In all, the
+contractor was delayed as much as sixty days in the completion from this cause
+which was beyond his control.
+The bridge was opened to traffic on October 14, 1950, although paint-
+ing was not finished until October 1951 due to the fact that paint could not
+be successfully applied during winter weather.
+Safety regulations were under the direction of the Department of Labor
+and Industries, and supervised directly by J. F. Burns, State Safety Inspeaor.
+While fatal accidents are always regrettable, they seem almost impos-
+sible to avoid in major construction. Four men lost their lives during the
+construction period: Two by falling, one by being hit under a falling derrick
+boom and one undoubtedly by heart attack. All things considered, this is
+better than the average accident record. Comparatively few accidents result-
+ing in non-fatal bodily injury occurred.
+PERSONNEL
+Design of the new structure was carried on in offices of the Washington
+Toll Bridge Authority in Tacoma under the supervision of Chas. E. Andrew,
+Chairman of the Board of Consul ting Engineers. Other members of the Board
+of Consul ting Engineers included John I. Parcel of St. Louis, and Glenn B.
+Woodruff of San Francisco; Dr. Theodor von Karman of Pasadena was ap-
+pointed special consultant on aerodynamics.
+Design work was under the immediate direction of Dexter R. Smith,
+Engineer of Design, who was assisted by E. H. Thomas and N. E. Olson during
+preparation of the plans.
+Experimental work in the Toll Bridge Authority wind tunnel at the
+University of Washington was carried on under the direction of Professor
+F. B. Farquharson, Director of the Engineering Experiment Station, assisted
+by Professor Fred C. Smith of the University of Washington and George S.
+Vincent of the Public Roads Administration.
+On award of contracts, field and office forces were set up with Chas. E.
+Andrew as Principal Engineer, J. C. Staser as Field Engineer, K. B. Arkin as
+Chief Inspector, and N. E. Olson as Design Engineer. Upon Mr. Staser's un-
+timely illness and death in 1949, K. B. Arkin also assumed the duties of field
+engineer.
+Office personnel during the construction period included W. E. Blecken,
+E. C. Strong, B. B. Bombardier and H. E. Bryant, engineers; also, John T.
+Melville, accountant, and Helen Sykosky, secretary. In the Olympia office,
+D. B. Hedges served as Chief Accountant of Authority.
+31
+Inspection personnel during construction included the following: H. E.
+Cornelius, R. L. Ashcroft, C. E. Barrett, J. F. Burns (safety), H. W. Butler,
+]. D. Elgin, R. Evans, G. 0. Stone, B. A. Berry, J. A. Dightman, W. C. Grant
+and Wm. J. Hermsen.
+Field personnel during construction included: R. L. Stuntz, A. A. Colby,
+L. J. Johnston, Karl Pfeiffer, Albert Squance, A. K. Timmons and C. L. Ott.
+T. M. Martinson was Resident Engineer for the Bethlehem Pacific Coast
+Steel Corporation during the major period of construction. Upon his transfer
+in August 1950, he was succeeded by Harold I. Johnson as Resident Engineer.
+Robert J. Cole, Manager of Erection, and Harold W. Hills, Resident
+Engineer, represented the John A. Roebling's Sons Company of California
+during the construction period.
+Woodworth & Company, subcontractor for Bethlehem, was represented
+by Earl Starbard, Superintendent, on all concrete work.
+32
+PART IV
+BEHAVIOR OF STRUCTURE
+SINCE OPENING TO TRAFFIC
+In the period preceding opening of the bridge ro traffic, considerable
+vibration was noted in the long hanger ropes adjacent to rowers during period
+of high winds. On the longer hangers which approached 300 feet in length,
+and during the higher winds, the ropes moved ro such an extent as ro slap
+against one another near the centers.
+In an effort ro remedy chis situation, hanger spreaders were installed at
+the approximate midpoints of the hangers and extending out twelve panels
+each way from the cowers. These spreaders were constructed of cast steel in
+the form of an "X" ,vith a cap bolted co each prong which gripped the hanger
+ropes in a sheer of lead filler material.
+After opening, the ,vinter of 1950-5 l subjected the structure ro some
+of the highest winds that have been experienced in this area for a number
+of years. During this period it was found that additional spreaders were needed
+to control the vibrations and 150 more were installed. These were located
+parallel to the roadway approximately fifty feet above the rop chord of the
+truss and extended 18 ro 19 panels each way from the rowers.
+Since the latter installation was made only slight, slow movements have
+been observed. These only occur on the longest hangers when the group of
+four ropes move as a unit under very high winds.
+The hanger vibrations described had not been considered as creating
+any particularly dangerous situation since even when the most severe vibra-
+tions occurred no morion or bending of ropes was apparent near the collars
+on the chords and cables. However, because of the great public interest in
+the bridge and the sad fate of its predecessor, it was felt chat any such move-
+ment which was at all noticeable to the public should be eliminated.
+During these periods of high winds since opening of the bridge, lateral
+deflection estimated at from three and one-half ro four feet has occurred in
+che main span. Velocity of winds during this period has been estimated at 65
+to 70 mph. However, at no time has any vibratory motion in the structure been
+apparent.
+After each period of high winds, public reaction was typical and many
+inquiries were received as to the behavior of the bridge. The fact that no
+motion was experienced has served co re-establish public confidence in this
+bridge and probably ro some extent will exert a favorable reaction rowards
+construction of ocher suspension bridges in the future.
+33
+ORIGINAL ESTIMATE OF INCOME AND TRAFFIC
+AND
+ACTUAL TRAFFIC OCCURRING
+A preliminary estimate of income and traffic made in October 194 7,
+prior to construction, using 195 I as the first full year of operation estimated
+an annual income of $726,000 for 1,100,000 vehicles at an average toll of
+$0.66.
+It will be noted in the following table which gives actual traffic and
+revenue from the date of opening of rhe bridge that the volume is substan-
+tially higher than the estimated traffic which means that if traffic continues
+in the future as it has in the period since opening. the amortization period
+will be much shorter than originally estimated.
+Actual traffic and revenue for the first bridge and subsequently the ferry
+operation are also shown in following tables.
+34
+TACOMA NARROWS BRIDGE
+Traffic & Revenue
+MONTH
+TOTAL
+VEHICLES
+1950
+NET
+REVENUE
+January .................................. .
+February ................................. .
+March ................................... .
+April .................................... .
+May ................................... ···
+June ..................................... .
+July .......... ........................... .
+August .................................. .
+September ............................... .
+October.......
+*80,985
+$61,792.30
+November. . . .
+103,600
+76,290.93
+December.....
+95,876
+68,604.12
+1951
+TOTAL
+VEHICLES
+83,671
+87,747
+96,436
+122,634
+136,212
+146,811
+166,438
+152,605
+133,283
+ll2,099
+105,940
+103,503
+NET
+REVENUE
+$58,738.69
+63,016.57
+69,211.3S
+89,745.86
+99,991.15
+109,594.00
+125,505.92
+113,466.30
+103,258.23
+79,497.23
+74,204.74
+73,344.63
+1952
+TOTAL
+NET
+VEHICLES
+REVENUE
+83,761
+$59,034.31
+101,143
+71,922.39
+112,439
+80,681.13
+120,566
+87,071.72
+142,083
+104,435.00
+147,973
+110,972.17
+----------1------1-------1------1-------1------1---·----1
+280,461
+$206,687.35
+1,447,379
+$1,059,574.67
+Average toll= $0. 7369
+Average toll= $0. 732
+* Bridge opened to traffic October 14, 19S0.
+FIRST TACOMA NARROWS BRIDGE-RECORDED TRAFFIC
+MONTH
+TOTAL
+VEHICLES
+July ........
+79,114
+August ......
+72,360
+September ...
+60,411
+October .....
+44,482
+November ...
+9,381
+July 1 to November 7, 1940
+INCOME
+INDICATED
+MONTHLY
+ANNUAL
+TOTAL
+PER CAR
+PATTERN
+TRAFFIC
+TRAFFIC
+$68,612.87
+$0.867
+0.116
+683,000
+60,074.60
+0.831
+0.111
+651,000
+49,922.15
+0.828
+0.098
+615,000
+35,889.20
+0.808
+0.082
+540,000
+7,306.93
+0.780
+35
+MONTHLY PATTERN
+January. . . . . . . . . . 0. 060
+February ......... 0.060
+March ........... 0.070
+April ............ 0. 073
+May ............. 0.085
+June ............. 0.090
+July ............. 0.116
+August .......... 0.111
+September ........ 0.098
+October. . . . . . . . . . 0. 082
+November. . . . . . . . 0. 080
+December. . . . . . . . 0. 075
+1000
+TACOMA NARROWS FERRY-Traffic and Revenue
+November 8, 1940-October 14, 1950
+1940
+1941
+1942
+1943
+1944
+1945
+TOTAL
+NET
+TOTAL
+NET
+TOTAL
+NET
+TOTAL
+NET
+TOTAL
+NET
+TOTAL
+NET
+MONTH
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+------ ------- ------
+~---
+January .... . . . . . . . . . . ......... 23,589
+16,018.58
+31,836
+22,034.74
+20,490
+15,500.13
+25,234
+18,490.59
+27,879
+19,881.14
+Februarv ... . . . . .
+. ........... 24,778
+16,954.45
+33,910
+24,520.69
+25,534
+19,121.04
+2S,078
+18,264.03
+2S,797
+18,837.66
+March.·. . . . .
+. . . . . . . ' ......... *33,611
+23,695.68
+38,524
+26,796.61
+30,913
+23,008.13
+28,856
+21,090.68
+30,270
+22,217.93
+April.
+. . . . . . . . . . . . . . . . ..... 34,639
+23,263.31
+39,281
+27,674.68
+32,099
+23,601.75
+28,892
+21,300.12
+32,168
+23.,440.85
+Mav .... _.
+. . . . . ...... . ..... '
+39,029
+26,662.34
+52,699
+30,417.59
+35,341
+25,720.61
+31,428
+23,442.26
+34,746
+24,991.29
+June
+. . ' . . . . . . . . . . . . . . ... ' ... 42,046
+28,553.51
+43,530
+32,117.57
+35,698
+26,367.52
+33,541
+24,773.48
+38,945
+28,028.59
+July._
+. . . .
+. . . . . . . . . . ........ 51,061
+34,617.73
+50,300
+36,189.90
+42,490
+31,604.80
+39,945
+28,938.71
+48,779
+34,866.24
+August ... . . . . . . . ... . . ' ........ 51,956
+35,162.98
+52,416
+37,504.63
+43,045
+31,731.17
+36,610
+26,865.39 *53,755
+38,740.75
+September .. . . . . . ... . . ' ........ 44,501
+29,961.00
+4S,239
+31,996.79
+37,082
+26,815.51
+33,289
+23,728.20
+53,348
+37,831.17
+Ocrober .... . . . . . . . . . .......... 39,192
+25,796.32
+41,612
+29,742.45
+33,448
+24,096.11
+32,968
+23,542.11
+47,664
+33,355.29
+No\·ember .. *17,222
+11,203.80
+39,378
+26,231.86 *37,902
+26,704.56
+28,898
+20,859.34
+29,269
+21,026.63
+42,390
+29,144.43
+December ... 24,631
+16,729.64
+36,495
+23,868.58
+28,071
+20,645.04
+29,011
+20_,842.93
+29,445
+21,457.75
+44,268
+30,436.45
+------
+-------
+Totals ..... 41,853
+27,933.44 460,275
+310,786.34 495,320
+346,345.25 394,049
+289,269.04 374,555
+272,919.95 480,009
+341,771.79
+\.J.l
+Remarks .... *Nov. 8-30, inc.
+*Ferry moved to
+*Gas rationing
+*Gas rationing
+°'
+Sixth Avenue.
+Novemher 1st.
+lifted.
+1946
+1947
+1948
+1949
+1950
+MONTH
+TOTAL
+NET
+TOTAL
+NET
+TOTAL
+NET
+TOTAL
+NET
+TOTAL
+NET
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+VEHICLES
+AMOUNT
+January .... 40,804
+28,218.69
+35,334
+22,963.88
+42,703
+27,759.06
+36,555
+23,165.66
+28,143
+17,221.09
+February ... 40,454
+27,845.76
+40,00S
+26,845.77
+40,746
+26,464.83
+35,165
+22,129.75
+41,364
+2S,4S3.74
+March ..... 48,607
+32,91S.S6
+55,262
+36,995.20
+60,143
+40,560.86
+51,823
+33,392.01
+S2,128
+33,459.34
+April ....... 48,747
+32,904.62
+51,152
+33,344.S8
+53,407
+35,328.92
+57,911
+37,219.04
+61,097
+38,567.72
+May ....... S7,039
+38,686.06
+57,607
+38,235.81
+64,857
+42,898.50
+67,480
+43,914.97
+69,221
+44,161.40"
+June ....... 58,148
+39,466.49
+58,768
+38,971.76
+67,053
+44,445.57
+69,762
+45,077.14
+74,339
+47,365.44
+July ........ 65,396
+44,097.14
+68,293
+45,231.36
+79,335
+52,278.39
+83,S86
+54,293.12
+86,640
+SS,634.86
+August ..... 63,759
+43,088.13
+70,044
+46,599.03
+76,611
+50,535.97
+80,18S
+51,483.12
+80,403
+51,414.44
+September .. 57,715
+38,933.75
+58,764
+38,939.65
+63,841
+42,154.40
+70,616
+45,549.93
+73,399 **49,918.66
+October .... 48,455
+31,774.62
+48,470
+31,299.67
+SS,736
+36,292.93
+61,248
+38,306.31 *27,137 **18,455.87
+November .. 41,861
+27,464.18
+46,925
+30,602.60
+50,805
+33,004.25
+53,918
+34,310.16
+December ... 43,568
+28,571.30
+47,028
+30,375.08
+48,520
+31,418.87
+53,192
+33,265.61
+Totals ..... 614,553
+413,966.30 637,652 420,404.39 703,757 463,142.55 721,441
+462,106.82 593,871
+381,652.56
+*Tacoma Narrows Ferry discontinued October 14, 1950 at 11 :00 A.M.
+**Estimated Revenue.
+Average toll per vehicle for entire period= $0.6801
+APPENDIX
+37
+CONTRACTS NO
+3418 8 3419
+TABULATION OF BIDS
+STATE OF WASHINGTON
+DEPA R TM E NT OF HIGHWAYS
+OLYMPIA
+WASHINGTON
+BIDDER
+BIDDER
+BI DOER
+PR I MARY STATE HIGHWAY NO. 14
+TACOMA NARROWS BRIDGE
+Berh/dl~m AKiF/c
+volnA.l?«Mns,.> Jon~
+Columbio St"tHrl
+Coosr ~Ut!I Corp.
+Con,pong or Calif"ornltl Compo1151
+ZOL" t I//inoi.s SrJ.
+17i'D .N11rnf'ftmrlJ Sr.
+2.as /',lon1"J!atnt!r!/ .St:
+STATE
+PROJECT
+Pl ERCE COUNTY
+Sonrnmci.sco, Coli'-
+Sonrronci;,co·l,Co//r. .SOnFl"#n,::,3co G,CahY.
+Con'f" . .S4/8
+STA.1+00 to STA. 99+95.08 Length 1.132 MIies
+Bids opened by the Director of Highways at Olympia, Washington
+,1500,000.00
+on October 15,1947,atlOA.M.,time for completlon830~olenderdoyr.. CERTIFIED CHECK
+Cont-. .3419
+11.50,000.00
+CERTIFIED CHECK
+:r:: QUANTITY UNIT
+IT EM
+UNIT I
+UNIT
+_BID
+TOTALBID
+BID
+TOTAL BID
+/,600,000.00
+# 150,000.00
+CERTI Fl ED CHECK
+SCHEDULE
+No. I
+UNIT Nos. 1-2 84
+I
+, 7.30 Cu Yds. llemovmo Co,,c~re A~rs No 4 d S.
+5 7 04
+41 63S lO
+IZ ~
+9 ,9.t, -
+2
+5L900 Cu Yd.s. Removmo Conc~re Eo.sr Annrooch ~ Anchorooe.
+I.J
+8
+78 .J52 -
+10 IS
+49 18!J -
+.3
+4
+5
+5 '600 ClJ Yd.s. Removma Concrr:rtr. West Approach( Anc~ -----+.:.:1~6:-f~=:::4:+--t--"'9'-'-l-fS"-'0,.,49-:--:-+-+-+--jf-----+--+--+-..,;l.l!:c'Z-FS"-"10:+---+~7l~~~n'l~f----l
+2, o Cu. Yds. Concrere.PiersNo.~~5. Clo:ss I'". in ploce. _______
+--t-...,,34':""::f'::'~7'::i--+-'!Q.!l="=f-=9·~,;n~--+-➔-l--+-+-+~4,:::~-l'B~.$4---¥/.::2~&~~:::r.1!:!f----l
+/ I
+O .cu Yds Concrere Eos.rADDrooch Closs r. in oloce.
+46 (J
+74 52B -
+$8 -
+92 n,, -
+6
+,
+~ Cu. Yds. Ccnc.rere. Eo.sr ADDrooch. Closs A in Dloc,.,,e::.•. --------t-'8~/"£4:"':8:l-+6~7p:'2;::,'2:':l+--t---t--tf-----t---t--+--l'l..,2~'/£~~-t'-"I0,:..-:0~::~~7-f'!.'Y1=-I
+7
+, 0 Cu. Yds. Concrr:re. We.s r Approoctr.Clos,,.,:.s:-__cF~._,1nC'-.c.:..::D,IO:.::C:,::e:.:... -------+-4.:..;'lJ~0-=+6---li-,?.=-!d~a.3""-"0+--i----f---+-+---+--+--+-4=-=7'-t=Ql::::+--+-';!,,._,-.,::...p..,Z~~----1
+B
+zz· :Kl Cu. Yd.,. Cont:rere Ea.sr~ We.srAnchoroges C/o.ss F. in phce-.'--·----t~2,c'Sg7.~'S+---l~f'=-~74="-R~ll:f-,---,+--t---l--+-+--t-+..:::¥.;;:,g.!..IO~-t.S.~7,.!.:'4:!:..Jo~'OO~--I
+9
+75 Cu. Yd.7 Cor1Crtfrl!'. Eosre ~.,, Anch~~ Qo~s AJn.efg-=c-=e.,_. ----r=,-.:J_O-+l-=-7~-+-==2='6:f3"-::9'-:'8':l--75-'--t-+---t----l,.......-+--+--+-.!J"'-'"-+7--:-:!l_+-'=.3:=2:-F1'S~----f
+I D
+800 00 Lt,,3.
+Reinf"orc,no 5teelin place.
+O.!l.
+74 4tXJ -
+1m
+B6 rt.:1,
+-
+/ I
+56 ,oo Lru.
+Srrucr. Steel Gr,ll~s Anchor SreeltBoln Pier4 S t'6 in Dlo~.
+~,!,
+18 ~
+-
+41
+2.? ~ -
+12
+ZI IOOCu.Yds. Strucf.Erco~eo.stiW~stAnc/J<Jrooe.st!APDroocheS.
+/~5
+.925~£ -
+J7S
+7815'. -
+1.3
+20 000 Cu Yd.s. Rood~E.Kcovotion.
+'J.'
+14 700 -
+'86
+116Cl -
+14
+I
+00 Lmft Cone;~re Ho.:c='IKl.=-:=-ro-=i-'-:I /i~no-,-:,.n:-cl.--c.-:-r.-l:':-'in-t:=-• .s-,.-e,-e.7'/J-:--:-in-, m~'IJc_e. __ -----t---,/:-:::t?:::f5.=-'.J=+--+~,:-:::6:-tO='J8-;:114-.-:,0:+-----i-t-+--t----t---1i--:,-=,r,1~c.-t--/.-:--'4:r.:-'9,=-:1-_-t
+/5
+1/,.,,..,, um
+Toll Boorh, t Adl11in.lJ/dgs. ind O~/',ce Fumif~ ,.,,_~,,.
+71 -'t?i 77
+94 at:i
+-
+/6
+:?5 Cu. Yds. Conc.Po11ement1'nd re1nF.'srr:el { 1-.,.'ol:!.!11c:.t~mo,~f"-=6.:,:...,.,<-:i'o.::.,,J.,~in.._"""Di0' :..•t:t:...__-:--+".34~F.:l(J":-1"-t-'2"-'/":F.3~./2~S,.,,O:+--t--+--+--t---jf----+-",;,,,~'='O'=t--t--'l'-'G~'-::l'9---t
+17
+,3 "00 L.b:s.
+Ytmt ·LUiJt:s Grqres t, L.ou~r.s, PirrJ41 ~nc..='hor.=.,-=c:esc..i.:..cin,:,,,P.e::</o=c=t-e--':-/ f:Z.C!:'4+-+....;4~U~,O~-:-t---t---l---t---+---jl--t--'T"'ll=+-t__:4:!..F=5=+-1---f
+18
+I ~Ou,.,.
+Bronzt: &:onnoP/ote:s in oloco.
+I 51
+,? 028 60
+1J:
+/
+OJ IRO
+/ 9
+r~ Cu. Yd.s. Removino Concre'l'O A1vtN1Htnr Sidewollr .I! l?oi/i,u,.
+7 .44
+t; -.124 -
+7 •s
+6 t;7,i! 50
+20
+I
+21
+'00 Cu. Yd.s 5idewr:rlh Gur1erJ Curbs ~ Reroinino Wolls Oos.s,I In JJl«e.
+511/9 '.
+I 1' 'S 1 -
+/05 -
+.!II
+19
+2Z.
+'J/S linFt: Sf'd. Beam Guard Nod. 7uo~/. Ot!>-'lon G ,n p/oee.
+3 71
+79713
+4 60
+-
+22
+7
+Cu. Y~ Clo,, CR~ in P(og:.
+4 ;IE
+~
+7,?G -
+.S 9G
+,f /
+-
+23 10 500
+Lb.,.
+Srrut:'f'urol .Sr-I Tower.:..._,--=e,=a-m-,-a{.~~-,.~'tl-,7'n---:a,/oc--e-.----+--=-,F.:,a._;;';!---iJL9~,~==1":f;;'iD~£;t----jl--+--f-t---+--+--+---=-fl':-:~:i--l±9-:.'95~E:,._-t
+27
+5T
+~l'b:s.
+HudroulicJock.:; and Ftttino., camDl~t~ in doc(!'!
+4 -
+-'.?.-'!i rxx. -
+3 :JG
+l.!M '00 -
+28 2 ~60
+~ t_h.....
+Structvrol Sreel Mbodwc:1v :Jlor.s com.Dl~re in place.
+1-:J:J
+'GI 530 -
+:u.
+'fill 2 ~
+-
+Z9
+4
+~ Cv.HI.,_ Coner~,~ l?oodwou. Sto./9.,..SOro Sro. 74.-,.00 in nln,-e_
+80 ~
+3SG 9~ -
+II.?~
+"4911/S -
+29'
+Sock Price to~ added or deduc rr:d for ce~nr o~r or unehr
+83c1ck.s oercu. 1.1d. in roodwc1u sbll.
+I ~I
+7S
+sitlewo/k .slobs orhondro,l.sJcomalt!''f'tl.
+14 jOJ'OS
+~, £Ill -
+rurnisl>ino i! m.sro/hno Alo1nf'6b0nc~ lro~/kr-,rnt,-,. incl.
+3.3
+I I
+'Lil lin.Ft. .Sf'ee/ Handrotl con,p/6f"tPc ,1n p/oca.
+24 0
+211 'r#EiG -
+!J4
+00 b.s.
+Bronze P/o'l'trs in poctt.
+I
+'5
+71'.5 -
+105
+i.,j5
+',,,_ um
+.,..._.._,., Drains W..J-roo<:hJnc/. conn'!S. ,a around dl'tlin ct1111nld
+S 'JB~ ~
+I
+49
+,_,_,, um
+Llo/Jrinoi! ~/ecrr✓col Eoui.-nrt' H?rino comnl9ftf in DI.
+90 ~'- 10
+1/J
+TOTAL
+SCHED. No. I
+SCHEDULE No. 2
+UNIT No. 3
+36 I.JO 600 lJIJtJ lbs.
+MoinCt7/.Nt!WiM/'No.GJin 0/111:11 conu,llf'tt.
+~ 2 Z/.3 ?Lffi
+'
+.:jtfaj ~a -
+L37
+;;,a,i! ooc. L..b.J.
+Wn71""',.,, W,~£/lln.91/n nloce co.md11f'~
+a
+/20 -
+0
+-.;4"!:I
+1/6 ..,,. ',10
+!'la._
+198 ~ io
+~ 1/26 :.?. ~"
+l"t.,
+5 21 0
+l"<l,o
+l.!J D' '40
+l",p~
+'.52 ,.,., ~
+/ 7!,
+'.?7J ,_ .. -
+4/
+580 ln.F7. /- ~
+Honoer ~- in a/oce comDlttT6.
+2"42
+I till~ :o J
+~
+listm20
+,,,_
+g~r., 17
+.3
+~
+/12~21-
+I!--
+I 'IS 711
+5
+2L41W.75
+44
+88 oa
+b.,,
+Honot!r Ft"ttino.s In o/octt comp/e'f't1.
+'a..:
+2.3
+71:JdO
+~
+7.?~0
+S
+20 BO
+inFt. Hand Ro.- In Dloce comDltrrr,.
+~
+II
+16 96
+I 9
+22 67.: -
+~ 6
+16 Oil "Ac.
+/fond Ro~ Fi'ttinQ.s in ploce.com.DM~
+~
+5 'O& "40
+~
+9 '14◄ -
+, 7
+1210 000. ""·
+Struc,. Srt!el e0:1rl! Wo,5t-Anchor®11.s In ~tll%.
+LOI ". -··-
+~ 170 Kl~ -
+~ 17-Z ,ll:fl, -
+sen,., 1--"
+~
+2lJ 7/T 80
+~ ...
+44 919-
+,., ,w ....
+LO,,
+«11_1 If
+~,. 1ft, I.,_.,.
+-
+,..
+llfr,lf ·--
+n::
+T OT A I
+"- r. M I.' n N ft
+2
+,it~ ~, ZT
+46&/ '171'1• n~
+GRAND TOTAL
+IJ 596 ~
+'tl5
+38
+BETHLEHEM PACIFIC COAST STEEL CORPORATION
+20th & Illinois Street
+•
+San Francisco 19, California
+FINAL ESTIMATE-CONTRACT No. 3418
+ITEM NO.
+ITEM
+UNIT
+UNIT PRICE
+QUANTITY
+AMOUNT
+I.
+Remove Concrete, Piers 4 and 5 ........................ c.y.
+57.04
+707.6
+$40,361.50
+2.
+Remove Concrete, East Approach and Anchorage ........ · c. y.
+13.28
+5,691.5
+75,583.12
+3.
+Remove Concrete, West Approach and Anchorage ....... c.y.
+16.34
+5,839.6
+95,419.06
+4.
+Concrete, Piers 4 and 5, Class "F" ..................... c.y.
+34.67
+2,869.3
+99,478.63
+5.
+Concrete, East Approach, Class "F" ................... c.y.
+46.58
+1,475.9
+68,747.42
+6.
+Concrete, East Approach, Class "A" ................... c.y.
+81.48
+1,333.8
+108,678.02
+7.
+Concrete, West Asproach, Class "F" ................... c.y.
+48.06
+487.4
+23,424.44
+8.
+Concrete, East an West Anchorages, Class "F" ........ c.y.
+25.79
+22,671.2
+584,690.25
+9.
+Concrete, East and West Anchorages, Class "A" ........ c.y.
+30.17
+1,240.1
+37,413.82
+10.
+Reinforcing Steel ..................................... lbs.
+0.093
+884,284
+82,238.41
+11.
+Structural Steel, Piers 4, 5 and 6 ....................... lbs.
+0.3315
+54,762
+18,123.77
+12.
+Structural Excavation, East and West Anchorages and
+Approaches ........................................ c.y.
+l.SS
+23,423.3
+36,306.12
+13.
+Roaclway Excavation ................................. c.y.
+0.73S
+11,444.3
+8,411.56
+14.
+Concrete Handrail .................................... l.f.
+12.53
+1,029.2
+12,895.88
+15.
+Toll Booths and Administration Buildings .............. L.S.
+71,327.77
+15.
+Change Order No. 21-Pipe Handrail .................. L.S.
+432.00
+16.
+Concrete Pavement including Reinforced Steel ........... c.y.
+34.10
+593.8
+20,248.58
+17.
+Vent. Pipes, Grates and Louvers, Piers 4 and 5, and
+Anchorages ........................................ lbs.
+1.24
+10,189
+12,634.36
+18.
+Bronze Bearing Plates ................................ lbs.
+1.61
+1,268
+2,041.48
+19.
+Remove Concrete Pavemen~, Sidewalks and Railing ...... c.y.
+7.44
+897.2
+6,675.17
+21.
+Sidewalks, Gutters, Curbs & Retaining Walls, Class "A" c.y.
+57.19
+264.4
+15,121.04
+22.
+Drainage Structures, E. & W. Anchorages & Approaches. L.S.
+26,814.26
+22.
+Change Order No. 22-Drainage Revision .............. L.S.
+5,950.00
+22.
+Chan~~ <?.rde_r No. 23-Drainage Extension ............. L.S.
+1,920.00
+22B. Class C R1prap .................................... c.y.
+4.96
+7,063.3
+35,033.97
+23.
+Structural Steel, Towers .............................. lbs.
+0.183 10,466,789
+1,915,422.39
+23.
+Change Order No. 18-Access Holes in Wind Struts 6 & 8 L.S.
+164.85
+24.
+Welded Steel Tower Saddles ........................... lbs.
+0.3775
+163,129
+61,581.20
+24.
+Change Order No. 3-Contour of Cable Castings ........ L.S.
+11,640.00
+25.
+Structural Steel, Sust'. Structure ....................... lbs.
+0.18
+17,007,984
+3,061,437.12
+25.
+C. 0. # 19-Extend raveler Rails on West Backspan .... L.S.
+710.32
+25.
+C. 0. # 25-Payment for excess weight of steel .......... lbs.
+0.0577
+145,314
+8,384.62
+26.
+Cast Steel and Forgings ............................... lbs.
+0.561S
+107,604
+60,419.65
+27.
+Hydraulic Jacks ...................................... lbs.
+4.00
+55,984
+223,936.00
+28.
+Roadway Slots ....................................... lbs.
+0.17S5
+2,019,069
+354,346.61
+28.
+C. 0. # 17-Weld and Splice Channel Sections of
+Roadway Slots ..................................... L.S.
+3,976.79
+29.
+Concrete Roadway, Sta. 19+50 to 74+oo .............. c.y.
+80.68
+4,488.5
+362,132.18
+29.A Cement, over 8 sacks/c.y. in Roadway ................. sks.
+l.~l
+441
+533.61
+30.
+Rein£. Steel, Concrete Roadway ....................... lbs.
+0.093
+1,198,244
+111,436.69
+31.
+Recondition West Approach ........................... L.S.
+114,302.05
+31.
+C. 0. # 24-Additional Struts, Bents 1 and 2, West
+Approach ......................................... L.S.
+8,801.00
+32.
+Maintenance Travelers ................................ L.S.
+51,691.00
+32.
+C. 0. #8-Hand Brakes ............................... L.S.
+1,431.00
+32.
+C. 0. # IO-Install Steel Gratings in lieu of Plywood .... L.S.
+366.76
+32.
+C. 0. # 26-Revision of Drive Mechanism and Brakes
+on Staging Crane ................................... L.S.
+1,675.00
+33A. Steel Handrail (C.O. # 1) ............................. l.f.
+17.20
+11,013.4
+189,430.48
+34.
+Bronze Plates ........................................ lbs.
+1.55
+454
+703.70
+35.
+Roadway Drains, West Approach ...................... L.S.
+5,083.06
+49.
+Lighting and Electrical Equipment ..................... L.S.
+90,946.10
+39
+BETHLEHEM PACIFIC COAST STEEL CORPORATION
+20th & Illinois Street
+•
+San Francisco 19, California
+FINAL ESTIMATE-CONTRACT No. 3418
+ITEM NO.
+ITEM
+UNIT
+UNIT PRICE
+QUANTITY
+AMOUNT
+49.
+49.
+49.
+49.
+so.
+52.
+52.
+53.
+C. 0. # 2-Eliminate Material. . . . . . . . . . . . . . . . . . . . . . . . . l.f.
+C. 0. # 5-Simplify Wiring, etc. to reduce maintenance.. L.S.
+C. 0. #7-Miscellaneous Changes of Electrical Equip.... L.S.
+C. 0. # 16-Extra Electrical Equipment.. . . . . . . . . . . . . . . . L.S.
+Metal Lamp Posts ..................... : .............. Units
+Tower Elevators ..................................... Units
+C. 0. #6-Elevator Guides ............................ L.S.
+Toll Collecting Equipment. . . . . . . . . . . . . . . . . . . . . . . . . . . . L.S.
+CHANGE
+ORDERS
+4.
+Change in Paint Specification (Ded.) .................. .
+12.
+Roadway Construction, Sta. 10+00 to 17+86 .......... .
+13.
+Miscellaneous Extra Items for Administration Buildings
+and Toll Booths .................................. .
+14.
+East Anch. Storeroom and Facilities .................. .
+15.
+Sprinkling System, Flagpole, etc ...................... .
+20.
+Changes in Electrical Equipment ...................... .
+27.
+Repairs to Timber Fenders, Piers 4 and S ............... .
+Letter Agreement re shipment of tower steel by rail 1/3/49
+Force Account ...................................... .
+March 21st, 1952
+Dated at San Francisco, California
+L.S.
+L.S.
+L.S.
+L.S.
+L.S.
+L.S.
+L.S.
+L.S.
+0.30
+562.65
+25,769.43
+8,050
+CR
+2,415.00
+3,160.00
+917.06
+2,267.84
+100
+56,265.00
+2
+51,538.86
+1,904.00
+6,704.52
+CR 26,000.00
+27,299.35
+5,875.12
+1,509.69
+4,282.51
+1,405.90
+2,892.67
+22,500.00
+33,453.89
+$8,325,084.22
+JOHN A. ROEBLING'S SONS CO. OF CALIFORNIA
+1740 17th Street
+•
+San Francisco 1, California
+FINAL ESTIMATE-CONTRACT No. 3419
+ITEM NO.
+ITEM
+UNIT
+UNIT PRICE
+QUANTITY
+AMOUNT
+36.
+Main Cable Wire, No. 6 ............................. . lbs.
+0.2088
+10,482,647 $2,188,776.69
+37.
+Wrapping Wire, No. 9 ............................... .
+38.
+Cable Bands and Splay Castings ...................... .
+lbs.
+0.4284
+285,417
+122,272.64
+lbs.
+0.7594
+252,501
+191,749.26
+39.
+High Tensile Bolts .................................. .
+40.
+1-3/8 inch Hanger Rope ............................. .
+40.
+Change Order# I-Painting 1-3/8 inch Hanger Rope .... .
+41.
+1-5/8 inch Hanger Rope ............................. .
+42.
+1-3/4 inch Hanger Rope ............................. .
+43.
+2-1/8 inch Hanger Rope ............................. .
+44.
+Hanger Fittings ..................................... .
+4S.
+Hand Rope ......................................... .
+46.
+Hand Rope Fittings ................................. .
+lbs.
+0.1897
+33,798
+6,411.48
+l.f.
+0.9976
+152,585.7
+152,219.49
+L.S.
+1,727.88
+l.f.
+2.42
+338.4
+818.93
+1.f.
+2.406
+337.9
+812.99
+l.f.
+2.349
+469.6
+1,103.09
+lbs.
+0.2668
+57,357
+15,3)2.85
+I.f.
+0.5537
+20,617.7
+11,416.02
+lbs.
+0.3254
+22,373
+7,280.17
+47.
+Structural Steel, East and West Anchorages ............ .
+48.
+Cast Steel and Forgings .............................. .
+Force Account-Hanger Spreaders .................... .
+lbs.
+0.1405
+1,209,238
+169,897.94
+lbs.
+0.2081
+137,952
+28,707.81
+4,143.40
+$2,902,640.64
+November 10th, 1950
+Dated at Tacoma, Washington
+40
+.,,,__
+.
+~
+t
+""<-~~~,~~~-:_-.:.
+__
+~-
+II
+:::-:.-=- -·-
+I
+I Wl!:.ST ANCHOR
+~
+I
+I
+!:::
+I
+~
+I
+II)
+!
+t
+I
+e»£.NT NO. I
+I
+i
+I
+I
+I
+i
+-
+t
+a•"~\~~"
+I
+~ ~
+"TOWE!j{ NO~.
+I
+I
+I
+I
+164-0°
+150
+1-0
+11
+1so1-o•
+i
+I
+,---+---------+----_L__-
+I
+R~_J
+'
+MAIN 5PA>J
+!L. B!._50..] ..
+DA..MPING JJ\l:CHANISM j
+L DAMPING /AE.CHAN15M
+11001-0
+11
+SEC.ON A-A
+: _;
+"8 "
+PART ELEVATlO~ ~ TClWER~
+--- - f:1
+--.
+:
+""-
+-1
+NC.,'6 4 & S
+Tc,u/-E ~~C.~s4 a_ -5
+r-EL-175.0O
+._._.,L-....1-"::::=--
+PIEra., J,,104
+-----------
+PLAN
+-
+..-
+Dil
+..
+_)
+I
+§a L"
+I
+'\,
+1,"1◄-)
+I
+lili
+..
+I
+."
+~II
+!
+I
+~
+I
+t!!
+..
+-
+'t,
+ri!!
+-
+·--
+-
+'19
+:
+-
+~Ii
+-
+....._
+....._
+I
+I
+12 MRSe iu a.. 11 SPACE::>@ zf .. z!.ef
+se:CTlC.'\N THRU SLc,T
+6CDIIO If-I Ft.
+------~-----------------=S=ca:le:.''...:"•~?.:o· ______ -====----------------~~=--
+f,Gi,IIOO ... -~
+~o•
+~
+~-----------------------
+►
+I"--~--
+t6r. Z?,f:04
+----
+i..
+,~il7"1; I
+·J:
+1-
+~
+..I n-rrr-~~
+I
+I
+I
+I
+I
+I
+V I'\. I/ I'\.. I/ ~,~~171" ITl,~1/
+I'\.. I/ '
+I/
+---
+--
+~
+~I
+z.eoo' v.c:.
+-
+~
+2.soo'-0"
+I 1"
+'2.·94
+o/
+<
+11,,1
+d
+N
+Ill ;
+I
+------
+-
+C-5ROUHO
+I..\NE.°'7
+-
+- - -
+ELE.VAT\C>N
+Soa \e I"• 1001
+PLAN
+-i--w.~~:::::f:;~==~==~=7=~::=E~==~===~~:'::=F~==~at===t=-
+-----
+-----
+---
+---
+·pc
+~ I/ '
+I/ '
+I/ r'\. I/
+I
+_,,,,,......-- r---...,
+,,.,,.,..,.,,,,,,.
+~
+_,,,,,...--
+I,.....,
+,,.,,.,..,.,,,,,,.
+I
+, ........
+_,,,,,...--
+_...--
+'r--,....
+,,.,,.,...--
+.......
+_...--
+I
+I
+'"
+,,.
+.,.
+; ~
+I<
+I '.
+-~
+'
+V r'\. V ~ V ~ V '
+V I'-.. V ~ / I'-.. V
+I"\. l/!"\.L/1'._ /['.,_ i/K /"
+\ I l\ V
+\ V
+~
+• !II
+I
+---
+-------- -
+-
+-
+.. -
+--·
+-
+-----
+CE:L-U5.00
+PIE.R
+.NO. 5
+PART ELEVATIO.N AT <i:_ OF 8RIDGE
+Scoole. ,•,.. ?.O'
+DATE
+REVISION
+8Y
+6-1!1·51
+Handro.11 on 5uopendcd 5pan
+f>."-l!l·
+11001-0"
+GEAIE.RAL DATA
+Lang-th oi Projac¼... __ • _____ ••• _. ___ .7250 FC1ctt.
+Length of Brid43e.. ·······-----------S979 "
+Langtt, of Sur,penaion S\ruc+ure .••• _500O
+•
+Le.ngth of Me1in 5pt,in ..••••• ________ 2800 •
+Lctn'lJi'h of Side 5pcine. ..•• __________ l 100 •
+Wi~th bdween ~blel!I. _______ •• _____ GO
+Wic:Hh of Roodway ...... ______ ... 46-Si"
+Width of Sidewal'k& 2U11e.h •.•••.• ~-'-•
+We.iqsht of \:)ridge per foot. ____ •... 8<..78 Lbs.
+Depth af Stiffenin13 Tru&s. .•.••• ___ •. 33 Fee+.
+Averoi~e Momon+ of Inertia.. ____ ~890,000 ln.4
+Heit3h½ of Tower& ... ___________ ... 502 Fee¼.
+Oiarneter c,f Cable!>. ____________ •. Z.O~ In's.
+Number of Na.G Wil"Q5 in C01b\o .•.•. 8702
+Area af Coble. __________________ 25'23/ln\!I.
+Vcrticol Cle01romce 01\ <£. Bricl13e .•.. 184.52 Feet.
+Shore. 5pom Rooidwoi~ Gri,ioleg. ______ • _3 %.
+6
+8£HT8
+8UIT7
+BEMT:I
+.. ~,:-. ..AJICl:U)~ I
+81
+~1 t.
+r-g
+---- -+--.;.;R/,..,w
+......... ) ______ _j
+TACOMA NARROWS BRIDGE
+PIERCE COU>JTY WASHINGTON
+LAYOUT~SECTIONS
+WASHINGTON TOLL BRI05E AUTHORITY
+5TATE OF WA5HIN6TON
+&~-- APPRO~Er;e2:X/
+~CHAIR.MAN ~1~· __:,NGlf,}EE~
+·-'~~-~
+_..,
+MfMBl!.R
+~~IPAL l!N~EER.
+~--~
+iJ.'-1.d...&de C11,, IQ.~
+/
+,-.,~EM&e
+D\Rt!:CTOR OF l-\\elftWA'<$
+t!;[JJHtfr.e. ef~
+AND CM\!:P S:NS\Nl!:1!.ft
+CONSUL.TING AttRoDYUAMICIST
+S(Al.1::i
+JU:>Tl!O
+STATEMENT OF COSTS
+as of June 30, 1952
+TNB AccouNT 1941-1948
+TNB
+CR
+OUTSTANDING
+TOTAL COST
+PERCENTAGE
+OLD
+NEW
+CONSTRUCTION
+REIMB. &
+CHARGES
+NEW
+OF COST NEW
+AMOUNT
+STRUCTURE
+STRUCTURE
+1948-19S2
+EARNINGS
+7-1-S2
+STRUCTURE
+STRUCTURE
+ADMINISTRATION
+Admin. & Legal-Hdqrtrs .. $ S,414.S2 $ S,414.S2
+0
+o
+♦
+♦
+♦
+♦
+0
+0
+o
+O
+O
+I
+$
+70,298.S7 o
+o
+o
+•
+■
+•
+o
+•IO O
+0 ............ $
+70,298.S7
+.SO%
+Admin.-Field Office ...... IO
+O
+O
+O
+o
+o
+o
+O
+■
+0
+0 . . . . . . . . . . . . . . . . . . . . . . . .
+117,595.72 . ........... 2A$2,407.52 . ............. . ...........
+9G 1,650.00
+121,653.24
+.87
+CONSTRUCTION
+Cons tr. Est. & Force Acct .. . . . . . . . . . . . . . . . . . . . . . . . .
+o
+o
+O
+O
+o
+O
+O
+O
+IO
+O
+o
+11,2P,724.86 . ........... . . . . . . . . . . . . . . . . . . . . . . . . . . ............
+Extra Construction ........ ............ Io
+O
+O
+O
+o
+o
+•
+o
+O
+O
+0
+o
+O
+o
+O
+•
+0
+0
+0
+IO
+O
+o
+10,818.01 . . . . . . . . . . . .
+15,000.00 . ............. ............
+Builders Risk Insurance .... . . . . . . . . . . . . . . . . . . . . . . . . ............
+147,096.01
+IO
+O
+o
+•
+o
+•
+o
+•
+o
+O
+o . ........... 11,400,638.88
+81.37
+ENGINEERING
+tDesign ................... 266,533.02
+IO
+O
+O
+O
+IO IO
+O
+O
+0
+266,533.02
+58,547.03 ............ 2A
+573.68
+t 325,653.73
+2.32
+Location ................. ............ o
+O
+O
+O
+O
+IO
+O
+O
+o
+O
+♦
+o
+o
+o
+O
+O
+O
+O
+O
+IO
+O
+o
+69,702.05
+IO
+o
+o
+•
+o
+•
+•
+o
+•
+•
+o ............
+69,702.05
+.so
+Inspection ................ . . . . . . . . . . . .
+•
+•
+•
+o
+o O O ••I•• ............
+143,340.37 . ........... ............
+143,340.37
+1.02
+Consulting ...............
+73,968.79 . . . . . . . . . . . .
+73,968.79
+22,700.57 ............ . . . . . . . . . . . .
+96,669.36
+.69
+INTEREST AND DISCOUNT
+Bond Discount .... : ....... •
+•
+0
+•
+0
+•
+0 •••Io
+•
+0
+0
+0
+0
+O
+O
+o
+I
+Io O ............
+700,000.00 ............ O
+O
+O ••IOI• 0
+•
+0
+: : i ::::::~:: }
+Int. durin/ Construction ... . . . . . . . . . . . . ............ 0
+IO
+O
+o
+O
+o
+o
+o
+o
+O
+•
+1,312,500.00
+o
+•
+o
+O
+•
+o
+o
+O
+IO
+O
+0
+IO
+O
+O
+o
+o
+O
+o
+o
+o
+o
+o
+12.32
+Rev. Bon Fund Earnings ..
+o
+•
+0
+0
+0
+0
+0
+o
+o
+o
+Io ............ ............ IO
+O
+O
+O
+o
+O
+O
+o
+O
+o
+o
+o
+o
+$26,023.43
+0
+•IO O
+o
+O
+o
+o
+o
+o
+0
+Construction Fund Earnings . . . . . . . . . . . . ............ 0
+0
+0
+o
+O
+o
+O
+O
+IO
+O
+0 . ............. 260,741.43 ............
+DESIGN RESEARCH
+Model Studies-U. of W ...
+66,861.69 ............
+66,861.69
+21,479.68
+*47,667.37 . ...........
+40,674.00
+.29
+MISCELLANEOUS
+Dismantling .............. 490,240.83
+490,240.83
+Insurance Recovery ........
+35,555.23
+35,555.23
+Investigation of Collapse ...
+17,887.60
+17,887.60
+Misc. Chgs. against Rev ...
+7,434.89
+7,434.89
+Minor Capital Outlay ..... o
+o
+o
+o
+o
+O
+O
+o
+O
+IO
+0 ............ . . . . . . . . . . . .
+17,358.94 . ........... er
+340.00
+17,018.94
+.12
+TOTALS .............. $963,896.57 $556,533.07 $407,363.50 $13,919,161.81 $ 334,432.23
+$19,291.20 $14,011,384.28
+100.00%
+t A considerable portion of this amount was devoted to research.
+* Public Roads Administration participation.
+IMPORT ANT DIMENSIONS
+Total structure length ______ _
+Suspension bridge __________ _
+Center suspension span__ ______________ _
+Shore suspension spans, each_ _ _ . __
+East approach and anchorage _______ _
+West approach and anchorage ___________ _
+5,979 feet
+5,000 feet
+_____ 2,800 feet
+1,100 feet
+365 feet
+___
+__
+614 feet
+Center span height above water_ __
+__
+_ __ _____________
+__
+_ 187 .5 feet
+Width of roadway ____________________________________________________________ -49 ft. 10 in.
+Width of sidewalks (2), each________
+___________
+__
+____________
+3 ft. 10 in .
+Diameter of suspension cables_____
+__
+__ _ __ _ _______________ _
+Weight of suspension cables _______________________________________ _
+Total length of single wire______________ __ _ __
+__
+__ ___ _ _____ _
+Suspended weight sustained by cables ( in excess of) _____ _
+Number of No. 6 wires, each cable __
+Shore anchors for cables, weight____
+_ ____________________________ _
+TOWERS
+Height above piers _________ _
+Weight of each tower-----------------------------
+. 20¼ inches
+----5,441 tons
+20,000 miles
+18,160 tons
+8,705
+_ 66,000 tons
+_467 feet
+2,675 tons
+PIERS ON WHICH MAIN TOWERS REST
+Area ___ _
+Total height of east pier
+Depth of water, east pier _
+East pier penetration at bottom
+Total height of west pier
+Depth of water, west pier___
+West pier penetration at bottom _
+/42
+_ 119 feet
+- -------------
+-
+-----------
+--·
+--
+·--------
+-- - -- . -- - - -
+-
+by 66 feet
+265 feet
+_135 feet
+90 feet
+____ 215 feet
+120 feet
+__ 55 feet
+ILLUSTRATIONS
+•
+Page No.
+Inside cover, front -Aerial view of completed bridge showing Mc. Rainier in the background _____________ . __ by Boersig
+44
+Cross-section drawing of completed main cower pier ..................... ·-······---·····---·------··---·---·-·-·-···---·-·---·by Gilmore
+45
+Piers 5, 4 and Tower 3, July 1948, showing old pier pedestals removed.·-··-···············-·-·-···················by Simmer
+46
+East Anchor, July 1948, showing old concrete left for encasement in new anchorage ......................... by Simmer
+47
+Ease Anchor, August 1948, showing partial encasement of old concrete (Stage A complete) ......... _. __ by Simmer
+48
+Tower 5 erection, April 11, 1949 ( immediately prior co earthquake). Saddle atop left leg and work
+barge co left of pier ............................................. ··································---··········-······························ by Simmer
+49 -
+Barge sinking at Tower 5 shortly after earthquake which threw saddle from top of tower
+( 4-13 -49) ........................................................................................................................................... by Tribune
+50
+West Anchor, April 1949, showing anchor bars partially encased in Stage B concrete ......................... by Simmer
+51
+Tower 4 erection, May 1949, Tower 5 in background erected complece ... -·········-··-·········--·-····-·····-··-·by Simmer
+52
+Tower 5 erection showing outrigger method of ereccion ......... ·----·-·············-·-------·-·--·---···--·-···--···----···by Tribune
+5 3
+View from East Anchorage, Occober 1949, at start of cable spinning ........... ·----·-·---·-·------·--·······-·-·····by Simmer
+54 -
+View of cable saddle showing grooved cable trough with spinning guide wire in posicion ................. by Tribune
+5 5 -
+Compacting cable ...................................................................................................................................... by Tribune
+56
+Splay point of main cable at East Anchorage ................................................ ·---·········----··-·-·--··- .......... by Tribrme
+57
+Tower 5 showing first truss steel temporarily cantilevered and traveling cranes in position for
+erection of trusses ................................................................................................................................. by Tribtme
+58
+Placing cable bands... ........... ............... ..
+. ··••················-··································-··································b'Y Tribune
+59
+Placing hangers ............................................................... ·········-······························································b'Y Tribtme
+60
+Air view of truss erection, approximately fifty per cent complete ........ ·-································-················by Boersig
+61
+Pouring deck concrete ...... _.....
+_ .... __ ....... ········-····················-·-·-·--····-----·-····---·--·----------·---·----·by Simmer
+62
+Air view during deck concrete pours.
+. .............. ···········-······-········-··-···-········-·---·····-····--··•···········by Boersig
+63
+Ease Anchorage and Plaza.
+. . ... .. .. ·············•··-·····-•··•···················-·······························by Simmer
+Inside cover, back -
+Air view of vicinity.
+·•-•·············-······················································-······•·-··•··by Boersig
+ANCHOR CABLES ;JI(
+S<EMOVE.O ~
+WATER
+WATER
+Cross-section drawing of complerecl mam rower pier.
+/44
+WATER
+WATER
+WOODEN
+SHEATHING
+by Gilmore
+Piers 5, 4 and Tower 3, July 1948, showing old pier pedesrals removed.
+45
+by Simmer
+Easr Anchor, July 1948, · showing old concrete lefc for encasement in new anchorage . ......... ............ b31 Simmer
+A
+--.J
+..
+,
+,;;.;.~~~ '\
+, . . ,.
+i'o/ .
+,_
+-
+l
+•
+. .
+.~ " ... :"
+.
+~
+- ,
+--~ -.
+::; .F.,· .:. ..
+"'1v.'
+,·
+~
+~ .' ·.• ,.
+. . --
+~
+•
+.c,.. ·::·.!
+.
+. ..:,~ - ,
+.. . -
+- "' - -
+·, -
+'I
+-~ --
+c:
+~ ...
+<,,
+(·
+\ .
+, -~.
+"
+. ~
+-
+"'
+.
+East Anchor, August 1948, showing partial encasement of old concrete ( Stage A complete ) ............. by Simmer
+Towe::r 5 e::re::crion, April 11 , I 9ii9 ( imme::diate::ly prior to earthquake) . Saddle arop left leg and work
+barge:: to left of pier.
+by Simmer
+li8
+Barge sinking at Tower 5 shortly after earthquake which threw saddle from top of rower
+( 4-13-49 ).
+. .. ..... ....... ...... .....
+..... .... .......... ......
+. .... ... ........... . by Trib11ne
+V,
+0
+Wesr Anchor, April 1949, showing anchor bars partially encased in Stage B concrece ......................... by Simmer
+Tower 4 erection, May 19'19, Tower 5 111 background erected complete.
+5 L
+by Simmer
+Towc:r 5 c:recrion showing outrigger method of erection.
+52
+by Tribune
+• h W
+..
+}-
+--
+~
+View from East Anchorage, October 1949, at stare of cable spinning ................................................. by Simmer
+I
+~
+,1
+k
+•
+II /
+I
+~
+..,
+I
+•
+•
+0
+•
+' l i
+View of cable saddle showing grooved cable trough with spinning guide wire in position.
+54
+by Tribune
+Vl
+Vl
+Compacting cable _________ _
+_ ___ ·-----------------------------------------------------------------------------------------------by Tribune
+Vl
+C\
+Splay point of main cable ar Ease Anchorage. ______________________________________________________________________________________ by Tribune
+Tower 5 showing first truss steel temporarily cantilevered and traveling cranes in position for
+erection of trusses... .. . . . ................ ····----·········· --· . _ ... ..
+. .... ·--·-· -----·-------··------·-··········-----------by Trib11ne
+57
+V,
+00
+Placing cable bands ............................................................................................................................... by Tribune
+' \
+Placing hangers.
+\
+I
+1
+I
+l
+I
+I
+I
+I
+I ,,
+I
+59
+---------------- ____ ----------------· _____________ by Tribune
+G'\
+0
+Air view of truss erecr· 10n ap
+.
+,
+prox1marely fif ry per cent co
+I
+mp ere ..
+···················by Boersig .
+""'-
+.
+-~
+_.-"-
+~
+••• •
+.. .. •• .... ---
+.. "I
+~ .. . .
+_ .......  ,· .~
+'
+•'
+•
+Pouring deck concrere._ ............................ _. __ ..... --········ ·-···----------·-------------------------····-·--··-··-·-··--·-·-------·------·by Simmer
+Air view during deck concrere pours. ___________ _
+·------------________ by Boersig
+• I
+·······························by Simmer
