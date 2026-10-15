@@ -1,6 +1,6 @@
 ---
 name: remotion-technical-guardrails
-description: Supplement official Remotion skills with project-specific scene-continuity and headless-rendering invariants. Use alongside remotion-best-practices when implementing or rendering a multi-scene Remotion video; do not use for creative direction or as an API reference.
+description: Supplement official Remotion skills with project-specific scene-continuity, research-context, and headless-rendering guardrails. Use alongside remotion-best-practices when implementing or rendering a multi-scene Remotion video; do not use for creative direction or as an API reference.
 ---
 
 # Remotion Technical Guardrails
@@ -29,6 +29,12 @@ Render, still, frame-export, and other non-interactive output steps must use hea
 If headless rendering fails, diagnose the failure and try a headless-compatible browser executable or configuration when appropriate. An old operating system, a missing downloaded browser, a timeout, or a previous local workaround is not permission to switch to non-headless mode. If no headless path succeeds, report the blocker and stop before claiming that the deliverable was rendered.
 
 Interactive Remotion Studio preview is not a render step and may remain visible when preview or user steering is needed.
+
+## Research Context And Token Use
+
+Use the approved learning direction and creative brief during implementation. When a factual or asset question arises, consult the relevant prior evidence or source excerpt before starting another search or rereading a full research archive. Return an unsupported essential claim to `knowledge-planner`, or a material change to visual intent to `remotion-video-director`, as a specific question.
+
+When the runtime provides token usage data, inspect input and tool-result volume by phase and look for repeated large source reads. If repeated retrievals or rising context use do not resolve an essential question or implementation decision, stop exploratory searches and broad rereads. Continue targeted checks needed for accuracy or selected assets, and surface any remaining uncertainty. Do not impose a fixed token ceiling or shorten indispensable explanation to reduce usage. Without usage data, do not attribute high consumption to a particular step.
 
 ## Handoff
 

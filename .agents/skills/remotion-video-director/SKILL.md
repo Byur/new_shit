@@ -13,7 +13,7 @@ Own the narrative, full spoken explanation (narration script), storyboard, visua
 
 Do not own Remotion API choices, caption synchronization code, frame calculations, code review, Studio operation, media handling, debugging, render commands, package upgrades, or technical delivery validation. Use `remotion-best-practices` for those responsibilities, `remotion-technical-guardrails` for project-specific continuity and render-mode constraints, and `remotion-studio-qa` for systematic playback, transition, flicker, and frame-level verification.
 
-Do not reopen topic selection, source research, or lesson scope simply to fill the video. Use `knowledge-planner` first when those decisions are unresolved. If the approved brief is too skeletal to make its intended reasoning understandable, flag the missing bridge and request a targeted clarification or revision; do not silently turn the gaps into decorative scenes.
+Use the approved learning direction and evidence as the factual basis for audiovisual production. Do not reopen topic selection, subject research, or lesson scope to fill the video. If the brief lacks an essential explanation or a visual choice exposes a disputed teaching claim, return that specific question to `knowledge-planner` for a targeted revision; do not silently turn the gap into a decorative scene.
 
 ## Collaboration Order
 
@@ -45,7 +45,7 @@ Choose visual media according to what the audience needs to observe, not accordi
 
 When the subject involves physical objects, environments, people, or real-world processes, consider whether authentic footage, photography, existing illustrations, diagrams, or 3D assets can reveal appearance, scale, behavior, context, or mechanism more faithfully than a procedural reconstruction. The medium itself is not proof of a claim. Distinguish whether an asset is being used as evidence, illustration, or simulation, and communicate that distinction to viewers when confusion would affect understanding.
 
-Explore potentially useful assets early when their availability or constraints could change the visual concept. Let compelling evidence or source material inspire scenes, not merely fill predefined placeholders. Combine real-world material with animation, overlays, cutaways, or transformations when the combination makes otherwise hidden mechanisms understandable.
+Explore potentially useful visual references and assets early when their availability or constraints could materially inform the format or resolve a concrete scene decision. Let compelling evidence or source material inspire scenes, not merely fill predefined placeholders. Combine real-world material with animation, overlays, cutaways, or transformations when the combination makes otherwise hidden mechanisms understandable. Keep this exploration focused on visual direction and the established factual basis.
 
 Consider changes of perspective, spatial scale, or visual medium when the underlying knowledge calls for them. A shift from a real object to an internal mechanism, or from an observable phenomenon to an explanatory model, can itself become a meaningful narrative event.
 

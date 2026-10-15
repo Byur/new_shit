@@ -33,6 +33,12 @@ Test the proposed angle against a concrete learner misconception or decision. As
 
 Keep factual claims honest. Distinguish verified facts from explanatory simplifications and personal interpretation; use reliable primary material when the subject is current or consequential.
 
+## Research Boundary
+
+Research only to resolve uncertainties that materially affect the learning promise, essential mechanisms, factual accuracy, or selected evidence. Once those are sufficiently supported, or their limits are clear enough to qualify or exclude a claim, stop expanding the research scope. Do not pursue adjacent questions merely because they are interesting or available.
+
+Before reopening a source search, identify the specific unresolved claim it could change and check the evidence already gathered. A concrete contradiction or missing indispensable bridge warrants a targeted follow-up; it does not reopen the whole subject. This boundary does not reduce the explanation needed to fulfill the learning promise.
+
 ## Learning Journey And Narrative Causality
 
 Plan a progression of understanding, not a sequence of topics. Ask what the learner first notices or assumes, what concrete event or contradiction makes that understanding inadequate, what new question this creates, and what explanation resolves it or exposes a further question. The successive teaching beats should earn their place through a change in the learner's understanding, not because the next term appears on a checklist.
