@@ -475,7 +475,8 @@ restyle removed the exposure difference that made the unmodified style unusable.
 
 What is *not* the same is the map area itself. Same frame, same camera, different
 projection and different coastline data; that difference is what the comparison
-images in `output/coffee-explained/map-backend/` exist to show.
+images existed to show. Those images were deleted along with the rest of the
+one-off QA artifacts once both films were finalised.
 
 ### A QA note that came out of this: h264 is not bit-deterministic
 
@@ -610,11 +611,11 @@ npx remotion render CoffeeExplained out/svg.mp4 --concurrency=6
 # frame-level QA (add --gl for the MapLibre composition)
 node scripts/qa-frames.mjs --plan scripts/qa-plan-gl.json
 
-# side-by-side composites (top = SVG, bottom = MapLibre)
-node scripts/compare-map-backends.mjs 900 6300 7300 11850
+# side-by-side composites (top = SVG, bottom = MapLibre); the comparison script
+# and its outputs were one-off and were deleted at finalisation
 ```
 
-Artifacts in `output/coffee-explained/map-backend/`:
+Artifacts produced at the time (deleted at finalisation):
 
 - `coffee-explained-svg.mp4`, `coffee-explained-gl.mp4` — both 14373 frames,
   1920×1080, 30 fps, 479.146667 s
