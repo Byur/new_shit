@@ -81,14 +81,33 @@ const integerToSpoken = (n) => {
   return String(n);
 };
 
-/** "6.8" -> "六点八", "1000" -> "一千". Leaves everything else untouched. */
+/** "6.8" -> "六点八", "1000" -> "一千". Numbers only, no surrounding text. */
+export const numberToSpoken = (match) => {
+  const [whole, fraction] = match.split('.');
+  const head = integerToSpoken(Number(whole));
+  if (fraction === undefined) return head;
+  return `${head}点${[...fraction].map((d) => DIGITS[Number(d)]).join('')}`;
+};
+
+/**
+ * Digits -> spoken Chinese, with the three patterns that read differently in
+ * Chinese than a literal substitution would give:
+ *
+ *   1997年   -> 一九九七年       (years are read digit by digit, not 一千九百九十七)
+ *   83%      -> 百分之八十三     (the word comes first)
+ *   +2.5°C   -> 正二点五摄氏度
+ *
+ * Everything else falls through to numberToSpoken.
+ */
 export const toSpoken = (text) =>
-  text.replace(/\d+(?:\.\d+)?/g, (match) => {
-    const [whole, fraction] = match.split('.');
-    const head = integerToSpoken(Number(whole));
-    if (fraction === undefined) return head;
-    return `${head}点${[...fraction].map((d) => DIGITS[Number(d)]).join('')}`;
-  });
+  text
+    .replace(/(\d{4})(?=\s*年)/g, (m) => [...m].map((d) => DIGITS[Number(d)]).join(''))
+    .replace(/(\d+(?:\.\d+)?)\s*%/g, (_m, n) => `百分之${numberToSpoken(n)}`)
+    .replace(/([+＋\-−‒–—]?)\s*(\d+(?:\.\d+)?)\s*°\s*C/gi, (_m, sign, n) => {
+      const lead = sign === '+' || sign === '＋' ? '正' : sign ? '负' : '';
+      return `${lead}${numberToSpoken(n)}摄氏度`;
+    })
+    .replace(/\d+(?:\.\d+)?/g, (match) => numberToSpoken(match));
 
 /* ------------------------------------------------------------------ */
 /* WAV helpers                                                         */

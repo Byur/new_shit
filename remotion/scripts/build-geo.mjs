@@ -8,7 +8,11 @@
  * strings. Everything downstream is static data, so this runs once and the
  * result is committed.
  *
- * Usage: node scripts/build-geo.mjs
+ * Usage: node scripts/build-geo.mjs [--out <file>] [--window lon0,lon1,lat0,lat1] [--width <n>]
+ *
+ * Defaults reproduce src/coffee/geo.ts exactly. The ENSO piece asks for the
+ * opposite view of the planet: a Pacific-centred window, so the ocean the film
+ * is about sits in the middle of the frame instead of being cut in half.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -17,7 +21,11 @@ import {fileURLToPath} from 'node:url';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PKG = path.resolve(HERE, '..');
 const CACHE = path.join(PKG, '.cache/geo');
-const OUT = path.join(PKG, 'src/coffee/geo.ts');
+
+const argOf = (name, fallback) => {
+  const i = process.argv.indexOf(name);
+  return i === -1 ? fallback : process.argv[i + 1];
+};
 
 /**
  * The window: everything from the Pacific coast of Mexico across to New
@@ -25,8 +33,48 @@ const OUT = path.join(PKG, 'src/coffee/geo.ts');
  * well inside this, and cutting the empty Pacific keeps the aspect ratio
  * usable instead of wasting a third of the width on open water.
  */
-const WINDOW = {lon0: -130, lon1: 170, lat0: -45, lat1: 45};
-const WORLD_W = 2000;
+const WINDOW = (() => {
+  const raw = argOf('--window', null);
+  if (!raw) return {lon0: -130, lon1: 170, lat0: -45, lat1: 45};
+  const [lon0, lon1, lat0, lat1] = raw.split(',').map(Number);
+  return {lon0, lon1, lat0, lat1};
+})();
+const OUT = path.resolve(PKG, argOf('--out', 'src/coffee/geo.ts'));
+const WORLD_W = Number(argOf('--width', 2000));
+
+/**
+ * Pacifying a world map cuts the planet somewhere, and for a Pacific-centred
+ * window the cut lands in the mid-Atlantic at 25°W. Natural Earth stores
+ * longitudes as -180..180, so every vertex west of the cut would project to a
+ * negative x and the whole Americas would silently vanish off the left edge.
+ *
+ * With --wrap, each closed ring is first *unwrapped* (each vertex expressed as
+ * the longitude nearest its predecessor, so a ring is continuous even if it
+ * crosses ±180) and then translated by whole turns until it sits inside the
+ * window. Off-window geometry is then clipped by the renderer.
+ */
+const WRAP = process.argv.includes('--wrap');
+
+const unwrapRing = (points) => {
+  if (!WRAP || points.length === 0) return points;
+  const out = [points[0].slice()];
+  for (let i = 1; i < points.length; i++) {
+    let lon = points[i][0];
+    const prev = out[i - 1][0];
+    while (lon - prev > 180) lon -= 360;
+    while (prev - lon > 180) lon += 360;
+    out.push([lon, points[i][1]]);
+  }
+  // translate the whole ring by whole turns until it is inside the window
+  let shift = 0;
+  const first = out[0][0];
+  if (first < WINDOW.lon0) {
+    shift = Math.ceil((WINDOW.lon0 - first) / 360) * 360;
+  } else if (first >= WINDOW.lon0 + 360) {
+    shift = -Math.ceil((first - (WINDOW.lon0 + 360)) / 360) * 360;
+  }
+  return shift === 0 ? out : out.map(([lon, lat]) => [lon + shift, lat]);
+};
 const WORLD_H = Math.round((WORLD_W * (WINDOW.lat1 - WINDOW.lat0)) / (WINDOW.lon1 - WINDOW.lon0));
 
 /** Points closer together than this (in world units) are collapsed. */
@@ -51,13 +99,22 @@ const decode = (topo, objectName) => {
     });
   });
 
+  /**
+   * Returns the ring's vertices as [lon, lat]. With --wrap each ring is first
+   * made continuous across ±180 and then translated by whole turns until it sits
+   * inside the window. Without that step every vertex west of WINDOW.lon0 keeps
+   * its raw longitude, and for a Pacific-centred window that silently pushes the
+   * entire Americas off the left edge of the world space: the map still draws,
+   * QA still sees ink, and the only symptom is that the basin the film is about
+   * is empty ocean.
+   */
   const ringOf = (indexes) => {
     const points = [];
     for (const index of indexes) {
       const arc = index < 0 ? arcs[~index].slice().reverse() : arcs[index];
       for (let i = points.length === 0 ? 0 : 1; i < arc.length; i++) points.push(arc[i]);
     }
-    return points;
+    return unwrapRing(points);
   };
 
   const polygonsOf = (geometry) => {
@@ -186,7 +243,7 @@ const main = () => {
   lines.push(' * via the world-atlas TopoJSON distribution, decoded and projected to');
   lines.push(' * a plate carrée world space. The projection is deliberately');
   lines.push(' * equirectangular: on screen a horizontal line is a line of constant');
-  lines.push(' * latitude, which is exactly the fact the coffee belt is about.');
+  lines.push(` * latitude, which is exactly the fact ${argOf('--about', 'the coffee belt is about')}.`);
   lines.push(' */');
   lines.push('');
   lines.push('/** The geographic window the world space covers. */');

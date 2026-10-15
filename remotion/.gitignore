@@ -28,3 +28,8 @@ public/*-narration.wav
 # The basemap itself is NOT baked. Doing so saved only ~19 % of render time
 # because the network was never the bottleneck; the render fetches the style,
 # glyphs and 1.3 MB of tiles from demotiles.maplibre.org instead.
+
+
+# public/tacoma/* IS tracked on purpose. Those stills are public domain and the
+# film needs them to render; scripts/fetch-tacoma-assets.mjs can re-download the
+# originals, and docs/tacoma-narrows-bridge.md records source and licence.
