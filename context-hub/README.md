@@ -67,11 +67,19 @@ GitHub CLI MCP endpoint 为 `http://127.0.0.1:7777/github/mcp`，仅包装固定
 
 `github_weekly_trending_snapshot` 读取同一数据集的 ISO 周快照，仅作为实时 GitHub Trending 页面不可访问或明显过期时的有界兜底；报告必须披露 `capturedAt`、实际 `period` 和可见 `count`，不得声称已经验证完整 Top 30。
 
-Trending 选择由 `github_rank_trending_candidates` 在 MCP 服务端执行“两层”确定性算法：先只硬过滤 AI 相关性、仓库证据、60 天排重和最低事实证据；所有通过硬过滤的可见候选都进入排序。服务端返回 `ranking`、`excluded`、`selected`、分项 `scores`、`weights` 和 `shortfall`，Agent 不得在提示词或写作阶段重新计算、增加门槛或覆盖排序结果。算法的权重与归一化规则以 `src/github-cli.ts` 的 `trending-ranking-v1` 实现为准；该分数只负责综合排序，不是入选门槛。排序后周榜取前 3 个、月榜取前 2 个，并跨榜去重；候选池不足时报告缺口，不通过收紧条件或外推不可见项目凑数。
+### 每日发现（discovery-v1）
 
-Trending 的解释分为两个维度：`近期热门`看短窗口排名和 `period_stars`，`主流`看总 stars、forks、项目成熟度、发布/文档、社区或采用信号；跨快照重复出现才能标记为 `持续热门`。报告必须把“近期热度依据”和“主流度依据”分开，不能用一次增长高峰直接推断主流。
+AI Trending 的目标是每日拓展视野，范围包括 AI 应用、开发工具、重要产品的开源插件/集成和工作流生态。`github_select_discoveries` 是新任务的唯一选择入口；`github_rank_trending_candidates` 保留为旧榜单调用的兼容接口，新任务不调用它。没有周/月配额，也没有最低总 stars、仓库年龄或成熟度门槛。
 
-这些维度不构成额外筛选门槛：通过 AI 相关性、来源可核验、最低证据和 60 天排重的候选，不会因为主流度未知而被删除。权重算法由 MCP 服务端执行，只能让多个信号参与综合排序，不能把综合分数变成过滤条件；缺失指标由服务端按未知/中性信号处理，不当作 0 分。固定权重的目的只是保证结果可复现，不是提高筛选严格度。
+1. Agent 先声明细分主题或产品生态，再通过 `github_search_repositories`、Trending、官方目录/发布资料发现候选。搜索返回的是有界结果，不是完整领域排名；不得根据候选表现事后定制比较范围。每个 scope 声明查询、原始来源、观察日期、指标、窗口与完整的观察名单。跨 scope 可以重叠，同一仓库最终只选一次。
+2. Agent 阅读原文，核验用途/生态关系、仓库身份和事实证据；Context Hub 提供60天去重。项目不必直接实现 AI，但要说明它支持的重要产品/工作流及来源。早期、小众、非生产成熟项目可以入围，采用限制写进正文。
+3. 每个项目必须有近期趋势依据：最多30个连续UTC日的完整窗口内正关注增量（stars、下载或独立参与者），或该窗口内发生的独立官方收录、集成、实际采用事件。窗口结束距报告日少于30天，来源检查距报告日最多7天且不早于证据日期。已有官方关系、作者自己的发布、commit、总 stars 和单次排名均不能替代趋势依据。
+4. `github_attention_window` 提供 stars 当前窗口及相邻等长基线的覆盖检查。没有完整基线时只能说“新增关注”，不能说“加速”；有基线时由服务计算增量变化。Agent 不手算替代服务。事件需给出事件日期、独立主体、原始链接及具体事实。服务拒绝未知、零增量、未来、过期、覆盖不完整或不等长基线，不给缺失趋势补中性分。
+5. 在同一 scope/指标/窗口内，先按绝对增量排序，再比较等长基线的增量变化、证据日期与规范仓库名；不直接奖励百分比，避免小基数暴涨压过实质关注。局部位置在去重前计算，明确只覆盖有可比证据的观察，不能写成全领域前列。认可事件每个候选只计一个，按日期与名称解决并列；不是主观认可度打分。
+6. 跨 scope 选择依次偏向已收录较少的生态、较少的 scope、局部位置、较新证据、稳定 scope ID、仓库名。多样性用于组合，不是硬剔除；没有其他生态时可继续从同组补齐。默认5个，少于5个返回 `shortfall`。跨来源不比较 stars 与下载等绝对值，不生成伪全局热门分。
+7. Agent 使用服务返回的 `selected` 顺序写作；服务返回 `ranking`、`excluded`、`evidence`、`filterReasons` 便于复盘。没有来源或没有趋势不等于冷门，不得编造。服务保证输入检查、时间窗口、计算与选择确定性；链接真实性、页面内容、独立认可及范围语义仍由 Agent 核验，`verifiedFields` 不是机器认证网页的证明。
+
+`github_search_repositories` 按 query 返回至多100条；`incompleteResults` 与 `complete` 披露截断，只用于发现，不能将按总 stars/updatedAt 排序当成趋势。跨批候选应分批调用 Context Hub 的来源检查（每批最多50个）。来源之一不可用时可继续其他已核验来源；选中项目证据不足就排除，全部来源失效或去重不可用时停止运行。
 
 配套 Skill 位于 [`skills/context-hub/SKILL.md`](skills/context-hub/SKILL.md)，其中包含 Agent 的工作区路由、上下文读取顺序和同步约束。
 
@@ -135,3 +143,37 @@ npm test
 ```
 
 当前实现只对本地文件做解析和入库，不访问网络、不执行 automation，也不会删除或覆盖「优化是个好事」原有文件。
+
+## AI Trending HTML 归档契约 v1
+
+本节由每日 Agent 回读，`src/report-contract.ts` 在 CLI 校验和 SQLite 导入时执行。这里只固定局部语义结构；Agent 沿用原有 CSS/视觉模板，Context Hub 不生成 HTML，不维护另一套视觉模板。历史无版本报告继续按旧解析器读取，不自动重写。
+
+- 文件名保持 `ai-trending-YYYY-MM-DD.html`。`head` 包含 `meta name="report-schema" content="ai-trending/1"` 与 `meta name="report-date" content="YYYY-MM-DD"`，日期必须与文件名一致。UTF-8、doctype、唯一非空 title/h1、静态 HTML；不放 script/iframe/template。
+- 唯一正文容器标记 `data-report="ai-trending"`。其内部按顺序保留四个 `section`：`report-summary`、`report-projects`、`report-synthesis`、`report-sources`，每节一个非空 h2。标题文案可变化，ID 不变。hero 可作为 summary section，原 class/CSS 可继续使用。footer 不额外制造 h1。
+- 摘要为 `p data-field="summary"`。正文完整存在 HTML 文本节点中，不通过 CSS 伪元素、脚本、图片或隐藏 JSON 承载必要内容。
+- 项目按服务选中顺序放入 `report-projects`；每个是 `article class="exhibit" id="project-owner-repo" data-project="owner/repo"`，id 使用小写安全字符且唯一。保留视觉 class，内部 div 排版自由。
+- 每个项目唯一 h3 内含 `a data-role="repository" href="https://github.com/owner/repo"`；仓库链接无 fragment/query，显示名称可附编辑副标题。
+- 每个项目按顺序具有五个 `p`，`data-field` 分别为 `positioning`、`capabilities`、`use-cases`、`trend`、`limitations`。每段用可见 strong 标签写“项目定位”“核心能力”“适用场景”“关注依据”“局限与采用条件”等标签，正文自由写作，不新增五个小标题。趋势日期用 `<time datetime="YYYY-MM-DD">YYYY-MM-DD</time>`，正文区分新增关注、加速与新认可事件。
+- 来源是 `p` 或 `ul data-field="sources"`，至少两个有可见标题的原始 HTTP(S) 链接，包含项目资料与服务返回的趋势证据 `sourceUrl`。`trend` 段显示对应 `evidenceDate`。所有链接使用真实 a href，禁止空链接和 javascript URL。
+- 0项目时用 `p data-field="empty-state"` 说明无合格新增；1项目只写个案观察，不硬凑跨项目趋势。来源章节保留观察窗口和必要出处。排名正文用 `No. 1` 或“第1名”，不写 `#1`；代码和 URL fragment 可保留。
+
+每次生成后先校验（selection 是本次服务返回对象的原样临时保存，非手抄名单）：
+
+```bash
+node --experimental-strip-types /Volumes/Project/new_shit/context-hub/src/cli.ts validate-report \
+  --file "/Users/byur/Documents/优化是个好事/ai-trending-YYYY-MM-DD.html" \
+  --selection /private/tmp/ai-trending-current-selection.json
+```
+
+该命令检查选中仓库、顺序、证据链接/日期、段落与结构。通过后使用既有 MarkItDown Importer CLI 与 Vault 的默认 before Hook（排名规范化）转换；不绕过 Hook，不原地预处理源 HTML。该 CLI 会额外生成文件名 h1，归档验收允许它存在；项目保持 Markdown `###` 和五段加粗标签。
+
+转换后沿用 automation 约定整理 `created`、`summary`、具体技术 tags，保留 `source_file`、`converted_at`、`converter`，再验收实际 Markdown：
+
+```bash
+node --experimental-strip-types /Volumes/Project/new_shit/context-hub/src/cli.ts validate-report \
+  --file "/Users/byur/Documents/优化是个好事/ai-trending-YYYY-MM-DD.html" \
+  --selection /private/tmp/ai-trending-current-selection.json \
+  --markdown "/Users/byur/Documents/Obsidian Vault/项目卷/优化是个好事/AI Trending/ai-trending-YYYY-MM-DD.md"
+```
+
+校验器读取真实 Markdown，逐项目核对段落、链接、顺序及 source_file，失败不能声称归档完成。报告中间选项文件在完成后删除；通用校验器与回归测试保留用于后续每日运行。SQLite 中新版 `content_json` 同时保留 `archiveSchema`、项目身份及五段内容，便于稳定读取。

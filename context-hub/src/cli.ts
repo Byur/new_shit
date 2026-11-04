@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import path from 'node:path';
+import {readFile} from 'node:fs/promises';
+import {validateArchivedMarkdown, validateTrendingReport} from './report-contract.ts';
 import {DEFAULT_DB_PATH, DEFAULT_EXPORT_DIR, compactPrompt, exportCompactMemory, getOverview, importWorkspace, initDatabase, openDatabase, workspaceIdFor} from './lib.ts';
 
 type CliOptions = Record<string, string | boolean>;
@@ -21,7 +23,7 @@ function textOption(value: string | boolean | undefined): string | undefined {
 }
 
 function usage() {
-  console.log(`Context Hub\n\nCommands:\n  init\n  import --source <workspace-dir> --memory <memory.md>\n  memory --workspace <slug>\n  prompt --workspace <slug>\n  stats --workspace <slug>\n\nThe importer stores metadata and normalized source items in SQLite. It does not render reports or rewrite the source workspace or automation memory.`);
+  console.log(`Context Hub\n\nCommands:\n  init\n  import --source <workspace-dir> --memory <memory.md>\n  memory --workspace <slug>\n  prompt --workspace <slug>\n  stats --workspace <slug>\n  validate-report --file <report.html> [--selection <service-response.json>] [--markdown <archive.md>]\n\nThe importer stores metadata and normalized source items in SQLite. It does not render reports or rewrite the source workspace or automation memory.`);
 }
 
 const command = process.argv[2] ?? 'help';
@@ -31,6 +33,16 @@ const dbPath = textOption(options.db) ? path.resolve(textOption(options.db) as s
 try {
   if (command === 'help' || command === '--help') {
     usage();
+  } else if (command === 'validate-report') {
+    const file = textOption(options.file);
+    if (!file) throw new Error('--file is required');
+    const sourcePath = path.resolve(file);
+    const selectionFile = textOption(options.selection);
+    const selection = selectionFile ? JSON.parse(await readFile(selectionFile, 'utf8')) : undefined;
+    const report = validateTrendingReport(sourcePath, await readFile(sourcePath, 'utf8'), selection);
+    const markdownFile = textOption(options.markdown);
+    if (markdownFile) validateArchivedMarkdown(await readFile(markdownFile, 'utf8'), report, sourcePath);
+    console.log(JSON.stringify({valid:true, schemaVersion:report.schemaVersion,reportDate:report.reportDate,projectCount:report.projects.length,selectionChecked:!!selectionFile,markdownChecked:!!markdownFile},null,2));
   } else if (command === 'init') {
     await initDatabase(dbPath);
     console.log(`initialized ${dbPath}`);

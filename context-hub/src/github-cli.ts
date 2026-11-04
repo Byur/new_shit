@@ -1,5 +1,6 @@
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
+import {dateMs} from './discovery.ts';
 
 const execFileAsync = promisify(execFile);
 const namePattern = /^[A-Za-z0-9](?:[A-Za-z0-9_.-]{0,98})$/;
@@ -382,6 +383,19 @@ export async function repositoryEvidence(owner: unknown, repo: unknown, run: Com
   };
 }
 
+export async function searchRepositories(query: unknown, limit: number = 30, sort: string = 'updated', run: CommandRunner = runGh) {
+  if (typeof query !== 'string' || !query.trim() || query.length > 500) throw new Error('query must be 1..500 characters');
+  if (!Number.isInteger(limit) || limit < 1 || limit > 100 || !['updated', 'stars', 'forks'].includes(sort)) throw new Error('invalid search limit or sort');
+  const params = new URLSearchParams({q: query, sort, order: 'desc', per_page: String(limit)});
+  const data = await api(`search/repositories?${params}`, run);
+  if (!Array.isArray(data.items) || typeof data.total_count !== 'number') throw new Error('invalid search response');
+  return {query, sort, observedAt: new Date().toISOString(), sourceUrl: `https://api.github.com/search/repositories?${params}`,
+    totalCount: data.total_count, count: data.items.length, incompleteResults: data.incomplete_results === true,
+    complete: data.incomplete_results === false && data.items.length === data.total_count,
+    items: data.items.map((r: any) => ({fullName: r.full_name, url: r.html_url, description: r.description, stars: r.stargazers_count, forks: r.forks_count, updatedAt: r.updated_at, createdAt: r.created_at})),
+    note: 'Bounded search results, not a field-wide ranking. Total stars and updatedAt are discovery metadata, not trend evidence.'};
+}
+
 export async function starHistory(owner: unknown, repo: unknown, run: CommandRunner = runGh): Promise<any[]> {
   const data = await api(endpoint(owner, repo, '/stargazers/history'), run);
   if (!Array.isArray(data)) throw new Error('GitHub star history response was not an array');
@@ -414,6 +428,32 @@ export async function monthlyStarGrowth(owner: unknown, repo: unknown, month: un
     averagePerObservedDay: days ? Number((added / days).toFixed(3)) : null,
     source: 'GitHub /repos/{owner}/{repo}/stargazers/history via gh api',
   };
+}
+
+export async function attentionWindow(owner: unknown, repo: unknown, start: string, end: string, run: CommandRunner = runGh) {
+  const day = 86_400_000, startMs = dateMs(start), endMs = dateMs(end), expectedDays = (endMs - startMs) / day + 1;
+  if (expectedDays < 1 || expectedDays > 30) throw new Error('attention window must be 1..30 UTC days');
+  const sourceUrl = `https://api.github.com/${endpoint(owner, repo, '/stargazers/history')}`;
+  const weeks = await starHistory(owner, repo, run);
+  const daily = new Map<number, number>();
+  for (const week of weeks) {
+    const time = Number(week?.week) * 1000;
+    if (!Number.isFinite(time) || time % day !== 0 || !Array.isArray(week.days)) continue;
+    for (const [index, value] of week.days.entries()) {
+      if (index > 6 || !Number.isSafeInteger(value) || value < 0) continue;
+      const date = time + index * day;
+      if (daily.has(date)) throw new Error('overlapping daily star-history buckets');
+      daily.set(date, value);
+    }
+  }
+  function window(a: number, b: number) {
+    const values = [...daily].filter(([date]) => date >= a && date <= b);
+    return {windowStart: new Date(a).toISOString().slice(0,10), windowEnd: new Date(b).toISOString().slice(0,10), added: values.reduce((sum,[,n]) => sum+n, 0), observedDays: values.length, expectedDays, coverageComplete: values.length === expectedDays, sourceUrl};
+  }
+  const current = window(startMs,endMs), baseline = window(startMs-expectedDays*day,startMs-day);
+  return {kind: 'attention', metric: 'stars', ...current, checkedOn: new Date().toISOString().slice(0,10), bucketTimezone: 'UTC',
+    ...(baseline.coverageComplete ? {baseline} : {}), baselineCoverageComplete: baseline.coverageComplete,
+    note: 'added is new stars in the window, not total stars. Incomplete current coverage is not trend evidence; an absent baseline cannot support acceleration.'};
 }
 
 async function trendingSnapshot(granularity: 'weekly' | 'monthly', period: string, run: CommandRunner): Promise<Record<string, unknown>> {

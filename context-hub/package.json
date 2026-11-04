@@ -16,5 +16,8 @@
     "mcp": "node --experimental-strip-types src/mcp-server.ts",
     "dashboard": "node --experimental-strip-types src/server.ts",
     "test": "node --experimental-strip-types --test"
+  },
+  "dependencies": {
+    "parse5": "^8.0.1"
   }
 }

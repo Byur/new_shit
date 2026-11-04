@@ -88,7 +88,7 @@ test('Trending ranking rejects unverified auxiliary fields instead of using them
 });
 
 test('GitHub CLI MCP exposes fixed read-only tools and rejects unsafe repository names', async () => {
-  assert.equal(GITHUB_TOOL_DEFINITIONS.length, 7);
+  assert.equal(GITHUB_TOOL_DEFINITIONS.length, 10);
   const rankingResponse = await handleGithubMcpRequest({jsonrpc: '2.0', id: 2, method: 'tools/call', params: {name: 'github_rank_trending_candidates', arguments: {
     granularity: 'weekly',
     visibleCount: 1,

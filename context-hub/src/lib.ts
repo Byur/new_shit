@@ -3,6 +3,7 @@ import {mkdir, readFile, readdir, writeFile} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
+import {hasReportContract, validateTrendingReport} from './report-contract.ts';
 
 export type WorkspaceSlug = 'ai' | 'ai-trending';
 export type ImportKind = 'deepread' | 'trending' | 'all';
@@ -29,6 +30,8 @@ export interface ReportSection {
 }
 
 export interface ParsedReport {
+  archiveSchema?: string;
+  projects?: ReturnType<typeof validateTrendingReport>['projects'];
   title: string;
   hero: string;
   kind: string;
@@ -168,6 +171,7 @@ function uniqueBy(items, key) {
 }
 
 export function parseHtmlReport(sourcePath: string, html: string): ParsedReport {
+  const contracted = hasReportContract(html) ? validateTrendingReport(sourcePath, html) : null;
   const title = allMatches(html, /<title[^>]*>([\s\S]*?)<\/title>/gi)[0] || path.basename(sourcePath);
   const h1 = allMatches(html, /<h1[^>]*>([\s\S]*?)<\/h1>/gi)[0] || title;
   const h2 = allMatches(html, /<h2[^>]*>([\s\S]*?)<\/h2>/gi);
@@ -201,11 +205,12 @@ export function parseHtmlReport(sourcePath: string, html: string): ParsedReport 
   }));
   const firstParagraphs = paragraphs.filter((paragraph) => !/^(来源|source|dedup|排重)/i.test(paragraph));
   return {
+    ...(contracted ? {archiveSchema: contracted.schemaVersion, projects: contracted.projects} : {}),
     title,
     hero: h1,
     kind: kindFromName(sourcePath),
     reportDate: dateFromName(sourcePath),
-    summary: firstParagraphs.slice(0, 2).join(' '),
+    summary: contracted?.summary ?? firstParagraphs.slice(0, 2).join(' '),
     sections: sections.length ? sections : h2.map((heading) => ({title: heading, paragraphs: [], bullets: [], headings: []})),
     headings,
     items,
@@ -329,7 +334,7 @@ export async function importWorkspace({sourceDir, memoryPath, dbPath = DEFAULT_D
       name: 'AI Trending 每日推送',
       automationId: 'ai-trending',
       schedule: '每天 10:30（Asia/Shanghai）',
-      prompt: '从 GitHub weekly Trending 与月度 stars top 500 中筛选 AI 应用/工程开源库，维护两个月排重窗口并生成每日 HTML。',
+      prompt: '每日从多来源、细分范围和重要产品生态发现项目，以可核验的近期关注增量或外部认可事件入围，服务端确定性选择，维护60天排重及稳定HTML归档契约。',
     }
     : {
       name: 'AI 技术博客精读',
