@@ -1,0 +1,96 @@
+{
+  "source": "Cloudflare Workers AI REST via Hono",
+  "capturedAt": "2026-11-12T18:14:18.321Z",
+  "requestSha256": "60bf949e90b8446e9a72f04d62021686ef9ca8e6b9d334624f4ced0037d58fb2",
+  "durationMs": 904,
+  "httpStatus": 200,
+  "request": {
+    "model": "clef-flash",
+    "state": {
+      "character": "艾琳",
+      "personality": "内向、谨慎、自尊心强",
+      "goal": "修复与爱丽丝的友谊",
+      "memory": [
+        "三天前与爱丽丝发生争执",
+        "昨天爱丽丝帮忙找回钱包"
+      ],
+      "observation": {
+        "location": "酒馆",
+        "time": "20:15",
+        "alice_distance": 3
+      }
+    },
+    "questions": {
+      "next_action": {
+        "type": "choice",
+        "instructions": "选择最符合人物性格和目标的下一步行动",
+        "criteria": {
+          "ignore": "继续喝茶",
+          "nod": "向爱丽丝点头",
+          "greet": "主动打招呼",
+          "leave": "离开酒馆"
+        }
+      },
+      "wants_reconciliation": {
+        "type": "noul",
+        "instructions": "艾琳是否希望与爱丽丝修复关系？"
+      },
+      "leave_urgency": {
+        "type": "score",
+        "instructions": "评估艾琳立即离开酒馆的必要性",
+        "criteria": [
+          "完全没必要",
+          "稍有必要",
+          "比较紧迫",
+          "必须立即离开"
+        ]
+      }
+    }
+  },
+  "raw": {
+    "result": {
+      "model": "clef-flash",
+      "answers": {
+        "next_action": {
+          "type": "choice",
+          "choice": "greet",
+          "probabilities": {
+            "ignore": 0.0527,
+            "nod": 0.3706,
+            "greet": 0.5538,
+            "leave": 0.0229
+          },
+          "confidence": 0.2632
+        },
+        "wants_reconciliation": {
+          "type": "noul",
+          "noul": 0.9851
+        },
+        "leave_urgency": {
+          "type": "score",
+          "score": 0.5012,
+          "legend": {
+            "0": "完全没必要",
+            "1": "稍有必要",
+            "2": "比较紧迫",
+            "3": "必须立即离开"
+          },
+          "probabilities": {
+            "0": 0.6508,
+            "1": 0.222,
+            "2": 0.1024,
+            "3": 0.0248
+          },
+          "confidence": 0.3119
+        }
+      },
+      "usage": {
+        "input_tokens": 417,
+        "output_tokens": 0
+      }
+    },
+    "success": true,
+    "errors": [],
+    "messages": []
+  }
+}

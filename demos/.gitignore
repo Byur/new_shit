@@ -3,6 +3,7 @@ node_modules/
 .env.*
 .DS_Store
 *.log
+.playwright-cli/
 
 # Package-local demo artifacts
 build/

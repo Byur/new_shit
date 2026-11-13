@@ -5,6 +5,7 @@ demos/ 是 new_shit monorepo 的独立 workspace package，用来存放不属于
 ## 当前 demo
 
 - motion-ai-kit-demo/：无依赖的本地 Motion AI Kit 交互演示。
+- [clef-decision-lab/](clef-decision-lab/README.md)：Vue 3 + Hono + Bun 的 NPC 决策实验台，真实调用 Cloudflare Clef / Clef-flash，支持状态 A/B 与重复试验。
 - output/playwright/：归属于 demos 包的历史浏览器验证截图。
 
 ## 运行
@@ -17,6 +18,16 @@ npm run motion-ai-kit:serve
 ~~~
 
 然后打开 http://127.0.0.1:4173。
+
+Clef Decision Lab：
+
+```bash
+cd /Volumes/Project/new_shit/demos
+npm run clef:install
+npm run clef:dev
+```
+
+打开 http://localhost:5173。服务端读取 Demo 内 `.env`，并支持当前 monorepo 根 `.env` 的 Cloudflare 凭据；浏览器不读取密钥。详见 Demo README。
 
 ## 产物归属
 

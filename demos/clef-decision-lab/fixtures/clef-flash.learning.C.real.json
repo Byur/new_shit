@@ -1,0 +1,97 @@
+{
+  "source": "Cloudflare Workers AI REST via Hono",
+  "capturedAt": "2026-11-13T02:41:55.138Z",
+  "requestSha256": "67ffc927821fb0b083e8ab3b4ff6a07c3f3a1d1c0d8ac23099b882ebc607acc8",
+  "durationMs": 375,
+  "httpStatus": 200,
+  "request": {
+    "model": "clef-flash",
+    "state": {
+      "character": "艾琳",
+      "personality": "内向、谨慎、自尊心强",
+      "goal": "今天暂时不修复关系；与爱丽丝保持距离，独自安静休息",
+      "memory": [
+        "三天前与爱丽丝发生争执，双方还没有道歉",
+        "昨天爱丽丝帮忙找回了艾琳丢失的钱包"
+      ],
+      "observation": {
+        "location": "酒馆",
+        "time": "20:15",
+        "alice_distance": 3,
+        "situation": "酒馆安全、安静，艾琳没有其他急事。爱丽丝独自坐在邻桌，尚未注意到艾琳。"
+      }
+    },
+    "questions": {
+      "next_action": {
+        "type": "choice",
+        "instructions": "结合艾琳当前的目标、性格、记忆与现场状况，选择她此刻最合适的一项行动；存在明确的即时人身危险时应优先保障安全。",
+        "criteria": {
+          "ignore": "暂不与爱丽丝互动，留在原位继续喝茶",
+          "nod": "留在原位，朝爱丽丝点头致意，不开启交谈",
+          "greet": "走近爱丽丝，主动打招呼并尝试开启简短交谈",
+          "leave": "结束当前活动，经安全出口离开酒馆"
+        }
+      },
+      "willing_to_talk": {
+        "type": "noul",
+        "instructions": "此刻，艾琳是否愿意主动与爱丽丝进行一次友好的简短交谈？判断她当前的意愿；长期希望修复关系，并不自动等于此刻愿意交谈。"
+      },
+      "leave_urgency": {
+        "type": "score",
+        "instructions": "依据现场观察及艾琳当前状态，评估她现在离开酒馆的必要性。按照下列从低到高的等级评估必要性，而不是预测她最终是否会离开。",
+        "criteria": [
+          "完全没必要：现场安全，继续停留不会妨碍当前目标",
+          "稍有必要：有轻微不适或回避需求，可以稍后离开",
+          "比较紧迫：继续停留会明显加重冲突或风险，应尽快离开",
+          "必须立即离开：存在明确的即时人身危险，需要立刻撤离"
+        ]
+      }
+    }
+  },
+  "raw": {
+    "result": {
+      "model": "clef-flash",
+      "answers": {
+        "next_action": {
+          "type": "choice",
+          "choice": "ignore",
+          "probabilities": {
+            "ignore": 0.8282,
+            "nod": 0.1187,
+            "greet": 0.0152,
+            "leave": 0.0379
+          },
+          "confidence": 0.6023
+        },
+        "willing_to_talk": {
+          "type": "noul",
+          "noul": 0.0273
+        },
+        "leave_urgency": {
+          "type": "score",
+          "score": 0.2187,
+          "legend": {
+            "0": "完全没必要：现场安全，继续停留不会妨碍当前目标",
+            "1": "稍有必要：有轻微不适或回避需求，可以稍后离开",
+            "2": "比较紧迫：继续停留会明显加重冲突或风险，应尽快离开",
+            "3": "必须立即离开：存在明确的即时人身危险，需要立刻撤离"
+          },
+          "probabilities": {
+            "0": 0.857,
+            "1": 0.0887,
+            "2": 0.0329,
+            "3": 0.0214
+          },
+          "confidence": 0.6584
+        }
+      },
+      "usage": {
+        "input_tokens": 606,
+        "output_tokens": 0
+      }
+    },
+    "success": true,
+    "errors": [],
+    "messages": []
+  }
+}
