@@ -1,0 +1,40 @@
+# dsh-feishu-agent 的 bundle patch：把插件插进 profile 的 loader 栈。
+#
+# 这条 insert 是插件出现在 boot manifest 里的必要条件；同一 profile 里不要重复 insert
+# 同一个 id（loader 会直接报错）。
+#
+# 用户配置写在自己 profile 的 cordis.patch.yml 里，按 id 打补丁：
+#
+#   - id: feishu-agent
+#     config:
+#       bindings:
+#         'oc_你的私聊_chat_id':
+#           workspacePath: /Volumes/Project/new_shit
+#           permissionPreset: workspace-write
+#           titlePrefix: '[私人]'
+#
+# App ID / App Secret 不写在这里，走凭据存储或环境变量：
+#   凭据引用名 FEISHU_AGENT_APP_ID / FEISHU_AGENT_APP_SECRET
+#   或环境变量 DSH_FEISHU_AGENT_APP_ID / DSH_FEISHU_AGENT_APP_SECRET
+
+- insert:
+    - id: feishu-agent
+      name: 'dsh-feishu-agent'
+      # 默认配置写在这里（bundle 层），不需要插件导出 Config schema 也能生效。
+      # 你自己的 profile 里**不要**再给这个 id 写 config——没有 Config 导出的插件，
+      # 带 config 的条目会被 loader 判成 did not activate 并静默跳过。
+      config:
+        ownerOpenId: ''
+        # 飞书私聊 chat_id → 落哪个 Workspace。换目录就改这里（宿主会按路径解析/注册工作区）。
+        chats: {}
+        schedules: []
+        answerConcurrency: 3
+        # CLI 子进程：Desktop 沙箱不让子进程写 ~/.dsh/profile，所以给它一个可写的 DSH_HOME。
+        cliPath: /Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh
+        cliProfile: headless
+        # 子进程用的 DSH_HOME：Desktop 沙箱不允许子进程改写自己的 profile 目录，
+        # 所以指向一个可写的 DSH_HOME。留空则读 DSH_FEISHU_AGENT_CLI_HOME 环境变量。
+        cliHome: ''
+        # 要从凭据存储注入 CLI 子进程的 provider key（apiKeyEnv 只认进程环境变量）。
+        cliEnvRefs:
+          - CODEPLAN_API_KEY

@@ -1,0 +1,8 @@
+# Bundle patch for dsh-wizz-session.
+#
+# One row, mounted at the profile root: the plugin needs the host-wide services
+# (tool registry, session controller, workspace registry, title service), so it
+# has to live outside any single agent preset.
+- insert:
+    - id: wizz-session
+      name: dsh-wizz-session

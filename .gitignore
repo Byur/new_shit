@@ -3,6 +3,9 @@ dist
 .DS_Store
 .env
 
+# pnpm 的落盘 store（pnpm 在本工作区做安装时生成的可再生产物）
+.pnpm-store/
+
 # Ignore reproducible package artifacts.
 /build/
 /out/
