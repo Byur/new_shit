@@ -40,7 +40,7 @@
 - Use knowledge-planner for topic research, learning scope, and the approved teaching plan.
 - Use remotion-video-director for narrative, storyboard, visual language, pacing, caption intent, and creative acceptance criteria. It may be selected automatically when the request includes those concerns.
 - Use remotion-technical-guardrails alongside the official technical workflow for project-specific scene-continuity and render-mode constraints. It supplements the official Skills; do not patch or fork the official Skill packages to add these local rules.
-- When a task needs both creative and technical work, use this order: approved learning direction -> Director creative brief -> remotion-best-practices implementation and technical review with remotion-technical-guardrails -> Director creative review -> remotion-studio-qa playback, encoded-output, and frame-level verification.
+- When a task needs both creative and technical work, use the collaboration order in `remotion-video-director`. Use the [project Studio QA skill](.agents/skills/remotion-studio-qa/SKILL.md) for technical review and to select coverage for the requested deliverable.
 - Split shared-looking concerns by decision type: the Director owns caption wording and editorial cue intent, while the technical router owns synchronization code and frame calculations; the Director owns meaning, attention order, visual identity, and perceived pacing, while Studio QA owns playback stability, transition defects, clipping, and flicker.
-- Render, still, and frame-export steps use headless mode unless the user explicitly requests non-headless rendering. Studio preview is interactive and is not covered by this render-mode restriction.
+- Apply the render-mode policy in `remotion-technical-guardrails` to render, still, and frame-export steps.
 - Keep one owner for each decision. A later stage may report a constraint to an earlier stage, but it must not silently rewrite that stage's decisions.

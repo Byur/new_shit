@@ -18,9 +18,9 @@ Choose the smallest implementation that preserves continuity:
 - use `TransitionSeries` when a real transition is intended; or
 - keep a hard cut with a visible anchor or clearly directed entrance, then let the primary subject become readable over the short opening beat.
 
-Separate scene presence from internal progress. An entrance animation may assemble the primary subject and supporting details, but it must not create an unintended black frame, flash, or moment where all visual anchors disappear. Do not reject a boundary from frame `N` alone; judge the trajectory through `N+6` and `N+12`, including whether the entrance feels intentional and reaches a stable reading state. Preserve the Director's declared focus contract: contextual overview elements must be deliberately suppressed when a detail becomes primary.
+Separate scene presence from internal progress. An entrance animation may assemble the primary subject and supporting details, but it must not create an unintended black frame, flash, or moment where all visual anchors disappear. Preserve the intended focus and continuity through the transition into its settled state.
 
-Before handing work to QA, identify every scene-start frame `N` and record the intended state at `N-1`, `N`, `N+1`, `N+6`, and `N+12`.
+At handoff, convey the intended states for boundaries where QA needs them to judge the result. Follow `remotion-studio-qa` for review scope and frame probes.
 
 ## Headless Rendering
 
@@ -38,4 +38,4 @@ When the runtime provides token usage data, inspect input and tool-result volume
 
 ## Handoff
 
-Use `remotion-studio-qa` after implementation. A successful render or full decode is necessary delivery evidence, but it does not prove transition continuity, spatial clarity, or perceptual stability.
+Use `remotion-studio-qa` after implementation for technical verification of the requested deliverable.

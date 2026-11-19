@@ -17,13 +17,11 @@ Use the approved learning direction and evidence as the factual basis for audiov
 
 ## Collaboration Order
 
-When this Skill and `remotion-best-practices` both apply, treat them as consecutive roles rather than competing owners:
-
-1. Confirm the approved learning direction; use `knowledge-planner` first if the topic, audience, evidence, or teaching scope is unresolved.
-2. Identify the supplied learning direction and its essential explanations. Develop the substantive narration and subject-specific visual argument together, with the actual explanatory passages drafted before treating any runtime or scene-duration estimate as settled. A concept outline, scene list, or visual dwell-time estimate is not a substitute for narration. Then determine the format proposition, storyboard, pacing, caption intent, and creative acceptance criteria before technical implementation choices are finalized.
-3. Hand the approved creative direction to the coding workflow. The coding agent may author or revise the actual narration and captions while implementing, but the director retains creative authority over what is actually used in the composition. Apply `remotion-technical-guardrails` alongside `remotion-best-practices` for implementation; neither technical skill replaces creative review.
-4. Before treating creative implementation as accepted, inspect the effective narration and text that the composition actually consumes for fidelity to the supplied content and for spoken clarity, narrative flow, and visual coordination. Return focused expressive or fidelity changes to the coding agent when needed and re-inspect the result. Do not independently redefine content depth, facts, or teaching scope.
-5. Review the assembled preview for meaning, attention order, visual identity, and pacing. Let `remotion-studio-qa` own systematic playback stability, encoded-output review, and frame-level defect verification. Passing technical QA never substitutes for creative approval.
+1. Confirm the learning direction. Use `knowledge-planner` when the audience, teaching scope, or essential evidence still needs to be established.
+2. Develop the explanatory track and the visual argument together. Set the format proposition, storyboard, editorial cues, and creative review criteria. Assess timing under Duration Derived From Teaching.
+3. Hand composition work to `remotion-best-practices` with `remotion-technical-guardrails`. When playback can resolve open decisions about the order or pacing of several scenes, use an early rough cut in the production composition. Play the authored explanatory track with representative visuals. Settle the sequence and timing decisions that detailed scene work depends on.
+4. Implement the creative direction and apply Effective-Content Review During Coding as the actual material takes shape. Fine-cut the assembled material in playback with its actual visuals and explanatory track. Adjust cuts, holds, and reveals where they affect how the viewer follows the explanation. If the fix changes the sequence across scenes, revisit the sequence and its affected handoffs before refining local timing.
+5. Review the assembled cut under Review And Delivery. Use `remotion-studio-qa` for technical verification.
 
 For a technical-only request, leave creative decisions unchanged and let `remotion-best-practices` lead. For a creative-only request, produce the creative brief without starting Studio, editing code, or rendering unless the user also asks for implementation.
 
@@ -59,7 +57,7 @@ A recurring object, continuous chart, or shared storyline is only a carrier of c
 
 Use explanation at the moment it becomes necessary. Let a visible event or meaningful question create demand for the next concept, then deliver the causal explanation with enough detail that the viewer can follow what happened and why. Do not postpone indispensable explanations for the sake of suspense, or add a story wrapper that contributes nothing to understanding.
 
-Maintain a continuous spoken argument as well as a continuous visual thread. Narration should connect consequences, decisions, discoveries, and qualifications across scene boundaries; avoid writing isolated mini-lectures with interchangeable scene introductions. A complete narration script is not a series of longer definitions. If the material becomes more thorough but loses its sense of progression, revise the structure rather than simply shortening the speech.
+Maintain a continuous argument in the explanatory track as well as a continuous visual thread. Narration should connect consequences, decisions, discoveries, and qualifications across scene boundaries; avoid writing isolated mini-lectures with interchangeable scene introductions. A complete narration script is not a series of longer definitions. If the material becomes more thorough but loses its sense of progression, revise the structure rather than simply shortening the speech.
 
 Different subjects may call for a worked transaction, investigation, experiment, changing mental model, or conceptual proof. Choose the narrative device because it clarifies the subject, not because every lesson needs a protagonist or plot twist. Where a real-world process is simulated, keep the simplifying assumptions and factual limitations explicit.
 
@@ -85,11 +83,11 @@ Before the coding workflow finishes a substantive creative revision, review the 
 
 A failed creative review returns a specific expressive or fidelity defect to the coding agent: identify the affected passage or time range, what was lost or communicated poorly, and what the revision must preserve without prescribing code structure. Ask for the smallest meaningful repair and review its result; do not rewrite technical implementation or conduct a full technical QA pass. Do not approve on the basis of a script proposal if the content consumed by the composition has changed since review. Where practical, inspect the authoritative source after the final creative edit; this is a content-fidelity check, not a mandate for duplicate artifact synchronization or a separate agent.
 
-Keep gates proportional: a narrow visual-only code change need not reopen the entire narrative; changes to narration, timing that removes explanation, scene order, or core teaching visuals do. If the user explicitly asks for a draft only, provide the creative work without claiming implementation acceptance.
+Review the parts of the explanation affected by the revision, including passages that depend on changed reasoning or evidence.
 
 ## Counterfactual Creative Review
 
-Before creative sign-off, assume the current cut is not yet teaching the intended idea and actively look for evidence that could overturn completion. Do not accept intention, a polished visual system, a successful compile, or a complete scene list as proof. Use the earlier market-slang cut as negative evidence: its visual completion was judged 7.5/10 while depth, continuity, and reading pace were judged 4/10, 4/10, and 3/10 because attractive cards did not create enough causal progression or reading room.
+Before creative sign-off, assume the current cut is not yet teaching the intended idea and actively look for evidence that could overturn completion. Do not accept intention, a polished visual system, a successful compile, or a complete scene list as proof.
 
 Run the smallest set of falsification tests that fits the cut, and name the actual scene, frame, line, or learner behavior involved:
 
@@ -102,9 +100,9 @@ One concrete counterexample is enough to withhold creative sign-off and return t
 
 ## Duration Derived From Teaching
 
-Do not begin with a preferred 60-, 90-, or 180-second format unless the user explicitly requests one. A total runtime inferred from teaching headings, perceived difficulty, scene count, or anticipated animation holds is provisional only. First establish the actual words to be delivered (or the full on-screen explanation in an intentionally silent format), while iterating with the visual demonstrations. Judge duration against what the viewer must actually process, not merely against text volume or animation hold time. Review narration, visible explanatory text, visual evidence, and scene timing as one experience: can the viewer follow the intended explanation while attending to the relevant visual changes? Only then estimate spoken or reading time and add the time needed for interpretation and intentional pauses. Scene count and template length are consequences, not budgets to fill.
+Estimate duration from the explanatory track the composition will use, the time viewers need to interpret the visuals, and deliberate pauses. An outline can support an initial estimate. Revisit it against the authored content and check timing in playback. Account for text complexity, visual density, and viewer familiarity.
 
-If the coding agent authors the actual narration during implementation, do not freeze scene durations from an earlier outline: estimate against the content the composition really consumes and revise the timeline to accommodate it. Check the estimate against assembled playback; adjust the audiovisual presentation and timing for pacing and comprehension rather than automatically trimming explanatory passages to preserve the current length. A longer script does not automatically justify a longer video, and a longer video does not automatically provide sufficient explanation. If essential information competes for attention or passes before it can be understood, surface the trade-off to the content owner or user: revise the presentation, narrow the promise, or extend the runtime rather than silently dropping indispensable reasoning. Do not apply a fixed reading-speed limit; account for text complexity, visual density, and viewer familiarity. For a silent video, judge explanation only through what the audience can actually see and read; do not assume missing or inaudible narration supplies understanding.
+Use any requested runtime to guide scope and editing. If the cut runs long, consolidate repetition and cut optional material while preserving the essential reasoning and evidence. If those essentials still need more time, surface the trade-off in scope, presentation, or runtime to the content owner or user.
 
 ## Format Identity And Teaching Bridges
 
@@ -138,14 +136,9 @@ Reuse established visual primitives when they remain the clearest expression of 
 
 ## Focus States And Scene Handoffs
 
-When an overview remains visible while a detail opens, define a focus contract in the storyboard:
+When multiple layers share the screen, describe the intended focus, the context the viewer still needs, and how attention shifts. Specify deliberate overlap or suppression when it matters to that intent.
 
-- Name the primary subject, the context that must remain recognizable, and the elements that must be visually suppressed.
-- Keep the overview as context rather than a competing foreground. Choose an appropriate treatment such as a mask, dimming, blur, crop, scale change, or camera shift; do not leave every label, connector, node, and detail panel at equal emphasis.
-- Give the focused detail its own readable territory. Do not place independent cards or panels over active overview labels, connectors, or nodes unless the overlap itself carries meaning.
-- State how attention enters and leaves the focus state so the implementation can preserve continuity.
-
-For every scene boundary, specify the persistent visual anchor or the first readable state of the incoming scene. When a recurring situation is the teaching thread, carry its actual state into the next scene instead of starting another generic example. A hard cut must not intentionally create a moment where all primary information disappears and then fades back in. Leave frame calculations and transition APIs to the technical Skills, but make the intended continuity explicit in the creative brief.
+At significant handoffs, specify what should carry through and what the viewer should recognize first in the incoming scene. Preserve the relevant state of a recurring example across that handoff.
 
 ## Evidence And Data
 
@@ -155,34 +148,8 @@ If you cannot say why a number is on screen in one clear sentence, remove it. A 
 
 ## Review And Delivery
 
-Creative sign-off covers the effective content used by the composition: fidelity to the supplied meaning and reasoning, narrative continuity, spoken expression, visual clarity, and runtime adequacy. If implementation drops an essential prerequisite, cause, consequence, or qualification from the supplied direction, restore it. If the direction itself lacks the needed content, flag the gap to its content owner rather than independently defining or approving a deeper lesson.
+Review the effective explanation, visual argument, and attention order against the approved learning direction. Return an expressive problem to the implementation workflow with the affected passage and the intended result. Return a gap in the learning direction to its content owner.
 
-Source review alone is not enough for creative sign-off. Using the preview or sampled frames supplied by the technical workflow, intentionally inspect the scenes and moments carrying the most meaning or creative risk, including fully assembled states and transitions where relevant. Apply judgment rather than a mechanical quota:
+Use continuous playback at the intended speed for editorial timing and progression. Watch the entire cut when the decisions span the composition. For a local timing change, watch the affected passage and its handoffs. Sampled frames can support spatial review. The same playback can support creative and technical judgments. If playback needed for the review is unavailable, report the pacing review as incomplete.
 
-- Is the intended attention order immediately clear?
-- Where the creative direction calls for progression, does each major scene grow from the previous event, inference, or unanswered question?
-- Does each major scene change what the viewer understands, anticipates, notices, or feels, rather than merely carrying the same object or chart forward?
-- If a recurring transaction, experiment, or situation was promised, does its state actually progress on screen and in narration?
-- Has stronger narration turned the video into disconnected illustrated lectures rather than one developing explanation?
-- Does the video faithfully communicate the supplied explanation, rather than replacing it with a polished definition?
-- Did any essential causal step disappear between the planning brief, full narration, and final visual sequence?
-- Does the actual authored content preserve the supplied prerequisite order, rather than depending on an unexplained term?
-- Has the director inspected the narration/text actually consumed by the composition after substantive coding changes, rather than only an upstream proposal?
-- Is there a complete narration script (or an explicitly sufficient silent-video explanation), clearly distinguished from captions and labels?
-- Can the viewer follow each important mechanism at the actual playback pace, or did the edit squeeze it into the available seconds?
-- Do narration, visible explanation, visual evidence, and scene timing compete for attention in a way that prevents understanding, including in a silent version?
-- Does the composition remain legible, balanced, and uncluttered?
-- Does the visual progression feel varied and purposeful, or has the video fallen into repetitive layouts and motion patterns?
-- When the visual approach changes, does the shift respond to a new mechanism, scale, consequence, or observational need rather than merely to variety? When it stays stable, does it continue to reveal meaningful change?
-- Can the format proposition still be felt in the assembled scenes, or has the video fallen back to the project's default explanatory shell?
-- Would a topic-noun replacement leave a key scene essentially unchanged? If so, strengthen the subject-specific visual evidence rather than adding decorative variation.
-- Do connectors, masks, and moving elements respect the spatial ownership of the objects they describe? Treat every connected object as a bounded surface: connectors must be computed or drawn edge-to-edge between intentional anchors, not center-to-center. Never rely on z-index alone to hide a connector behind a translucent surface; sample its assembled state and its draw-in motion.
-- Do independently meaningful nodes have their own visible territory? Treat accidental overlap as a rendering failure unless the scene explicitly depicts containment, collision, or replacement.
-- Does every number state its measurement, scope or time, and evidentiary purpose? Remove decorative statistics rather than asking the viewer to infer why they matter.
-- Does the creative timing of animation, captions, or temporary states create competing focal points or weaken the intended meaning? Report obvious collisions, clipping, or flicker to `remotion-studio-qa` for systematic verification.
-- When a detail opens over an overview, is the primary subject unmistakable, is the background deliberately suppressed, and does the detail occupy independent space?
-- At each scene boundary, does a meaningful anchor persist or does the incoming scene begin in a readable state without an unintended empty flash?
-- Would a paused frame still communicate the intended relationship?
-
-
-Record the creative states that need inspection and any remaining creative risk. When an implementation exists, assess the supplied preview or sampled frames against these criteria; leave systematic playback checks, rendering, and output verification to the relevant technical Skill.
+During the review, ask whether the viewer can follow the essential reasoning in order, whether each change of focus supports that reasoning, and whether the text and visuals leave enough time for interpretation. Use the applicable tests in Counterfactual Creative Review. Route suspected rendering and layout defects to `remotion-studio-qa`.
