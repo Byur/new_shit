@@ -1,6 +1,6 @@
 {
   "name": "dsh-wizz-session",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "Create an independent, workspace-attached DSH session from an agent tool, so automation-dispatched research sessions appear in the sidebar under their workspace.",
   "license": "MIT",

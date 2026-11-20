@@ -11,23 +11,50 @@ const WORKSPACE_PATH = '/Volumes/Project/wizzzzz-skillhub'
  * recorded so the tests can assert on ordering and arguments.
  */
 function makeCtx(options = {}) {
-  const calls = { create: [], prompt: [], rename: [], detach: [], resolveAgent: [], archive: [], registered: [] }
+  const calls = { create: [], prompt: [], rename: [], detach: [], resolveAgent: [], archive: [], registered: [], permissionResolve: [], permissionSet: [], permissionCurrent: [], order: [] }
   const workspace = {
     id: 'ws-1',
     title: 'skillhub',
     path: WORKSPACE_PATH,
-    detachSession: async (id) => { calls.detach.push(id) }
+    // Membership is how the tool finds the calling session's workspace first;
+    // a caller outside it can still attach through its recorded directory.
+    sessionIds: options.callerMember === false ? [] : ['session-caller'],
+    detachSession: async (id) => { calls.detach.push(id); calls.order.push('detach') }
   }
   const services = {
     sessionProjections: {
       stateOf: () => options.callerPreset ?? undefined
     }
   }
-  services.workspaceController = {
-    archiveSession: async (request) => {
-      calls.archive.push(request)
-      if (options.archiveFailsFor !== undefined && request.sessionId === options.archiveFailsFor) throw new Error('session is not known')
-      return { archivedSessionIds: [request.sessionId] }
+  if (options.workspaceController !== false) {
+    services.workspaceController = {
+      archiveSession: async (request) => {
+        calls.archive.push(request)
+        calls.order.push('archive')
+        if (options.archiveFailsFor !== undefined && request.sessionId === options.archiveFailsFor) throw new Error('session is not known')
+        return { archivedSessionIds: [request.sessionId] }
+      }
+    }
+  }
+  if (options.permissionService !== false) {
+    const names = options.permissionNames ?? ['read-only', 'workspace-write', 'danger-full-access']
+    services.permissionPresets = {
+      names,
+      resolve: (name) => {
+        calls.permissionResolve.push(name)
+        if (!names.includes(name)) throw new Error(`permission: unknown preset "${name}" (known: ${names.join(', ')})`)
+        return { sandbox: name, approval: 'ask' }
+      },
+      set: (session, name) => {
+        calls.order.push('permission-set')
+        calls.permissionSet.push({ session, name })
+        if (options.permissionSetFails === true) throw new Error('switch refused')
+      },
+      current: (session) => {
+        calls.permissionCurrent.push(session)
+        if (options.permissionCurrent !== undefined) return options.permissionCurrent
+        return calls.permissionSet.at(-1)?.name ?? 'workspace-write'
+      }
     }
   }
   if (options.persistenceEvents !== undefined) {
@@ -38,19 +65,33 @@ function makeCtx(options = {}) {
       })
     }
   }
+  const liveOf = (id) => {
+    const session = {
+      header: { cwd: WORKSPACE_PATH, id },
+      ...(typeof options.agentEvents === 'function' ? { snapshotEvents: () => options.agentEvents() } : {})
+    }
+    // A property getter records when the tool reads the next sequence number,
+    // so a test can prove the permission switch happened before sinceSeq.
+    if (options.trackSeq === true) {
+      Object.defineProperty(session, 'seq', {
+        enumerable: true,
+        get() {
+          calls.order.push('seq-read')
+          return options.agentSeq ?? 0
+        }
+      })
+    } else {
+      session.seq = options.agentSeq ?? 0
+    }
+    return { session }
+  }
   const ctx = {
     get: (serviceName) => services[serviceName],
     agents: {
-      get: (id) => (options.noLiveAgent === true ? undefined : {
-        session: {
-          header: { cwd: WORKSPACE_PATH, id },
-          seq: options.agentSeq ?? 0,
-          ...(typeof options.agentEvents === 'function' ? { snapshotEvents: () => options.agentEvents() } : {})
-        }
-      })
+      get: (id) => (options.noLiveAgent === true ? undefined : liveOf(id))
     },
     workspaceRegistry: {
-      resolveByPath: async () => (options.unregisteredWorkspace === true ? undefined : workspace),
+      resolveByPath: async () => (options.unregisteredWorkspace === true || options.resolveByPathMiss === true ? undefined : workspace),
       list: () => [workspace]
     },
     sessionController: {
@@ -61,7 +102,13 @@ function makeCtx(options = {}) {
       },
       create: async (request) => {
         calls.create.push(request)
+        calls.order.push('create')
         if (options.createFails === true) throw new Error('create refused')
+        if (options.createLeaveBehind === true) {
+          const error = new Error(`session "${SESSION_ID}" was created but could not attach to workspace "ws-1"`)
+          error.details = { sessionId: SESSION_ID, workspaceId: 'ws-1' }
+          throw error
+        }
         return { sessionId: SESSION_ID }
       },
       prompt: async (request, signal) => {
@@ -69,6 +116,7 @@ function makeCtx(options = {}) {
         // argument must fail here exactly as it does in the app.
         signal.throwIfAborted()
         calls.prompt.push({ request, signal })
+        calls.order.push('prompt')
         if (options.promptFails === true) throw new Error('delivery refused')
         return { accepted: true }
       }
@@ -76,6 +124,8 @@ function makeCtx(options = {}) {
     sessionTitle: {
       rename: (session, title) => {
         calls.rename.push({ session, title })
+        calls.order.push('rename')
+        if (options.renameFails === true) throw new Error('title refused')
         return { title }
       }
     },
@@ -106,7 +156,7 @@ function makeExec(options = {}) {
   }
 }
 
-test('apply registers both tools', () => {
+test('apply registers every tool', () => {
   const { ctx, calls } = makeCtx()
   apply(ctx)
   assert.deepEqual(calls.registered.map((definition) => definition.name).sort(), ['session_archive', 'session_send', 'session_spawn', 'session_wait'])
@@ -124,6 +174,10 @@ test('spawns a session attached to the named workspace and delivers the prompt',
   assert.equal(result.sessionId, SESSION_ID)
   assert.equal(result.workspaceId, 'ws-1')
   assert.equal(result.workspacePath, WORKSPACE_PATH)
+  assert.equal(result.workspaceTitle, 'skillhub')
+  // No permission argument: report what the host pinned for a new session.
+  assert.equal(result.permission, 'workspace-write')
+  assert.equal(result.permissionLabel, '工作区内修改')
   assert.equal(calls.create.length, 1)
   // Attached by workspace id, never by cwd: that is what makes it a member.
   assert.deepEqual(calls.create[0], { workspaceId: 'ws-1', agentPreset: 'standard' })
@@ -134,10 +188,22 @@ test('spawns a session attached to the named workspace and delivers the prompt',
   assert.equal(calls.prompt[0].request.mode, 'queue')
   assert.deepEqual(calls.prompt[0].request.content, [{ type: 'text', text: 'research the topic' }])
   assert.equal(calls.rename.length, 1)
+  assert.deepEqual(calls.order, ['create', 'rename', 'prompt'])
 })
 
-test('an omitted workspacePath creates an ungrouped session keyed by cwd', async () => {
+test('an omitted workspacePath inherits the calling session workspace', async () => {
   const { ctx, calls } = makeCtx()
+  const tool = createSessionSpawnTool(ctx)
+  const result = await tool.execute({ prompt: 'standalone task' }, makeExec())
+
+  // GUI parity: New Session under the current session's workspace.
+  assert.equal(result.workspacePath, WORKSPACE_PATH)
+  assert.equal(result.workspaceId, 'ws-1')
+  assert.deepEqual(calls.create[0], { workspaceId: 'ws-1' })
+})
+
+test('an ungrouped caller outside every workspace directory keeps its cwd', async () => {
+  const { ctx, calls } = makeCtx({ callerMember: false, resolveByPathMiss: true })
   const tool = createSessionSpawnTool(ctx)
   const result = await tool.execute({ prompt: 'standalone task' }, makeExec({ callerCwd: '/tmp' }))
 
@@ -145,14 +211,40 @@ test('an omitted workspacePath creates an ungrouped session keyed by cwd', async
   assert.deepEqual(calls.create[0], { cwd: '/tmp' })
 })
 
-test('a caller without any working directory and no workspacePath is refused', async () => {
+test('a caller outside membership but inside a registered directory attaches by cwd', async () => {
+  const { ctx, calls } = makeCtx({ callerMember: false })
+  const tool = createSessionSpawnTool(ctx)
+  const result = await tool.execute({ prompt: 'standalone task' }, makeExec({ callerCwd: WORKSPACE_PATH }))
+
+  assert.equal(result.workspacePath, WORKSPACE_PATH)
+  assert.deepEqual(calls.create[0], { workspaceId: 'ws-1' })
+})
+
+test('ungrouped: true opts out of the caller workspace', async () => {
   const { ctx, calls } = makeCtx()
+  const tool = createSessionSpawnTool(ctx)
+  const result = await tool.execute({ prompt: 'standalone task', ungrouped: true }, makeExec({ callerCwd: '/tmp' }))
+
+  assert.equal(result.workspacePath, undefined)
+  assert.deepEqual(calls.create[0], { cwd: '/tmp' })
+})
+
+test('a caller without any working directory and no workspace is refused', async () => {
+  const { ctx, calls } = makeCtx({ callerMember: false, resolveByPathMiss: true })
   const tool = createSessionSpawnTool(ctx)
   await assert.rejects(
     tool.execute({ prompt: 'x' }, makeExec({ callerCwd: '' })),
-    /needs either workspacePath or a calling session/u
+    /needs either a workspace or a calling session/u
   )
   assert.equal(calls.create.length, 0)
+})
+
+test('wrongly typed arguments are refused instead of read as absent', async () => {
+  const { ctx } = makeCtx()
+  const tool = createSessionSpawnTool(ctx)
+  await assert.rejects(tool.execute({ prompt: 'x', workspacePath: 123 }, makeExec()), /workspacePath must be a string/u)
+  await assert.rejects(tool.execute({ prompt: 'x', ungrouped: 'true' }, makeExec()), /ungrouped must be a boolean/u)
+  await assert.rejects(tool.execute({ prompt: 'x', permission: 1 }, makeExec()), /permission must be a string/u)
 })
 
 test('an unregistered workspace fails before any session is created', async () => {
@@ -171,7 +263,7 @@ test('an empty prompt is refused', async () => {
   await assert.rejects(tool.execute({ prompt: '   ' }, makeExec()), /non-empty prompt/u)
 })
 
-test('a failed first delivery detaches the session again', async () => {
+test('a failed first delivery detaches and archives the session again', async () => {
   const { ctx, calls } = makeCtx({ promptFails: true })
   const tool = createSessionSpawnTool(ctx)
   await assert.rejects(
@@ -179,6 +271,149 @@ test('a failed first delivery detaches the session again', async () => {
     new RegExp(`created ${SESSION_ID} but could not deliver`, 'u')
   )
   assert.deepEqual(calls.detach, [SESSION_ID])
+  assert.deepEqual(calls.archive, [{ sessionId: SESSION_ID, stopActivity: true }])
+})
+
+test('permission grants the requested preset before the first message', async () => {
+  const { ctx, calls } = makeCtx()
+  const tool = createSessionSpawnTool(ctx)
+  const result = await tool.execute({ prompt: 'read the docs', workspacePath: WORKSPACE_PATH, permission: 'read-only' }, makeExec())
+
+  assert.equal(result.permission, 'read-only')
+  assert.equal(result.permissionLabel, '仅可查看')
+  assert.deepEqual(calls.permissionResolve, ['read-only'])
+  assert.equal(calls.permissionSet.length, 1)
+  assert.equal(calls.permissionSet[0].name, 'read-only')
+  // The switch must land before the prompt so the first turn runs under it.
+  assert.ok(calls.order.indexOf('permission-set') < calls.order.indexOf('prompt'))
+  assert.ok(calls.order.indexOf('permission-set') > calls.order.indexOf('create'))
+})
+
+test('permission accepts the GUI label and short aliases', async () => {
+  for (const [value, expected] of [['仅可查看', 'read-only'], ['工作区内修改', 'workspace-write'], ['完全权限', 'danger-full-access'], ['full', 'danger-full-access'], ['view', 'read-only']]) {
+    const { ctx, calls } = makeCtx()
+    const tool = createSessionSpawnTool(ctx)
+    const result = await tool.execute({ prompt: 'x', workspacePath: WORKSPACE_PATH, permission: value }, makeExec())
+    assert.equal(result.permission, expected)
+    assert.deepEqual(calls.permissionSet.map((entry) => entry.name), [expected])
+  }
+})
+
+test('an unknown permission fails before any session is created', async () => {
+  const { ctx, calls } = makeCtx()
+  const tool = createSessionSpawnTool(ctx)
+  await assert.rejects(
+    tool.execute({ prompt: 'x', permission: 'superuser' }, makeExec()),
+    /does not know permission/u
+  )
+  assert.equal(calls.create.length, 0)
+  assert.equal(calls.permissionResolve.length, 0)
+})
+
+test('a permission the host does not offer fails before any session is created', async () => {
+  const { ctx, calls } = makeCtx({ permissionNames: ['workspace-write', 'danger-full-access'] })
+  const tool = createSessionSpawnTool(ctx)
+  await assert.rejects(
+    tool.execute({ prompt: 'x', permission: 'read-only' }, makeExec()),
+    /this host offers: workspace-write, danger-full-access/u
+  )
+  assert.equal(calls.create.length, 0)
+})
+
+test('a host without the permission service refuses an explicit permission', async () => {
+  const { ctx, calls } = makeCtx({ permissionService: false })
+  const tool = createSessionSpawnTool(ctx)
+  await assert.rejects(
+    tool.execute({ prompt: 'x', permission: 'read-only' }, makeExec()),
+    /composes no permissionPresets service/u
+  )
+  assert.equal(calls.create.length, 0)
+})
+
+test('a host without the permission service still spawns with its default', async () => {
+  const { ctx } = makeCtx({ permissionService: false })
+  const tool = createSessionSpawnTool(ctx)
+  const result = await tool.execute({ prompt: 'x', workspacePath: WORKSPACE_PATH }, makeExec())
+  assert.equal(result.permission, undefined)
+  assert.equal(result.sessionId, SESSION_ID)
+})
+
+test('a failed permission switch takes the session back out of the sidebar', async () => {
+  const { ctx, calls } = makeCtx({ permissionSetFails: true })
+  const tool = createSessionSpawnTool(ctx)
+  await assert.rejects(
+    tool.execute({ prompt: 'x', workspacePath: WORKSPACE_PATH, permission: 'read-only' }, makeExec()),
+    new RegExp(`created ${SESSION_ID} but could not grant permission`, 'u')
+  )
+  assert.equal(calls.prompt.length, 0)
+  assert.deepEqual(calls.detach, [SESSION_ID])
+  assert.deepEqual(calls.archive, [{ sessionId: SESSION_ID, stopActivity: true }])
+})
+
+test('permission reports the host current value when it differs from the request', async () => {
+  // A host readback that disagrees (a shared-bundle tie, or knobs changed in
+  // the same session) must be reported as-is: never invent a success value.
+  // `custom` itself is unlikely right after set(); the point is the readback.
+  const { ctx } = makeCtx({ permissionCurrent: 'custom' })
+  const tool = createSessionSpawnTool(ctx)
+  const result = await tool.execute({ prompt: 'x', workspacePath: WORKSPACE_PATH, permission: 'workspace-write' }, makeExec())
+  assert.equal(result.permission, 'custom')
+  assert.equal(result.permissionLabel, undefined)
+})
+
+test('the permission switch happens before sinceSeq is captured', async () => {
+  const { ctx, calls } = makeCtx({ trackSeq: true, agentSeq: 9 })
+  const tool = createSessionSpawnTool(ctx)
+  const result = await tool.execute({ prompt: 'x', workspacePath: WORKSPACE_PATH, permission: 'read-only' }, makeExec())
+
+  // sinceSeq must cover the permission events, or session_wait would look for
+  // the answer in the wrong turn window.
+  assert.equal(result.sinceSeq, 9)
+  const seqAt = calls.order.indexOf('seq-read')
+  assert.ok(calls.order.indexOf('permission-set') < seqAt)
+  assert.ok(seqAt < calls.order.indexOf('prompt'))
+})
+
+test('a title failure does not cost the spawn', async () => {
+  const { ctx } = makeCtx({ renameFails: true })
+  const tool = createSessionSpawnTool(ctx)
+  const result = await tool.execute({ prompt: 'x', workspacePath: WORKSPACE_PATH }, makeExec())
+  assert.equal(result.sessionId, SESSION_ID)
+  assert.equal(typeof result.title, 'string')
+})
+
+test('a delivery failure on an ungrouped session still archives it', async () => {
+  const { ctx, calls } = makeCtx({ promptFails: true })
+  const tool = createSessionSpawnTool(ctx)
+  await assert.rejects(
+    tool.execute({ prompt: 'x', ungrouped: true }, makeExec({ callerCwd: '/tmp' })),
+    /could not deliver/u
+  )
+  assert.deepEqual(calls.detach, [])
+  assert.deepEqual(calls.archive, [{ sessionId: SESSION_ID, stopActivity: true }])
+})
+
+test('a host without a workspace controller still reports the failure', async () => {
+  const { ctx, calls } = makeCtx({ promptFails: true, workspaceController: false })
+  const tool = createSessionSpawnTool(ctx)
+  await assert.rejects(
+    tool.execute({ prompt: 'x', workspacePath: WORKSPACE_PATH }, makeExec()),
+    /could not deliver/u
+  )
+  // No archive service: the detach attempt is the only cleanup and must not mask
+  // the delivery error.
+  assert.deepEqual(calls.detach, [SESSION_ID])
+})
+
+test('a create that mints a session then fails to attach it is reclaimed', async () => {
+  const { ctx, calls } = makeCtx({ createLeaveBehind: true })
+  const tool = createSessionSpawnTool(ctx)
+  await assert.rejects(
+    tool.execute({ prompt: 'x', workspacePath: WORKSPACE_PATH }, makeExec()),
+    /could not attach/u
+  )
+  assert.deepEqual(calls.archive, [{ sessionId: SESSION_ID, stopActivity: true }])
+  assert.equal(calls.prompt.length, 0)
 })
 
 test('session_send delivers to a live session without resuming it', async () => {

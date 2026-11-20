@@ -10,6 +10,12 @@
  * A host plugin runs inside the app process, so it can call the same session
  * controller the GUI uses and get a real workspace member.
  *
+ * Two behaviours mirror New Session in the GUI:
+ *  - an omitted `workspacePath` inherits the calling session's workspace, so
+ *    the new session appears under the same sidebar group;
+ *  - `permission` applies one of the host's permission presets (read-only /
+ *    workspace-write / danger-full-access) before the first message runs.
+ *
  * Design constraints, in order of importance:
  *  - zero runtime dependencies: only `node:` built-ins are imported, so the
  *    plugin loads under whatever harness build the profile runs, and a harness
@@ -17,9 +23,9 @@
  *  - no approval prompt: this is a tool for trusted local automation, and a
  *    prompt would stall an unattended run. The tool is registered only inside
  *    the profile it is installed into;
- *  - never leave a half-created session behind in the sidebar: if the first
- *    message cannot be delivered, the session is detached from its workspace
- *    again and the error names the session id.
+ *  - never leave a half-created session behind in the sidebar: when a later
+ *    step fails, the session is archived and detached, and the error names the
+ *    session id.
  *
  * @module dsh-wizz-session
  */
@@ -46,6 +52,59 @@ const TITLE_MAX_WORDS = 6
 const TITLE_MAX_BYTES = 40
 
 /**
+ * The permission presets this tool can grant, in the order the app's picker
+ * shows them. Each name is a host-configured bundle of a sandbox mode and an
+ * approval policy; the desktop profile configures exactly these three.
+ */
+export const PERMISSION_PRESETS = ['read-only', 'workspace-write', 'danger-full-access']
+
+/** Human labels matching the Chinese UI's 仅可查看 / 工作区内修改 / 完全权限. */
+const PERMISSION_LABELS = {
+	'read-only': '仅可查看',
+	'workspace-write': '工作区内修改',
+	'danger-full-access': '完全权限'
+}
+
+/**
+ * Spelling variants accepted for `permission` so a caller can pass the GUI
+ * label or a short English word and still get the canonical preset name.
+ */
+const PERMISSION_ALIASES = new Map([
+	['readonly', 'read-only'],
+	['read', 'read-only'],
+	['view', 'read-only'],
+	['仅可查看', 'read-only'],
+	['只读', 'read-only'],
+	['workspace', 'workspace-write'],
+	['write', 'workspace-write'],
+	['workspacewrite', 'workspace-write'],
+	['工作区内修改', 'workspace-write'],
+	['工作区', 'workspace-write'],
+	['full', 'danger-full-access'],
+	['fullaccess', 'danger-full-access'],
+	['danger', 'danger-full-access'],
+	['dangerfullaccess', 'danger-full-access'],
+	['完全权限', 'danger-full-access'],
+	['全部权限', 'danger-full-access']
+])
+
+/**
+ * Canonicalize a `permission` argument: an exact preset name, a known alias,
+ * or undefined when nothing matches.
+ *
+ * @param value - the tool argument.
+ * @returns a preset name from {@link PERMISSION_PRESETS}, or undefined.
+ */
+export function normalizePermission(value) {
+	if (typeof value !== 'string') return undefined
+	const trimmed = value.trim()
+	if (trimmed === '') return undefined
+	const lower = trimmed.toLowerCase()
+	if (PERMISSION_PRESETS.includes(lower)) return lower
+	return PERMISSION_ALIASES.get(lower) ?? PERMISSION_ALIASES.get(trimmed)
+}
+
+/**
  * Pick the preset a new session should start on: an explicit override, then
  * the caller's current preset, then the caller's creation-time preset. The
  * session controller resolves the profile default when nothing is passed.
@@ -69,6 +128,135 @@ export function resolvePresetId(ctx, agent, override) {
 	}
 	const headerPreset = agent?.session?.header?.agentPreset
 	return typeof headerPreset === 'string' && headerPreset !== '' ? headerPreset : undefined
+}
+
+/**
+ * Resolve the workspace the calling session belongs to, so an omitted
+ * `workspacePath` behaves like New Session in the GUI: the new session lands
+ * under the caller's own workspace instead of "Ungrouped".
+ *
+ * The registry has no by-session lookup, so membership is read through
+ * `list()` exactly as the host does. A caller whose recorded directory is a
+ * registered workspace also attaches there even when it is not accounted to
+ * that workspace yet (for example a session minted by `dsh headless` inside
+ * the project directory), which is the closest host-side equivalent of the
+ * GUI's "current session's workspace" default.
+ *
+ * @param ctx - plugin context providing the workspace registry.
+ * @param agent - the calling agent.
+ * @returns the caller's workspace entity, or undefined when it has none.
+ */
+export async function resolveCallerWorkspace(ctx, agent) {
+	const callerIds = [...new Set([
+		String(agent?.id ?? ''),
+		String(agent?.session?.header?.id ?? '')
+	].filter((id) => id !== ''))]
+	const listed = ctx.workspaceRegistry.list?.() ?? []
+	for (const workspace of listed) {
+		const members = Array.isArray(workspace?.sessionIds) ? workspace.sessionIds : []
+		if (callerIds.some((id) => members.includes(id))) return workspace
+	}
+	const cwd = agent?.session?.header?.cwd
+	if (typeof cwd === 'string' && cwd !== '' && typeof ctx.workspaceRegistry.resolveByPath === 'function') {
+		try {
+			const byPath = await ctx.workspaceRegistry.resolveByPath(cwd)
+			if (byPath !== undefined) return byPath
+		} catch {
+			// An unregistered or unreachable directory simply means no workspace.
+		}
+	}
+	return undefined
+}
+
+/**
+ * Validate one `permission` argument against the host's advertised presets
+ * before any session is created, so a bad name never leaves a default
+ * session behind. The host pins a new-session default at creation, so the
+ * only supported way to override it is the permission-preset service's own
+ * write path — never raw sandbox/approval events, which record no preset
+ * identity and would show up as `custom` in the GUI.
+ *
+ * @param ctx - plugin context.
+ * @param requested - the `permission` argument.
+ * @returns the service and the canonical preset name to apply.
+ */
+export function resolvePermissionGrant(ctx, requested) {
+	const name = normalizePermission(requested)
+	if (name === undefined) {
+		throw new Error(`${TOOL_NAME} does not know permission ${JSON.stringify(requested)}; use read-only (仅可查看), workspace-write (工作区内修改), or danger-full-access (完全权限)`)
+	}
+	const permissions = ctx.get?.('permissionPresets')
+	if (permissions === undefined) {
+		throw new Error(`${TOOL_NAME} cannot set permission ${JSON.stringify(name)}: this host composes no permissionPresets service. Omit permission to keep the host new-session default.`)
+	}
+	try {
+		permissions.resolve(name)
+	} catch (error) {
+		const known = Array.isArray(permissions.names) && permissions.names.length > 0 ? ` (this host offers: ${permissions.names.join(', ')})` : ''
+		throw new Error(`${TOOL_NAME} cannot set permission ${JSON.stringify(name)}: ${error instanceof Error ? error.message : String(error)}${known}`)
+	}
+	return { permissions, name }
+}
+
+/**
+ * The permission the host currently reports for a session, or undefined when
+ * this composition cannot answer (no service, no live session, or a failure).
+ *
+ * @param ctx - plugin context.
+ * @param sessionId - the session to read.
+ * @returns the effective preset name, possibly `custom`.
+ */
+export function currentPermissionOf(ctx, sessionId) {
+	const permissions = ctx.get?.('permissionPresets')
+	if (typeof permissions?.current !== 'function') return undefined
+	const live = ctx.agents.get(sessionId)
+	if (live?.session === undefined) return undefined
+	try {
+		const current = permissions.current(live.session)
+		return typeof current === 'string' && current !== '' ? current : undefined
+	} catch {
+		return undefined
+	}
+}
+
+/**
+ * Take a half-created session back out of the sidebar without deleting
+ * anything: archive it (the persistence seam has no deletion API, archiving
+ * hides the row and is reversible), then detach it from its workspace when
+ * that workspace made it a member. Both calls are best effort, so a host that
+ * composes no workspace controller still gets the detach attempt.
+ *
+ * @param ctx - plugin context.
+ * @param sessionId - the session to discard.
+ * @param workspace - the workspace it was attached to, if any.
+ */
+async function discardSession(ctx, sessionId, workspace) {
+	const controller = ctx.get?.('workspaceController')
+	if (typeof controller?.archiveSession === 'function') {
+		try { await controller.archiveSession({ sessionId, stopActivity: true }) } catch { /* best effort */ }
+	}
+	if (workspace !== undefined) {
+		try { await workspace.detachSession(sessionId) } catch { /* best effort */ }
+	}
+}
+
+/**
+ * The id of a session a failed create left behind. The host creates the
+ * session before it attaches it to the workspace, so an attach failure throws
+ * with the already-minted id; reclaiming it is the difference between a clean
+ * failure and an orphan row.
+ *
+ * @param error - the error `sessionController.create` threw.
+ * @returns the leftover session id, or undefined when none is named.
+ */
+function discardableSessionId(error) {
+	const details = error?.details
+	if (details !== null && typeof details === 'object' && typeof details.sessionId === 'string' && details.sessionId !== '') {
+		return details.sessionId
+	}
+	const message = error instanceof Error ? error.message : String(error ?? '')
+	if (!/was created|created session/iu.test(message)) return undefined
+	return /session-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/u.exec(message)?.[0]
 }
 
 /**
@@ -221,7 +409,8 @@ export function createSessionSpawnTool(ctx) {
 		name: TOOL_NAME,
 		description: [
 			'Create a new, independent DSH session that the person can see in the sidebar and continue on their own.',
-			'When workspacePath names an existing workspace, the new session is attached to that workspace and appears under it; otherwise the session is ungrouped.',
+			'An omitted workspacePath inherits the calling session\'s workspace, so the new session appears under the same workspace group as New Session in the GUI; pass ungrouped: true to keep it outside every workspace.',
+			'permission selects the sandbox/approval bundle for the new session: read-only (仅可查看), workspace-write (工作区内修改), or danger-full-access (完全权限). Omit it to keep the host new-session default.',
 			'The first message is delivered immediately and the call returns as soon as the session exists — it does not wait for the work to finish.',
 			'Use this to fan work out into separate sessions; use a subagent when the work should stay inside this conversation.'
 		].join(' '),
@@ -235,7 +424,16 @@ export function createSessionSpawnTool(ctx) {
 				},
 				workspacePath: {
 					type: 'string',
-					description: 'Absolute path of an already-registered workspace, e.g. "/Volumes/Project/my-project". This tool never creates a workspace; an unregistered path is an error.'
+					description: 'Absolute path of an already-registered workspace, e.g. "/Volumes/Project/my-project". This tool never creates a workspace; an unregistered path is an error. Omit to inherit the calling session\'s workspace.'
+				},
+				ungrouped: {
+					type: 'boolean',
+					description: 'Create the session outside every workspace (it appears under "Ungrouped"). Defaults to false: an omitted workspacePath inherits the calling session\'s workspace. An explicit workspacePath wins when both are given.'
+				},
+				permission: {
+					type: 'string',
+					enum: PERMISSION_PRESETS,
+					description: 'Permission bundle for the first turn and later turns: "read-only" (仅可查看; reads only, approval may ask), "workspace-write" (工作区内修改; writes limited to the workspace, approval may ask), "danger-full-access" (完全权限; no sandbox and no approval prompts — use for unattended work). Omit to keep the host new-session default.'
 				},
 				title: {
 					type: 'string',
@@ -257,8 +455,11 @@ export function createSessionSpawnTool(ctx) {
 					title: { type: 'string' },
 					workspacePath: { type: 'string' },
 					workspaceId: { type: 'string' },
+					workspaceTitle: { type: 'string' },
 					cwd: { type: 'string' },
 					preset: { type: 'string' },
+					permission: { type: 'string' },
+					permissionLabel: { type: 'string' },
 					sinceSeq: { type: 'number' }
 				},
 				required: ['sessionId']
@@ -268,8 +469,11 @@ export function createSessionSpawnTool(ctx) {
 				text: [
 					`Created session ${value.sessionId}${typeof value.title === 'string' ? ` (“${value.title}”)` : ''}.`,
 					typeof value.workspacePath === 'string'
-						? `It is attached to ${value.workspacePath} and appears under that workspace in the sidebar.`
-						: 'It is ungrouped: no workspace path was given.',
+						? `It is attached to ${value.workspacePath}${typeof value.workspaceTitle === 'string' ? ` (“${value.workspaceTitle}”)` : ''} and appears under that workspace in the sidebar.`
+						: 'It is ungrouped: no workspace was attached.',
+					typeof value.permission === 'string'
+						? `It runs under the ${typeof value.permissionLabel === 'string' ? `${value.permissionLabel} (${value.permission})` : value.permission} permission.`
+						: '',
 					'The first task was delivered; the session keeps working on its own.',
 					typeof value.sinceSeq === 'number' ? `Log offset sinceSeq=${value.sinceSeq}: pass it to session_wait to wait for this task's answer.` : ''
 				].filter((part) => part !== '').join(' ')
@@ -279,8 +483,21 @@ export function createSessionSpawnTool(ctx) {
 			if (exec?.agent === undefined) throw new Error(`${TOOL_NAME} must run inside a session`)
 			const prompt = typeof args?.prompt === 'string' ? args.prompt.trim() : ''
 			if (prompt === '') throw new Error(`${TOOL_NAME} needs a non-empty prompt: it becomes the new session's first message`)
+			// Raw registered tools are not argument-validated by the host, so a
+			// wrongly typed field would otherwise read as "absent" and silently
+			// change behaviour (workspacePath 123 would inherit instead of fail).
+			if (args?.workspacePath !== undefined && typeof args.workspacePath !== 'string') throw new Error(`${TOOL_NAME} workspacePath must be a string`)
+			if (args?.ungrouped !== undefined && typeof args.ungrouped !== 'boolean') throw new Error(`${TOOL_NAME} ungrouped must be a boolean`)
+			if (args?.permission !== undefined && typeof args.permission !== 'string') throw new Error(`${TOOL_NAME} permission must be a string`)
 
-			// Resolve the workspace first: a typo must fail before a session exists.
+			// Validate the permission before anything is created: a bad preset must
+			// not leave a default-permission session behind. The host pins the
+			// new-session default at creation, so the override is applied to the
+			// live session right after it exists and before the first message.
+			const requestedPermission = typeof args?.permission === 'string' && args.permission.trim() !== '' ? args.permission.trim() : undefined
+			const grant = requestedPermission === undefined ? undefined : resolvePermissionGrant(ctx, requestedPermission)
+
+			// Resolve the workspace next: a typo must fail before a session exists.
 			let workspace
 			const requestedPath = typeof args?.workspacePath === 'string' ? args.workspacePath.trim() : ''
 			if (requestedPath !== '') {
@@ -292,22 +509,41 @@ export function createSessionSpawnTool(ctx) {
 				}
 				if (canonical === undefined) {
 					const known = (ctx.workspaceRegistry.list?.() ?? []).map((item) => `${item.title} (${item.path})`).join('; ')
-					throw new Error(`${TOOL_NAME} cannot use ${JSON.stringify(requestedPath)}: no registered workspace has that path. Existing workspaces: ${known === '' ? '(none)' : known}. Use one of those paths, or omit workspacePath for an ungrouped session.`)
+					throw new Error(`${TOOL_NAME} cannot use ${JSON.stringify(requestedPath)}: no registered workspace has that path. Existing workspaces: ${known === '' ? '(none)' : known}. Use one of those paths, or pass ungrouped: true for a session outside every workspace.`)
 				}
 				workspace = canonical
+			} else if (args?.ungrouped !== true) {
+				// GUI parity, first choice only: New Session targets the explicitly
+				// selected workspace, then the current session's workspace, then the
+				// most recently active one. The last two are client-local state a host
+				// plugin cannot read, so the caller's membership is used first and its
+				// recorded directory is the fallback (a session can live in a
+				// registered directory without being accounted to it). Only a caller
+				// outside every workspace directory ends up ungrouped.
+				workspace = await resolveCallerWorkspace(ctx, exec.agent)
 			}
 
 			const fallbackCwd = exec.agent.session?.header?.cwd
 			const cwd = workspace?.path ?? fallbackCwd
 			if (typeof cwd !== 'string' || cwd === '') {
-				throw new Error(`${TOOL_NAME} needs either workspacePath or a calling session that records a working directory`)
+				throw new Error(`${TOOL_NAME} needs either a workspace or a calling session that records a working directory`)
 			}
 
 			const preset = resolvePresetId(ctx, exec.agent, args?.preset)
-			const created = await ctx.sessionController.create({
-				...(workspace === undefined ? { cwd } : { workspaceId: String(workspace.id) }),
-				...(preset === undefined ? {} : { agentPreset: preset })
-			})
+			let created
+			try {
+				created = await ctx.sessionController.create({
+					...(workspace === undefined ? { cwd } : { workspaceId: String(workspace.id) }),
+					...(preset === undefined ? {} : { agentPreset: preset })
+				})
+			} catch (error) {
+				// The host mints the session before it attaches it to the workspace, so
+				// an attach failure throws with the new id already published. Reclaim
+				// that leftover instead of leaving an orphan row behind.
+				const leftover = discardableSessionId(error)
+				if (leftover !== undefined) await discardSession(ctx, leftover, workspace)
+				throw error
+			}
 			const sessionId = String(created?.sessionId ?? '')
 			if (sessionId === '') throw new Error(`${TOOL_NAME}: the host returned no session id`)
 
@@ -320,6 +556,28 @@ export function createSessionSpawnTool(ctx) {
 				if (live?.session !== undefined) acceptedTitle = ctx.sessionTitle.rename(live.session, title)?.title ?? title
 			} catch {
 				// Cosmetic only: the session still works without a pinned title.
+			}
+
+			// Grant the requested permission before the first message so the first
+			// turn runs under it. The permission-preset service is the only
+			// supported write path: raw sandbox/approval events record no preset
+			// identity, so the GUI would label the session "custom".
+			let effectivePermission
+			if (grant !== undefined) {
+				try {
+					const live = ctx.agents.get(sessionId)
+					if (live?.session === undefined) throw new Error('the new session is not live in this host')
+					grant.permissions.set(live.session, grant.name)
+					const actual = typeof grant.permissions.current === 'function' ? grant.permissions.current(live.session) : undefined
+					effectivePermission = typeof actual === 'string' && actual !== '' ? actual : grant.name
+				} catch (error) {
+					await discardSession(ctx, sessionId, workspace)
+					throw new Error(`${TOOL_NAME} created ${sessionId} but could not grant permission ${JSON.stringify(grant.name)} (${error instanceof Error ? error.message : String(error)}); cleanup was attempted (archive when the host supports it, plus detach), so it should not stay in the sidebar`)
+				}
+			} else {
+				// Report what the host actually pinned for a new session, which is the
+				// permission GUI-created sessions would get.
+				effectivePermission = currentPermissionOf(ctx, sessionId)
 			}
 
 			// Remember where the log stood before delivery: session_wait starts from
@@ -340,11 +598,9 @@ export function createSessionSpawnTool(ctx) {
 				}, signal)
 			} catch (error) {
 				// A session that never receives its task would sit in the sidebar as
-				// an empty stranger. Detach it again and report what happened.
-				if (workspace !== undefined) {
-					try { await workspace.detachSession(sessionId) } catch { /* best effort */ }
-				}
-				throw new Error(`${TOOL_NAME} created ${sessionId} but could not deliver its first message (${error instanceof Error ? error.message : String(error)}); it was detached from the workspace`)
+				// an empty stranger. Take it back out and report what happened.
+				await discardSession(ctx, sessionId, workspace)
+				throw new Error(`${TOOL_NAME} created ${sessionId} but could not deliver its first message (${error instanceof Error ? error.message : String(error)}); cleanup was attempted (archive when the host supports it, plus detach), so it should not stay in the sidebar`)
 			}
 
 			return {
@@ -352,10 +608,15 @@ export function createSessionSpawnTool(ctx) {
 				title: acceptedTitle,
 				...(workspace === undefined ? {} : {
 					workspacePath: String(workspace.path),
-					workspaceId: String(workspace.id)
+					workspaceId: String(workspace.id),
+					workspaceTitle: String(workspace.title)
 				}),
 				cwd,
 				...(preset === undefined ? {} : { preset }),
+				...(effectivePermission === undefined ? {} : {
+					permission: effectivePermission,
+					...(PERMISSION_LABELS[effectivePermission] === undefined ? {} : { permissionLabel: PERMISSION_LABELS[effectivePermission] })
+				}),
 				...(sinceSeq === undefined ? {} : { sinceSeq })
 			}
 		}
