@@ -9,5 +9,6 @@ const values = { ...read(resolve(root, '../../.env')), ...read(resolve(root, '.e
 export const config = {
   accountId: values.CLOUDFLARE_ACCOUNT_ID || '',
   token: values.CLOUDFLARE_AUTH_TOKEN || '',
+  deepseekApiKey: values.DEEPSEEK_API_KEY || '',
   port: Number(values.PORT || 3000),
 };

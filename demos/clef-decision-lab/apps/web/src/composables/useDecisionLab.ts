@@ -22,6 +22,7 @@ export function useDecisionLab() {
   const batchSummary = computed(() => summarize(batchRuns.value));
   const error = ref<LabError | null>(null);
   const ready = ref<boolean | null>(null);
+  const writingReady = ref<boolean | null>(null);
   let controller: AbortController | null = null;
   let editingRaw = false;
   const validationError = computed(() => {
@@ -79,11 +80,11 @@ export function useDecisionLab() {
     } finally { busy.value = false; controller = null; }
   }
   async function checkHealth() {
-    try { const response = await fetch('/api/health'); ready.value = response.ok && (await response.json()).ready; }
-    catch { ready.value = false; }
+    try { const response = await fetch('/api/health'); const health = await response.json(); ready.value = response.ok && health.ready; writingReady.value = response.ok && health.writingReady; }
+    catch { ready.value = false; writingReady.value = false; }
   }
   function cancel() { controller?.abort(); }
   function clearHistory() { runs.value = []; selected.value = null; clearRuns(); }
   return { request, runs, selected, rawDraft, rawError, contextError, questionsError, storageWarning, busy, progress, batchRuns, batchActive, batchSummary,
-    error, ready, validationError, editRaw, setRequest, scenario, run, cancel, clearHistory, checkHealth };
+    error, ready, writingReady, validationError, editRaw, setRequest, scenario, run, cancel, clearHistory, checkHealth };
 }

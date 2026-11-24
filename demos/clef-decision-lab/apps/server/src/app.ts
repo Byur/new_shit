@@ -2,8 +2,10 @@ import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { parseRequest, describeError } from '../../../packages/shared/src/schema';
 import { ProviderError, runCloudflare } from './providers/cloudflare';
+import { z } from 'zod';
+import { runDeepSeek, WritingProviderError } from './providers/deepseek';
 
-export function createApp(credentials: { accountId: string; token: string }, options: Parameters<typeof runCloudflare>[2] = {}) {
+export function createApp(credentials: { accountId: string; token: string; deepseekApiKey?: string }, options: Parameters<typeof runCloudflare>[2] = {}) {
   const app = new Hono();
   app.use('/api/*', async (c, next) => {
     // Local only. Reject cross-origin writes, including hostile pages targeting localhost.
@@ -16,7 +18,7 @@ export function createApp(credentials: { accountId: string; token: string }, opt
     await next();
   });
   app.use('/api/*', bodyLimit({ maxSize: 256 * 1024, onError: c => c.json({ error: { code: 'PAYLOAD_TOO_LARGE', message: '请求不能超过 256 KiB。' } }, 413) }));
-  app.get('/api/health', c => c.json({ ready: Boolean(credentials.accountId && credentials.token), provider: 'Cloudflare Workers AI', timeoutMs: 30000 }));
+  app.get('/api/health', c => c.json({ ready: Boolean(credentials.accountId && credentials.token), provider: 'Cloudflare Workers AI', writingReady: Boolean(credentials.deepseekApiKey), writingProvider: 'DeepSeek', timeoutMs: 30000 }));
   app.post('/api/decisions/run', async c => {
     let input;
     try { input = parseRequest(await c.req.text()); } catch (error) {
@@ -27,6 +29,26 @@ export function createApp(credentials: { accountId: string; token: string }, opt
     } catch (error) {
       const safe = error instanceof ProviderError ? error : new ProviderError('INTERNAL_ERROR', '本地代理出现错误，请重试。', 500);
       return new Response(JSON.stringify({ error: safe.toJSON() }), { status: safe.status, headers: { 'Content-Type': 'application/json' } });
+    }
+  });
+  app.post('/api/writing/run', async c => {
+    const schema = z.object({
+      model: z.literal('deepseek-flash'),
+      mode: z.enum(['propose', 'phrase', 'conversation']),
+      state: z.record(z.string(), z.unknown()),
+      task: z.record(z.string(), z.unknown()),
+    }).strict();
+    const parsed = schema.safeParse(await c.req.json().catch(() => null));
+    if (!parsed.success) return c.json({ error: { code: 'INVALID_INPUT', message: '写作请求格式无效。' } }, 400);
+    try {
+      return c.json(await runDeepSeek(parsed.data, credentials.deepseekApiKey || '', {
+        signal: c.req.raw.signal,
+      }));
+    } catch (error) {
+      const safe = error instanceof WritingProviderError ? error : new WritingProviderError('INTERNAL_ERROR', '写作代理出现错误。', 500);
+      return new Response(JSON.stringify({ error: { code: safe.code, message: safe.message } }), {
+        status: safe.status, headers: { 'Content-Type': 'application/json' },
+      });
     }
   });
   app.notFound(c => c.json({ error: { code: 'NOT_FOUND', message: '接口不存在。' } }, 404));
