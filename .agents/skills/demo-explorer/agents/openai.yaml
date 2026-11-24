@@ -1,0 +1,3 @@
+interface:
+  display_name: "Demo Explorer"
+  short_description: "Build small runnable demos to explore unfamiliar tools and stacks"
