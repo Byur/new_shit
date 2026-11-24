@@ -68,7 +68,8 @@ export function createBinder({ logger, store, host, config }) {
    */
   function chatConfigOf(chatId) {
     const chats = config.get().chats ?? {};
-    return normalizeChatConfig(chats[chatId]);
+    // 先按 chat_id 精确匹配，没配就用通配项 `'*'`，再没有就返回 undefined（由调用方提示去配置）。
+    return normalizeChatConfig(chats[chatId]) ?? normalizeChatConfig(chats['*']);
   }
 
   /**

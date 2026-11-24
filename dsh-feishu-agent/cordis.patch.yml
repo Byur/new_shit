@@ -25,8 +25,16 @@
       # 带 config 的条目会被 loader 判成 did not activate 并静默跳过。
       config:
         ownerOpenId: ''
-        # 飞书私聊 chat_id → 落哪个 Workspace。换目录就改这里（宿主会按路径解析/注册工作区）。
-        chats: {}
+        # chat_id → 落哪个 Workspace。
+        # 用 `'*'` 配默认值：所有没单独列出的私聊/群都走这一套，**不需要逐个绑定 chat_id**。
+        # 需要给某个群单独指到别的目录时，再加一条精确匹配的键覆盖它。
+        chats:
+          '*':
+            # 改成你自己的目录；或把这份映射写到
+            # $DSH_HOME/feishu-agent/local-config.yml（插件启动时优先生效，不进仓库）。
+            workspacePath: /path/to/your/workspace
+            titlePrefix: '[飞书]'
+            permissionPreset: workspace-write
         schedules: []
         answerConcurrency: 3
         # CLI 子进程：Desktop 沙箱不让子进程写 ~/.dsh/profile，所以给它一个可写的 DSH_HOME。

@@ -1,7 +1,7 @@
 /** 插件入口：把飞书长连接、绑定、回答卡、反问/审批应答、调度器串起来。 */
 
 import { join } from 'node:path';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 
 import { APP_ID_REF, APP_SECRET_REF, DEFAULT_PERMISSION_PRESET, LOGGER_NAME, PLUGIN_NAME, STALE_EVENT_MS, TURN_END_TITLES } from './common/constants.js';
@@ -56,6 +56,40 @@ function stateDirOf() {
 }
 
 /**
+ * 读本机的私有配置（`$DSH_HOME/feishu-agent/local-config.json`）。
+ *
+ * 仓库里的 bundle 配置只放通用默认值；个人 chat_id、工作区路径、provider/model
+ * 放在这个文件里，既不进仓库，也不需要在 profile 的 cordis.patch.yml 里重复写。
+ *
+ * 用 JSON 而不是 YAML：插件要保持零外部依赖（不引入 yaml 包），
+ * 而手写 YAML 解析器的一个缩进边界就足以让配置静默失效。
+ *
+ * @param stateDir 插件状态目录
+ * @param logger 日志
+ * @returns 配置对象；文件不存在或解析失败时返回空对象
+ */
+async function loadLocalConfig(stateDir, logger) {
+  const file = join(stateDir, 'local-config.json');
+  try {
+    const text = await readFile(file, 'utf8');
+    const parsed = JSON.parse(text);
+    if (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      logger.info(`已加载本机配置 ${file}`);
+      return parsed;
+    }
+    logger.warn(`${file} 的内容不是对象，忽略`);
+    return {};
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      logger.info(`没有本机配置 ${file}（只用 bundle 默认值）`);
+    } else {
+      logger.warn(`读取本机配置 ${file} 失败：${error?.message ?? error}`);
+    }
+    return {};
+  }
+}
+
+/**
  * 插件入口。
  *
  * @param ctx Cordis 上下文
@@ -65,12 +99,19 @@ export async function apply(ctx, config = {}) {
   const logger = ctx.logger(LOGGER_NAME);
 
   // ---------- 配置 ----------
+  /** 本机私有配置（仓库外）：`$DSH_HOME/feishu-agent/local-config.yml`，覆盖 bundle 里的默认值。 */
+  let localConfig = {};
+
   const runtimeConfig = {
     get() {
+      const bundledChats = readConfigField(config.chats, {}) ?? {};
+      const localChats = localConfig.chats ?? {};
+      const bundledSchedules = readConfigField(config.schedules, []) ?? [];
       return {
-        chats: readConfigField(config.chats, {}) ?? {},
-        ownerOpenId: readConfigField(config.ownerOpenId, '') ?? '',
-        schedules: readConfigField(config.schedules, []) ?? [],
+        // 精确键 + 通配 `'*'`；本机配置优先。
+        chats: { ...bundledChats, ...localChats },
+        ownerOpenId: localConfig.ownerOpenId ?? readConfigField(config.ownerOpenId, '') ?? '',
+        schedules: localChats.schedules ?? bundledSchedules,
         answerConcurrency: Number(readConfigField(config.answerConcurrency, DEFAULT_MAX_CONCURRENT)) || DEFAULT_MAX_CONCURRENT,
       };
     },
@@ -158,6 +199,8 @@ export async function apply(ctx, config = {}) {
 
   // ---------- 状态 ----------
   const stateDir = stateDirOf();
+  // 本机私有配置：仓库里的 cordis.patch.yml 只放通用默认值，个人 chat_id / 路径 / provider 放这里。
+  localConfig = await loadLocalConfig(stateDir, logger);
   // 先把状态目录建出来：这是"插件确实跑起来了"的第一个可观测证据，也免得首轮绑定前目录不存在。
   await mkdir(stateDir, { recursive: true });
   const store = createStore({ dir: stateDir, logger });
