@@ -31,7 +31,7 @@
         chats:
           '*':
             # 改成你自己的目录；或把这份映射写到
-            # $DSH_HOME/feishu-agent/local-config.yml（插件启动时优先生效，不进仓库）。
+            # $DSH_HOME/feishu-agent/local-config.json（插件启动时优先生效，不进仓库）。
             workspacePath: /path/to/your/workspace
             titlePrefix: '[飞书]'
             permissionPreset: workspace-write

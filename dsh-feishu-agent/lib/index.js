@@ -99,7 +99,7 @@ export async function apply(ctx, config = {}) {
   const logger = ctx.logger(LOGGER_NAME);
 
   // ---------- 配置 ----------
-  /** 本机私有配置（仓库外）：`$DSH_HOME/feishu-agent/local-config.yml`，覆盖 bundle 里的默认值。 */
+  /** 本机私有配置（仓库外）：`$DSH_HOME/feishu-agent/local-config.json`；chats / ownerOpenId / schedules 优先取这里的值。 */
   let localConfig = {};
 
   const runtimeConfig = {

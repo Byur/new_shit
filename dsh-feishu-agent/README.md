@@ -110,13 +110,32 @@ allowBuilds:
 
 ### 本机私有配置
 
-`cordis.patch.yml` 里的 `chats` 默认是空的（避免把个人 chat_id 写进公开仓库）。本机的实际映射放在仓库外：
+`cordis.patch.yml` 里的 `chats` 只放通用默认值（含 `'*'` 通配工作区），个人 chat_id 与实际目录放在仓库外：
 
 ```
-~/.dsh/feishu-agent/local-config.yml
+~/.dsh/feishu-agent/local-config.json
 ```
 
-包含 `chats`（chat_id → workspacePath / provider / model）、`cliHome` 等。需要改配置时改这个文件，再同步进 profile 或插件 patch。
+JSON 结构：
+
+```json
+{
+  "chats": {
+    "oc_xxx": {
+      "workspacePath": "/path/to/workspace",
+      "titlePrefix": "[私人]",
+      "permissionPreset": "workspace-write",
+      "chatType": "p2p",
+      "provider": "codeplan",
+      "model": "deepseek/deepseek-v4.1-flash"
+    }
+  },
+  "ownerOpenId": "",
+  "schedules": []
+}
+```
+
+插件启动时合并 `chats`（精确 chat_id 优先，未命中用 `'*'`）、`ownerOpenId`、`schedules`；文件缺失或 JSON 解析失败只记日志，插件照常加载。`cliHome`、`appId`/`appSecret`、`cliPath` 等不从这个文件读取，仍配在 `cordis.patch.yml` 或环境变量里。改完直接重启 Desktop 生效，不需要同步 profile。
 
 ## 第四步：验证
 
