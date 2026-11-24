@@ -131,11 +131,12 @@ JSON 结构：
     }
   },
   "ownerOpenId": "",
-  "schedules": []
+  "cliHome": "/path/to/cli-home",
+  "answerConcurrency": 3
 }
 ```
 
-插件启动时合并 `chats`（精确 chat_id 优先，未命中用 `'*'`）、`ownerOpenId`、`schedules`；文件缺失或 JSON 解析失败只记日志，插件照常加载。`cliHome`、`appId`/`appSecret`、`cliPath` 等不从这个文件读取，仍配在 `cordis.patch.yml` 或环境变量里。改完直接重启 Desktop 生效，不需要同步 profile。
+插件启动时用这个文件覆盖 bundle 配置里的同名字段：`chats`（按 chat_id 逐键合并，精确键优先，未命中用 `'*'`）、`ownerOpenId`、`answerConcurrency`、`cliHome`、`cliPath`、`cliProfile`、`cliEnvRefs`、`runTimeoutMs`、`appId`、`appSecret`。飞书凭据的取值顺序是 凭据服务 → 环境变量 → 本机配置 → bundle；`cliHome` 依次取 本机配置 → bundle → `DSH_FEISHU_AGENT_CLI_HOME`。文件缺失或 JSON 解析失败只记日志，插件照常加载；定时任务存在 `state.json`，不从本文件读。改完直接重启 Desktop 生效，不需要同步 profile。
 
 ## 第四步：验证
 

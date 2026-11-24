@@ -99,20 +99,36 @@ export async function apply(ctx, config = {}) {
   const logger = ctx.logger(LOGGER_NAME);
 
   // ---------- 配置 ----------
-  /** 本机私有配置（仓库外）：`$DSH_HOME/feishu-agent/local-config.json`；chats / ownerOpenId / schedules 优先取这里的值。 */
+  /** 本机私有配置（仓库外）：`$DSH_HOME/feishu-agent/local-config.json`；同名字段优先于 bundle 配置。 */
   let localConfig = {};
+
+  /**
+   * 取一项配置：本机私有配置优先，其次 bundle 配置。
+   *
+   * bundle 配置里的 volatile 字段在 loader 下是带 `get()` 的引用，统一交给 readConfigField 解包。
+   *
+   * @param key 配置字段名
+   * @param fallback 缺省值
+   * @returns 实际值
+   */
+  function configValue(key, fallback) {
+    const local = localConfig[key];
+    if (local !== undefined && local !== null) return readConfigField(local, fallback);
+    return readConfigField(config[key], fallback);
+  }
 
   const runtimeConfig = {
     get() {
       const bundledChats = readConfigField(config.chats, {}) ?? {};
-      const localChats = localConfig.chats ?? {};
-      const bundledSchedules = readConfigField(config.schedules, []) ?? [];
+      const localChats = localConfig.chats !== null && typeof localConfig.chats === 'object' && !Array.isArray(localConfig.chats)
+        ? localConfig.chats
+        : {};
       return {
-        // 精确键 + 通配 `'*'`；本机配置优先。
+        // chats 逐键浅合并：精确键 + 通配 `'*'`；本机配置里的同键覆盖 bundle。
         chats: { ...bundledChats, ...localChats },
-        ownerOpenId: localConfig.ownerOpenId ?? readConfigField(config.ownerOpenId, '') ?? '',
-        schedules: localChats.schedules ?? bundledSchedules,
-        answerConcurrency: Number(readConfigField(config.answerConcurrency, DEFAULT_MAX_CONCURRENT)) || DEFAULT_MAX_CONCURRENT,
+        ownerOpenId: configValue('ownerOpenId', ''),
+        schedules: configValue('schedules', []),
+        answerConcurrency: Number(configValue('answerConcurrency', DEFAULT_MAX_CONCURRENT)) || DEFAULT_MAX_CONCURRENT,
       };
     },
   };
@@ -146,7 +162,7 @@ export async function apply(ctx, config = {}) {
         logger.warn(`读取飞书凭据失败，回退到环境变量：${error?.message ?? error}`);
       }
       // 2) CLI 子进程要用的 provider key（apiKeyEnv 只认进程环境）。
-      const wanted = readConfigField(config.cliEnvRefs, ['CODEPLAN_API_KEY']);
+      const wanted = configValue('cliEnvRefs', ['CODEPLAN_API_KEY']);
       const refs = Array.isArray(wanted) && wanted.length > 0 ? wanted : ['CODEPLAN_API_KEY'];
       for (const ref of refs) {
         if (typeof ref !== 'string' || ref === '') continue;
@@ -172,10 +188,10 @@ export async function apply(ctx, config = {}) {
    * @returns 环境变量表
    */
   function cliEnv() {
-    const home = readConfigField(config.cliHome, '') || process.env.DSH_FEISHU_AGENT_CLI_HOME || '';
+    const home = configValue('cliHome', '') || process.env.DSH_FEISHU_AGENT_CLI_HOME || '';
     const env = home === '' ? {} : { DSH_HOME: home };
     // 需要注入的 provider key（可配置覆盖）。
-    const wanted = readConfigField(config.cliEnvRefs, ['CODEPLAN_API_KEY']);
+    const wanted = configValue('cliEnvRefs', ['CODEPLAN_API_KEY']);
     const refs = Array.isArray(wanted) && wanted.length > 0 ? wanted : ['CODEPLAN_API_KEY'];
     for (const ref of refs) {
       if (typeof ref !== 'string' || ref === '' || process.env[ref] !== undefined) continue;
@@ -192,8 +208,8 @@ export async function apply(ctx, config = {}) {
    */
   function credentials() {
     const stored = storedCredentials ?? { appId: '', appSecret: '' };
-    const appId = stored.appId || process.env.DSH_FEISHU_AGENT_APP_ID || readConfigField(config.appId, '') || '';
-    const appSecret = stored.appSecret || process.env.DSH_FEISHU_AGENT_APP_SECRET || readConfigField(config.appSecret, '') || '';
+    const appId = stored.appId || process.env.DSH_FEISHU_AGENT_APP_ID || configValue('appId', '') || '';
+    const appSecret = stored.appSecret || process.env.DSH_FEISHU_AGENT_APP_SECRET || configValue('appSecret', '') || '';
     return { appId: String(appId), appSecret: String(appSecret) };
   }
 
@@ -230,10 +246,10 @@ export async function apply(ctx, config = {}) {
   const executor = createCliExecutor({
     logger,
     getConfig: () => ({
-      cliPath: resolveCliPath(readConfigField(config.cliPath, '')),
+      cliPath: resolveCliPath(configValue('cliPath', '')),
       cwd: process.cwd(),
-      timeoutMs: Number(readConfigField(config.runTimeoutMs, 600000)) || 600000,
-      profile: readConfigField(config.cliProfile, 'headless') || 'headless',
+      timeoutMs: Number(configValue('runTimeoutMs', 600000)) || 600000,
+      profile: configValue('cliProfile', 'headless') || 'headless',
       // Desktop 进程里跑 CLI 时，子进程要写 profile 目录；Desktop 的沙箱不让写时就换一个可写的 DSH_HOME。
       extraEnv: cliEnv(),
     }),

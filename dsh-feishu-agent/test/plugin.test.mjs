@@ -1,7 +1,7 @@
 /** 集成：假飞书 SDK + 假宿主，把插件 `apply()` 真跑一遍。 */
 
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -133,7 +133,7 @@ const sessionId = sessionIndex >= 0 ? args[sessionIndex + 1] : 'session-cli-' + 
 
 const prompt = args[args.length - 1];
 const mode = process.env.FAKE_CLI_MODE ?? 'ok';
-await import('node:fs').then((fs) => fs.appendFileSync(${JSON.stringify(join(dir, 'fake-cli-calls.jsonl'))}, JSON.stringify({ sessionId: sessionIndex >= 0 ? sessionId : null, prompt }) + '\\n'));
+await import('node:fs').then((fs) => fs.appendFileSync(${JSON.stringify(join(dir, 'fake-cli-calls.jsonl'))}, JSON.stringify({ sessionId: sessionIndex >= 0 ? sessionId : null, prompt, dshHome: process.env.DSH_HOME ?? null }) + '\\n'));
 const write = (o) => process.stdout.write(JSON.stringify(o) + '\\n');
 if (process.env.FAKE_CLI_REJECT_LEGACY === '1' && sessionId === 'session-legacy-with-preset') {
   process.stderr.write('dsh: session runs under agent preset "standard", which the one-shot runner does not compose\\n');
@@ -177,6 +177,10 @@ async function boot(options = {}) {
   const workspacePath = join(dir, 'workspace');
   await mkdir(workspacePath, { recursive: true });
   process.env.DSH_FEISHU_AGENT_STATE_DIR = dir;
+  // 本机私有配置在 apply 时读取；必须在插件启动前写好。
+  if (options.localConfig !== undefined) {
+    await writeFile(join(dir, 'local-config.json'), JSON.stringify(options.localConfig), 'utf8');
+  }
   if (options.config?.appId === '') {
     delete process.env.DSH_FEISHU_AGENT_APP_ID;
     delete process.env.DSH_FEISHU_AGENT_APP_SECRET;
@@ -623,6 +627,45 @@ test('定时任务到点会主动投喂', async () => {
     await scheduler.tick();
     assert.equal(env.host.prompts.length, before + 1);
     assert.equal(env.host.prompts.at(-1).content[0].text, '主动任务');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('本机配置优先：local-config.json 覆盖 bundle 里的同一个 chat', async () => {
+  const localWorkspace = '/tmp/dsh-feishu-local-override';
+  const env = await boot({ localConfig: { chats: { oc_test: { workspacePath: localWorkspace, titlePrefix: '[本机]' } } } });
+  try {
+    await promptOnce(env, '走本机配置');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings)[0];
+    assert.equal(binding.workspacePath, localWorkspace, '本机配置里的工作区应覆盖 bundle');
+    assert.equal(binding.titlePrefix, '[本机]');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('本机配置优先：通配 chats 接管 bundle 未列出的 chat', async () => {
+  const wildcardWorkspace = '/tmp/dsh-feishu-local-wildcard';
+  const env = await boot({ localConfig: { chats: { '*': { workspacePath: wildcardWorkspace, titlePrefix: '[通配]' } } } });
+  try {
+    await promptOnce(env, '走通配', { chatId: 'oc_unlisted' });
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings).find((item) => item.chatId === 'oc_unlisted');
+    assert.ok(binding, '通配配置应该建出绑定');
+    assert.equal(binding.workspacePath, wildcardWorkspace);
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('本机配置优先：cliHome 注入 CLI 子进程', async () => {
+  const cliHome = '/tmp/dsh-feishu-local-cli-home';
+  const env = await boot({ localConfig: { cliHome } });
+  try {
+    const call = await promptOnce(env, '看子进程环境');
+    assert.equal(call.dshHome, cliHome, 'CLI 子进程的 DSH_HOME 应来自本机配置');
   } finally {
     await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }
