@@ -1,7 +1,7 @@
 /** 集成：假飞书 SDK + 假宿主，把插件 `apply()` 真跑一遍。 */
 
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -9,6 +9,17 @@ import { test } from 'node:test';
 import { apply } from '../lib/index.js';
 import { CARD_ACTION_EVENT, MESSAGE_EVENT } from '../lib/feishu/events.js';
 import { installFakeSdk } from './fake-sdk.mjs';
+import { interactiveTargetOf } from '../lib/host/interactive-target.js';
+
+/**
+ * 模块加载时的进程环境快照：`boot()` 用它把用例之间的环境变量隔离干净。
+ *
+ * `FEISHU_AGENT_*` 一律不算「洁净环境」：插件会在宿主进程里读 `.env` 并写进 `process.env`，
+ * 从这里启动的测试进程会继承到它们（比如真实的 owner / 工作区），从而污染用例。
+ */
+const PRISTINE_ENV = Object.fromEntries(
+  Object.entries(process.env).filter(([key]) => !key.startsWith('FEISHU_AGENT_')),
+);
 
 /**
  * 造一个假 Cordis 上下文。
@@ -63,11 +74,13 @@ function createFakeHost() {
   const workspaces = new Map();
   const renames = [];
   const cancels = [];
+  const attaches = [];
   return {
     sessions,
     prompts,
     renames,
     cancels,
+    attaches,
     services: {
       agents: { get: (sessionId) => sessions.get(sessionId) },
       workspaceRegistry: {
@@ -76,9 +89,20 @@ function createFakeHost() {
           return id === undefined ? undefined : { id, path, sessionIds: [] };
         },
         async create(path) {
+          // 真实的 Registry 要求目录存在；测试里顺带建出来，CLI 才能把它当 cwd。
+          await mkdir(path, { recursive: true });
           const id = `ws_${workspaces.size + 1}`;
           workspaces.set(path, id);
           return { id, path, sessionIds: [] };
+        },
+        get(id) {
+          return {
+            id,
+            path: [...workspaces].find(([, value]) => value === id)?.[0] ?? '',
+            async attachSession(sessionId) {
+              attaches.push({ workspaceId: id, sessionId });
+            },
+          };
         },
         list: () => [],
       },
@@ -133,7 +157,13 @@ const sessionId = sessionIndex >= 0 ? args[sessionIndex + 1] : 'session-cli-' + 
 
 const prompt = args[args.length - 1];
 const mode = process.env.FAKE_CLI_MODE ?? 'ok';
-await import('node:fs').then((fs) => fs.appendFileSync(${JSON.stringify(join(dir, 'fake-cli-calls.jsonl'))}, JSON.stringify({ sessionId: sessionIndex >= 0 ? sessionId : null, prompt, dshHome: process.env.DSH_HOME ?? null }) + '\\n'));
+// 模拟持久化：把会话目录建在 DSH_HOME 下，插件据此判断会话是否还在。
+{
+  const { mkdirSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  mkdirSync(join(process.env.DSH_HOME ?? '.', 'sessions', 'fake', sessionId), { recursive: true });
+}
+await import('node:fs').then((fs) => fs.appendFileSync(${JSON.stringify(join(dir, 'fake-cli-calls.jsonl'))}, JSON.stringify({ sessionId: sessionIndex >= 0 ? sessionId : null, prompt, dshHome: process.env.DSH_HOME ?? null, cwd: process.cwd() }) + '\\n'));
 const write = (o) => process.stdout.write(JSON.stringify(o) + '\\n');
 if (process.env.FAKE_CLI_REJECT_LEGACY === '1' && sessionId === 'session-legacy-with-preset') {
   process.stderr.write('dsh: session runs under agent preset "standard", which the one-shot runner does not compose\\n');
@@ -167,26 +197,54 @@ process.exit(0);
  * @returns 运行环境
  */
 async function boot(options = {}) {
+  // 回到模块加载时的进程环境：上一个用例可能把 FEISHU_AGENT_* 留在 process.env 里，
+  // 带着它跑下一个用例会让配置互相污染（比如环境的 chats 覆盖下一个用例的默认工作区）。
+  for (const [key, value] of Object.entries(PRISTINE_ENV)) {
+    if (process.env[key] !== value) process.env[key] = value;
+  }
+  for (const key of Object.keys(process.env)) {
+    if (!(key in PRISTINE_ENV)) delete process.env[key];
+  }
   const feishu = installFakeSdk();
   const savedEnv = {};
-  for (const [key, value] of Object.entries(options.env ?? {})) {
-    savedEnv[key] = process.env[key];
-    process.env[key] = value;
-  }
   const dir = await mkdtemp(join(tmpdir(), 'dsh-feishu-agent-'));
   const workspacePath = join(dir, 'workspace');
   await mkdir(workspacePath, { recursive: true });
-  process.env.DSH_FEISHU_AGENT_STATE_DIR = dir;
+  process.env.FEISHU_AGENT_STATE_DIR = dir;
+  // 插件的会话存在性检查按 DSH_HOME 找工作区目录；测试里指向临时目录，假 CLI 也在那里落会话目录。
+  savedEnv.DSH_HOME = process.env.DSH_HOME;
+  process.env.DSH_HOME = dir;
+  // 用例默认不读仓库里的真实 `.env`；给了 envFile 就写到临时目录里当项目 .env 用。
+  savedEnv.FEISHU_AGENT_ENV_FILE = process.env.FEISHU_AGENT_ENV_FILE;
+  if (options.envFile !== undefined) {
+    await writeFile(join(dir, '.env'), options.envFile, 'utf8');
+    process.env.FEISHU_AGENT_ENV_FILE = join(dir, '.env');
+  } else {
+    process.env.FEISHU_AGENT_ENV_FILE = join(dir, 'no-such.env');
+  }
+  if (options.state !== undefined) {
+    await writeFile(join(dir, 'state.json'), JSON.stringify(options.state), 'utf8');
+  }
+  if (options.cards !== undefined) {
+    await writeFile(join(dir, 'cards.json'), JSON.stringify(options.cards), 'utf8');
+  }
   // 本机私有配置在 apply 时读取；必须在插件启动前写好。
   if (options.localConfig !== undefined) {
     await writeFile(join(dir, 'local-config.json'), JSON.stringify(options.localConfig), 'utf8');
   }
   if (options.config?.appId === '') {
-    delete process.env.DSH_FEISHU_AGENT_APP_ID;
-    delete process.env.DSH_FEISHU_AGENT_APP_SECRET;
+    delete process.env.FEISHU_AGENT_APP_ID;
+    delete process.env.FEISHU_AGENT_APP_SECRET;
   } else {
-    process.env.DSH_FEISHU_AGENT_APP_ID = 'cli_test';
-    process.env.DSH_FEISHU_AGENT_APP_SECRET = 'secret';
+    process.env.FEISHU_AGENT_APP_ID = 'cli_test';
+    process.env.FEISHU_AGENT_APP_SECRET = 'secret';
+  }
+  // 默认把「等宿主认领」压到 100ms：假宿主不会发认领事件，用例不该每条消息都等 8 秒。
+  if (process.env.FEISHU_AGENT_HOST_TURN_TIMEOUT_MS === undefined) process.env.FEISHU_AGENT_HOST_TURN_TIMEOUT_MS = '100';
+  // 用例显式传的 env 最后生效，压过上面的默认凭据。
+  for (const [key, value] of Object.entries(options.env ?? {})) {
+    savedEnv[key] = process.env[key];
+    process.env[key] = value;
   }
   const host = createFakeHost();
   const { ctx, log } = createFakeContext({ ...host.services, ...(options.services ?? {}) });
@@ -235,8 +293,11 @@ function message(feishu, options) {
     text,
     sender = 'ou_owner',
     chatId = 'oc_test',
+    chatType = 'p2p',
+    mentions = [],
     eventId = `ev-${messageSeq}-${Date.now().toString(36)}`,
     messageId = `om-${messageSeq}-${Date.now().toString(36)}`,
+    parentId = '',
   } = options;
   return feishu.deliver(MESSAGE_EVENT, {
     header: { event_id: eventId, app_id: 'cli_test', tenant_key: 't', create_time: String(Date.now() * 1000) },
@@ -244,8 +305,18 @@ function message(feishu, options) {
       sender: { sender_id: { open_id: sender }, sender_type: 'user' },
       message: {
         message_id: messageId,
+        ...(parentId === '' ? {} : { parent_id: parentId }),
         chat_id: chatId,
-        chat_type: 'p2p',
+        chat_type: chatType,
+        ...(mentions.length === 0
+          ? {}
+          : {
+            mentions: mentions.map((item, index) => ({
+              key: `@_user_${index + 1}`,
+              id: { open_id: item.openId ?? '' },
+              name: item.name ?? '',
+            })),
+          }),
         message_type: 'text',
         content: JSON.stringify({ text }),
         create_time: String(Date.now() * 1000),
@@ -293,12 +364,12 @@ function hostEvents(env, sessionId, events) {
 async function promptOnce(env, text, options = {}) {
   const before = await cliCalls(env).then((rows) => rows.length);
   await env.message({ text, ...options });
-  for (let i = 0; i < 40; i += 1) {
+  for (let i = 0; i < 120; i += 1) {
     await settle(50);
     const rows = await cliCalls(env);
     if (rows.length > before) return rows.at(-1);
   }
-  assert.fail('CLI 没有被调用');
+  assert.fail(`CLI 没有被调用；插件日志：\n${env.log.map((row) => row.join(' ')).join('\n')}`);
 }
 
 /**
@@ -497,6 +568,197 @@ test('回答卡「停止」按钮取消当前这一轮', async () => {
   }
 });
 
+/** 从卡片 JSON 里抠出按钮回传的 requestId。 */
+function requestIdOf(card) {
+  const text = JSON.stringify(card ?? {});
+  const matched = /"requestId":"([^"]+)"/.exec(text);
+  return matched?.[1];
+}
+
+/** 起一条宿主轮次并让它进入 running（反问/审批只接管这种轮次）。 */
+async function startHostTurn(env, text, messageId) {
+  // 状态落盘是异步的：轮询到绑定里真有会话再继续，避免读到半截。
+  let sessionId = '';
+  for (let i = 0; i < 40 && sessionId === ''; i += 1) {
+    await settle(50);
+    try {
+      const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+      sessionId = String(Object.values(state.bindings ?? {})[0]?.dshSessionId ?? '');
+    } catch {
+      // 还没写全
+    }
+  }
+  assert.ok(sessionId, '绑定里应该有会话 ID');
+  env.host.sessions.set(sessionId, { id: sessionId, session: { id: sessionId } });
+  await env.message({ text, messageId });
+  await settle(200);
+  hostEvents(env, sessionId, [
+    { type: 'user/message', data: { turn: 1, source: { kind: 'user', rpcId: `f_${messageId}` }, message: { id: 'h1' } } },
+  ]);
+  await settle(100);
+  return sessionId;
+}
+
+test('宿主轮次的反问：飞书发选项卡，点选项再提交后把答案交回会话', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '先建会话');
+    const sessionId = await startHostTurn(env, '问我一题', 'om-ask-1');
+
+    const answerPromise = env.ctx.emit(
+      'user-questions/request',
+      {
+        agent: { id: sessionId },
+        questions: [{ id: 'q1', header: '配色', question: '选一个', options: [{ label: '红' }, { label: '蓝' }] }],
+      },
+      async () => {
+        throw new Error('不该让给桌面端');
+      },
+    );
+    await settle(200);
+
+    const card = env.feishu.sent.at(-1)?.card;
+    assert.equal(card.header.title.content, '需要你回答');
+    const requestId = requestIdOf(card);
+    assert.ok(requestId, '选项卡应带 requestId');
+
+    env.clickCard({ tag: 'question', action: 'pick', requestId, questionId: 'q1', optionValue: '蓝' });
+    await settle(100);
+    assert.ok(
+      env.feishu.sent.some((item) => JSON.stringify(item.card).includes('已选：蓝')) === false,
+      '选中只是 toast，不该另发消息',
+    );
+    env.clickCard({ tag: 'question', action: 'submit', requestId });
+    const result = await answerPromise;
+    assert.deepEqual(result, { answers: [{ id: 'q1', selected: ['蓝'] }] });
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('宿主事件顺序：turn/start 先到、user/message 不带 turn，也能收尾卡片', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '先建会话');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const sessionId = Object.values(state.bindings)[0].dshSessionId;
+    env.host.sessions.set(sessionId, { id: sessionId, session: { id: sessionId } });
+    await env.message({ text: '跑一轮', messageId: 'om-order-1' });
+    await settle(200);
+
+    hostEvents(env, sessionId, [
+      { type: 'turn/start', data: { turn: 2 } },
+      { type: 'user/message', data: { source: { kind: 'user', rpcId: 'f_om-order-1' }, message: { id: 'h2' } } },
+      { type: 'tool/call', data: { turn: 2, step: 1, callId: 'c1', name: 'bash' } },
+      { type: 'turn/end', data: { turn: 2, reason: { kind: 'completed' } } },
+    ]);
+    await settle(1400);
+
+    const titles = env.feishu.patched.map((item) => item.card?.header?.title?.content);
+    assert.ok(titles.includes('已完成'), `卡片应被收尾，实际 ${JSON.stringify(titles)}`);
+    assert.ok(JSON.stringify(env.feishu.patched).includes('bash ×1'), '工具计数应算进这一轮');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('启动时收尾上一次进程留下的「处理中」卡片', async () => {
+  const env = await boot({
+    cards: {
+      om_stale: { cardId: 'om_card_stale', title: '处理中', content: '', color: 'blue', action: 'stop', turn: 0, tooLong: false, sendFailed: false },
+    },
+  });
+  try {
+    const titles = env.feishu.patched.map((item) => item.card?.header?.title?.content);
+    assert.ok(titles.includes('已中断'), `重启后应把半截卡标成已中断，实际 ${JSON.stringify(titles)}`);
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('宿主轮次的自由文本反问：下一条消息就是答案', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '先建会话');
+    const sessionId = await startHostTurn(env, '问个自由题', 'om-ask-free');
+
+    const answerPromise = env.ctx.emit(
+      'user-questions/request',
+      { agent: { id: sessionId }, questions: [{ id: 'q-free', header: '风格', question: '想要什么风格？' }] },
+      async () => {
+        throw new Error('自由文本题不该让给桌面端');
+      },
+    );
+    await settle(200);
+    const card = env.feishu.sent.at(-1)?.card;
+    assert.equal(card.header.title.content, '需要你回复');
+
+    const before = (await cliCalls(env)).length;
+    await env.message({ text: '要冷色调' });
+    const result = await answerPromise;
+    assert.deepEqual(result, { answers: [{ id: 'q-free', selected: [], custom: '要冷色调' }] });
+    assert.equal((await cliCalls(env)).length, before, '答案消息不该再起一轮');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('群聊里的交互卡片发给 owner 私聊，私聊里发给本会话', () => {
+  assert.deepEqual(interactiveTargetOf({ chatId: 'oc_1', chatType: 'p2p' }, 'ou_owner'), { chatId: 'oc_1' });
+  assert.deepEqual(interactiveTargetOf({ chatId: 'oc_group', chatType: 'group' }, 'ou_owner'), { openId: 'ou_owner' });
+  // 群聊但没有 owner（理论上不会发生）：退回群会话，至少不丢消息。
+  assert.deepEqual(interactiveTargetOf({ chatId: 'oc_group', chatType: 'group' }, ''), { chatId: 'oc_group' });
+});
+
+test('宿主轮次的审批：飞书发「允许一次 / 拒绝」，点允许交回 allowed-once', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '先建会话');
+    const sessionId = await startHostTurn(env, '跑个命令', 'om-approve-1');
+
+    const decision = env.ctx.emit(
+      'approval/request',
+      { agent: { id: sessionId }, toolName: 'bash', reason: '要删文件' },
+      async () => 'unavailable',
+    );
+    await settle(200);
+
+    const card = env.feishu.sent.at(-1)?.card;
+    assert.equal(card.header.title.content, '需要授权');
+    const requestId = requestIdOf(card);
+    env.clickCard({ tag: 'approval', action: 'allow', requestId });
+    assert.equal(await decision, 'allowed-once');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('宿主轮次里多题且含自由文本的反问让给桌面端', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '先建会话');
+    const sessionId = await startHostTurn(env, '问个混合题', 'om-ask-2');
+    let delegated = 0;
+    await env.ctx.emit(
+      'user-questions/request',
+      {
+        agent: { id: sessionId },
+        questions: [
+          { id: 'q1', question: '选一个', options: [{ label: 'a' }] },
+          { id: 'q2', question: '随便说说' },
+        ],
+      },
+      async () => {
+        delegated += 1;
+        return { answers: [] };
+      },
+    );
+    assert.equal(delegated, 1);
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
 test('CLI 路径下反问让给桌面端（子进程里的 turn 不经过本插件）', async () => {
   const env = await boot();
   try {
@@ -605,6 +867,35 @@ test('凭据缺失时不建连，但插件照常加载', async () => {
   }
 });
 
+test('项目 .env 里的凭据能建连', async () => {
+  const env = await boot({
+    config: { appId: '' },
+    envFile: 'FEISHU_AGENT_APP_ID=cli_from_env_file\nFEISHU_AGENT_APP_SECRET=secret_from_env_file\n',
+  });
+  try {
+    assert.equal(env.feishu.state.startCalls, 1);
+    assert.equal(env.feishu.state.wsOptions.appId, 'cli_from_env_file');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('真实环境变量压过项目 .env 里的同名键', async () => {
+  const env = await boot({
+    config: { appId: '' },
+    envFile: 'FEISHU_AGENT_APP_ID=cli_from_env_file\n',
+    env: {
+      FEISHU_AGENT_APP_ID: 'cli_from_real_env',
+      FEISHU_AGENT_APP_SECRET: 'secret_from_real_env',
+    },
+  });
+  try {
+    assert.equal(env.feishu.state.wsOptions.appId, 'cli_from_real_env');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
 test('定时任务到点会主动投喂', async () => {
   const env = await boot();
   try {
@@ -655,6 +946,559 @@ test('本机配置优先：通配 chats 接管 bundle 未列出的 chat', async 
     const binding = Object.values(state.bindings).find((item) => item.chatId === 'oc_unlisted');
     assert.ok(binding, '通配配置应该建出绑定');
     assert.equal(binding.workspacePath, wildcardWorkspace);
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('环境变量优先：默认工作区决定消息落在哪个目录', async () => {
+  const envWorkspace = '/tmp/dsh-feishu-env-default-workspace';
+  const env = await boot({ config: { chats: {} }, env: { FEISHU_AGENT_DEFAULT_WORKSPACE: envWorkspace } });
+  try {
+    await promptOnce(env, '走环境变量');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings)[0];
+    assert.equal(binding.workspacePath, envWorkspace, '默认工作区应来自环境变量');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('环境变量优先：FEISHU_AGENT_CHATS 覆盖 local-config.json 里的同一个 chat', async () => {
+  const localWorkspace = '/tmp/dsh-feishu-env-local-loses';
+  const envWorkspace = '/tmp/dsh-feishu-env-chats-wins';
+  const env = await boot({
+    localConfig: { chats: { oc_test: { workspacePath: localWorkspace, titlePrefix: '[本机]' } } },
+    env: {
+      FEISHU_AGENT_CHATS: JSON.stringify({ oc_test: { workspacePath: envWorkspace, titlePrefix: '[环境]' } }),
+    },
+  });
+  try {
+    await promptOnce(env, '环境变量压过本机配置');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings)[0];
+    assert.equal(binding.workspacePath, envWorkspace);
+    assert.equal(binding.titlePrefix, '[环境]');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('会话被删掉后，下一条消息自动新起一条并更新绑定', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '第一条');
+    const first = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const oldId = Object.values(first.bindings)[0].dshSessionId;
+    assert.ok(oldId, '第一条应该记下会话');
+
+    // 模拟在桌面端删掉了这条会话。
+    await rm(join(env.dir, 'sessions', 'fake', oldId), { recursive: true, force: true });
+
+    const call = await promptOnce(env, '第二条');
+    assert.equal(call.sessionId, null, '会话不在了就不该再带 --session-id');
+
+    const next = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const newId = Object.values(next.bindings)[0].dshSessionId;
+    assert.notEqual(newId, oldId, '绑定应换到新会话');
+    assert.ok(newId.startsWith('session-cli-'));
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('会话在桌面端开着时改由宿主投喂，不再抢 CLI 的写句柄', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '先建会话');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings)[0];
+    const cliBefore = (await cliCalls(env)).length;
+    const promptsBefore = env.host.prompts.length;
+
+    // 模拟桌面端打开了这条会话：宿主里出现活的 agent，同时也就握着它的写句柄。
+    env.host.sessions.set(binding.dshSessionId, { id: binding.dshSessionId, session: { id: binding.dshSessionId } });
+
+    await env.message({ text: '第二轮' });
+    await settle(200);
+
+    assert.equal((await cliCalls(env)).length, cliBefore, '不应再起 CLI 子进程');
+    assert.equal(env.host.prompts.length, promptsBefore + 1, '应由宿主收到这一轮');
+    assert.equal(env.host.prompts.at(-1).content[0].text, '第二轮');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('host 模式：会话由 Desktop 建、由宿主执行，不起 CLI', async () => {
+  const env = await boot({
+    env: { FEISHU_AGENT_TURN_MODE: 'host', FEISHU_AGENT_HOST_TURN_TIMEOUT_MS: '150' },
+  });
+  try {
+    await env.message({ text: '交给桌面端' });
+    await settle(700);
+
+    assert.equal((await cliCalls(env)).length, 0, 'host 模式不该起 CLI');
+    assert.equal(env.host.prompts.length, 1, '应由宿主收到这一轮');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings)[0];
+    assert.ok(binding.dshSessionId.startsWith('session-test-'), '会话应由宿主创建');
+    assert.ok(
+      env.host.attaches.some((item) => item.sessionId === binding.dshSessionId),
+      '宿主建的会话也要挂到工作区',
+    );
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('宿主轮次的工具调用与 CLI 轮次同一样式：一行汇总', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '先建会话');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings)[0];
+    const sessionId = binding.dshSessionId;
+    const before = env.feishu.patched.length;
+
+    env.host.sessions.set(sessionId, { id: sessionId, session: { id: sessionId } });
+    await env.message({ text: '跑两个工具', messageId: 'om-host-tools' });
+    // 等插件开好这一轮（turns.open / 卡片），否则事件来了也没有轮次可认领。
+    await settle(200);
+    hostEvents(env, sessionId, [
+      { type: 'user/message', data: { turn: 1, source: { kind: 'user', rpcId: 'f_om-host-tools' }, message: { id: 'h1' } } },
+      { type: 'tool/call', data: { turn: 1, step: 1, callId: 'c1', name: 'bash' } },
+      { type: 'tool/call', data: { turn: 1, step: 1, callId: 'c2', name: 'read' } },
+      { type: 'turn/end', data: { turn: 1, reason: { kind: 'completed' } } },
+    ]);
+    await settle(1200);
+
+    const text = JSON.stringify(env.feishu.patched.slice(before).map((item) => item.card));
+    assert.ok(text.includes('bash ×1'), '宿主轮次应汇总 bash');
+    assert.ok(text.includes('read ×1'), '宿主轮次应汇总 read');
+    assert.ok(!text.includes('正在使用'), '宿主轮次也不该逐条刷日志');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('FEISHU_AGENT_TURN_MODE=cli 时即使会话开着也走 CLI', async () => {
+  const env = await boot({ env: { FEISHU_AGENT_TURN_MODE: 'cli' } });
+  try {
+    await promptOnce(env, '先建会话');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings)[0];
+    const cliBefore = (await cliCalls(env)).length;
+    const promptsBefore = env.host.prompts.length;
+
+    env.host.sessions.set(binding.dshSessionId, { id: binding.dshSessionId, session: { id: binding.dshSessionId } });
+    await promptOnce(env, '第二轮');
+
+    assert.equal(env.host.prompts.length, promptsBefore, 'cli 模式不应投喂宿主');
+    assert.equal((await cliCalls(env)).length, cliBefore + 1, '应该继续走 CLI');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('群接入：回调里没有 appId 时用已有绑定兜底，绑定键不会算错', async () => {
+  const workspace = join(tmpdir(), 'dsh-feishu-group-appid');
+  const env = await boot({
+    config: {
+      chats: { oc_test: { workspacePath: join(tmpdir(), 'dsh-feishu-group-appid-p2p') } },
+      groupWorkspace: workspace,
+    },
+  });
+  try {
+    // 先有一个私聊绑定，作为 appId/tenantKey 的来源。
+    await promptOnce(env, '先建私聊绑定');
+
+    // 生产环境真实回调不带 app_id/tenant_key：这里故意只传 tag/action/chatId/preset。
+    env.clickCard({ tag: 'group-register', action: 'allow', chatId: 'oc_group_appid', preset: 'read-only' });
+    await settle(400);
+
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    assert.ok(
+      Object.keys(state.bindings).includes('cli_test:t:oc_group_appid:-'),
+      `群绑定键应带上 appId/tenantKey，实际 ${JSON.stringify(Object.keys(state.bindings))}`,
+    );
+
+    // 再 @ 一次：不该再发确认卡，直接开跑。
+    const cardsBefore = env.feishu.sent.filter((item) => item.receiveIdType === 'open_id').length;
+    const call = await promptOnce(env, '@_user_1 现在问一句', {
+      chatId: 'oc_group_appid',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    assert.equal(call.prompt, '现在问一句');
+    assert.equal(
+      env.feishu.sent.filter((item) => item.receiveIdType === 'open_id').length,
+      cardsBefore,
+      '授权过之后不该再发确认卡',
+    );
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('群接入：历史版本算错键的绑定会被认回并修正', async () => {
+  const workspace = join(tmpdir(), 'dsh-feishu-group-legacy');
+  const env = await boot({
+    config: { chats: {}, groupWorkspace: workspace },
+    state: {
+      version: 1,
+      ownerOpenId: 'ou_owner',
+      bindings: {
+        '::oc_legacy_group:-': {
+          key: '::oc_legacy_group:-',
+          appId: '',
+          tenantKey: '',
+          chatId: 'oc_legacy_group',
+          chatType: 'group',
+          workspaceId: 'ws_1',
+          workspacePath: workspace,
+          dshSessionId: '',
+          agentPreset: 'standard',
+          permissionPreset: 'read-only',
+          title: '',
+          titlePrefix: '[群]',
+          allowSenders: [],
+          createdAt: '2026-11-25T00:00:00.000Z',
+          updatedAt: '2026-11-25T00:00:00.000Z',
+        },
+      },
+      schedules: [],
+    },
+  });
+  try {
+    const call = await promptOnce(env, '@_user_1 老绑定也要能用', {
+      chatId: 'oc_legacy_group',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    assert.equal(call.prompt, '老绑定也要能用');
+
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    assert.ok(Object.keys(state.bindings).includes('cli_test:t:oc_legacy_group:-'), '绑定键应被修正');
+    assert.ok(!Object.keys(state.bindings).includes('::oc_legacy_group:-'), '旧键应被删除');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('群聊动态接入：未配置的群只有 owner @ 才收到确认卡，点了允许才建会话', async () => {
+  const workspace = join(tmpdir(), 'dsh-feishu-group-dynamic');
+  const env = await boot({ config: { chats: {}, groupWorkspace: workspace } });
+  try {
+    // 非 owner 先 @ 一次：不该有确认卡，也不该起 CLI。
+    await env.message({
+      text: '@_user_1 路人想用',
+      chatId: 'oc_new_group',
+      chatType: 'group',
+      sender: 'ou_stranger',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    await settle(400);
+    assert.equal((await cliCalls(env)).length, 0);
+    assert.equal(env.feishu.sent.length, 0, '非 owner 不该触发确认卡');
+
+    // owner @：确认卡发到私聊（open_id），此时还没有绑定。
+    await env.message({
+      text: '@_user_1 接一下这个群',
+      chatId: 'oc_new_group',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    await settle(600);
+    const card = env.feishu.sent.find((item) => item.receiveIdType === 'open_id');
+    assert.ok(card, '确认卡应发到 owner 的 open_id');
+    assert.ok(JSON.stringify(card.card).includes('group-register'), '卡片按钮要带注册动作');
+    let state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    assert.equal(Object.keys(state.bindings).length, 0, '还没点允许，不该建绑定');
+
+    // 点「允许（只读）」
+    env.clickCard({ tag: 'group-register', action: 'allow', chatId: 'oc_new_group', preset: 'read-only' });
+    await settle(600);
+    state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings).find((item) => item.chatId === 'oc_new_group');
+    assert.ok(binding, '点允许后应该有绑定');
+    assert.equal(binding.permissionPreset, 'read-only');
+    assert.equal(binding.workspacePath, workspace);
+
+    // 再 @ 一次：这次该正常起 CLI。
+    const call = await promptOnce(env, '@_user_1 现在能聊了吗', {
+      chatId: 'oc_new_group',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    assert.equal(call.prompt, '现在能聊了吗');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('配置热加载：改 local-config.json 后不用重启就生效', async () => {
+  const workspace = join(tmpdir(), 'dsh-feishu-group-hot');
+  const env = await boot({ config: { chats: {} } });
+  try {
+    // 先证明这时候群消息不被接管。
+    await env.message({
+      text: '@_user_1 热加载前',
+      chatId: 'oc_hot_group',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    await settle(300);
+    assert.equal((await cliCalls(env)).length, 0);
+
+    // 写入本机配置（不重启插件）。
+    await writeFile(
+      join(env.dir, 'local-config.json'),
+      JSON.stringify({ chats: { oc_hot_group: { workspacePath: workspace, chatType: 'group' } } }),
+      'utf8',
+    );
+
+    const call = await promptOnce(env, '@_user_1 热加载之后', {
+      chatId: 'oc_hot_group',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    assert.equal(call.prompt, '热加载之后');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('群聊：显式配置 + @ 机器人 才会建独立会话', async () => {
+  const groupWorkspace = join(tmpdir(), 'dsh-feishu-group-workspace');
+  const env = await boot({
+    config: { chats: { oc_group: { workspacePath: groupWorkspace, chatType: 'group', titlePrefix: '[群]' } } },
+  });
+  try {
+    const call = await promptOnce(env, '@_user_1 群里问一句', {
+      chatId: 'oc_group',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot', name: 'fake-bot' }],
+    });
+    assert.equal(call.prompt, '@_user_1 群里问一句'.replace('@_user_1 ', ''));
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings).find((item) => item.chatId === 'oc_group');
+    assert.ok(binding, '群聊应该建出独立绑定');
+    assert.equal(binding.chatType, 'group');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('群聊：没 @ 机器人就不响应', async () => {
+  const env = await boot({
+    config: { chats: { oc_group: { workspacePath: join(tmpdir(), 'dsh-feishu-group-ws2'), chatType: 'group' } } },
+  });
+  try {
+    await env.message({ text: '随便聊聊', chatId: 'oc_group', chatType: 'group' });
+    await settle(600);
+    assert.equal((await cliCalls(env)).length, 0, '没 @ 就不该起 CLI');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('群聊：通配 chats 不接管群聊', async () => {
+  const env = await boot();
+  try {
+    await env.message({
+      text: '@_user_1 你好',
+      chatId: 'oc_unlisted_group',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    await settle(600);
+    assert.equal((await cliCalls(env)).length, 0, '通配配置只给私聊，群聊必须显式列 chat_id');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('群聊：非授权成员被拒绝，allowSenders 里的人可以提问', async () => {
+  const workspace = join(tmpdir(), 'dsh-feishu-group-ws3');
+  const env = await boot({
+    config: {
+      chats: {
+        oc_group: { workspacePath: workspace, chatType: 'group', allowSenders: ['ou_teammate'] },
+      },
+    },
+  });
+  try {
+    await env.message({
+      text: '@_user_1 我是路人',
+      chatId: 'oc_group',
+      chatType: 'group',
+      sender: 'ou_stranger',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    await settle(400);
+    assert.equal((await cliCalls(env)).length, 0, '不在白名单里的人不该触发');
+
+    const call = await promptOnce(env, '@_user_1 我是队友', {
+      chatId: 'oc_group',
+      chatType: 'group',
+      sender: 'ou_teammate',
+      mentions: [{ openId: 'ou_bot' }],
+    });
+    assert.equal(call.prompt, '我是队友');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('引用卡片回复：把被引用卡片的文字补进这一轮提示词', async () => {
+  const env = await boot();
+  try {
+    env.feishu.quoted.set('om_prev_card', {
+      msg_type: 'interactive',
+      body: {
+        content: JSON.stringify({
+          schema: '2.0',
+          header: { title: { tag: 'plain_text', content: '图文混排（插件真实渲染）' } },
+          body: {
+            elements: [
+              { tag: 'markdown', content: '这段文字和下面的图由插件自己的卡片代码拼出来' },
+              { tag: 'img', img_key: 'img_v3_xxx' },
+            ],
+          },
+        }),
+      },
+    });
+
+    const call = await promptOnce(env, '这张图哪来的', { parentId: 'om_prev_card' });
+    assert.ok(call.prompt.includes('[引用消息]'), '应带上引用标记');
+    assert.ok(call.prompt.includes('图文混排（插件真实渲染）'), '应包含被引用卡片的标题');
+    assert.ok(call.prompt.includes('插件自己的卡片代码'), '应包含卡片正文');
+    assert.ok(call.prompt.trim().endsWith('这张图哪来的'), '用户的正文应放在引用之后');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('引用插件自己发的卡片：用本地记账还原正文，而不是飞书的降级占位', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '第一条：解释一下这张图');
+    await settle(400);
+    const cardId = env.feishu.sent.at(-1)?.id;
+    assert.ok(cardId, '上一轮应该发过一张卡');
+
+    const call = await promptOnce(env, '那它是什么风格', { parentId: cardId });
+    assert.ok(call.prompt.includes('[引用消息]'), '应带上引用标记');
+    assert.ok(call.prompt.includes('假 CLI 的回答：第一条'), '应还原上一张卡的正文');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('引用读不到时不阻断问答', async () => {
+  const env = await boot();
+  try {
+    const call = await promptOnce(env, '没有引用也要能答', { parentId: 'om_missing' });
+    assert.equal(call.prompt, '没有引用也要能答');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('回答里的 ![alt](路径) 渲染成卡片的 img 元素（图文混排）', async () => {
+  const env = await boot();
+  try {
+    const pngPath = join(env.dir, 'shot.png');
+    await writeFile(pngPath, Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a]));
+
+    await promptOnce(env, `先看图 ![截图](${pngPath}) 然后继续`);
+    await settle(1400);
+
+    const cards = JSON.stringify(env.feishu.patched.map((item) => item.card));
+    assert.ok(cards.includes('"tag":"img"'), '卡片里应有图片元素');
+    assert.ok(cards.includes('img_fake_1'), '应使用上传得到的 image_key');
+    assert.equal(env.feishu.uploads.length, 1, '同一张图只上传一次');
+    assert.ok(!cards.includes('![截图]'), '图片语法不该原样留在卡片里');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('图文混排：相对路径 + <...> 写法也能内嵌', async () => {
+  const env = await boot();
+  try {
+    const dir = join(env.workspacePath, '.preview');
+    await mkdir(dir, { recursive: true });
+    await writeFile(join(dir, 'shot.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+
+    await promptOnce(env, '看图 ![](<.preview/shot.png>) 继续');
+    await settle(1400);
+
+    const cards = JSON.stringify(env.feishu.patched.map((item) => item.card));
+    assert.ok(cards.includes('"tag":"img"'), '相对路径的图也应内嵌');
+    assert.ok(!cards.includes('图片没发出去'), '不应退回失败文案');
+    assert.equal(env.feishu.uploads.length, 1);
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('图片发不出去时回退成一行文字，不吞掉正文', async () => {
+  const env = await boot();
+  try {
+    const missing = join(env.dir, 'nope.png');
+    await promptOnce(env, `看图 ![丢失](${missing})`);
+    await settle(1400);
+
+    const cards = JSON.stringify(env.feishu.patched.map((item) => item.card));
+    assert.ok(cards.includes('图片没发出去'), '应提示图片发送失败');
+    assert.equal(env.feishu.uploads.length, 0, '读不到文件就不该上传');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('工具调用只在卡片底部汇总一行，不再逐条刷日志', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '用个工具');
+    await settle(1200);
+    const text = JSON.stringify(env.feishu.patched.map((item) => item.card));
+    assert.ok(text.includes('次工具调用'), '卡片里应有工具汇总');
+    assert.ok(text.includes('bash ×1'), '汇总里应带工具名与次数');
+    assert.ok(!text.includes('正在使用'), '不该再逐条刷「正在使用」');
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('新会话一出现就挂到工作区，不用等这一轮跑完', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '挂个工作区');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    const binding = Object.values(state.bindings)[0];
+    assert.ok(binding.dshSessionId, '绑定里应记下 CLI 会话');
+    assert.ok(
+      env.host.attaches.some((item) => item.sessionId === binding.dshSessionId),
+      '会话应被挂到绑定的工作区',
+    );
+  } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('CLI 在绑定的工作区里跑：子进程 cwd 就是 workspacePath', async () => {
+  const env = await boot();
+  try {
+    await promptOnce(env, '看看工作目录');
+    const calls = (await readFile(join(env.dir, 'fake-cli-calls.jsonl'), 'utf8'))
+      .trim()
+      .split('\n')
+      .map((line) => JSON.parse(line));
+    // macOS 的 /var 是 /private/var 的软链，两边都取真实路径再比。
+    assert.equal(await realpath(calls.at(-1).cwd), await realpath(env.workspacePath), 'CLI 应把工作区当 cwd');
   } finally {
     await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }

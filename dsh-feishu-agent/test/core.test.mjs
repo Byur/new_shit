@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { cleanUserText, parseCommand, textOfAssistantMessage, clampAnswer } from '../lib/core/text.js';
+import { cleanUserText, parseCommand, splitImageRefs, textOfAssistantMessage, clampAnswer } from '../lib/core/text.js';
 import {
   CARD_ACTION_EVENT,
   MESSAGE_EVENT,
@@ -13,8 +13,9 @@ import {
   normalizeCardAction,
   normalizeEvent,
   normalizeMessageEvent,
+  summarizeMessage,
 } from '../lib/feishu/events.js';
-import { answerCard, buildCard, button, buttonRow, cardBytes, markdown, textCard, toastResponse } from '../lib/core/cards.js';
+import { answerCard, buildCard, button, buttonRow, cardBytes, imgElement, markdown, textCard, toastResponse } from '../lib/core/cards.js';
 import { bindingKeyOf, localStamp, normalizeChatConfig } from '../lib/core/binding.js';
 import { isOneShotDue, isRecurringDue, nextDueAt, normalizeSchedule } from '../lib/core/scheduler.js';
 import { emptyState, normalizeState } from '../lib/core/store.js';
@@ -219,4 +220,122 @@ test('localStamp 用本地时区而不是 UTC', () => {
   const utc = date.toISOString().slice(5, 16).replace('T', ' ');
   // 只有当本地时区不是 UTC 时两者才不同；用这个断言防止以后又改回 toISOString()
   assert.equal(localStamp(date) === utc, date.getTimezoneOffset() === 0);
+});
+
+test('splitImageRefs：把图片语法切成独立段，其它文字原样保留', () => {
+  assert.deepEqual(splitImageRefs('让我看看 ![截图](/tmp/a.png) 然后继续'), [
+    { type: 'text', text: '让我看看 ' },
+    { type: 'image', alt: '截图', path: '/tmp/a.png' },
+    { type: 'text', text: ' 然后继续' },
+  ]);
+  assert.deepEqual(splitImageRefs('没有图片'), [{ type: 'text', text: '没有图片' }]);
+  assert.deepEqual(splitImageRefs(''), []);
+});
+
+test('splitImageRefs：兼容 <路径> 与 markdown title', () => {
+  assert.deepEqual(splitImageRefs('![](<.preview/a.png>)'), [
+    { type: 'image', alt: '', path: '.preview/a.png' },
+  ]);
+  assert.deepEqual(splitImageRefs('![图](<带 空格.png> "标题")'), [
+    { type: 'image', alt: '图', path: '带 空格.png' },
+  ]);
+  assert.deepEqual(splitImageRefs('![图](/abs/a.png \'标题\')'), [
+    { type: 'image', alt: '图', path: '/abs/a.png' },
+  ]);
+});
+
+test('splitImageRefs：只认 markdown 图片语法，裸路径不当图片', () => {
+  const segments = splitImageRefs('路径是 /tmp/a.png，但没有感叹号括号');
+  assert.equal(segments.length, 1);
+  assert.equal(segments[0].type, 'text');
+});
+
+test('imgElement：卡片 2.0 的 img 元素用 img_key', () => {
+  assert.deepEqual(imgElement({ imgKey: 'img_x' }), {
+    tag: 'img',
+    img_key: 'img_x',
+    preview: true,
+    scale_type: 'fit_horizontal',
+    alt: { tag: 'plain_text', content: '图片' },
+  });
+});
+
+test('answerCard：给了 elements 就按它排版，不再看 content', () => {
+  const card = answerCard({
+    messageId: 'om_1',
+    title: '已完成',
+    color: 'green',
+    content: '会被忽略',
+    action: undefined,
+    elements: [markdown('前'), imgElement({ imgKey: 'img_y', alt: '图' }), markdown('后')],
+  });
+  const tags = card.body.elements.map((element) => element.tag);
+  assert.deepEqual(tags, ['markdown', 'img', 'markdown']);
+  assert.equal(JSON.stringify(card).includes('会被忽略'), false);
+});
+
+test('normalizeMessageEvent：带上 parent_id（引用回复）', () => {
+  const event = normalizeMessageEvent({
+    header: { event_id: 'ev1', app_id: 'cli_x', tenant_key: 't' },
+    event: {
+      sender: { sender_id: { open_id: 'ou_1' }, sender_type: 'user' },
+      message: {
+        message_id: 'om_2',
+        parent_id: 'om_1',
+        chat_id: 'oc_1',
+        chat_type: 'p2p',
+        message_type: 'text',
+        content: JSON.stringify({ text: '这张图哪来的' }),
+        create_time: String(Date.now() * 1000),
+      },
+    },
+  });
+  assert.equal(event.parentId, 'om_1');
+});
+
+test('summarizeMessage：文字、图片、富文本与卡片都能读成一句', () => {
+  assert.equal(summarizeMessage({ msg_type: 'text', body: { content: '{"text":"你好"}' } }), '你好');
+  assert.equal(summarizeMessage({ msg_type: 'image', body: { content: '{"image_key":"k"}' } }), '[图片]');
+  assert.equal(
+    summarizeMessage({ msg_type: 'post', body: { content: '{"title":"标题","content":[[{"tag":"text","text":"一"},{"tag":"text","text":"二"}]]}' } }),
+    '标题\n一二',
+  );
+  const card = {
+    msg_type: 'interactive',
+    body: {
+      content: JSON.stringify({
+        header: { title: { tag: 'plain_text', content: '完成' } },
+        body: { elements: [{ tag: 'markdown', content: '正文' }, { tag: 'img', img_key: 'k' }] },
+      }),
+    },
+  };
+  assert.equal(summarizeMessage(card), '完成\n正文');
+});
+
+test('turns：user/message 不带 turn 时用 turn/start 补上（两个顺序都要能接）', () => {
+  // 顺序 A：turn/start 先到
+  const a = createTurnRegistry({});
+  a.open('om_1', { requestId: 'r1', sessionId: 's1', chatId: 'c1', bindingKey: 'k', text: 'x' });
+  a.noteTurnStart('s1', 3);
+  assert.equal(a.claim('r1', 0).turn, 3);
+  assert.equal(a.turnOf('s1', 3)?.feishuMessageId, 'om_1');
+
+  // 顺序 B：claim 先到
+  const b = createTurnRegistry({});
+  b.open('om_2', { requestId: 'r2', sessionId: 's1', chatId: 'c1', bindingKey: 'k', text: 'y' });
+  assert.equal(b.claim('r2', 0).turn, 0);
+  b.noteTurnStart('s1', 4);
+  assert.equal(b.turnOf('s1', 4)?.feishuMessageId, 'om_2');
+});
+
+test('turns：一轮结束后不会把同一个 turn 号复用给下一条排队消息', () => {
+  const registry = createTurnRegistry({});
+  registry.open('om_a', { requestId: 'ra', sessionId: 's1', chatId: 'c1', bindingKey: 'k', text: 'a' });
+  registry.noteTurnStart('s1', 5);
+  const first = registry.claim('ra', 0);
+  assert.equal(first.turn, 5);
+  registry.finish(first, 'completed');
+
+  registry.open('om_b', { requestId: 'rb', sessionId: 's1', chatId: 'c1', bindingKey: 'k', text: 'b' });
+  assert.equal(registry.claim('rb', 0).turn, 0, '已经用掉的 turn 不该再绑');
 });

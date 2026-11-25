@@ -1,25 +1,43 @@
 /** 插件入口：把飞书长连接、绑定、回答卡、反问/审批应答、调度器串起来。 */
 
-import { join } from 'node:path';
-import { mkdir, readFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
+import { mkdir, readFile, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
+import { fileURLToPath } from 'node:url';
 
-import { APP_ID_REF, APP_SECRET_REF, DEFAULT_PERMISSION_PRESET, LOGGER_NAME, PLUGIN_NAME, STALE_EVENT_MS, TURN_END_TITLES } from './common/constants.js';
+import {
+  APP_ID_ENV,
+  APP_ID_REF,
+  APP_SECRET_ENV,
+  APP_SECRET_REF,
+  DEFAULT_PERMISSION_PRESET,
+  LOGGER_NAME,
+  PLUGIN_NAME,
+  STALE_EVENT_MS,
+  STATE_DIR_ENV,
+} from './common/constants.js';
 import { createBinder, bindingKeyOf } from './core/binding.js';
 import { createStore } from './core/store.js';
 import { createTurnRegistry } from './core/turns.js';
 import { createScheduler } from './core/scheduler.js';
-import { cleanUserText, parseCommand, textOfAssistantMessage } from './core/text.js';
+import { findProjectRoot, loadEnvFile } from './common/env-file.js';
+import { composeChats, readEnvConfig } from './core/env-config.js';
+import { cleanUserText, parseCommand } from './core/text.js';
 import { textCard, toastResponse } from './core/cards.js';
 import { CARD_ACTION_EVENT, MESSAGE_EVENT, normalizeEvent } from './feishu/events.js';
 import { createConnection } from './feishu/connection.js';
 import { createOutbound } from './feishu/outbound.js';
 import { createSessionBridge } from './host/session.js';
+import { createCommandHandler } from './host/commands.js';
+import { createGroupGate } from './host/group-gate.js';
+import { createQuotedContext } from './host/quoted-context.js';
+import { createSessionEventHandler } from './host/session-events.js';
+import { createTurnRunner } from './host/turn-runner.js';
 import { createCliExecutor, resolveCliPath } from './host/cli-executor.js';
 import { createAnswerCards, flushAllAnswerCards } from './host/answer-cards.js';
 import { createApprovalAnswerer, APPROVAL_EVENT } from './host/answerer-approval.js';
 import { createQuestionAnswerer, USER_QUESTIONS_EVENT } from './host/answerer-question.js';
-import { errorMessage, userFacingSessionError } from './host/services.js';
+import { errorMessage } from './host/services.js';
 
 /** 插件名（loader 条目的 name）。 */
 export const name = PLUGIN_NAME;
@@ -29,6 +47,9 @@ export const inject = ['agents', 'sessionController', 'workspaceRegistry'];
 
 /** 并发上限的默认值：同时最多跑几条飞书会话（每条会话内部的轮次本来就串行）。 */
 const DEFAULT_MAX_CONCURRENT = 3;
+
+/** 默认要从凭据存储注入 CLI 子进程的 provider key；配置里的 `cliEnvRefs` 可以覆盖。 */
+const DEFAULT_CLI_ENV_REFS = ['DEEPSEEK_API_KEY'];
 
 /**
  * 读一个 config 字段：volatile 字段在 loader 下是带 `get()` 的引用。
@@ -50,9 +71,30 @@ export function readConfigField(value, fallback) {
  * @returns 目录路径
  */
 function stateDirOf() {
-  if (process.env.DSH_FEISHU_AGENT_STATE_DIR) return process.env.DSH_FEISHU_AGENT_STATE_DIR;
+  const override = process.env[STATE_DIR_ENV] ?? process.env.DSH_FEISHU_AGENT_STATE_DIR;
+  if (override) return override;
   const home = process.env.DSH_HOME || join(homedir(), '.dsh');
   return join(home, 'feishu-agent');
+}
+
+/** 插件包目录（`lib/` 的上一层）。 */
+const PACKAGE_DIR = fileURLToPath(new URL('..', import.meta.url));
+
+/**
+ * 取 `.env` 的读取顺序。`FEISHU_AGENT_ENV_FILE` 给了就只读它；否则先读项目根
+ * （上游第一个有 `.git` 的目录），再读插件包目录里的那份兜底。先读到的键赢，
+ * 所以项目根的配置压过包内的。
+ *
+ * @returns 文件路径列表
+ */
+export function resolveEnvFiles() {
+  const override = process.env.FEISHU_AGENT_ENV_FILE ?? process.env.DSH_FEISHU_AGENT_ENV_FILE;
+  if (override !== undefined && override.trim() !== '') return [resolve(override.trim())];
+  const files = [];
+  const root = findProjectRoot(PACKAGE_DIR);
+  if (root !== undefined && resolve(root) !== resolve(PACKAGE_DIR)) files.push(join(root, '.env'));
+  files.push(join(PACKAGE_DIR, '.env'));
+  return files;
 }
 
 /**
@@ -98,6 +140,12 @@ async function loadLocalConfig(stateDir, logger) {
 export async function apply(ctx, config = {}) {
   const logger = ctx.logger(LOGGER_NAME);
 
+  // 先把项目里的 `.env` 读进 process.env：凭据、状态目录、CLI home 都能写在那里。
+  // 只补没设置的键，所以真实进程环境变量（launchctl 注入的那份）永远优先。
+  for (const file of resolveEnvFiles()) await loadEnvFile(file, logger);
+  // 环境变量是最高一层配置：owner、chat → 工作区映射、并发都能从这里给。
+  const envConfig = readEnvConfig(process.env, logger);
+
   // ---------- 配置 ----------
   /** 本机私有配置（仓库外）：`$DSH_HOME/feishu-agent/local-config.json`；同名字段优先于 bundle 配置。 */
   let localConfig = {};
@@ -124,11 +172,12 @@ export async function apply(ctx, config = {}) {
         ? localConfig.chats
         : {};
       return {
-        // chats 逐键浅合并：精确键 + 通配 `'*'`；本机配置里的同键覆盖 bundle。
-        chats: { ...bundledChats, ...localChats },
-        ownerOpenId: configValue('ownerOpenId', ''),
+        // chats 逐键浅合并：bundle → 本机配置 → 环境变量，后面的层覆盖前面的；`'*'` 再叠平铺默认值。
+        chats: composeChats(bundledChats, localChats, envConfig),
+        ownerOpenId: envConfig.ownerOpenId ?? configValue('ownerOpenId', ''),
         schedules: configValue('schedules', []),
-        answerConcurrency: Number(configValue('answerConcurrency', DEFAULT_MAX_CONCURRENT)) || DEFAULT_MAX_CONCURRENT,
+        answerConcurrency:
+          envConfig.answerConcurrency ?? (Number(configValue('answerConcurrency', DEFAULT_MAX_CONCURRENT)) || DEFAULT_MAX_CONCURRENT),
       };
     },
   };
@@ -162,8 +211,8 @@ export async function apply(ctx, config = {}) {
         logger.warn(`读取飞书凭据失败，回退到环境变量：${error?.message ?? error}`);
       }
       // 2) CLI 子进程要用的 provider key（apiKeyEnv 只认进程环境）。
-      const wanted = configValue('cliEnvRefs', ['CODEPLAN_API_KEY']);
-      const refs = Array.isArray(wanted) && wanted.length > 0 ? wanted : ['CODEPLAN_API_KEY'];
+      const wanted = configValue('cliEnvRefs', DEFAULT_CLI_ENV_REFS);
+      const refs = Array.isArray(wanted) && wanted.length > 0 ? wanted : DEFAULT_CLI_ENV_REFS;
       for (const ref of refs) {
         if (typeof ref !== 'string' || ref === '') continue;
         try {
@@ -182,17 +231,17 @@ export async function apply(ctx, config = {}) {
    *
    * 两件事：
    * 1. `DSH_HOME` 指向可写目录（Desktop 沙箱不允许子进程改写自己的 profile）；
-   * 2. 模型 provider 的 key。`llm-pi-ai` 的 `apiKeyEnv: CODEPLAN_API_KEY` 只从**进程环境**读，
-   *    不读 `.credentials.yaml`；而插件进程里没有这个变量，所以必须由这里注入。
+   * 2. 模型 provider 的 key（`cliEnvRefs`，默认 `DEEPSEEK_API_KEY`）。provider 的 `apiKeyEnv`
+   *    只从**进程环境**读，不读 `.credentials.yaml`；插件进程里没有这个变量，所以由这里注入。
    *
    * @returns 环境变量表
    */
   function cliEnv() {
-    const home = configValue('cliHome', '') || process.env.DSH_FEISHU_AGENT_CLI_HOME || '';
+    const home = configValue('cliHome', '') || process.env.FEISHU_AGENT_CLI_HOME || process.env.DSH_FEISHU_AGENT_CLI_HOME || '';
     const env = home === '' ? {} : { DSH_HOME: home };
     // 需要注入的 provider key（可配置覆盖）。
-    const wanted = configValue('cliEnvRefs', ['CODEPLAN_API_KEY']);
-    const refs = Array.isArray(wanted) && wanted.length > 0 ? wanted : ['CODEPLAN_API_KEY'];
+    const wanted = configValue('cliEnvRefs', DEFAULT_CLI_ENV_REFS);
+    const refs = Array.isArray(wanted) && wanted.length > 0 ? wanted : DEFAULT_CLI_ENV_REFS;
     for (const ref of refs) {
       if (typeof ref !== 'string' || ref === '' || process.env[ref] !== undefined) continue;
       const value = storedCredentials?.refs?.[ref];
@@ -208,8 +257,9 @@ export async function apply(ctx, config = {}) {
    */
   function credentials() {
     const stored = storedCredentials ?? { appId: '', appSecret: '' };
-    const appId = stored.appId || process.env.DSH_FEISHU_AGENT_APP_ID || configValue('appId', '') || '';
-    const appSecret = stored.appSecret || process.env.DSH_FEISHU_AGENT_APP_SECRET || configValue('appSecret', '') || '';
+    const appId = stored.appId || process.env[APP_ID_ENV] || process.env.DSH_FEISHU_AGENT_APP_ID || configValue('appId', '') || '';
+    const appSecret =
+      stored.appSecret || process.env[APP_SECRET_ENV] || process.env.DSH_FEISHU_AGENT_APP_SECRET || configValue('appSecret', '') || '';
     return { appId: String(appId), appSecret: String(appSecret) };
   }
 
@@ -217,6 +267,30 @@ export async function apply(ctx, config = {}) {
   const stateDir = stateDirOf();
   // 本机私有配置：仓库里的 cordis.patch.yml 只放通用默认值，个人 chat_id / 路径 / provider 放这里。
   localConfig = await loadLocalConfig(stateDir, logger);
+
+  /** 上次读到的 local-config.json 修改时间；变了就重读，改配置不用重启。 */
+  let localConfigMtime = -1;
+
+  /**
+   * 热加载本机配置：`local-config.json` 的 mtime 变了就重读。
+   *
+   * 只覆盖本机配置这一层；`.env` 里的变量仍然是启动时读一次。
+   *
+   * @returns 读完后 resolve
+   */
+  async function refreshLocalConfig() {
+    const file = join(stateDir, 'local-config.json');
+    let info;
+    try {
+      info = await stat(file);
+    } catch {
+      return;
+    }
+    if (info.mtimeMs === localConfigMtime) return;
+    localConfigMtime = info.mtimeMs;
+    localConfig = await loadLocalConfig(stateDir, logger);
+    logger.info('本机配置已热加载');
+  }
   // 先把状态目录建出来：这是"插件确实跑起来了"的第一个可观测证据，也免得首轮绑定前目录不存在。
   await mkdir(stateDir, { recursive: true });
   const store = createStore({ dir: stateDir, logger });
@@ -232,6 +306,7 @@ export async function apply(ctx, config = {}) {
   const getService = (service) => ctx.get(service);
 
   const host = createSessionBridge({ ctx, logger, getService });
+
   const binder = createBinder({ logger, store, host, config: runtimeConfig });
   const outbound = createOutbound({ logger, getCredentials: credentials });
   const cards = createAnswerCards({ logger, outbound, stateDir });
@@ -257,8 +332,8 @@ export async function apply(ctx, config = {}) {
   let answerers;
   try {
     answerers = {
-      question: createQuestionAnswerer({ logger, outbound, turns, pending }),
-      approval: createApprovalAnswerer({ logger, outbound, turns, pending }),
+      question: createQuestionAnswerer({ logger, outbound, turns, pending, getOwner: () => owner() }),
+      approval: createApprovalAnswerer({ logger, outbound, turns, pending, getOwner: () => owner() }),
     };
   } catch (error) {
       throw error;
@@ -271,6 +346,46 @@ export async function apply(ctx, config = {}) {
     running: new Map(),
     bootAt: Date.now(),
   };
+
+  // ---------- 组合子模块 ----------
+  /** 引用回复的上下文。 */
+  const quotedContextOf = createQuotedContext({ cards, outbound });
+  /** 文本命令。 */
+  const handleCommand = createCommandHandler({
+    binder,
+    store,
+    notice,
+    runningRuns,
+    getOwner: () => owner(),
+    isConnected: () => runtime.connected,
+  });
+  /** 宿主会话事件。 */
+  const onSessionEvent = createSessionEventHandler({ turns, cards, answerers, logger });
+  /** 群聊门禁与动态接入。 */
+  const groupGate = createGroupGate({
+    store,
+    binder,
+    outbound,
+    logger,
+    getOwner: () => owner(),
+    getGroupWorkspace: () => groupWorkspacePath(),
+    notice,
+    registrationEnabled: () => String(process.env.FEISHU_AGENT_GROUP_REGISTRATION ?? '').toLowerCase() !== 'off',
+  });
+  /** 一轮的执行器。 */
+  const runViaCli = createTurnRunner({
+    logger,
+    binder,
+    host,
+    cards,
+    turns,
+    executor,
+    runningRuns,
+    answerers,
+    getRuntimeConfig: () => runtimeConfig.get(),
+    getService,
+    getCliHome: () => configValue('cliHome', '') || process.env.FEISHU_AGENT_CLI_HOME || '',
+  }).run;
 
   // ---------- owner ----------
   /**
@@ -313,6 +428,18 @@ export async function apply(ctx, config = {}) {
     return messageId;
   }
 
+  /**
+   * 群聊默认落到哪个工作区：`groupWorkspace` → 环境变量 → 私聊通配的目录。
+   *
+   * @returns 目录路径；都没配时为空串
+   */
+  function groupWorkspacePath() {
+    const configured = String(configValue('groupWorkspace', '') || process.env.FEISHU_AGENT_GROUP_WORKSPACE || '').trim();
+    if (configured !== '') return configured;
+    const wildcard = runtimeConfig.get().chats?.['*'];
+    return typeof wildcard?.workspacePath === 'string' ? wildcard.workspacePath : '';
+  }
+
   // ---------- 消息处理 ----------
   /**
    * 处理一条私聊/群聊消息。
@@ -321,31 +448,61 @@ export async function apply(ctx, config = {}) {
    */
   async function onMessage(event) {
     if (event.senderType === 'app') return;
-    if (bootstrapOwner(event)) {
-      await notice(event.chatId, '已绑定', '这是你的私人 Agent。第一条消息会按配置里的工作区建会话。');
-    }
-    const me = owner();
-    if (me === '' || event.senderOpenId !== me) {
-      logger.info(`拒绝非 owner 的消息（${event.senderOpenId || '未知'}）`);
+    await refreshLocalConfig();
+
+    // 挂着的自由文本反问：owner 在这个会话里的下一条普通消息就是答案。
+    const rawText = typeof event.text === 'string' ? event.text.trim() : '';
+    if (rawText !== '' && !rawText.startsWith('/') && event.senderOpenId === owner()
+      && answerers.question.takeTextAnswer({ chatId: event.chatId, text: rawText })) {
+      logger.info('这条消息被当作自由文本反问的答案');
       return;
     }
-    if (event.chatType === 'group') {
-      logger.info('群聊消息暂不处理');
+
+    const isGroup = event.chatType === 'group';
+    // 群聊按「群」一条会话：忽略话题 ID，免得同一个群按话题裂成多条会话。
+    const key = bindingKeyOf({
+      appId: event.appId,
+      tenantKey: event.tenantKey,
+      chatId: event.chatId,
+      threadId: isGroup ? '' : event.threadId,
+    });
+
+    if (!isGroup) {
+      if (bootstrapOwner(event)) {
+        await notice(event.chatId, '已绑定', '这是你的私人 Agent。第一条消息会按配置里的工作区建会话。');
+      }
+      const me = owner();
+      if (me === '' || event.senderOpenId !== me) {
+        logger.info(`拒绝非 owner 的消息（${event.senderOpenId || '未知'}）`);
+        return;
+      }
+    } else if ((await groupGate.gate(event, key)) !== 'continue') {
       return;
     }
-    const key = bindingKeyOf(event);
     const text = cleanUserText(event.text);
     if (text === '') return;
 
     // 命令必须在建绑定之前处理：`/new`、`/stop`、`/status` 都不该顺手建一条会话。
     const command = parseCommand(text);
     if (command !== undefined) {
+      // 群聊里命令只给 owner：`/new`、`/stop` 这类会动到整条会话。
+      if (isGroup && event.senderOpenId !== owner()) {
+        await notice(event.chatId, '只有 owner 能用命令', '群聊里的 /new、/switch、/stop 只对 owner 生效。');
+        return;
+      }
       await handleCommand(event, key, command);
       return;
     }
 
     const binding = await binder
-      .ensureBinding({ key, appId: event.appId, tenantKey: event.tenantKey, chatId: event.chatId, threadId: event.threadId })
+      .ensureBinding({
+        key,
+        appId: event.appId,
+        tenantKey: event.tenantKey,
+        chatId: event.chatId,
+        chatType: event.chatType,
+        threadId: event.threadId,
+      })
       .catch(async (error) => {
         logger.warn(`建绑定失败：${errorMessage(error)}`);
         await notice(event.chatId, '无法建会话', errorMessage(error));
@@ -356,159 +513,11 @@ export async function apply(ctx, config = {}) {
       return;
     }
 
-    // 走 CLI 子进程执行：宿主内的 sessionController 只能排队，驱动循环跑不起来
-    // （agent 的 phase 卡在非 idle，followup 的唤醒被挂起），所以改由 `dsh --profile headless` 真正跑一轮。
-    await runViaCli({ binding, key, event, text });
-  }
+    // 引用回复时把被引用消息的正文补进这一轮，模型才有上下文。
+    const quoted = await quotedContextOf(event);
+    const promptText = quoted === '' ? text : `${quoted}\n\n${text}`;
 
-  /**
-   * 用 CLI 跑一轮，并把事件流映射到回答卡。
-   *
-   * @param options.binding 会话绑定（新会话时 `dshSessionId` 为空）
-   * @param options.key 绑定键
-   * @param options.event 飞书消息事件
-   * @param options.text 任务文本
-   */
-  async function runViaCli({ binding, key, event, text }) {
-    const requestId = `f_${event.messageId}`;
-    const runId = `run_${event.messageId}`;
-    turns.open(event.messageId, { requestId, sessionId: binding.dshSessionId, chatId: event.chatId, bindingKey: key, text });
-    await cards.open({ messageId: event.messageId, chatId: event.chatId, title: '排队中', action: 'withdraw' });
-
-    // 并发上限：超过就排队等（这里简单等一等，不做完整队列）。
-    const limit = runtimeConfig.get().answerConcurrency;
-    while (executor.size() >= limit) await new Promise((resolve) => setTimeout(resolve, 200));
-
-    const controller = new AbortController();
-    runningRuns.set(runId, controller);
-    let started = false;
-    let toolCount = 0;
-
-    let result = await executor
-      .run({
-        runId,
-        sessionId: binding.dshSessionId || '',
-        prompt: text,
-        signal: controller.signal,
-        onEvent: (eventLine) => {
-          if (eventLine.type === 'status' && eventLine.phase === 'turn_start' && !started) {
-            started = true;
-            cards.markRunning(event.messageId, Number(eventLine.turn ?? 1));
-          }
-          if (eventLine.type === 'tool_call') {
-            toolCount += 1;
-            cards.append(event.messageId, `\n> 🔧 正在使用 ${eventLine.tool}${toolCount > 1 ? `（第 ${toolCount} 次）` : ''}\n`);
-          }
-        },
-      })
-      .finally(() => runningRuns.delete(runId));
-
-    // 绑定里的会话若带 agentPreset（早期由宿主 API 创建），CLI 的 --session-id 一律拒绝。
-    // 这时清掉它、当作新会话重跑一次，而不是把错误甩给用户。
-    if (!result.ok && /one-shot runner does not compose|does not exist/i.test(result.error ?? '') && (binding.dshSessionId ?? '') !== '') {
-      logger.warn(`绑定的会话 ${binding.dshSessionId} 不能被 CLI 续写（${result.error}），改用新会话重试`);
-      binder.attachSessionId(key, '');
-      binding.dshSessionId = '';
-      result = await executor
-        .run({
-          runId: `${runId}_retry`,
-          sessionId: '',
-          prompt: text,
-          signal: controller.signal,
-        })
-        .finally(() => runningRuns.delete(runId));
-    }
-
-    // 新会话：把 CLI 返回的 sessionId 写进绑定。
-    if ((binding.dshSessionId === '' || binding.dshSessionId === undefined) && result.sessionId !== '') {
-      binder.attachSessionId(key, result.sessionId);
-      // 补 Workspace 归属（CLI 建的会话没有归属）：Pod 里登记到配置的工作区。
-      void host.attachToWorkspace(binding.workspaceId, result.sessionId).catch((error) => {
-        logger.warn(`会话 ${result.sessionId} 归属工作区失败（后续再处理）：${errorMessage(error)}`);
-      });
-    }
-
-    const record = turns.byFeishuMessage(event.messageId);
-    if (result.ok) {
-      await cards.finish(event.messageId, {
-        title: TURN_END_TITLES[result.turnEndKind] ?? '已完成',
-        color: result.turnEndKind === 'completed' ? 'green' : 'orange',
-        note: typeof result.text === 'string' && result.text.trim() !== '' ? result.text : '（这一轮没有可显示的正文）',
-      });
-      turns.finish(record, result.turnEndKind || 'completed');
-      answerers.question.settleTurn(record);
-      answerers.approval.settleTurn(record);
-      logger.info(`CLI 执行完成：${event.messageId} → 会话 ${result.sessionId || binding.dshSessionId}（${result.durationMs}ms）`);
-      return;
-    }
-
-    await cards.finish(event.messageId, {
-      title: '失败',
-      color: 'red',
-      note: result.error || '执行失败',
-    });
-    turns.finish(record, 'failed');
-    logger.warn(`CLI 执行失败：${event.messageId} → ${result.error}`);
-  }
-
-  /**
-   * 处理文本命令。
-   *
-   * @param event 消息事件
-   * @param key 绑定键
-   * @param command `{ name, arg }`
-   */
-  async function handleCommand(event, key, command) {
-    const binding = binder.get(key);
-    switch (command.name) {
-      case 'new': {
-        // CLI 路径下"新建会话"= 清空绑定里的 sessionId，下一条消息会让 CLI 建一条新会话。
-        if (binding === undefined) {
-          await notice(event.chatId, '还没有绑定', '先发一条消息建绑定。');
-          return;
-        }
-        binding.dshSessionId = '';
-        binding.updatedAt = new Date().toISOString();
-        store.touch();
-        await notice(event.chatId, '已新建会话', `下一条消息会开一条新会话\n工作区：${binding.workspacePath}`);
-        return;
-      }
-      case 'switch': {
-        const result = await binder.switchSession(key, command.arg);
-        await notice(event.chatId, '切换会话', result.error ?? `现在绑定到 ${result.binding.dshSessionId}（${result.binding.title || '无标题'}）`);
-        return;
-      }
-      case 'stop': {
-        let cancelled = 0;
-        for (const controller of runningRuns.values()) {
-          controller.abort();
-          cancelled += 1;
-        }
-        await notice(event.chatId, '停止', cancelled > 0 ? `已请求停止 ${cancelled} 个执行` : '当前没有在跑的任务');
-        return;
-      }
-      case 'status': {
-        const lines = [
-          `owner：${owner() || '（未绑定）'}`,
-          `绑定：${binding ? `${binding.dshSessionId}` : '（还没有）'}`,
-          binding ? `工作区：${binding.workspacePath}` : '',
-          binding ? `权限预设：${binding.permissionPreset || DEFAULT_PERMISSION_PRESET}` : '',
-          `连接：${runtime.connected ? '已连接' : '未连接'}`,
-        ].filter((line) => line !== '');
-        await notice(event.chatId, '状态', lines.join('\n'));
-        return;
-      }
-      case 'help':
-      default: {
-        await notice(event.chatId, '可用命令', [
-          '/new —— 在当前工作区新建会话',
-          '/switch <会话ID前缀> —— 切换到这个工作区里的另一条会话',
-          '/stop —— 停止当前这一轮',
-          '/status —— 看当前绑定与连接状态',
-          '/help —— 这份说明',
-        ].join('\n'));
-      }
-    }
+    await runViaCli({ binding, key, event, text: promptText });
   }
 
   // ---------- 卡片回调 ----------
@@ -519,9 +528,11 @@ export async function apply(ctx, config = {}) {
    * @returns 回调响应
    */
   async function onCardAction(event) {
+    await refreshLocalConfig();
     const me = owner();
     if (me === '' || event.operatorOpenId !== me) return toastResponse('你不是这个机器人的主人', 'warning');
     const value = event.value ?? {};
+    if (value.tag === 'group-register') return await groupGate.handleCard(event, value);
     if (value.tag === 'question') return answerers.question.handleCard(value);
     if (value.tag === 'approval') return answerers.approval.handleCard(value);
     if (value.tag !== 'answer') return toastResponse('不认识的操作', 'warning');
@@ -547,52 +558,6 @@ export async function apply(ctx, config = {}) {
       return toastResponse('已撤回', 'success');
     }
     return toastResponse('不认识的操作', 'warning');
-  }
-
-  // ---------- 宿主流 ----------
-  /**
-   * 宿主会话事件：认领轮次、追加正文、收尾。
-   *
-   * @param session 会话
-   * @param event 会话事件
-   */
-  function onSessionEvent(session, event) {
-    const sessionId = String(session?.id ?? session?.header?.id ?? '');
-    const type = event?.type ?? '';
-    const data = event?.data ?? {};
-    try {
-      if (type === 'user/message') {
-        const rpcId = data?.source?.kind === 'user' ? String(data.source.rpcId ?? '') : '';
-        if (rpcId === '') return;
-        const claimed = turns.claim(rpcId, Number(data?.turn ?? 0));
-        if (claimed === undefined) return;
-        const record = turns.byFeishuMessage(claimed.feishuMessageId);
-        if (record !== undefined) record.hostMessageId = String(data?.message?.id ?? '');
-        cards.markRunning(claimed.feishuMessageId, Number(data?.turn ?? 0));
-        return;
-      }
-      if (type === 'assistant/message') {
-        const turn = turns.turnOf(sessionId, Number(data?.turn ?? 0));
-        if (turn === undefined) return;
-        cards.append(turn.feishuMessageId, textOfAssistantMessage(data?.message));
-        return;
-      }
-      if (type === 'turn/end') {
-        const turnNo = Number(data?.turn ?? 0);
-        const turn = turns.turnOf(sessionId, turnNo);
-        if (turn === undefined) return;
-        const kind = String(data?.reason?.kind ?? 'completed');
-        const title = TURN_END_TITLES[kind] ?? '已完成';
-        const color = kind === 'error' ? 'red' : kind === 'aborted' ? 'orange' : 'green';
-        const note = kind === 'error' ? `结束原因：${data?.reason?.message ?? data?.reason?.code ?? 'error'}` : '';
-        void cards.finish(turn.feishuMessageId, { title, color, note });
-        answerers.question.settleTurn(turn);
-        answerers.approval.settleTurn(turn);
-        turns.finish(turn, kind);
-      }
-    } catch (error) {
-      logger.warn(`处理会话事件 ${type} 失败：${errorMessage(error)}`);
-    }
   }
 
   // ---------- 调度 ----------
@@ -703,9 +668,11 @@ export async function apply(ctx, config = {}) {
   // ---------- 启动 ----------
   scheduler.start();
   await loadCredentials();
+  // 上次进程留下的「处理中」卡片：那一轮不可能再收尾了，标成已中断。
+  await cards.reconcileStale();
   const { appId, appSecret } = credentials();
   if (!appId || !appSecret) {
-    logger.warn('飞书凭据未配置：插件已加载但不会连飞书（设置 DSH_FEISHU_AGENT_APP_ID / DSH_FEISHU_AGENT_APP_SECRET）');
+    logger.warn(`飞书凭据未配置：插件已加载但不会连飞书（设置 ${APP_ID_ENV} / ${APP_SECRET_ENV}）`);
   } else {
     try {
       await connection.start();

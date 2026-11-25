@@ -17,6 +17,9 @@ export const LoggerLevel = { fatal: 0, error: 1, warn: 2, info: 3, debug: 4, tra
 export function createFakeFeishu() {
   const sent = [];
   const patched = [];
+  const uploads = [];
+  /** 可以被「引用」读到的消息：message_id → 消息体（模拟 im/v1/messages/:id）。 */
+  const quoted = new Map();
   const state = { startCalls: 0, stopCalls: 0, wsOptions: undefined, dispatcher: undefined };
 
   /** 事件分发器替身：只记下注册的处理函数。 */
@@ -63,6 +66,7 @@ export function createFakeFeishu() {
         sent.push({
           kind,
           chatId: payload?.data?.receive_id ?? null,
+          receiveIdType: payload?.params?.receive_id_type ?? null,
           replyTo: payload?.path?.message_id ?? null,
           card,
           msgType: payload?.data?.msg_type,
@@ -71,7 +75,31 @@ export function createFakeFeishu() {
         });
         return { code: 0, data: { message_id: id } };
       };
-      this.im = { message: { create: record('send'), reply: record('reply'), patch: record('patch') } };
+      // 机器人信息：群聊里判断「有没有 @ 我」用。
+      this.request = async (payload) => {
+        if (payload?.url === '/open-apis/bot/v3/info') {
+          return { code: 0, bot: { open_id: 'ou_bot', app_name: 'fake-bot' } };
+        }
+        return { code: 0, data: {} };
+      };
+      this.im = {
+        message: {
+          create: record('send'),
+          reply: record('reply'),
+          patch: record('patch'),
+          get: async (payload) => {
+            const id = payload?.path?.message_id;
+            const item = quoted.get(id);
+            return { code: 0, data: { items: item === undefined ? [] : [item] } };
+          },
+        },
+        image: {
+          create: async (payload) => {
+            uploads.push({ imageType: payload?.data?.image_type ?? null, size: payload?.data?.image?.length ?? 0 });
+            return { code: 0, data: { image_key: `img_fake_${uploads.length}` } };
+          },
+        },
+      };
     }
   }
 
@@ -92,6 +120,8 @@ export function createFakeFeishu() {
     sdk: { EventDispatcher, WSClient, Client, Domain, LoggerLevel },
     sent,
     patched,
+    uploads,
+    quoted,
     state,
     deliver,
   };
