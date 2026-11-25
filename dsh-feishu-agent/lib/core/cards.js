@@ -71,6 +71,24 @@ export function button({ name, text, type = 'default', value }) {
 }
 
 /**
+ * 造一个图片元素（`img_key` 来自 `im/v1/images` 上传）。
+ *
+ * @param options.imgKey 图片 key
+ * @param options.alt 替代文字（读屏与加载失败时用）
+ * @returns 卡片元素
+ */
+export function imgElement({ imgKey, alt = '' }) {
+  return {
+    tag: 'img',
+    img_key: imgKey,
+    preview: true,
+    // 完整展示不裁剪：成品图不该被按卡片比例切掉。
+    scale_type: 'fit_horizontal',
+    alt: { tag: 'plain_text', content: alt === '' ? '图片' : alt },
+  };
+}
+
+/**
  * 把按钮排成一行等宽列。
  *
  * @param buttons 按钮元素
@@ -104,10 +122,15 @@ export function textCard({ title, content, color = CARD_COLORS.notice }) {
  * @param options.color 标题栏颜色
  * @param options.content 正文
  * @param options.action 按钮：`stop` / `withdraw` / 无
+ * @param options.activity 工具活动的单行摘要（放在正文之后，别抢回答的位置）
+ * @param options.elements 已经排好的正文元素（图文混排用；给了就不看 `content`）
  * @returns 卡片对象
  */
-export function answerCard({ messageId, title, color, content, action }) {
-  const elements = [markdown(content === '' ? '…' : content)];
+export function answerCard({ messageId, title, color, content, action, activity, elements: body }) {
+  const elements = body === undefined
+    ? [markdown(content === '' ? '…' : content)]
+    : [...body];
+  if (typeof activity === 'string' && activity !== '') elements.push(markdown(activity));
   if (action === 'stop') {
     elements.push(buttonRow([
       button({ name: 'stop', text: '停止', type: 'danger', value: { tag: 'answer', action: 'stop', messageId } }),

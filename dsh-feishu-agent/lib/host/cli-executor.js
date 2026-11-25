@@ -23,7 +23,7 @@ const STDERR_PREFIX = 'dsh:';
  */
 export function resolveCliPath(configured) {
   if (typeof configured === 'string' && configured.trim() !== '') return configured.trim();
-  const fromEnv = process.env.DSH_FEISHU_AGENT_CLI;
+  const fromEnv = process.env.FEISHU_AGENT_CLI ?? process.env.DSH_FEISHU_AGENT_CLI;
   if (typeof fromEnv === 'string' && fromEnv.trim() !== '') return fromEnv.trim();
   // Desktop 自带的 CLI 与 Desktop 同版本，优先用它（避免 PATH 里旧版 CLI 采纳规则不一致）。
   const bundled = '/Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh';
@@ -100,9 +100,10 @@ export function createCliExecutor({ logger, getConfig, spawn = nodeSpawn }) {
    * @param options.prompt 任务文本
    * @param options.onEvent 每条事件的回调（可空）
    * @param options.signal 取消信号（可空）
+   * @param options.cwd 这一轮的工作目录（默认取执行器配置里的 cwd）
    * @returns `{ ok, sessionId, text, turnEndKind, error, exitCode, durationMs }`
    */
-  async function run({ runId, sessionId, prompt, onEvent, signal }) {
+  async function run({ runId, sessionId, prompt, onEvent, signal, cwd: runCwd }) {
     const { cliPath, cwd, timeoutMs = DEFAULT_TIMEOUT_MS, profile = 'headless', extraEnv } = getConfig();
     const args = ['--profile', profile, '--json'];
     if (typeof sessionId === 'string' && sessionId !== '') args.push('--session-id', sessionId);
@@ -114,7 +115,9 @@ export function createCliExecutor({ logger, getConfig, spawn = nodeSpawn }) {
     let stdoutTail = '';
 
     const child = spawn(cliPath, args, {
-      cwd,
+      // 会话的 cwd 由子进程的工作目录决定：必须落在绑定的工作区里，
+      // 否则工作区的「校验式会话挂载」会拒绝它，会话也会跑错目录。
+      cwd: runCwd ?? cwd,
       env: { ...process.env, ...(extraEnv ?? {}) },
       stdio: ['ignore', 'pipe', 'pipe'],
     });

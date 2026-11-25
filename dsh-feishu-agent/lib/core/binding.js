@@ -1,7 +1,6 @@
 /** 绑定：把飞书会话（chat/thread）解析到 Workspace 与 DSH Session，并按需创建会话。 */
 
 import { DEFAULT_AGENT_PRESET, DEFAULT_PERMISSION_PRESET, DEFAULT_TITLE_PREFIX } from '../common/constants.js';
-import { errorMessage } from '../host/services.js';
 
 /**
  * 造一个给人看的本地时间戳（`MM-DD HH:mm`），用于会话标题。
@@ -40,6 +39,8 @@ export function normalizeChatConfig(config) {
   if (typeof config.workspacePath !== 'string' || config.workspacePath.trim() === '') return undefined;
   return {
     workspacePath: config.workspacePath.trim(),
+    // 群聊里除了 owner，还允许哪些 open_id 提问；空数组 = 只认 owner。
+    allowSenders: Array.isArray(config.allowSenders) ? config.allowSenders.filter((id) => typeof id === 'string' && id !== '') : [],
     chatType: config.chatType === 'group' ? 'group' : 'p2p',
     permissionPreset: config.permissionPreset || DEFAULT_PERMISSION_PRESET,
     agentPreset: config.agentPreset || DEFAULT_AGENT_PRESET,
@@ -64,12 +65,15 @@ export function createBinder({ logger, store, host, config }) {
    * 某个 chat 的配置：优先精确匹配 chatId，其次按 chatType 给默认。
    *
    * @param chatId 飞书会话 ID
+   * @param chatType `p2p` / `group`
    * @returns 频道配置；没配时候 undefined
    */
-  function chatConfigOf(chatId) {
+  function chatConfigOf(chatId, chatType = 'p2p') {
     const chats = config.get().chats ?? {};
-    // 先按 chat_id 精确匹配，没配就用通配项 `'*'`，再没有就返回 undefined（由调用方提示去配置）。
-    return normalizeChatConfig(chats[chatId]) ?? normalizeChatConfig(chats['*']);
+    // 精确匹配优先；通配项 `'*'` 只给私聊用——群聊必须显式列 chat_id，避免被加进群就自动接管。
+    const exact = normalizeChatConfig(chats[chatId]);
+    if (exact !== undefined) return exact;
+    return chatType === 'group' ? undefined : normalizeChatConfig(chats['*']);
   }
 
   /**
@@ -123,6 +127,7 @@ export function createBinder({ logger, store, host, config }) {
       dshSessionId: '',
       agentPreset: channelConfig.agentPreset,
       permissionPreset: channelConfig.permissionPreset,
+      allowSenders: channelConfig.allowSenders,
       title: '',
       titlePrefix: channelConfig.titlePrefix,
       provider: channelConfig.provider,
@@ -137,6 +142,34 @@ export function createBinder({ logger, store, host, config }) {
   }
 
   /**
+   * 直接给一个群建绑定（确认卡里点「允许」之后用，不依赖 `chats` 配置）。
+   *
+   * @param options.key 绑定键
+   * @param options.appId 应用 ID
+   * @param options.tenantKey 租户
+   * @param options.chatId 群会话 ID
+   * @param options.workspacePath 工作区路径
+   * @param options.permissionPreset 权限档位
+   * @param options.titlePrefix 标题前缀
+   * @returns 绑定
+   */
+  async function registerGroup({ key, appId, tenantKey, chatId, workspacePath, permissionPreset, titlePrefix = '[群]' }) {
+    const channelConfig = normalizeChatConfig({
+      workspacePath,
+      chatType: 'group',
+      permissionPreset,
+      titlePrefix,
+      allowSenders: [],
+    });
+    if (channelConfig === undefined) throw new Error('注册群需要有效的 workspacePath');
+    // 同一个群只留一条绑定：清掉历史版本用错键登记的那条。
+    for (const [oldKey, record] of Object.entries(store.state.bindings)) {
+      if (oldKey !== key && record?.chatId === chatId && record?.chatType === 'group') delete store.state.bindings[oldKey];
+    }
+    return await createBinding({ key, appId, tenantKey, chatId, chatType: 'group', threadId: '', channelConfig });
+  }
+
+  /**
    * 取绑定；没有就按配置新建。配置里没有这个 chat 时返回 undefined（由调用方拒绝）。
    *
    * @param options 同 createBinding
@@ -145,7 +178,7 @@ export function createBinder({ logger, store, host, config }) {
   async function ensureBinding(options) {
     const existing = get(options.key);
     if (existing !== undefined) return existing;
-    const channelConfig = chatConfigOf(options.chatId);
+    const channelConfig = chatConfigOf(options.chatId, options.chatType);
     if (channelConfig === undefined) return undefined;
     return await createBinding({ ...options, chatType: channelConfig.chatType, channelConfig });
   }
@@ -219,5 +252,5 @@ export function createBinder({ logger, store, host, config }) {
     logger.info(`绑定 ${key} 记下 CLI 会话 ${sessionId}`);
   }
 
-  return { get, ensureBinding, resetSession, switchSession, chatConfigOf, attachSessionId };
+  return { get, ensureBinding, registerGroup, resetSession, switchSession, chatConfigOf, attachSessionId };
 }

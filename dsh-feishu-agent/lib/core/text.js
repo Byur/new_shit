@@ -67,3 +67,34 @@ export function clampAnswer(text, limit = ANSWER_MAX_CHARS) {
 export function titleOfProjection(projection) {
   return typeof projection?.title === 'string' ? projection.title : '';
 }
+
+/**
+ * 回答里的图片引用：`![alt](path)`。
+ *
+ * 兼容 CommonMark 的几种写法：`![alt](<带 空格 的路径>)`、`![alt](path "title")`；
+ * 裸路径不跨空白，够用且不误伤正文。
+ */
+const IMAGE_REF = /!\[([^\]]*)\]\(\s*(?:<([^>]*)>|([^)\s]+))(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*\)/g;
+
+/**
+ * 把回答正文切成文字段与图片段，供卡片做图文混排。
+ *
+ * 只认 markdown 图片语法：模型写 `![示意图](/abs/path.png)` 就够了，
+ * 不会把正文里随便出现的路径当图片。
+ *
+ * @param text 回答正文
+ * @returns 段数组：`{ type: 'text', text }` 或 `{ type: 'image', alt, path }`
+ */
+export function splitImageRefs(text) {
+  const source = typeof text === 'string' ? text : '';
+  const segments = [];
+  let last = 0;
+  for (const match of source.matchAll(IMAGE_REF)) {
+    const at = match.index ?? 0;
+    if (at > last) segments.push({ type: 'text', text: source.slice(last, at) });
+    segments.push({ type: 'image', alt: match[1], path: (match[2] ?? match[3] ?? '').trim() });
+    last = at + match[0].length;
+  }
+  if (last < source.length) segments.push({ type: 'text', text: source.slice(last) });
+  return segments;
+}

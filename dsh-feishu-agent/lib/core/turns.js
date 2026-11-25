@@ -15,6 +15,44 @@ export function createTurnRegistry({ persist, initialEventIds = [] } = {}) {
   /** turn 号 → 轮次记录，用来把 session/event 对回到某条飞书消息。 */
   const byTurn = new Map();
 
+  /** 会话 → 最近一次 `turn/start` 的 turn 号（`user/message` 事件本身不带 turn）。 */
+  const lastStart = new Map();
+
+  /**
+   * 把记录绑到具体的 turn 号上。
+   *
+   * @param entry 轮次记录
+   * @param turn turn 号（0 表示还没绑）
+   */
+  function bindTurn(entry, turn) {
+    entry.turn = turn;
+    entry.status = 'running';
+    if (turn > 0) byTurn.set(`${entry.sessionId}:${turn}`, entry);
+    persist?.();
+  }
+
+  /**
+   * 记一次 `turn/start`，并给「已 claim 但还没轮次号」的飞书轮次补上号码。
+   *
+   * `turn/start` 可能先于 `user/message` 到达，也可能反过来：两条路都要能接上。
+   *
+   * @param sessionId 会话 ID
+   * @param turn turn 号
+   * @returns 补上号码的轮次记录；没有可绑的时 undefined
+   */
+  function noteTurnStart(sessionId, turn) {
+    if (!(turn > 0)) return undefined;
+    lastStart.set(sessionId, turn);
+    for (const entry of byMessage.values()) {
+      // 只补「已 claim 但还没有 turn 号」的记录：还没 claim 的交给 claim 自己用 lastStart 补，
+      // 免得把别人的 turn 绑到一条还没被宿主收下的消息上。
+      if (entry.sessionId !== sessionId || entry.turn > 0 || entry.status !== 'running') continue;
+      bindTurn(entry, turn);
+      return entry;
+    }
+    return undefined;
+  }
+
   /**
    * 记一条已投喂但还没被取走的消息。
    *
@@ -41,10 +79,14 @@ export function createTurnRegistry({ persist, initialEventIds = [] } = {}) {
     if (messageId === undefined) return undefined;
     const entry = byMessage.get(messageId);
     if (entry === undefined) return undefined;
-    entry.turn = turn;
-    entry.status = 'running';
-    if (turn > 0) byTurn.set(`${entry.sessionId}:${turn}`, entry);
-    persist?.();
+    // `user/message` 事件不带 turn，这时用该会话最近一次 `turn/start` 补上；
+    // 已经绑过的号码不重复用，避免两条排队消息抢同一个 turn。
+    let effective = turn;
+    if (!(effective > 0)) {
+      const candidate = lastStart.get(entry.sessionId);
+      if (candidate !== undefined && !byTurn.has(`${entry.sessionId}:${candidate}`)) effective = candidate;
+    }
+    bindTurn(entry, effective > 0 ? effective : 0);
     return entry;
   }
 
@@ -92,6 +134,8 @@ export function createTurnRegistry({ persist, initialEventIds = [] } = {}) {
     if (record === undefined) return;
     record.status = status;
     if (record.turn > 0) byTurn.delete(`${record.sessionId}:${record.turn}`);
+    // 这个 turn 已经用掉了，别让后来的排队消息再复用它。
+    if (lastStart.get(record.sessionId) === record.turn) lastStart.delete(record.sessionId);
     persist?.();
   }
 
@@ -104,5 +148,5 @@ export function createTurnRegistry({ persist, initialEventIds = [] } = {}) {
     byRequest.clear();
   }
 
-  return { open, claim, activeTurnOfSession, turnOf, byFeishuMessage, finish, clear };
+  return { open, claim, noteTurnStart, activeTurnOfSession, turnOf, byFeishuMessage, finish, clear };
 }

@@ -12,20 +12,34 @@ export const APP_ID_REF = 'FEISHU_AGENT_APP_ID';
 /** 凭据引用名：飞书自建应用的 App Secret。 */
 export const APP_SECRET_REF = 'FEISHU_AGENT_APP_SECRET';
 
-/** 环境变量：没有凭据服务时的退路。 */
-export const APP_ID_ENV = 'DSH_FEISHU_AGENT_APP_ID';
+/**
+ * 环境变量前缀。
+ *
+ * 不能用 `DSH_`：dsh 自己把 `DSH_` 整个前缀列为 bootstrap-only，项目 `.env` 里出现
+ * 任何 `DSH_*` 都会让它启动的 CLI 直接抛错退出（`dsh-app-boot` 的 `readEnvLayer`）。
+ */
+export const ENV_PREFIX = 'FEISHU_AGENT_';
 
 /** 环境变量：没有凭据服务时的退路。 */
-export const APP_SECRET_ENV = 'DSH_FEISHU_AGENT_APP_SECRET';
+export const APP_ID_ENV = 'FEISHU_AGENT_APP_ID';
+
+/** 环境变量：没有凭据服务时的退路。 */
+export const APP_SECRET_ENV = 'FEISHU_AGENT_APP_SECRET';
 
 /** 状态目录的环境变量覆盖（默认 `$DSH_HOME/feishu-agent`）。 */
-export const STATE_DIR_ENV = 'DSH_FEISHU_AGENT_STATE_DIR';
+export const STATE_DIR_ENV = 'FEISHU_AGENT_STATE_DIR';
 
 /** 状态文件名。 */
 export const STATE_FILE = 'state.json';
 
 /** 回答卡状态文件名。 */
 export const CARDS_FILE = 'cards.json';
+
+/** 飞书图片消息的体积上限（10MB）。 */
+export const IMAGE_MAX_BYTES = 10 * 1024 * 1024;
+
+/** 允许内联/发送的图片扩展名。 */
+export const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp'];
 
 /** 飞书卡片的体积上限（官方 30KB）。 */
 export const CARD_MAX_BYTES = 30 * 1024;

@@ -1,6 +1,7 @@
 /** 审批应答：接管 `approval/request`，把工具授权请求发到飞书，回写 none/allowed-once/rejected/cancelled。 */
 
 import { buildCard, buttonRow, button, markdown, textCard, toastResponse } from '../core/cards.js';
+import { sendInteractiveCard } from './interactive-target.js';
 
 /** 审批 waterfall 的事件名。 */
 export const APPROVAL_EVENT = 'approval/request';
@@ -14,7 +15,7 @@ export const APPROVAL_EVENT = 'approval/request';
  * @param deps.pending 等待表
  * @returns 句柄：`onRequest` / `handleCard` / `settleTurn` / `dispose`
  */
-export function createApprovalAnswerer({ logger, outbound, turns, pending }) {
+export function createApprovalAnswerer({ logger, outbound, turns, pending, getOwner = () => '' }) {
   /**
    * 发起这一轮的飞书轮次；不是飞书发起时 undefined。
    *
@@ -68,7 +69,7 @@ export function createApprovalAnswerer({ logger, outbound, turns, pending }) {
         ]),
       ],
     });
-    const cardId = await outbound.sendCard({ chatId: turn.chatId, card });
+    const cardId = await sendInteractiveCard({ outbound, turn, ownerOpenId: getOwner(), card });
     if (!cardId) {
       pending.delete(requestId);
       logger.warn('审批：卡片没发出去，让给桌面端');

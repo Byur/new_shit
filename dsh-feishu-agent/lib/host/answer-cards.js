@@ -2,14 +2,17 @@
 
 import { existsSync } from 'node:fs';
 import { readFile, rename, writeFile, mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { basename, isAbsolute, join } from 'node:path';
 
 import { CARD_COLORS, CARD_MAX_BYTES, CARD_PATCH_DEBOUNCE_MS } from '../common/constants.js';
-import { answerCard, cardBytes, textCard } from '../core/cards.js';
-import { clampAnswer, textOfAssistantMessage } from '../core/text.js';
+import { answerCard, cardBytes, imgElement, markdown, textCard } from '../core/cards.js';
+import { clampAnswer, splitImageRefs, textOfAssistantMessage } from '../core/text.js';
 
 /** 回答卡状态文件名。 */
 const CARDS_FILE = 'cards.json';
+
+/** 记住最近发过的多少张卡：引用回复时要靠它还原卡片正文（飞书 API 只回标题）。 */
+const RECENT_CARD_LIMIT = 50;
 
 /**
  * 读卡片记账文件（重启后仍能认领运行中的卡片）。
@@ -45,8 +48,12 @@ async function loadCards(dir, logger) {
 const instances = new Set();
 
 export function createAnswerCards({ logger, outbound, stateDir }) {
+  /** 回答正文里的 `![alt](路径)` 是否转成卡片图片；`FEISHU_AGENT_INLINE_IMAGES=off` 可关掉。 */
+  const inlineImages = String(process.env.FEISHU_AGENT_INLINE_IMAGES ?? '').toLowerCase() !== 'off';
   /** feishuMessageId → `{ cardId, title, content, action, turn, tooLong, sendFailed }` */
   const cards = new Map();
+  /** cardId → `{ title, content, at }`：发出去的卡片正文，供引用回复回查。 */
+  const recent = new Map();
   /** feishuMessageId → 排队中的写卡任务。 */
   const chains = new Map();
   /** feishuMessageId → 防抖定时器。 */
@@ -109,6 +116,39 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
   }
 
   /**
+   * 把正文排成卡片元素：文字走 markdown，`![alt](path)` 上传成图片元素。
+   *
+   * 上传失败不吞掉内容：退回一行文字，把路径和原因写清楚。
+   *
+   * @param record 记账
+   * @param content 已截断的正文
+   * @returns 卡片元素数组
+   */
+  async function buildBody(record, content) {
+    const fallback = [markdown(content === '' ? '…' : content)];
+    if (!inlineImages) return fallback;
+    const segments = splitImageRefs(content);
+    if (!segments.some((segment) => segment.type === 'image')) return fallback;
+
+    const elements = [];
+    for (const segment of segments) {
+      if (segment.type === 'text') {
+        if (segment.text.trim() !== '') elements.push(markdown(segment.text));
+        continue;
+      }
+      const path = isAbsolute(segment.path) ? segment.path : join(record.workspacePath ?? '', segment.path);
+      const uploaded = await outbound.uploadImage({ path });
+      if (uploaded.imageKey !== undefined) {
+        elements.push(imgElement({ imgKey: uploaded.imageKey, alt: segment.alt === '' ? basename(path) : segment.alt }));
+      } else {
+        logger.warn(`卡片图片没发出去（${path}）：${uploaded.error}`);
+        elements.push(markdown(`🖼 ${segment.alt === '' ? basename(path) : segment.alt}（图片没发出去：${uploaded.error}）`));
+      }
+    }
+    return elements.length > 0 ? elements : fallback;
+  }
+
+  /**
    * 按记账画一次卡并推给飞书。
    *
    * @param messageId 飞书消息 ID
@@ -123,9 +163,17 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
       record.tooLong = true;
       record.content = content;
     }
-    const card = record.action === undefined
-      ? textCard({ title: record.title, content, color: record.color })
-      : answerCard({ messageId, title: record.title, color: record.color, content, action: record.action });
+    const activity = activityText(record, record.action === 'stop');
+    const body = await buildBody(record, content);
+    const card = answerCard({
+      messageId,
+      title: record.title,
+      color: record.color,
+      content,
+      action: record.action,
+      activity,
+      elements: body,
+    });
     if (cardBytes(card) > CARD_MAX_BYTES) {
       record.tooLong = true;
       record.action = undefined;
@@ -156,9 +204,21 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
    * @param options.turn turn 号（已经开跑时）
    * @returns 卡片消息 ID；失败 undefined
    */
-  async function open({ messageId, chatId, title, action, turn = 0 }) {
+  async function open({ messageId, chatId, title, action, turn = 0, workspacePath = '' }) {
     if (cards.has(messageId)) return cards.get(messageId).cardId;
-    const record = { cardId: '', title, content: '', color: CARD_COLORS.queued, action, turn, tooLong: false, sendFailed: false };
+    const record = {
+      cardId: '',
+      title,
+      content: '',
+      color: CARD_COLORS.queued,
+      action,
+      turn,
+      tooLong: false,
+      sendFailed: false,
+      tools: {},
+      startedAt: 0,
+      workspacePath: '',
+    };
     cards.set(messageId, record);
     const card = action === undefined
       ? textCard({ title, content: '…', color: record.color })
@@ -170,6 +230,7 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
       return undefined;
     }
     record.cardId = cardId;
+    record.workspacePath = workspacePath;
     logger.info(`回答卡已开出（${messageId}，${title}，cardId=${cardId}）`);
     scheduleSave();
     return cardId;
@@ -186,6 +247,7 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
       const record = cards.get(messageId);
       if (record === undefined) return;
       record.turn = turn;
+      if (record.startedAt === 0) record.startedAt = Date.now();
       if (record.title !== '排队中') return;
       await paint(messageId, { title: '处理中', color: CARD_COLORS.running, action: 'stop' });
     });
@@ -202,6 +264,15 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
     if (record === undefined || typeof text !== 'string' || text === '') return;
     record.content = record.content === '' ? text : `${record.content}\n\n${text}`;
     scheduleSave();
+    schedulePaint(messageId);
+  }
+
+  /**
+   * 排一次防抖的刷新：同一张卡的高频更新合并成一次 PATCH。
+   *
+   * @param messageId 飞书消息 ID
+   */
+  function schedulePaint(messageId) {
     const timer = debounces.get(messageId);
     if (timer !== undefined) clearTimeout(timer);
     const next = setTimeout(() => {
@@ -210,6 +281,45 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
     }, CARD_PATCH_DEBOUNCE_MS);
     next.unref?.();
     debounces.set(messageId, next);
+  }
+
+  /**
+   * 记一次工具调用（不往正文里追加内容，只在卡片底部汇总成一行）。
+   *
+   * @param messageId 飞书消息 ID
+   * @param tool 工具名
+   */
+  function noteTool(messageId, tool) {
+    const record = cards.get(messageId);
+    if (record === undefined || typeof tool !== 'string' || tool === '') return;
+    const tools = record.tools ?? (record.tools = {});
+    tools[tool] = (tools[tool] ?? 0) + 1;
+    scheduleSave();
+    schedulePaint(messageId);
+  }
+
+  /**
+   * 把工具计数排成一行：`🔧 25 次工具调用 · bash ×12 · read ×7`。
+   *
+   * @param record 记账
+   * @param running 是否还在跑（还在跑就不写用时）
+   * @returns 摘要行；没有工具调用时空串
+   */
+  function activityText(record, running) {
+    const entries = Object.entries(record.tools ?? {})
+      .filter(([, count]) => count > 0)
+      .sort((left, right) => right[1] - left[1]);
+    if (entries.length === 0) return '';
+    const total = entries.reduce((sum, [, count]) => sum + count, 0);
+    const shown = entries.slice(0, 6).map(([name, count]) => `${name} ×${count}`);
+    const rest = entries.length - shown.length;
+    const parts = [`🔧 ${total} 次工具调用`, ...shown];
+    if (rest > 0) parts.push(`等 ${rest} 种`);
+    if (!running && record.startedAt > 0) {
+      const seconds = Math.max(0, Math.round((Date.now() - record.startedAt) / 1000));
+      parts.push(`用时 ${seconds >= 60 ? `${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒` : `${seconds} 秒`}`);
+    }
+    return parts.join(' · ');
   }
 
   /**
@@ -231,9 +341,43 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
       if (record === undefined) return;
       const content = [record.content, note].filter((part) => part !== '').join('\n\n');
       await paint(messageId, { title, color, action: undefined, content: content === '' ? '（这一轮没有可显示的正文）' : content });
+      // 飞书的消息 API 只把卡片读成「标题 + 降级占位」，所以自己留一份正文给引用回复用。
+      if (typeof record.cardId === 'string' && record.cardId !== '') {
+        recent.set(record.cardId, { title, content: record.content ?? '', at: Date.now() });
+        while (recent.size > RECENT_CARD_LIMIT) {
+          const oldest = recent.keys().next().value;
+          if (oldest === undefined) break;
+          recent.delete(oldest);
+        }
+      }
       cards.delete(messageId);
       scheduleSave();
     });
+  }
+
+  /**
+   * 收尾「上一次进程留下的半截卡」：插件重启后，这些轮次已经不可能再收到收尾事件了。
+   *
+   * @returns 收尾的卡片数量
+   */
+  async function reconcileStale() {
+    let count = 0;
+    for (const [messageId, record] of [...cards.entries()]) {
+      cards.delete(messageId);
+      if (typeof record.cardId !== 'string' || record.cardId === '') continue;
+      count += 1;
+      await outbound
+        .patchCard({
+          messageId: record.cardId,
+          card: textCard({ title: '已中断', content: '插件重启前这一轮没有收尾，重新发一句吧。', color: CARD_COLORS.failed }),
+        })
+        .catch(() => {});
+    }
+    if (count > 0) {
+      logger.info(`收尾了 ${count} 张重启前没结束的卡`);
+      scheduleSave();
+    }
+    return count;
   }
 
   /**
@@ -249,6 +393,16 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
     record.title = title;
     record.action = undefined;
     await outbound.patchCard({ messageId: record.cardId, card });
+  }
+
+  /**
+   * 回查一张卡发出时的正文（引用回复用）。
+   *
+   * @param cardId 卡片消息 ID
+   * @returns `{ title, content }`；没记过时 undefined
+   */
+  function recall(cardId) {
+    return recent.get(cardId);
   }
 
   /**
@@ -284,7 +438,10 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
     open,
     markRunning,
     append,
+    noteTool,
     finish,
+    reconcileStale,
+    recall,
     replace,
     drop,
     textOfAssistantMessage,
