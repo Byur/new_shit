@@ -3,19 +3,22 @@
 # 这条 insert 是插件出现在 boot manifest 里的必要条件；同一 profile 里不要重复 insert
 # 同一个 id（loader 会直接报错）。
 #
-# 用户配置写在自己 profile 的 cordis.patch.yml 里，按 id 打补丁：
+# 本文件只放**通用默认值**，不带任何本机路径、chat_id、密钥。真实配置按优先级取：
 #
-#   - id: feishu-agent
-#     config:
-#       bindings:
-#         'oc_你的私聊_chat_id':
-#           workspacePath: /Volumes/Project/new_shit
-#           permissionPreset: workspace-write
-#           titlePrefix: '[私人]'
+#   环境变量（含包根目录 .env，见 .env.example）
+#     → $DSH_HOME/feishu-agent/local-config.json
+#     → 这里的 bundle 默认值
 #
-# App ID / App Secret 不写在这里，走凭据存储或环境变量：
+# 环境变量（平铺，见 .env.example）：
+#   FEISHU_AGENT_OWNER_OPEN_ID
+#   FEISHU_AGENT_DEFAULT_WORKSPACE / _TITLE_PREFIX / _PERMISSION_PRESET / _AGENT_PRESET
+#   FEISHU_AGENT_CHATS               JSON：chat_id → 频道配置，按 chat_id 覆盖
+#   FEISHU_AGENT_ANSWER_CONCURRENCY
+#
+# 凭据（App ID / Secret）不写在这里，按优先级取：
 #   凭据引用名 FEISHU_AGENT_APP_ID / FEISHU_AGENT_APP_SECRET
-#   或环境变量 DSH_FEISHU_AGENT_APP_ID / DSH_FEISHU_AGENT_APP_SECRET
+#   → 环境变量 FEISHU_AGENT_APP_ID / FEISHU_AGENT_APP_SECRET
+#   → 包根目录的 .env
 
 - insert:
     - id: feishu-agent
@@ -24,25 +27,25 @@
       # 你自己的 profile 里**不要**再给这个 id 写 config——没有 Config 导出的插件，
       # 带 config 的条目会被 loader 判成 did not activate 并静默跳过。
       config:
+        # 留空：owner 从环境变量 / 本机配置取，都没有时由第一条私聊自举。
         ownerOpenId: ''
-        # chat_id → 落哪个 Workspace。
-        # 用 `'*'` 配默认值：所有没单独列出的私聊/群都走这一套，**不需要逐个绑定 chat_id**。
-        # 需要给某个群单独指到别的目录时，再加一条精确匹配的键覆盖它。
-        chats:
-          '*':
-            # 改成你自己的目录；或把这份映射写到
-            # $DSH_HOME/feishu-agent/local-config.json（插件启动时优先生效，不进仓库）。
-            workspacePath: /path/to/your/workspace
-            titlePrefix: '[飞书]'
-            permissionPreset: workspace-write
+        # chat_id → 落哪个 Workspace。留空表示「不预设」：没配到的 chat 会收到
+        # 「这个会话没有配置工作区」的提示，而不是悄悄落进一个 /path/to/your/workspace。
+        # 想写死在这里也可以（环境变量与 local-config.json 里的同键会覆盖它）：
+        #   '*':
+        #     workspacePath: /path/to/workspace
+        #     titlePrefix: '[飞书]'
+        #     permissionPreset: workspace-write
+        chats: {}
         schedules: []
         answerConcurrency: 3
         # CLI 子进程：Desktop 沙箱不让子进程写 ~/.dsh/profile，所以给它一个可写的 DSH_HOME。
         cliPath: /Applications/DeepSeek Harness.app/Contents/Resources/runtime/cli/bin/dsh
         cliProfile: headless
         # 子进程用的 DSH_HOME：Desktop 沙箱不允许子进程改写自己的 profile 目录，
-        # 所以指向一个可写的 DSH_HOME。留空则读 DSH_FEISHU_AGENT_CLI_HOME 环境变量。
+        # 所以指向一个可写的 DSH_HOME。留空则读 FEISHU_AGENT_CLI_HOME 环境变量。
         cliHome: ''
         # 要从凭据存储注入 CLI 子进程的 provider key（apiKeyEnv 只认进程环境变量）。
+        # 项目 .env 里的 *_API_KEY 也会被子进程继承，这里只是补凭据存储那份。
         cliEnvRefs:
-          - CODEPLAN_API_KEY
+          - DEEPSEEK_API_KEY
