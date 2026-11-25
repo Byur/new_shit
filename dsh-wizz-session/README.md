@@ -114,10 +114,10 @@ wait   → session_wait({ sessionId, sinceSeq: 4, timeoutMs: 120000 })
 
 ## 安装
 
-插件是零依赖的纯 ESM 包，不需要构建。装进正在使用的 profile（桌面版由 App 内的插件管理器管理）：
+插件是零依赖的纯 ESM 包，不需要构建；它只声明了对 `@deepseek-ai/dsh` 的 peer 依赖（`>=0.2.2-rc.1 <0.3`，可选），宿主 API 版本不合时会被包管理器看见，而不是静默装上去。装进正在使用的 profile（桌面版由 App 内的插件管理器管理）：
 
 ```
-plugin_manager install_bundle target=/Volumes/Project/new_shit/dsh-wizz-session
+plugin_manager install_bundle target=<repo>/dsh-wizz-session
 ```
 
 也可以手动安装：把本目录放进 `~/.dsh/profiles/<profile>/node_modules/dsh-wizz-session`，并把包名加入该 profile `package.json` 的 `dsh.profile.bundles` 数组，重启 App。
@@ -138,7 +138,7 @@ node --test test/index.test.mjs
 
 **A. 省略 workspacePath → 继承调用方工作区 + `permission: read-only`**
 
-- 返回 `session-310e123b…`、`workspacePath=/Volumes/Project/new_shit`、`workspaceTitle=new_shit`、`permission=read-only`、`sinceSeq=6`；
+- 返回 `session-310e123b…`、`workspacePath=<repo>`（当时那台机器的仓库路径）、`workspaceTitle=new_shit`、`permission=read-only`、`sinceSeq=6`；
 - `~/.dsh/storages/workspace.json` 中该工作区 `sessionIds[0]` 就是它；
 - 会话日志（zstd jsonl 解帧后）事件序列：`seq0 permission/preset workspace-write`、`seq1 sandbox/mode workspace-write`、`seq2 approval/policy ask`（宿主创建时先 pin 新会话默认档）→ `seq3 session/title` → `seq4 permission/preset read-only`、`seq5 sandbox/mode read-only`（approval 未变化，因此没有多余事件）→ `seq6` 首条消息 → `seq7 turn/start`；
 - 该会话第一轮请求的 runtime context 明确写着 `Current DSH file policy: read-only`，`turn 1 completed`，`session_wait(sinceSeq=6)` 拿回 `READ-ONLY-OK`。

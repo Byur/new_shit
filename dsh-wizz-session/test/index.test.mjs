@@ -1,10 +1,13 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 import { apply, createSessionArchiveTool, createSessionSendTool, createSessionSpawnTool, createSessionWaitTool, deriveTitle, resolvePresetId } from '../lib/index.js'
 
 const SESSION_ID = 'session-11111111-2222-3333-4444-555555555555'
-const WORKSPACE_PATH = '/Volumes/Project/wizzzzz-skillhub'
+// 假工作区路径只作为字符串参与断言，用系统临时目录保证换机器也成立。
+const WORKSPACE_PATH = join(tmpdir(), 'dsh-wizz-session-workspace')
 
 /**
  * A fake host context: only the surface the tool touches, with every call

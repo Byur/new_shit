@@ -424,7 +424,7 @@ export function createSessionSpawnTool(ctx) {
 				},
 				workspacePath: {
 					type: 'string',
-					description: 'Absolute path of an already-registered workspace, e.g. "/Volumes/Project/my-project". This tool never creates a workspace; an unregistered path is an error. Omit to inherit the calling session\'s workspace.'
+					description: 'Absolute path of an already-registered workspace, e.g. "/path/to/my-project". This tool never creates a workspace; an unregistered path is an error. Omit to inherit the calling session\'s workspace.'
 				},
 				ungrouped: {
 					type: 'boolean',
