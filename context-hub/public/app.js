@@ -52,7 +52,7 @@ async function boot() {
   } catch (error) {
     $('#connection-status').textContent = '数据库未连接';
     $('.status-dot').style.background = '#8f1d16';
-    $('#main').insertAdjacentHTML('afterbegin', `<div class="panel" role="alert"><strong>无法读取本地数据库。</strong><p>${escapeHtml(error.message)}</p><p>先运行 <code>npm run import -- --source "/Users/byur/Documents/优化是个好事" --memory "/Users/byur/.codex/automations/ai/memory.md"</code>。</p></div>`);
+    $('#main').insertAdjacentHTML('afterbegin', `<div class="panel" role="alert"><strong>无法读取本地数据库。</strong><p>${escapeHtml(error.message)}</p><p>先运行 <code>npm run import -- --source "$HOME/Documents/优化是个好事" --memory "$HOME/.codex/automations/ai/memory.md"</code>。</p></div>`);
   }
 }
 

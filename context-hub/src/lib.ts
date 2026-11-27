@@ -5,7 +5,6 @@ import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
 import {hasReportContract, validateTrendingReport} from './report-contract.ts';
 
-export type WorkspaceSlug = 'ai' | 'ai-trending';
 export type ImportKind = 'deepread' | 'trending' | 'all';
 
 export interface SourceLink {
@@ -55,7 +54,7 @@ export interface ImportWorkspaceOptions {
   sourceDir: string;
   memoryPath?: string;
   dbPath?: string;
-  workspaceSlug?: WorkspaceSlug | string;
+  workspaceSlug?: string;
   kind?: ImportKind;
 }
 
@@ -72,6 +71,7 @@ type DatabaseHandle = DatabaseSync;
 export const PROJECT_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 export const DEFAULT_DB_PATH = path.join(PROJECT_ROOT, 'data', 'context-hub.sqlite');
 export const DEFAULT_EXPORT_DIR = path.join(PROJECT_ROOT, 'data', 'exports');
+export const SCHEMA_VERSION = 1;
 
 const now = () => new Date().toISOString();
 const digest = (value) => createHash('sha256').update(value).digest('hex');
@@ -79,16 +79,49 @@ const idFor = (prefix, value) => `${prefix}-${digest(value).slice(0, 20)}`;
 
 export function openDatabase(dbPath: string = DEFAULT_DB_PATH): DatabaseHandle {
   const db = new DatabaseSync(dbPath);
-  db.exec(`PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL;`);
+  db.exec(`PRAGMA foreign_keys = ON; PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000;`);
   return db;
 }
 
+/**
+ * 空库初始化 + schema 版本闸。
+ *
+ * 新机器/空文件：执行 schema.sql 并写入 user_version。
+ * 已有表：版本必须与代码常量一致，否则拒绝启动，避免用错误结构继续写数据。
+ * 不兼容旧库：旧库请先导出再删除重建。
+ */
 export async function initDatabase(dbPath: string = DEFAULT_DB_PATH): Promise<void> {
   await mkdir(path.dirname(dbPath), {recursive: true});
   const db = openDatabase(dbPath);
-  const schema = await readFile(path.join(PROJECT_ROOT, 'schema.sql'), 'utf8');
-  db.exec(schema);
-  db.close();
+  try {
+    const version = (db.prepare('PRAGMA user_version').get() as {user_version: number}).user_version;
+    const tableCount = (db
+      .prepare("SELECT count(*) AS c FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")
+      .get() as {c: number}).c;
+
+    if (tableCount === 0) {
+      const schema = await readFile(path.join(PROJECT_ROOT, 'schema.sql'), 'utf8');
+      db.exec('BEGIN IMMEDIATE');
+      try {
+        db.exec(schema);
+        db.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
+        db.exec('COMMIT');
+      } catch (error) {
+        db.exec('ROLLBACK');
+        throw error;
+      }
+      return;
+    }
+
+    if (version !== SCHEMA_VERSION) {
+      throw new Error(
+        `schema version mismatch: database=${version}, code=${SCHEMA_VERSION}. ` +
+          '当前版本不支持旧库迁移；请导出需要的报告后删除 data/context-hub.sqlite 重新初始化。',
+      );
+    }
+  } finally {
+    db.close();
+  }
 }
 
 function decodeEntities(value = '') {
@@ -262,7 +295,7 @@ function upsertWorkspace(db, workspace) {
   const timestamp = now();
   db.prepare(`INSERT INTO workspaces(id, project_id, slug, name, source_path, automation_id, schedule, status, prompt, memory_path, created_at, updated_at)
     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ON CONFLICT(project_id, slug) DO UPDATE SET name=excluded.name, source_path=excluded.source_path,
+    ON CONFLICT(slug) DO UPDATE SET project_id=excluded.project_id, name=excluded.name, source_path=excluded.source_path,
       automation_id=excluded.automation_id, schedule=excluded.schedule, status=excluded.status,
       prompt=excluded.prompt, memory_path=excluded.memory_path, updated_at=excluded.updated_at`)
     .run(workspace.id, workspace.projectId, workspace.slug, workspace.name, workspace.sourcePath,

@@ -1,0 +1,7 @@
+# Context Hub 运行产物：数据库、运行日志与 compact memory 导出都可以由空库重建，不入库。
+data/runs/
+data/context-hub.pid
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
+data/exports/

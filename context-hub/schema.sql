@@ -1,5 +1,4 @@
-PRAGMA foreign_keys = ON;
-
+-- Context Hub 初始 schema（v1）。只在新库上执行；版本由 PRAGMA user_version 记录。
 CREATE TABLE IF NOT EXISTS projects (
   id TEXT PRIMARY KEY,
   slug TEXT NOT NULL UNIQUE,
@@ -22,7 +21,7 @@ CREATE TABLE IF NOT EXISTS workspaces (
   memory_path TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
-  UNIQUE(project_id, slug)
+  UNIQUE(slug)
 );
 
 CREATE TABLE IF NOT EXISTS runs (
@@ -100,3 +99,64 @@ CREATE INDEX IF NOT EXISTS idx_runs_workspace_date ON runs(workspace_id, run_dat
 CREATE INDEX IF NOT EXISTS idx_documents_workspace_date ON documents(workspace_id, report_date DESC);
 CREATE INDEX IF NOT EXISTS idx_items_workspace_kind ON items(workspace_id, kind);
 CREATE INDEX IF NOT EXISTS idx_items_url ON items(url);
+
+CREATE TABLE IF NOT EXISTS automation_tasks (
+  task_id TEXT PRIMARY KEY,
+  enabled INTEGER NOT NULL DEFAULT 0,
+  paused_reason TEXT,
+  config_json TEXT NOT NULL DEFAULT '{}',
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS automation_runs (
+  run_key TEXT PRIMARY KEY,
+  task_id TEXT NOT NULL,
+  trigger TEXT NOT NULL,
+  upstream_run TEXT,
+  status TEXT NOT NULL,
+  prompt_hash TEXT,
+  retry_count INTEGER NOT NULL DEFAULT 0,
+  next_retry_at TEXT,
+  started_at TEXT NOT NULL,
+  ended_at TEXT,
+  exit_code INTEGER,
+  log_dir TEXT,
+  summary_json TEXT NOT NULL DEFAULT '{}'
+);
+
+CREATE TABLE IF NOT EXISTS automation_units (
+  id TEXT PRIMARY KEY,
+  run_key TEXT NOT NULL REFERENCES automation_runs(run_key) ON DELETE CASCADE,
+  unit_type TEXT NOT NULL,
+  batch TEXT,
+  dsh_session_id TEXT,
+  status TEXT NOT NULL,
+  started_at TEXT NOT NULL,
+  ended_at TEXT,
+  exit_code INTEGER,
+  node TEXT,
+  failure_reason TEXT,
+  artifacts_json TEXT NOT NULL DEFAULT '[]'
+);
+
+CREATE TABLE IF NOT EXISTS automation_alerts (
+  id TEXT PRIMARY KEY,
+  run_key TEXT,
+  level TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  dedupe_key TEXT,
+  sent_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS automation_leases (
+  task_id TEXT PRIMARY KEY,
+  owner TEXT NOT NULL,
+  pid INTEGER NOT NULL,
+  acquired_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_automation_runs_task_started ON automation_runs(task_id, started_at DESC);
+CREATE INDEX IF NOT EXISTS idx_automation_runs_status_retry ON automation_runs(status, next_retry_at);
+CREATE INDEX IF NOT EXISTS idx_automation_units_run ON automation_units(run_key);
+CREATE INDEX IF NOT EXISTS idx_automation_alerts_dedupe ON automation_alerts(dedupe_key, sent_at DESC);
