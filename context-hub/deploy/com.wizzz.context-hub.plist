@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- launchd 不展开 plist 里的变量，因此这里不写任何本机绝对路径。
+     仓库位置与密钥统一放在 ~/.config/context-hub/env（见 env.example 的 CONTEXT_HUB_REPO）。
+     安装：cp 到 ~/Library/LaunchAgents/，再 launchctl bootstrap gui/$(id -u) <plist>。
+
+     注意：这个文件会被 `source` 执行（不是被解析），所以只能是 shell 赋值；
+     它会覆盖 launchd 的默认环境，这也正是我们要的（launchd 的环境几乎是空的）。
+     不要把它指向可被其他用户写入的路径。 -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.wizzz.context-hub</string>
+
+  <!-- 走登录 shell 是为了让 nvm / fnm / homebrew 装的 node 出现在 PATH 里；
+       launchd 自己的 PATH 只有 /usr/bin:/bin:/usr/sbin:/sbin。
+       如果版本管理器只在交互式 shell 里改 PATH，用 CONTEXT_HUB_NODE_BIN 直接给可执行文件路径。 -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-lc</string>
+    <string>set -a; [ -f "$HOME/.config/context-hub/env" ] &amp;&amp; source "$HOME/.config/context-hub/env"; set +a; : "${CONTEXT_HUB_REPO:?set CONTEXT_HUB_REPO in ~/.config/context-hub/env}"; mkdir -p "$HOME/Library/Logs/context-hub"; exec &gt;&gt;"$HOME/Library/Logs/context-hub/stdout.log" 2&gt;&gt;"$HOME/Library/Logs/context-hub/stderr.log"; NODE_BIN="${CONTEXT_HUB_NODE_BIN:-$(command -v node || true)}"; if [ -z "$NODE_BIN" ] || [ ! -x "$NODE_BIN" ]; then echo "context-hub: node not found; set CONTEXT_HUB_NODE_BIN in ~/.config/context-hub/env"; exit 127; fi; cd "$CONTEXT_HUB_REPO" || exit 1; exec "$NODE_BIN" --experimental-strip-types "$CONTEXT_HUB_REPO/context-hub/src/serve.ts"</string>
+  </array>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>ThrottleInterval</key>
+  <integer>30</integer>
+
+  <!-- 停机时要等在飞运行取消宿主会话；launchd 默认 20s 后 SIGKILL 会中断这个流程。 -->
+  <key>ExitTimeOut</key>
+  <integer>150</integer>
+</dict>
+</plist>

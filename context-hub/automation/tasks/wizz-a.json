@@ -1,0 +1,40 @@
+{
+  "id": "wizz-a",
+  "name": "Wizz 二创开题（A）",
+  "enabled": false,
+  "promptDoc": "docs/automic/Wizz 二创开题（A）.md",
+  "workspaceEnv": "WIZZ_REPO",
+  "workspaceDir": "../../wizzzzz-skillhub",
+  "runtime": "desktop",
+  "permissionMode": "workspace-write",
+  "approvalPolicy": "never",
+  "timeoutMinutes": 60,
+  "unitConcurrency": 3,
+  "stalledMinutes": 30,
+  "trigger": {
+    "kind": "cron",
+    "cron": "0 10 * * *",
+    "tz": "Asia/Shanghai",
+    "misfireMinutes": 30
+  },
+  "preflight": [
+    "volume mounted",
+    "materials writable",
+    "dsh_cli"
+  ],
+  "retry": {
+    "infra": {
+      "max": 1,
+      "backoffMinutes": 30
+    }
+  },
+  "notify": {
+    "success": {
+      "images": false,
+      "maxImages": 0
+    },
+    "failure": {
+      "node": true
+    }
+  }
+}

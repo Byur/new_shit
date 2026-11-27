@@ -1,0 +1,41 @@
+{
+  "id": "wizz-c",
+  "name": "Wizz 图像执行（C）",
+  "enabled": false,
+  "promptDoc": "docs/automic/Wizz 图像执行（C）.md",
+  "workspaceEnv": "WIZZ_REPO",
+  "workspaceDir": "../../wizzzzz-skillhub",
+  "runtime": "desktop",
+  "permissionMode": "danger-full-access",
+  "approvalPolicy": "never",
+  "timeoutMinutes": 120,
+  "unitConcurrency": 2,
+  "stalledMinutes": 30,
+  "trigger": {
+    "kind": "cascade",
+    "after": "wizz-b",
+    "readiness": "c_pending > 0"
+  },
+  "preflight": [
+    "codex auth exp valid",
+    "volume mounted",
+    "materials writable",
+    "wizz-imagine doctor (daily first)"
+  ],
+  "retry": {
+    "infra": {
+      "max": 1,
+      "backoffMinutes": 30,
+      "beforeRetry": "wizz-c-state release"
+    }
+  },
+  "notify": {
+    "success": {
+      "images": true,
+      "maxImages": 9
+    },
+    "failure": {
+      "node": true
+    }
+  }
+}

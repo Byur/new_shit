@@ -1,0 +1,7 @@
+# Context Hub headless profile 默认模型补丁（官方 4.1 Flash）
+# DSH 0.2.2 中 official DeepSeek Flash 的默认模型 ID 为 deepseek-flash（provider: deepseek-official）。
+# 若目标机使用其他模型或网关，请按需修改此文件或通过 CONTEXT_HUB_DSH_PATCH 覆盖。
+- id: agent-default-model
+  config:
+    provider: deepseek-official
+    model: deepseek-flash

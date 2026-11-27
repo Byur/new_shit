@@ -1,4 +1,5 @@
 import path from 'node:path';
+import type {DatabaseSync} from 'node:sqlite';
 import {DEFAULT_DB_PATH, checkSources, compactPrompt, getOverview, importWorkspace, listItems, listReports, openDatabase, workspaceIdFor} from './lib.ts';
 
 type JsonRpcRequest = {
@@ -9,7 +10,7 @@ type JsonRpcRequest = {
 };
 
 type McpResponse = Record<string, any> | Record<string, any>[] | null;
-type McpOptions = {dbPath?: string; headers?: Record<string, string | undefined>};
+type McpOptions = {dbPath?: string; db?: DatabaseSync; headers?: Record<string, string | undefined>};
 
 export const LEGACY_PROTOCOL_VERSION = '2025-11-25';
 export const MODERN_PROTOCOL_VERSION = '2026-07-28';
@@ -103,7 +104,7 @@ function getReport(db: any, workspaceId: string, reportId: string, includeConten
   return result;
 }
 
-async function callTool(name: string, args: Record<string, any>, {dbPath = DEFAULT_DB_PATH}: McpOptions = {}): Promise<any> {
+async function callTool(name: string, args: Record<string, any>, {dbPath = DEFAULT_DB_PATH, db: sharedDb}: McpOptions = {}): Promise<any> {
   const input = args && typeof args === 'object' ? args : {};
   if (name === 'context_hub_sync_workspace') {
     if (!input.sourcePath || !input.workspace || !input.kind) throw new Error('sourcePath, workspace, and kind are required');
@@ -116,7 +117,9 @@ async function callTool(name: string, args: Record<string, any>, {dbPath = DEFAU
     });
   }
 
-  const db = openDatabase(input.dbPath ? path.resolve(input.dbPath) : dbPath);
+  const customDbPath = typeof input.dbPath === 'string' && input.dbPath.trim() !== '' ? path.resolve(input.dbPath) : null;
+  const useShared = Boolean(sharedDb && (!customDbPath || customDbPath === path.resolve(dbPath)));
+  const db = useShared ? sharedDb! : openDatabase(customDbPath ?? dbPath);
   try {
     if (name === 'context_hub_list_workspaces') {
       return db.prepare(`SELECT id, slug, name, source_path AS sourcePath, automation_id AS automationId, status, schedule, memory_path AS memoryPath
@@ -149,7 +152,7 @@ async function callTool(name: string, args: Record<string, any>, {dbPath = DEFAU
     if (name === 'context_hub_get_report') return getReport(db, workspaceId, input.reportId, input.includeContent === true);
     throw new Error(`unknown tool: ${name}`);
   } finally {
-    db.close();
+    if (!useShared) db.close();
   }
 }
 

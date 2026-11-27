@@ -1,0 +1,40 @@
+{
+  "id": "wizz-b",
+  "name": "Wizz 提示词成稿（B）",
+  "enabled": false,
+  "promptDoc": "docs/automic/Wizz 提示词成稿（B）.md",
+  "workspaceEnv": "WIZZ_REPO",
+  "workspaceDir": "../../wizzzzz-skillhub",
+  "runtime": "desktop",
+  "permissionMode": "workspace-write",
+  "approvalPolicy": "never",
+  "timeoutMinutes": 60,
+  "unitConcurrency": 3,
+  "stalledMinutes": 30,
+  "trigger": {
+    "kind": "cascade",
+    "after": "wizz-a",
+    "readiness": "todo > 0"
+  },
+  "preflight": [
+    "volume mounted",
+    "materials writable",
+    "dsh_cli"
+  ],
+  "retry": {
+    "infra": {
+      "max": 1,
+      "backoffMinutes": 30,
+      "beforeRetry": "doing -> todo"
+    }
+  },
+  "notify": {
+    "success": {
+      "images": false,
+      "maxImages": 0
+    },
+    "failure": {
+      "node": true
+    }
+  }
+}

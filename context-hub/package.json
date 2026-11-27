@@ -15,9 +15,12 @@
     "stats": "node --experimental-strip-types src/cli.ts stats",
     "mcp": "node --experimental-strip-types src/mcp-server.ts",
     "dashboard": "node --experimental-strip-types src/server.ts",
+    "serve": "node --experimental-strip-types src/serve.ts",
+    "automation": "node --experimental-strip-types src/cli.ts automation",
     "test": "node --experimental-strip-types --test"
   },
   "dependencies": {
+    "@larksuiteoapi/node-sdk": "^1.76.0",
     "parse5": "^8.0.1"
   }
 }
