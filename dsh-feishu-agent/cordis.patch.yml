@@ -49,3 +49,42 @@
         # 项目 .env 里的 *_API_KEY 也会被子进程继承，这里只是补凭据存储那份。
         cliEnvRefs:
           - DEEPSEEK_API_KEY
+        # 意图路由（默认关闭，推荐在 ~/.dsh/feishu-agent/local-config.json 开启并填写本机路径，支持热加载）
+        router:
+          enabled: false
+          groupEnabled: false
+          ollamaBaseUrl: http://127.0.0.1:11434
+          classifierModel: qwen3:8b
+          timeoutMs: 8000
+          keepAlive: 30m
+          localConfidence: 0.8
+          contextWindowSec: 180
+          # 写入前的本地处理：清噪由确定性规则完成，只在需要断句时才调用本地模型；失败落盘去噪结果。
+          # maxChars / maxItems 只限制模型断句，超限时仍会执行规则清噪。
+          polish:
+            enabled: true
+            timeoutMs: 6000
+            maxChars: 300
+            maxItems: 6
+          # 本地分类器健康嗅探：TTL 缓存 + 连续失败熔断，避免每次等分类超时。
+          health:
+            enabled: true
+            ttlMs: 30000
+            cooldownMs: 60000
+            failureThreshold: 2
+            # 单次探测超时（毫秒，200~5000）；低于 200 会被夹到 200。
+            probeTimeoutMs: 400
+          routes:
+            dsh:
+              provider: ''
+              model: ''
+              label: 4.1 Flash
+            local:
+              provider: ollama
+              model: qwen3:8b
+              permissionPreset: read-only
+              titlePrefix: '[飞书·本地]'
+              label: 本地 Qwen3
+            obsidian:
+              inboxDir: ''
+              label: 待整理

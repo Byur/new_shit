@@ -23,7 +23,16 @@ import { createScheduler } from './core/scheduler.js';
 import { findProjectRoot, loadEnvFile } from './common/env-file.js';
 import { composeChats, readEnvConfig } from './core/env-config.js';
 import { cleanUserText, parseCommand } from './core/text.js';
-import { textCard, toastResponse } from './core/cards.js';
+import { buildCard, button, buttonRow, markdown, textCard, toastResponse } from './core/cards.js';
+import { ROUTES, ROUTE_COMMANDS, createIntentRouter, createRouteHistory, normalizeRouterConfig } from './core/router.js';
+import {
+  NOTE_MODE_DEFAULT_MINUTES,
+  createNoteMode,
+  formatRemaining,
+} from './core/note-mode.js';
+import { createOllamaClient } from './local/ollama.js';
+import { createHealthMonitor } from './local/ollama-health.js';
+import { createObsidianInbox } from './local/obsidian-inbox.js';
 import { CARD_ACTION_EVENT, MESSAGE_EVENT, normalizeEvent } from './feishu/events.js';
 import { createConnection } from './feishu/connection.js';
 import { createOutbound } from './feishu/outbound.js';
@@ -165,12 +174,17 @@ export async function apply(ctx, config = {}) {
     return readConfigField(config[key], fallback);
   }
 
+  /** 运行时开关覆盖：`/router on|off` 设置，`undefined` 时用配置文件。 */
+  let routerEnabledOverride;
+
   const runtimeConfig = {
     get() {
       const bundledChats = readConfigField(config.chats, {}) ?? {};
       const localChats = localConfig.chats !== null && typeof localConfig.chats === 'object' && !Array.isArray(localConfig.chats)
         ? localConfig.chats
         : {};
+      const router = normalizeRouterConfig(readConfigField(config.router, {}), localConfig.router, process.env);
+      if (routerEnabledOverride !== undefined) router.enabled = routerEnabledOverride;
       return {
         // chats 逐键浅合并：bundle → 本机配置 → 环境变量，后面的层覆盖前面的；`'*'` 再叠平铺默认值。
         chats: composeChats(bundledChats, localChats, envConfig),
@@ -178,6 +192,7 @@ export async function apply(ctx, config = {}) {
         schedules: configValue('schedules', []),
         answerConcurrency:
           envConfig.answerConcurrency ?? (Number(configValue('answerConcurrency', DEFAULT_MAX_CONCURRENT)) || DEFAULT_MAX_CONCURRENT),
+        router,
       };
     },
   };
@@ -348,6 +363,39 @@ export async function apply(ctx, config = {}) {
   };
 
   // ---------- 组合子模块 ----------
+  /** 意图路由：本地 Ollama 分类器、Obsidian 速记、跨路由短期历史、卡片纠错缓存。 */
+  const ollama = createOllamaClient({
+    fetchImpl: (...args) => (globalThis.__dshFeishuAgentOllamaFetch ?? globalThis.fetch)(...args),
+  });
+  const obsidianInbox = createObsidianInbox();
+  const routeHistory = createRouteHistory();
+  // 健康监控只建一次：嗅探结果与熔断状态要跨消息复用，否则每条消息都会重新探一遍。
+  const healthMonitor = createHealthMonitor({ ollama });
+  const intentRouter = createIntentRouter({ ollama, history: routeHistory, logger, health: healthMonitor });
+  /** 速记模式窗口（内存态，进程重启即失效）。 */
+  const noteMode = createNoteMode();
+  /** feishuMessageId → 卡片纠错/撤销上下文（上限 100 条）。 */
+  const routeActions = new Map();
+
+  function saveRouteAction(messageId, entry) {
+    if (typeof messageId !== 'string' || messageId === '') return;
+    routeActions.set(messageId, entry);
+    while (routeActions.size > 100) {
+      const oldest = routeActions.keys().next().value;
+      if (oldest === undefined) break;
+      routeActions.delete(oldest);
+    }
+  }
+
+  function onTurnFinished({ turn, text }) {
+    if (turn === undefined) return;
+    routeHistory.record(turn.chatId, {
+      route: turn.routeKind || 'dsh',
+      user: turn.originalText || turn.text,
+      assistant: text,
+    });
+  }
+
   /** 引用回复的上下文。 */
   const quotedContextOf = createQuotedContext({ cards, outbound });
   /** 文本命令。 */
@@ -358,9 +406,21 @@ export async function apply(ctx, config = {}) {
     runningRuns,
     getOwner: () => owner(),
     isConnected: () => runtime.connected,
+    getRouterConfig: () => runtimeConfig.get().router,
+    setRouterEnabled: (enabled) => {
+      routerEnabledOverride = enabled;
+    },
+    getRouterStatus: () => ({
+      config: runtimeConfig.get().router,
+      override: routerEnabledOverride,
+      stats: intentRouter.stats,
+      // 命令层要能展示「本地模型：open/closed（连续失败 N 次，剩余 Xs）」。
+      health: healthMonitor.snapshot(),
+    }),
+    ollama,
   });
   /** 宿主会话事件。 */
-  const onSessionEvent = createSessionEventHandler({ turns, cards, answerers, logger });
+  const onSessionEvent = createSessionEventHandler({ turns, cards, answerers, logger, onTurnFinished });
   /** 群聊门禁与动态接入。 */
   const groupGate = createGroupGate({
     store,
@@ -385,6 +445,7 @@ export async function apply(ctx, config = {}) {
     getRuntimeConfig: () => runtimeConfig.get(),
     getService,
     getCliHome: () => configValue('cliHome', '') || process.env.FEISHU_AGENT_CLI_HOME || '',
+    onTurnFinished,
   }).run;
 
   // ---------- owner ----------
@@ -413,19 +474,130 @@ export async function apply(ctx, config = {}) {
 
   // ---------- 发送小工具 ----------
   /**
+   * 发一张卡片，发不出去时记一条日志。
+   *
+   * @param chatId 会话 ID
+   * @param card 卡片
+   * @param label 日志里的名字
+   * @returns 消息 ID（失败时 undefined）
+   */
+  async function sendCard(chatId, card, label) {
+    const messageId = await outbound.sendCard({ chatId, card });
+    if (messageId === undefined) {
+      logger.warn(`卡片「${label}」没发到 ${chatId}（可能是限频，或飞书凭据失效）`);
+    }
+    return messageId;
+  }
+
+  /**
    * 给某个 chat 发一张提示卡。
    *
    * @param chatId 会话 ID
    * @param title 标题
    * @param content 正文
+   * @param buttons 正文下方的按钮（可选）
    */
-  async function notice(chatId, title, content) {
-    const card = textCard({ title, content });
-    const messageId = await outbound.sendCard({ chatId, card });
-    if (messageId === undefined) {
-      logger.warn(`提示卡「${title}」没发到 ${chatId}（可能是限频，或飞书凭据失效）`);
+  async function notice(chatId, title, content, buttons) {
+    return sendCard(chatId, textCard({ title, content, buttons }), title);
+  }
+
+  /**
+   * 造一个速记模式按钮。
+   *
+   * @param text 按钮文字
+   * @param action `on` / `off` / `extend`
+   * @param type 按钮样式
+   * @returns 按钮元素
+   */
+  function noteModeButton(text, action, type = 'default') {
+    return button({ name: `note_mode_${action}`, text, type, value: { tag: 'note-mode', action } });
+  }
+
+  /**
+   * 速记模式的状态卡：开启时显示剩余时间与本次已写入条数。
+   *
+   * @param chatId 会话 ID
+   * @returns 卡片
+   */
+  function noteModeCard(chatId) {
+    const state = noteMode.status(chatId);
+    if (!state.active) {
+      return textCard({
+        title: '速记模式未开启',
+        content: [
+          '开启后，接下来一段时间内的每条消息都会直接写进「待整理/飞书速记」，不经过分类器。',
+          '',
+          '适合连续口述多条速记：说一句「开始速记」，然后连着说，不用每条都加触发词。',
+        ].join('\n'),
+        buttons: [noteModeButton(`开启速记 ${NOTE_MODE_DEFAULT_MINUTES} 分钟`, 'on', 'primary')],
+      });
     }
-    return messageId;
+    return textCard({
+      title: '速记模式已开启',
+      content: [
+        '接下来每条消息都会直接写进「待整理/飞书速记」，不经过分类器。',
+        '',
+        `- 剩余：${formatRemaining(state.remainingMs)}`,
+        `- 本次已写入：${state.count} 条`,
+        '- 提前结束：/note off',
+      ].join('\n'),
+      color: 'green',
+      buttons: [noteModeButton('结束速记', 'off'), noteModeButton(`延长 ${NOTE_MODE_DEFAULT_MINUTES} 分钟`, 'extend')],
+    });
+  }
+
+  /**
+   * 解析 `/note on|off|status` 以及 `/note on 30`。
+   *
+   * 返回 `undefined` 表示这不是速记开关，而是普通的 `/note <内容>`。
+   *
+   * @param arg 命令参数
+   * @returns `{ action, minutes }`；不匹配时 undefined
+   */
+  function parseNoteModeArg(arg) {
+    const match = /^(on|off|status)(?:\s+(\d{1,3}))?$/i.exec(String(arg ?? '').trim());
+    if (match === null) return undefined;
+    return {
+      action: match[1].toLowerCase(),
+      minutes: match[2] === undefined ? undefined : Number(match[2]),
+    };
+  }
+
+  /**
+   * 执行速记开关并回一张状态卡。
+   *
+   * @param chatId 会话 ID
+   * @param action `on` / `off` / `status`
+   * @param minutes 开启或延长的分钟数（可选）
+   */
+  async function applyNoteMode(chatId, action, minutes) {
+    if (action === 'on') {
+      // 没有待整理目录时不要开窗：否则每条消息都会降级成一次远端调用，用户还以为在记事。
+      if (!runtimeConfig.get().router?.routes?.obsidian?.inboxDir) {
+        await notice(
+          chatId,
+          '无法开启速记模式',
+          '未配置 Obsidian 待整理目录。请先在 router.routes.obsidian.inboxDir（或 FEISHU_AGENT_OBSIDIAN_INBOX_DIR）里指定。',
+        );
+        return;
+      }
+      noteMode.enable(chatId, { minutes });
+      await sendCard(chatId, noteModeCard(chatId), '速记模式已开启');
+      return;
+    }
+    if (action === 'off') {
+      const before = noteMode.disable(chatId);
+      const card = textCard({
+        title: '速记模式已结束',
+        content: before.active
+          ? `本次速记共写入 ${before.count} 条。之后的消息恢复正常路由。`
+          : '速记模式本来就没有开启。',
+        buttons: [noteModeButton(`再开启 ${NOTE_MODE_DEFAULT_MINUTES} 分钟`, 'on')],
+      });
+      await sendCard(chatId, card, '速记模式已结束');
+      return;
+    }
+    await sendCard(chatId, noteModeCard(chatId), '速记模式状态');
   }
 
   /**
@@ -482,18 +654,139 @@ export async function apply(ctx, config = {}) {
     const text = cleanUserText(event.text);
     if (text === '') return;
 
-    // 命令必须在建绑定之前处理：`/new`、`/stop`、`/status` 都不该顺手建一条会话。
+    // 命令必须在建绑定之前处理：`/new`、`/stop`、`/status`、`/router` 都不该顺手建一条会话。
     const command = parseCommand(text);
-    if (command !== undefined) {
-      // 群聊里命令只给 owner：`/new`、`/stop` 这类会动到整条会话。
-      if (isGroup && event.senderOpenId !== owner()) {
-        await notice(event.chatId, '只有 owner 能用命令', '群聊里的 /new、/switch、/stop 只对 owner 生效。');
+    // `/note on|off|status` 是速记模式的开关；其余 `/note <内容>` 仍是单次写入。
+    const noteModeArg = command !== undefined && command.name === 'note' ? parseNoteModeArg(command.arg) : undefined;
+    if (noteModeArg !== undefined) {
+      if (isGroup) {
+        await notice(event.chatId, '群聊不支持速记模式', '速记模式只在私聊里开启，避免把群里的聊天全部写进笔记。');
         return;
       }
-      await handleCommand(event, key, command);
+      await applyNoteMode(event.chatId, noteModeArg.action, noteModeArg.minutes);
+      return;
+    }
+    let forcedRoute;
+    let effectiveText = text;
+    if (command !== undefined) {
+      if (ROUTE_COMMANDS[command.name] === undefined) {
+        // 群聊里命令只给 owner：`/new`、`/stop` 这类会动到整条会话。
+        if (isGroup && event.senderOpenId !== owner()) {
+          await notice(event.chatId, '只有 owner 能用命令', '群聊里的 /new、/switch、/stop、/router 只对 owner 生效。');
+          return;
+        }
+        await handleCommand(event, key, command);
+        return;
+      }
+      forcedRoute = ROUTE_COMMANDS[command.name];
+      effectiveText = command.arg;
+      if (isGroup && forcedRoute === ROUTES.OBSIDIAN && event.senderOpenId !== owner()) {
+        await notice(event.chatId, '只有 owner 能写入待整理', '群聊里的 /note 命令只对 owner 生效。');
+        return;
+      }
+    }
+
+    // 引用回复时把被引用消息的正文补进这一轮，路由分类与模型都有上下文。
+    const quoted = await quotedContextOf(event);
+    if (forcedRoute !== undefined && effectiveText === '' && quoted === '') {
+      await notice(event.chatId, '缺少内容', `用法：/${command.name} <内容>（或先引用一条消息再发 /${command.name}）`);
       return;
     }
 
+    const routerConfig = runtimeConfig.get().router;
+    const decision = await intentRouter.decide({
+      chatId: event.chatId,
+      isGroup,
+      text: effectiveText,
+      quoted,
+      forcedRoute,
+      noteMode: !isGroup && noteMode.isActive(event.chatId),
+      config: routerConfig,
+    });
+    if (decision.source !== 'bypass') {
+      logger.info(
+        `意图路由：${decision.route}（${decision.source}，置信度 ${decision.confidence.toFixed(2)}${decision.reason ? `，${decision.reason}` : ''}）`,
+      );
+    }
+
+    // 分支 A：Obsidian 速记（不建工作区绑定，直接写入当天文件并回带撤销/转交按钮的确认卡）。
+    if (decision.route === ROUTES.OBSIDIAN) {
+      const inboxDir = routerConfig.routes.obsidian.inboxDir;
+      if (!inboxDir) {
+        await notice(
+          event.chatId,
+          '未配置 Obsidian 待整理目录',
+          '请在配置的 router.routes.obsidian.inboxDir（或环境变量 FEISHU_AGENT_OBSIDIAN_INBOX_DIR）中指定目录。',
+        );
+        return;
+      }
+      const written = await obsidianInbox.appendItems({
+        inboxDir,
+        items: decision.obsidianItems,
+        messageId: event.messageId,
+        quoted,
+      });
+      if (!written.ok) {
+        await notice(event.chatId, '写入待整理失败', written.error || '未知错误');
+        return;
+      }
+      routeHistory.record(event.chatId, {
+        route: ROUTES.OBSIDIAN,
+        user: effectiveText || quoted,
+        assistant: `已记入 ${written.fileName}`,
+      });
+      saveRouteAction(event.messageId, {
+        chatId: event.chatId,
+        key,
+        event,
+        originalText: effectiveText,
+        quoted,
+        obsidianFilePath: written.filePath,
+        obsidianFileName: written.fileName,
+        obsidianItems: written.writtenItems,
+        route: ROUTES.OBSIDIAN,
+      });
+      const dshLabel = routerConfig.routes.dsh.label || '4.1 Flash';
+      // 速记模式下每条确认卡都带上剩余时间与「结束速记」，不用再翻命令。
+      const noteState = noteMode.status(event.chatId);
+      const trackedCount = noteState.active ? noteMode.record(event.chatId) : 0;
+      const bullets = written.writtenItems.map((item) => `- ${item}`).join('\n');
+      const noteLine = noteState.active
+        ? `\n\n速记中 · 剩余 ${formatRemaining(noteState.remainingMs)} · 本次第 ${trackedCount} 条`
+        : '';
+      const footerButtons = [
+        button({
+          name: 'undo_note',
+          text: '撤销写入',
+          value: { tag: 'route', action: 'undo-note', messageId: event.messageId },
+        }),
+        button({
+          name: 'note_to_dsh',
+          text: `改交 ${dshLabel} 处理`,
+          value: { tag: 'route', action: 'note-to-dsh', messageId: event.messageId },
+        }),
+      ];
+      // 群聊不参与速记模式，确认卡也就不放这个入口。
+      if (!isGroup) {
+        footerButtons.push(
+          noteState.active
+            ? noteModeButton('结束速记', 'off')
+            : noteModeButton(`开启速记 ${NOTE_MODE_DEFAULT_MINUTES} 分钟`, 'on'),
+        );
+      }
+      const card = buildCard({
+        title: noteState.active ? '速记中 · 已记入待整理' : `已记入待整理 · ${written.fileName}`,
+        color: 'green',
+        elements: [
+          markdown(`${bullets}${noteLine}`),
+          buttonRow(footerButtons),
+        ],
+      });
+      await outbound.replyCard({ chatId: event.chatId, messageId: event.messageId, card });
+      return;
+    }
+
+    // 分支 B：主会话（DSH）或本地模型会话（LOCAL）。
     const binding = await binder
       .ensureBinding({
         key,
@@ -513,11 +806,52 @@ export async function apply(ctx, config = {}) {
       return;
     }
 
-    // 引用回复时把被引用消息的正文补进这一轮，模型才有上下文。
-    const quoted = await quotedContextOf(event);
-    const promptText = quoted === '' ? text : `${quoted}\n\n${text}`;
+    const cross = decision.needsCrossContext
+      ? routeHistory.crossContextFor(event.chatId, decision.route, { windowSec: routerConfig.contextWindowSec })
+      : '';
+    const promptText = [cross, quoted, effectiveText].filter(Boolean).join('\n\n');
 
-    await runViaCli({ binding, key, event, text: promptText });
+    const routeCfg = routerConfig.routes[decision.route] ?? {};
+    const dshLabel = routerConfig.routes.dsh?.label || '4.1 Flash';
+    // 降级与规则结果是用户可见的事实：只有真的没经过分类器时才加标题前缀与说明行，
+    // 正常分类路径保持干净，避免每条消息都顶着一行噪音。
+    const fallbackNotes = decision.source === 'fallback'
+      ? {
+          cardTitlePrefix: '[飞书·兜底]',
+          note: decision.reasonText || `本地分类器不可用，已直接走 ${dshLabel}`,
+        }
+      : decision.source === 'rule' && decision.noteAction === 'query'
+        ? { cardTitlePrefix: '[飞书·读笔记]', note: '读取/整理笔记需要远端模型' }
+        : { cardTitlePrefix: '', note: '' };
+    const routeOption = decision.source === 'bypass'
+      ? undefined
+      : {
+          kind: decision.route,
+          label: routeCfg.label || (decision.route === ROUTES.LOCAL ? '本地模型' : '4.1 Flash'),
+          provider: routeCfg.provider || '',
+          model: routeCfg.model || '',
+          permissionPreset: routeCfg.permissionPreset || '',
+          agentPreset: routeCfg.agentPreset || '',
+          titlePrefix: routeCfg.titlePrefix || '',
+          cardTitlePrefix: fallbackNotes.cardTitlePrefix,
+          note: fallbackNotes.note,
+          canEscalate: decision.route === ROUTES.LOCAL,
+          escalateLabel: dshLabel,
+          originalText: effectiveText,
+        };
+
+    if (decision.route === ROUTES.LOCAL) {
+      saveRouteAction(event.messageId, {
+        chatId: event.chatId,
+        key,
+        event,
+        originalText: effectiveText,
+        quoted,
+        route: ROUTES.LOCAL,
+      });
+    }
+
+    await runViaCli({ binding, key, event, text: promptText, route: routeOption });
   }
 
   // ---------- 卡片回调 ----------
@@ -532,9 +866,161 @@ export async function apply(ctx, config = {}) {
     const me = owner();
     if (me === '' || event.operatorOpenId !== me) return toastResponse('你不是这个机器人的主人', 'warning');
     const value = event.value ?? {};
+    if (value.tag === 'note-mode') {
+      const chatId = event.chatId;
+      if (chatId === '') return toastResponse('这条操作缺少会话信息', 'warning');
+      const action = String(value.action ?? '');
+      if (action === 'on') {
+        if (!runtimeConfig.get().router?.routes?.obsidian?.inboxDir) {
+          return toastResponse('未配置 Obsidian 待整理目录，无法开启', 'warning');
+        }
+        noteMode.enable(chatId);
+        return toastResponse('速记模式已开启', 'success', noteModeCard(chatId));
+      }
+      if (action === 'extend') {
+        noteMode.extend(chatId);
+        return toastResponse(`已延长 ${NOTE_MODE_DEFAULT_MINUTES} 分钟`, 'success', noteModeCard(chatId));
+      }
+      if (action === 'off') {
+        const before = noteMode.disable(chatId);
+        return toastResponse(
+          '速记模式已结束',
+          'info',
+          textCard({
+            title: '速记模式已结束',
+            content: before.active
+              ? `本次速记共写入 ${before.count} 条。之后的消息恢复正常路由。`
+              : '速记模式本来就没有开启。',
+            buttons: [noteModeButton(`再开启 ${NOTE_MODE_DEFAULT_MINUTES} 分钟`, 'on')],
+          }),
+        );
+      }
+      return toastResponse('不认识的操作', 'warning');
+    }
     if (value.tag === 'group-register') return await groupGate.handleCard(event, value);
     if (value.tag === 'question') return answerers.question.handleCard(value);
     if (value.tag === 'approval') return answerers.approval.handleCard(value);
+    if (value.tag === 'route') {
+      const msgId = String(value.messageId ?? '');
+      const actionRec = routeActions.get(msgId);
+      if (actionRec === undefined) return toastResponse('这条操作已过期', 'info');
+
+      const routerConfig = runtimeConfig.get().router;
+      const dshCfg = routerConfig.routes.dsh ?? {};
+      const dshLabel = dshCfg.label || '4.1 Flash';
+      const buildDshRoute = () => ({
+        kind: ROUTES.DSH,
+        label: dshLabel,
+        provider: dshCfg.provider || '',
+        model: dshCfg.model || '',
+        permissionPreset: dshCfg.permissionPreset || '',
+        agentPreset: dshCfg.agentPreset || '',
+        titlePrefix: dshCfg.titlePrefix || '',
+        canEscalate: false,
+        escalateLabel: '',
+        originalText: actionRec.originalText,
+        escalated: true,
+      });
+
+      if (value.action === 'undo-note') {
+        const res = await obsidianInbox.removeItems({ filePath: actionRec.obsidianFilePath, messageId: msgId });
+        routeActions.delete(msgId);
+        return toastResponse(
+          res.removedCount > 0 ? '已从待整理撤销' : '未找到对应条目',
+          res.ok ? 'success' : 'warning',
+          textCard({
+            title: '已撤销写入',
+            content: res.removedCount > 0
+              ? `已撤销 ${res.removedCount} 条记录（${actionRec.obsidianFileName}）。`
+              : '文件中已不存在对应条目。',
+            color: 'grey',
+          }),
+        );
+      }
+
+      if (value.action === 'note-to-dsh') {
+        await obsidianInbox.removeItems({ filePath: actionRec.obsidianFilePath, messageId: msgId }).catch(() => {});
+        intentRouter.recordOverride();
+        routeActions.delete(msgId);
+        const promptText = [actionRec.quoted, actionRec.originalText].filter(Boolean).join('\n\n');
+        const dshRoute = buildDshRoute();
+        void (async () => {
+          let binding;
+          try {
+            binding = await binder.ensureBinding({
+              key: actionRec.key,
+              appId: actionRec.event.appId,
+              tenantKey: actionRec.event.tenantKey,
+              chatId: actionRec.event.chatId,
+              chatType: actionRec.event.chatType,
+              threadId: actionRec.event.threadId,
+            });
+          } catch (error) {
+            logger.warn(`转交处理建绑定失败：${errorMessage(error)}`);
+            await notice(actionRec.chatId, '无法建会话', errorMessage(error));
+            return;
+          }
+          if (binding === undefined) {
+            await notice(
+              actionRec.chatId,
+              '这个会话没有配置工作区',
+              `请把 chat_id 「${actionRec.event.chatId}」加到配置的 chats 里，指定 workspacePath。`,
+            );
+            return;
+          }
+          await runViaCli({ binding, key: actionRec.key, event: actionRec.event, text: promptText, route: dshRoute });
+        })().catch((error) => logger.warn(`转交 ${dshLabel} 处理失败：${errorMessage(error)}`));
+        return toastResponse(
+          '已撤销误记并转交处理',
+          'info',
+          textCard({
+            title: `已转交 ${dshLabel}`,
+            content: '已撤回刚才误记的待整理条目，正在用远端模型重新处理。',
+            color: 'blue',
+          }),
+        );
+      }
+
+      if (value.action === 'escalate') {
+        intentRouter.recordOverride();
+        routeActions.delete(msgId);
+        const promptText = [actionRec.quoted, actionRec.originalText].filter(Boolean).join('\n\n');
+        const dshRoute = buildDshRoute();
+        void (async () => {
+          let binding = binder.get(actionRec.key);
+          if (binding === undefined) {
+            binding = await binder.ensureBinding({
+              key: actionRec.key,
+              appId: actionRec.event.appId,
+              tenantKey: actionRec.event.tenantKey,
+              chatId: actionRec.event.chatId,
+              chatType: actionRec.event.chatType,
+              threadId: actionRec.event.threadId,
+            });
+          }
+          if (binding === undefined) {
+            await notice(
+              actionRec.chatId,
+              '这个会话没有配置工作区',
+              `请把 chat_id 「${actionRec.event.chatId}」加到配置的 chats 里，指定 workspacePath。`,
+            );
+            return;
+          }
+          await runViaCli({ binding, key: actionRec.key, event: actionRec.event, text: promptText, route: dshRoute });
+        })().catch((error) => logger.warn(`转交 ${dshLabel} 重答失败：${errorMessage(error)}`));
+        return toastResponse(
+          `已转交 ${dshLabel} 重答`,
+          'info',
+          textCard({
+            title: `已转交 ${dshLabel} 重答`,
+            content: '正在用远端模型为你重新生成回答（请查看下方新卡片）。',
+            color: 'blue',
+          }),
+        );
+      }
+
+      return toastResponse('不认识的操作', 'warning');
+    }
     if (value.tag !== 'answer') return toastResponse('不认识的操作', 'warning');
 
     const record = cards.get(String(value.messageId ?? ''));

@@ -1,7 +1,7 @@
 /** 集成：假飞书 SDK + 假宿主，把插件 `apply()` 真跑一遍。 */
 
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -10,6 +10,8 @@ import { apply } from '../lib/index.js';
 import { CARD_ACTION_EVENT, MESSAGE_EVENT } from '../lib/feishu/events.js';
 import { installFakeSdk } from './fake-sdk.mjs';
 import { interactiveTargetOf } from '../lib/host/interactive-target.js';
+import { localDateStamp } from '../lib/local/obsidian-inbox.js';
+import { POLISH_SCHEMA } from '../lib/local/polish.js';
 
 /**
  * 模块加载时的进程环境快照：`boot()` 用它把用例之间的环境变量隔离干净。
@@ -75,12 +77,14 @@ function createFakeHost() {
   const renames = [];
   const cancels = [];
   const attaches = [];
+  const selectModels = [];
   return {
     sessions,
     prompts,
     renames,
     cancels,
     attaches,
+    selectModels,
     services: {
       agents: { get: (sessionId) => sessions.get(sessionId) },
       workspaceRegistry: {
@@ -112,6 +116,14 @@ function createFakeHost() {
           const sessionId = `session-test-${seq}`;
           sessions.set(sessionId, { id: sessionId, session: { id: sessionId } });
           return { sessionId, agentPreset: request?.agentPreset };
+        },
+        async selectModel(request) {
+          selectModels.push({ sessionId: request.sessionId, provider: request.provider, model: request.model });
+          const agent = sessions.get(request.sessionId);
+          if (agent) {
+            agent.model = { current: () => ({ provider: request.provider, model: request.model }) };
+          }
+          return {};
         },
         async prompt(request) {
           prompts.push(request);
@@ -355,6 +367,23 @@ function settle(ms = 80) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/** 轮询等待条件成立。 */
+async function waitFor(predicate, label = '条件未满足', timeoutMs = 4000) {
+  const deadline = Date.now() + timeoutMs;
+  let lastError;
+  while (Date.now() < deadline) {
+    try {
+      const value = await predicate();
+      if (value) return value;
+    } catch (error) {
+      lastError = error;
+    }
+    await settle(40);
+  }
+  if (lastError) throw lastError;
+  assert.fail(`等待超时（${timeoutMs}ms）：${label}`);
+}
+
 /** 把宿主会话事件送进插件。 */
 function hostEvents(env, sessionId, events) {
   for (const event of events) env.ctx.emitSync('session/event', { id: sessionId }, event);
@@ -514,7 +543,9 @@ test('/status 与 /help 直接回卡，不建会话也不投喂', async () => {
     assert.equal(env.host.sessions.size, 0, '命令不应该顺手建会话');
     const titles = env.feishu.sent.map((item) => item.card?.header?.title?.content);
     assert.deepEqual(titles, ['状态', '可用命令']);
-    assert.ok(JSON.stringify(env.feishu.sent.at(-1).card).includes('/new'));
+    const helpJson = JSON.stringify(env.feishu.sent.at(-1).card);
+    assert.ok(helpJson.includes('/new [local|all]'));
+    assert.equal(helpJson.match(/\/new\b/g)?.length, 1, '/help 中 /new 只应出现一次');
   } finally {
     await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }
@@ -988,9 +1019,11 @@ test('会话被删掉后，下一条消息自动新起一条并更新绑定', as
   const env = await boot();
   try {
     await promptOnce(env, '第一条');
-    const first = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
-    const oldId = Object.values(first.bindings)[0].dshSessionId;
-    assert.ok(oldId, '第一条应该记下会话');
+    const oldId = await waitFor(async () => {
+      const first = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+      const id = Object.values(first.bindings ?? {})[0]?.dshSessionId;
+      return id?.startsWith('session-cli-') ? id : false;
+    }, '等待首条会话 ID 落盘');
 
     // 模拟在桌面端删掉了这条会话。
     await rm(join(env.dir, 'sessions', 'fake', oldId), { recursive: true, force: true });
@@ -998,8 +1031,11 @@ test('会话被删掉后，下一条消息自动新起一条并更新绑定', as
     const call = await promptOnce(env, '第二条');
     assert.equal(call.sessionId, null, '会话不在了就不该再带 --session-id');
 
-    const next = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
-    const newId = Object.values(next.bindings)[0].dshSessionId;
+    const newId = await waitFor(async () => {
+      const next = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+      const id = Object.values(next.bindings ?? {})[0]?.dshSessionId;
+      return id && id !== oldId ? id : false;
+    }, '等待绑定换到新会话');
     assert.notEqual(newId, oldId, '绑定应换到新会话');
     assert.ok(newId.startsWith('session-cli-'));
   } finally {
@@ -1011,8 +1047,11 @@ test('会话在桌面端开着时改由宿主投喂，不再抢 CLI 的写句柄
   const env = await boot();
   try {
     await promptOnce(env, '先建会话');
-    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
-    const binding = Object.values(state.bindings)[0];
+    const binding = await waitFor(async () => {
+      const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+      const item = Object.values(state.bindings ?? {})[0];
+      return item?.dshSessionId?.startsWith('session-cli-') ? item : false;
+    }, '等待首轮 CLI 会话 ID 落盘');
     const cliBefore = (await cliCalls(env)).length;
     const promptsBefore = env.host.prompts.length;
 
@@ -1511,6 +1550,982 @@ test('本机配置优先：cliHome 注入 CLI 子进程', async () => {
     const call = await promptOnce(env, '看子进程环境');
     assert.equal(call.dshHome, cliHome, 'CLI 子进程的 DSH_HOME 应来自本机配置');
   } finally {
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('意图路由 Route 3（obsidian）写入待整理且不建会话，撤销按钮可回滚', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/chat')) {
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return {
+            message: {
+              content: JSON.stringify({
+                route: 'obsidian',
+                confidence: 0.95,
+                reason: '记笔记',
+                obsidianItems: ['买咖啡豆', '整理路由文档'],
+              }),
+            },
+          };
+        },
+      };
+    }
+    return { ok: true, status: 200, async json() { return { models: [{ name: 'qwen3:8b' }] }; } };
+  };
+
+  const env = await boot({
+    config: {
+      router: {
+        enabled: true,
+        routes: { obsidian: { inboxDir } },
+      },
+    },
+  });
+  try {
+    await env.message({ text: '帮我记一下买咖啡豆，还有整理路由文档', messageId: 'om-obsidian-1' });
+
+    const replyCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-obsidian-1'),
+      '等待 Obsidian 确认卡发出',
+    );
+    assert.ok(replyCard.card.header.title.content.includes('已记入待整理'));
+    const cardJson = JSON.stringify(replyCard.card);
+    assert.ok(cardJson.includes('"name":"undo_note"'), '确认卡应包含 undo_note 按钮');
+    assert.ok(cardJson.includes('"name":"note_to_dsh"'), '确认卡应包含 note_to_dsh 按钮');
+
+    const files = await readdir(inboxDir);
+    assert.equal(files.length, 1);
+    assert.equal(files[0], `${localDateStamp()}.md`);
+    const filePath = join(inboxDir, files[0]);
+    const written = await readFile(filePath, 'utf8');
+    assert.ok(written.includes('买咖啡豆'));
+    assert.ok(written.includes('整理路由文档'));
+    assert.ok(written.includes('<!-- feishu:om-obsidian-1 -->'));
+
+    assert.equal(env.host.sessions.size, 0, 'Obsidian 路由不应创建宿主会话');
+    assert.equal((await cliCalls(env)).length, 0, 'Obsidian 路由不应触发 CLI');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    assert.equal(Object.keys(state.bindings).length, 0, 'Obsidian 路由不应创建绑定');
+
+    const undoRes = await env.clickCard({ tag: 'route', action: 'undo-note', messageId: 'om-obsidian-1' });
+    assert.equal(undoRes?.card?.data?.header?.title?.content, '已撤销写入');
+
+    const afterUndo = await readFile(filePath, 'utf8');
+    assert.ok(!afterUndo.includes('买咖啡豆'));
+    assert.ok(!afterUndo.includes('整理路由文档'));
+    assert.ok(!afterUndo.includes('<!-- feishu:om-obsidian-1 -->'));
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('意图路由 Route 3 点击「改交 4.1 Flash 处理」（note-to-dsh）撤销条目并执行主会话', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/chat')) {
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return {
+            message: {
+              content: JSON.stringify({
+                route: 'obsidian',
+                confidence: 0.95,
+                reason: '记笔记',
+                obsidianItems: ['帮我重构网关路由'],
+              }),
+            },
+          };
+        },
+      };
+    }
+    return { ok: true, status: 200, async json() { return { models: [{ name: 'qwen3:8b' }] }; } };
+  };
+
+  const env = await boot({
+    config: {
+      router: {
+        enabled: true,
+        routes: { obsidian: { inboxDir } },
+      },
+    },
+  });
+  try {
+    await env.message({ text: '/note 帮我重构网关路由', messageId: 'om-note-dsh-1' });
+    const filePath = join(inboxDir, `${localDateStamp()}.md`);
+    await waitFor(async () => {
+      try {
+        const content = await readFile(filePath, 'utf8');
+        return content.includes('帮我重构网关路由');
+      } catch {
+        return false;
+      }
+    }, '等待误记条目写入 Obsidian 文件');
+
+    const res = await env.clickCard({ tag: 'route', action: 'note-to-dsh', messageId: 'om-note-dsh-1' });
+    assert.ok(res?.card?.data?.header?.title?.content?.includes('已转交 4.1 Flash'));
+
+    await waitFor(async () => {
+      const content = await readFile(filePath, 'utf8');
+      return !content.includes('帮我重构网关路由') && !content.includes('<!-- feishu:om-note-dsh-1 -->');
+    }, '等待误记条目从 Obsidian 文件中撤销');
+
+    const call = await waitFor(async () => {
+      const calls = await cliCalls(env);
+      return calls.length >= 1 ? calls.at(-1) : false;
+    }, '等待主会话 DSH 执行');
+    assert.equal(call.prompt, '帮我重构网关路由');
+
+    const finished = await waitFor(
+      () => env.feishu.patched.find((item) => item.card?.header?.title?.content === '已完成 · 4.1 Flash'),
+      '等待转交后的 DSH 卡片收尾',
+    );
+    assert.ok(JSON.stringify(finished.card).includes('假 CLI 的回答：帮我重构网关路由'));
+
+    const state = await waitFor(async () => {
+      const raw = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+      const binding = Object.values(raw.bindings ?? {})[0];
+      return binding?.dshSessionId ? binding : false;
+    }, '等待主会话绑定写入 state.json');
+    assert.ok(state.dshSessionId.startsWith('session-cli-'));
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('Host 模式双会话绑定（dsh vs local）+ selectModel + 改用 4.1 Flash 重答（escalate）', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  let nextDecision = { route: 'dsh', confidence: 0.92, reason: '复杂任务' };
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/chat')) {
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return { message: { content: JSON.stringify(nextDecision) } };
+        },
+      };
+    }
+    return { ok: true, status: 200, async json() { return { models: [{ name: 'qwen3:8b' }] }; } };
+  };
+
+  const env = await boot({
+    env: {
+      FEISHU_AGENT_TURN_MODE: 'host',
+      FEISHU_AGENT_HOST_TURN_TIMEOUT_MS: '2000',
+    },
+    config: {
+      router: {
+        enabled: true,
+        routes: {
+          dsh: {
+            provider: 'zenmux',
+            model: 'deepseek/deepseek-v4.1-flash',
+            label: '4.1 Flash',
+          },
+          local: {
+            provider: 'ollama',
+            model: 'qwen3:8b',
+            label: '本地 Qwen3',
+            titlePrefix: '[飞书·本地]',
+          },
+        },
+      },
+    },
+  });
+  try {
+    // Message 1 -> dsh
+    await env.message({ text: '分析仓库架构并给出改动建议', messageId: 'om-host-dsh-1' });
+    const prompt1 = await waitFor(
+      () => env.host.prompts.find((item) => item.requestId === 'f_om-host-dsh-1'),
+      '等待第 1 轮 dsh 投喂宿主',
+    );
+    assert.equal(prompt1.sessionId, 'session-test-1');
+    assert.ok(
+      env.host.selectModels.some(
+        (item) => item.sessionId === 'session-test-1' && item.provider === 'zenmux' && item.model === 'deepseek/deepseek-v4.1-flash',
+      ),
+      'dsh 会话应调用 selectModel 选中 zenmux / deepseek/deepseek-v4.1-flash',
+    );
+    const reply1 = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-host-dsh-1'),
+      '等待第 1 轮回答卡开出',
+    );
+    hostEvents(env, 'session-test-1', [
+      { type: 'user/message', data: { turn: 1, source: { kind: 'user', rpcId: prompt1.requestId }, message: { id: 'hm-1' } } },
+      { type: 'turn/start', data: { turn: 1 } },
+      { type: 'assistant/message', data: { turn: 1, message: { content: [{ type: 'text', text: '这是 4.1 Flash 的分析结果' }] } } },
+      { type: 'turn/end', data: { turn: 1, reason: { kind: 'completed' } } },
+    ]);
+    await waitFor(
+      () => env.feishu.patched.find((item) => item.messageId === reply1.id && item.card?.header?.title?.content === '已完成 · 4.1 Flash'),
+      '等待第 1 轮卡片收尾为 已完成 · 4.1 Flash',
+    );
+
+    // Message 2 -> local
+    nextDecision = { route: 'local', confidence: 0.91, reason: '简单常识问答' };
+    await env.message({ text: '什么是幂等性？', messageId: 'om-host-local-2' });
+    const prompt2 = await waitFor(
+      () => env.host.prompts.find((item) => item.requestId === 'f_om-host-local-2'),
+      '等待第 2 轮 local 投喂宿主',
+    );
+    assert.equal(prompt2.sessionId, 'session-test-2');
+    assert.ok(
+      env.host.selectModels.some(
+        (item) => item.sessionId === 'session-test-2' && item.provider === 'ollama' && item.model === 'qwen3:8b',
+      ),
+      'local 会话应调用 selectModel 选中 ollama / qwen3:8b',
+    );
+    const reply2 = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-host-local-2'),
+      '等待第 2 轮回答卡开出',
+    );
+    hostEvents(env, 'session-test-2', [
+      { type: 'user/message', data: { turn: 1, source: { kind: 'user', rpcId: prompt2.requestId }, message: { id: 'hm-2' } } },
+      { type: 'turn/start', data: { turn: 1 } },
+      { type: 'assistant/message', data: { turn: 1, message: { content: [{ type: 'text', text: '本地模型简答：多次执行结果一致。' }] } } },
+      { type: 'turn/end', data: { turn: 1, reason: { kind: 'completed' } } },
+    ]);
+    const localDone = await waitFor(
+      () => env.feishu.patched.find((item) => item.messageId === reply2.id && item.card?.header?.title?.content === '已完成 · 本地 Qwen3'),
+      '等待第 2 轮卡片收尾为 已完成 · 本地 Qwen3',
+    );
+    assert.ok(JSON.stringify(localDone.card).includes('"name":"route_escalate"'), '本地回答卡应附带 route_escalate 按钮');
+
+    const binding = await waitFor(async () => {
+      const raw = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+      const item = Object.values(raw.bindings ?? {})[0];
+      return item?.dshSessionId && item?.localSessionId ? item : false;
+    }, '等待双会话绑定写入 state.json');
+    assert.equal(binding.dshSessionId, 'session-test-1');
+    assert.equal(binding.localSessionId, 'session-test-2');
+    assert.notEqual(binding.dshSessionId, binding.localSessionId);
+
+    // Click escalate -> runs on dshSessionId (session-test-1)
+    const escRes = await env.clickCard({ tag: 'route', action: 'escalate', messageId: 'om-host-local-2' });
+    assert.equal(escRes?.card?.data?.header?.title?.content, '已转交 4.1 Flash 重答');
+
+    const promptEsc = await waitFor(
+      () => env.host.prompts.find((item) => String(item.requestId).startsWith('f_om-host-local-2_esc_')),
+      '等待 escalate 后把新 prompt 投进 dshSessionId',
+    );
+    assert.equal(promptEsc.sessionId, 'session-test-1');
+    const escReply = await waitFor(
+      () => env.feishu.sent.filter((item) => item.kind === 'reply' && item.replyTo === 'om-host-local-2')[1],
+      '等待重答的新回答卡开出',
+    );
+    hostEvents(env, 'session-test-1', [
+      { type: 'user/message', data: { turn: 2, source: { kind: 'user', rpcId: promptEsc.requestId }, message: { id: 'hm-3' } } },
+      { type: 'turn/start', data: { turn: 2 } },
+      { type: 'assistant/message', data: { turn: 2, message: { content: [{ type: 'text', text: '4.1 Flash 重答：幂等性详细解释。' }] } } },
+      { type: 'turn/end', data: { turn: 2, reason: { kind: 'completed' } } },
+    ]);
+    await waitFor(
+      () => env.feishu.patched.find((item) => item.messageId === escReply.id && item.card?.header?.title?.content === '已完成 · 4.1 Flash'),
+      '等待重答卡片收尾为 已完成 · 4.1 Flash',
+    );
+    assert.equal((await cliCalls(env)).length, 0, 'host 模式全流程不应起 CLI');
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('快捷命令（/note、/router off|on|status、/new local）与 Ollama 故障自动降级', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  let chatCalls = 0;
+  let chatShouldFail = true;
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/chat')) {
+      chatCalls += 1;
+      if (chatShouldFail) {
+        throw new Error('connect ECONNREFUSED 127.0.0.1:11434');
+      }
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return { message: { content: JSON.stringify({ route: 'local', confidence: 0.9, reason: 'ok' }) } };
+        },
+      };
+    }
+    if (String(url).endsWith('/api/tags')) {
+      return { ok: true, status: 200, async json() { return { models: [{ name: 'qwen3:8b' }] }; } };
+    }
+    throw new Error(`unexpected url: ${url}`);
+  };
+
+  const env = await boot({
+    env: {
+      FEISHU_AGENT_TURN_MODE: 'host',
+      FEISHU_AGENT_HOST_TURN_TIMEOUT_MS: '2000',
+    },
+    config: {
+      router: {
+        enabled: false,
+        routes: { obsidian: { inboxDir } },
+      },
+    },
+  });
+  try {
+    // 1) /note 在 router.enabled=false 时仍直接写 Obsidian，且不调 Ollama
+    await env.message({ text: '/note 强制记一条', messageId: 'om-cmd-note-1' });
+    const noteFile = join(inboxDir, `${localDateStamp()}.md`);
+    await waitFor(async () => {
+      try {
+        return (await readFile(noteFile, 'utf8')).includes('强制记一条');
+      } catch {
+        return false;
+      }
+    }, '等待 /note 写入 Obsidian');
+    assert.equal(chatCalls, 0, 'router.enabled=false 时 /note 不应调用 Ollama');
+
+    // 2) /router on 开启路由；Ollama 抛网络错误时自动降级到 dsh 并干净收尾
+    await env.message({ text: '/router on', messageId: 'om-cmd-router-on' });
+    await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '意图路由已开启'),
+      '等待 /router on 响应卡',
+    );
+
+    await env.message({ text: 'Ollama 挂了也要能答', messageId: 'om-fallback-1' });
+    const fallbackPrompt = await waitFor(
+      () => env.host.prompts.find((item) => item.requestId === 'f_om-fallback-1'),
+      '等待 Ollama 失败后降级投喂 DSH',
+    );
+    assert.equal(chatCalls, 1, '开启路由后应尝试调用一次 Ollama 分类');
+    assert.equal(fallbackPrompt.sessionId, 'session-test-1');
+    const fallbackReply = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-fallback-1'),
+      '等待降级轮次开卡',
+    );
+    hostEvents(env, 'session-test-1', [
+      { type: 'user/message', data: { turn: 1, source: { kind: 'user', rpcId: fallbackPrompt.requestId }, message: { id: 'hm-fb' } } },
+      { type: 'turn/start', data: { turn: 1 } },
+      { type: 'assistant/message', data: { turn: 1, message: { content: [{ type: 'text', text: '降级主会话回答成功' }] } } },
+      { type: 'turn/end', data: { turn: 1, reason: { kind: 'completed' } } },
+    ]);
+    const fallbackDone = await waitFor(
+      () => env.feishu.patched.find(
+        (item) => item.messageId === fallbackReply.id && item.card?.header?.title?.content === '[飞书·兜底] 已完成 · 4.1 Flash',
+      ),
+      '等待降级轮次卡片正常完成（标题带 [飞书·兜底] 前缀）',
+    );
+    const fallbackJson = JSON.stringify(fallbackDone.card);
+    assert.ok(fallbackJson.includes('本地分类失败，已交给远端'), '降级卡正文应说明本地分类失败');
+    assert.equal(fallbackJson.includes('ECONNREFUSED'), false, '降级卡不应再印英文机读码');
+
+    // 3) /router status 返回 Ollama 状态与命中统计（fallback >= 1）
+    await env.message({ text: '/router status', messageId: 'om-cmd-router-status' });
+    const statusCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '意图路由状态'),
+      '等待 /router status 响应卡',
+    );
+    const statusJson = JSON.stringify(statusCard.card);
+    assert.ok(statusJson.includes('Ollama：在线'), '状态卡应包含 Ollama 在线状态');
+    assert.ok(statusJson.includes('fallback 1'), `状态卡应包含 fallback >= 1 统计，实际 ${statusJson}`);
+
+    // 4) /router off 之后普通消息直接旁路 Ollama 走 DSH
+    await env.message({ text: '/router off', messageId: 'om-cmd-router-off' });
+    await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '意图路由已暂停'),
+      '等待 /router off 响应卡',
+    );
+    const callsBeforeBypass = chatCalls;
+    await env.message({ text: '关闭路由后的普通消息', messageId: 'om-bypass-1' });
+    const bypassPrompt = await waitFor(
+      () => env.host.prompts.find((item) => item.requestId === 'f_om-bypass-1'),
+      '等待旁路消息直达 DSH',
+    );
+    assert.equal(chatCalls, callsBeforeBypass, '/router off 后不应再调 Ollama');
+    assert.equal(bypassPrompt.sessionId, 'session-test-1');
+    const bypassReply = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-bypass-1'),
+      '等待旁路轮次开卡',
+    );
+    hostEvents(env, 'session-test-1', [
+      { type: 'user/message', data: { turn: 2, source: { kind: 'user', rpcId: bypassPrompt.requestId }, message: { id: 'hm-bp' } } },
+      { type: 'turn/start', data: { turn: 2 } },
+      { type: 'turn/end', data: { turn: 2, reason: { kind: 'completed' } } },
+    ]);
+    await waitFor(
+      () => env.feishu.patched.find((item) => item.messageId === bypassReply.id && item.card?.header?.title?.content === '已完成'),
+      '等待旁路轮次卡片收尾',
+    );
+
+    // 5) 先用 /loc 建立 localSessionId，再发 /new local 只清空 localSessionId、保留 dshSessionId
+    await env.message({ text: '/loc 本地来一句', messageId: 'om-cmd-loc-1' });
+    const locPrompt = await waitFor(
+      () => env.host.prompts.find((item) => item.requestId === 'f_om-cmd-loc-1'),
+      '等待 /loc 建立本地会话并投喂宿主',
+    );
+    assert.equal(locPrompt.sessionId, 'session-test-2');
+    const locReply = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-cmd-loc-1'),
+      '等待 /loc 轮次开卡',
+    );
+    hostEvents(env, 'session-test-2', [
+      { type: 'user/message', data: { turn: 1, source: { kind: 'user', rpcId: locPrompt.requestId }, message: { id: 'hm-loc' } } },
+      { type: 'turn/start', data: { turn: 1 } },
+      { type: 'turn/end', data: { turn: 1, reason: { kind: 'completed' } } },
+    ]);
+    await waitFor(
+      () => env.feishu.patched.find((item) => item.messageId === locReply.id && item.card?.header?.title?.content?.startsWith('已完成')),
+      '等待 /loc 轮次收尾',
+    );
+
+    const beforeNewLocal = await waitFor(async () => {
+      const raw = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+      const item = Object.values(raw.bindings ?? {})[0];
+      return item?.dshSessionId && item?.localSessionId ? item : false;
+    }, '等待 state.json 记下双会话 ID');
+    assert.equal(beforeNewLocal.dshSessionId, 'session-test-1');
+    assert.equal(beforeNewLocal.localSessionId, 'session-test-2');
+
+    await env.message({ text: '/new local', messageId: 'om-cmd-new-local' });
+    await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '已新建本地会话'),
+      '等待 /new local 提示卡',
+    );
+    const afterNewLocal = await waitFor(async () => {
+      const raw = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+      const item = Object.values(raw.bindings ?? {})[0];
+      return item?.localSessionId === '' ? item : false;
+    }, '等待 state.json 中的 localSessionId 被清空');
+    assert.equal(afterNewLocal.localSessionId, '');
+    assert.equal(afterNewLocal.dshSessionId, 'session-test-1', '/new local 不应改动 dshSessionId');
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('记事规则：干净短句「记一下」不触发清噪断句，直接写入待整理', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  let chatCalls = 0;
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/chat')) {
+      chatCalls += 1;
+      throw new Error('记事规则不该调用分类器');
+    }
+    return { ok: true, status: 200, async json() { return { models: [{ name: 'qwen3:8b' }] }; } };
+  };
+
+  const env = await boot({
+    config: {
+      router: {
+        enabled: true,
+        routes: { obsidian: { inboxDir } },
+      },
+    },
+  });
+  try {
+    await env.message({ text: '记一下：周五前给 Ollama 配开机自启', messageId: 'om-rule-append-1' });
+
+    const replyCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-rule-append-1'),
+      '等待「已记入待整理」确认卡',
+    );
+    assert.ok(replyCard.card.header.title.content.includes('已记入待整理'), '应回「已记入待整理」确认卡');
+    assert.equal(chatCalls, 0, '干净短句不应调用本地模型断句');
+
+    const filePath = join(inboxDir, `${localDateStamp()}.md`);
+    const written = await readFile(filePath, 'utf8');
+    assert.ok(written.includes('周五前给 Ollama 配开机自启'), '原文应写入当天文件');
+    assert.ok(written.includes('<!-- feishu:om-rule-append-1 -->'), '条目应带消息标记以便撤销');
+    assert.equal((await cliCalls(env)).length, 0, '写入待整理不应起 DSH 会话');
+    const state = JSON.parse(await readFile(join(env.dir, 'state.json'), 'utf8'));
+    assert.equal(Object.keys(state.bindings).length, 0, '写入待整理不应创建绑定');
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('记事规则：噪声句只调用一次清噪断句，最终写入清噪结果', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  const chatBodies = [];
+  globalThis.__dshFeishuAgentOllamaFetch = async (url, init) => {
+    if (String(url).endsWith('/api/chat')) {
+      chatBodies.push(JSON.parse(init.body));
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return {
+            message: {
+              content: JSON.stringify({ items: ['明天要去银行，然后顺便把水费交了。我怕忘了。'] }),
+            },
+          };
+        },
+      };
+    }
+    throw new Error(`unexpected url: ${url}`);
+  };
+
+  const env = await boot({
+    config: {
+      router: {
+        enabled: true,
+        routes: { obsidian: { inboxDir } },
+      },
+    },
+  });
+  try {
+    await env.message({
+      text: '记一下：呃那个明天要去银行然后顺便把水费交了我我怕忘了',
+      messageId: 'om-rule-polish-1',
+    });
+
+    const replyCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-rule-polish-1'),
+      '等待噪声明细的「已记入待整理」确认卡',
+    );
+    assert.ok(replyCard.card.header.title.content.includes('已记入待整理'), '应回「已记入待整理」确认卡');
+    assert.equal(chatBodies.length, 1, '噪声句只应调用一次本地模型断句');
+    assert.deepEqual(chatBodies[0].format, POLISH_SCHEMA, '断句调用应带 POLISH_SCHEMA');
+    assert.equal(chatBodies[0].stream, false);
+
+    const filePath = join(inboxDir, `${localDateStamp()}.md`);
+    const written = await readFile(filePath, 'utf8');
+    // 只断言去噪后的内容；模型加的标点由假 ollama 决定，不在这里钉死。
+    const flat = written.replace(/[，。？！；：、,.;:!?\s]/g, '');
+    assert.ok(flat.includes('明天要去银行然后顺便把水费交了我怕忘了'), '应写入去噪后的内容');
+    assert.equal(written.includes('呃'), false, '口头语不该写进文件');
+    assert.ok(written.includes('<!-- feishu:om-rule-polish-1 -->'), '条目应带消息标记以便撤销');
+    assert.equal((await cliCalls(env)).length, 0, '写入待整理不应起 DSH 会话');
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('记事规则：模型改字校验失败时，写入去噪结果而不是原文', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  let chatCalls = 0;
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/chat')) {
+      chatCalls += 1;
+      return {
+        ok: true,
+        status: 200,
+        async json() {
+          return {
+            message: {
+              content: JSON.stringify({ items: ['我明天去银行，顺便把水费交了，我怕忘。'] }),
+            },
+          };
+        },
+      };
+    }
+    throw new Error(`unexpected url: ${url}`);
+  };
+
+  const env = await boot({
+    config: {
+      router: {
+        enabled: true,
+        routes: { obsidian: { inboxDir } },
+      },
+    },
+  });
+  try {
+    await env.message({
+      text: '记一下：呃那个明天要去银行然后顺便把水费交了我我怕忘了',
+      messageId: 'om-rule-unverified-1',
+    });
+
+    await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-rule-unverified-1'),
+      '等待「已记入待整理」确认卡',
+    );
+    assert.equal(chatCalls, 1, '应尝试一次断句');
+
+    const filePath = join(inboxDir, `${localDateStamp()}.md`);
+    const written = await readFile(filePath, 'utf8');
+    assert.ok(written.includes('明天要去银行然后顺便把水费交了我怕忘了'), '校验失败也必须落盘去噪结果');
+    assert.equal(written.includes('呃'), false, '口头语不该写进文件');
+    // 模型改写过的痕迹（少了「了」、换成「我明天」）不能落盘。
+    assert.equal(written.includes('我怕忘。'), false, '不得采用模型改写后的文本');
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('记事规则：读/整理笔记走 dsh 会话，不写文件', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  let chatCalls = 0;
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/chat')) {
+      chatCalls += 1;
+      throw new Error('读取笔记不该调用分类器');
+    }
+    return { ok: true, status: 200, async json() { return { models: [{ name: 'qwen3:8b' }] }; } };
+  };
+
+  const env = await boot({
+    env: {
+      FEISHU_AGENT_TURN_MODE: 'host',
+      FEISHU_AGENT_HOST_TURN_TIMEOUT_MS: '2000',
+    },
+    config: {
+      router: {
+        enabled: true,
+        routes: { obsidian: { inboxDir } },
+      },
+    },
+  });
+  try {
+    await env.message({ text: '我待整理里昨天记了什么，帮我列一下', messageId: 'om-rule-query-1' });
+    const prompt = await waitFor(
+      () => env.host.prompts.find((item) => item.requestId === 'f_om-rule-query-1'),
+      '等待读取笔记投喂 DSH 宿主',
+    );
+    assert.equal(prompt.sessionId, 'session-test-1');
+    assert.equal(chatCalls, 0, '读取笔记不应调用分类器');
+
+    const replyCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-rule-query-1'),
+      '等待读笔记轮次开卡',
+    );
+    assert.ok(
+      replyCard.card.header.title.content.startsWith('[飞书·读笔记]'),
+      `标题应带 [飞书·读笔记] 前缀，实际 ${replyCard.card.header.title.content}`,
+    );
+
+    hostEvents(env, 'session-test-1', [
+      { type: 'user/message', data: { turn: 1, source: { kind: 'user', rpcId: prompt.requestId }, message: { id: 'hm-query' } } },
+      { type: 'turn/start', data: { turn: 1 } },
+      { type: 'turn/end', data: { turn: 1, reason: { kind: 'completed' } } },
+    ]);
+    const finished = await waitFor(
+      () => env.feishu.patched.find(
+        (item) => item.messageId === replyCard.id && item.card?.header?.title?.content === '[飞书·读笔记] 已完成 · 4.1 Flash',
+      ),
+      '等待读笔记轮次收尾',
+    );
+    assert.ok(
+      JSON.stringify(finished.card).includes('读取/整理笔记需要远端模型'),
+      '正文应说明读笔记需要远端模型',
+    );
+    const files = await readdir(inboxDir);
+    assert.deepEqual(files, [], '读取笔记不应写入待整理文件');
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('本地分类器不可用：health 探测失败直接走 dsh，卡片标题带 [飞书·兜底] 与原因', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  let chatCalls = 0;
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/tags')) {
+      throw new Error('connect ECONNREFUSED 127.0.0.1:11434');
+    }
+    if (String(url).endsWith('/api/chat')) {
+      chatCalls += 1;
+      throw new Error('健康探测失败后不该再调分类器');
+    }
+    throw new Error(`unexpected url: ${url}`);
+  };
+
+  const env = await boot({
+    env: {
+      FEISHU_AGENT_TURN_MODE: 'host',
+      FEISHU_AGENT_HOST_TURN_TIMEOUT_MS: '2000',
+    },
+    config: { router: { enabled: true } },
+  });
+  try {
+    await env.message({ text: '今天有什么安排', messageId: 'om-health-fallback-1' });
+    const prompt = await waitFor(
+      () => env.host.prompts.find((item) => item.requestId === 'f_om-health-fallback-1'),
+      '等待健康探测失败后直接投喂 DSH',
+    );
+    assert.equal(prompt.sessionId, 'session-test-1');
+    assert.equal(chatCalls, 0, '健康探测失败后应零延迟降级，不再调分类器');
+
+    const replyCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-health-fallback-1'),
+      '等待降级轮次开卡',
+    );
+    assert.ok(
+      replyCard.card.header.title.content.startsWith('[飞书·兜底]'),
+      `标题应带 [飞书·兜底] 前缀，实际 ${replyCard.card.header.title.content}`,
+    );
+
+    hostEvents(env, 'session-test-1', [
+      { type: 'user/message', data: { turn: 1, source: { kind: 'user', rpcId: prompt.requestId }, message: { id: 'hm-fb' } } },
+      { type: 'turn/start', data: { turn: 1 } },
+      { type: 'turn/end', data: { turn: 1, reason: { kind: 'completed' } } },
+    ]);
+    const finished = await waitFor(
+      () => env.feishu.patched.find(
+        (item) => item.messageId === replyCard.id && item.card?.header?.title?.content === '[飞书·兜底] 已完成 · 4.1 Flash',
+      ),
+      '等待降级轮次收尾（标题保留 dsh label）',
+    );
+    const cardJson = JSON.stringify(finished.card);
+    assert.ok(cardJson.includes('本地模型不可达，已跳过本地判断'), '卡片正文应说明本地模型不可达');
+    assert.equal(cardJson.includes('ECONNREFUSED'), false, '卡片正文不应再印英文机读码');
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('/router status 输出「记事规则」与「本地模型」两行', async () => {
+  const prevFetch = globalThis.__dshFeishuAgentOllamaFetch;
+  globalThis.__dshFeishuAgentOllamaFetch = async (url) => {
+    if (String(url).endsWith('/api/tags')) {
+      return { ok: false, status: 503, async json() { return {}; } };
+    }
+    throw new Error(`unexpected url: ${url}`);
+  };
+
+  const env = await boot({ config: { router: { enabled: true } } });
+  try {
+    await env.message({ text: '/router status', messageId: 'om-router-status-1' });
+    const statusCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '意图路由状态'),
+      '等待 /router status 响应卡',
+    );
+    const statusJson = JSON.stringify(statusCard.card);
+    assert.ok(
+      statusJson.includes('记事规则：未生效（未配置待整理目录）'),
+      `未配置 inboxDir 时应显示未生效，实际 ${statusJson}`,
+    );
+    assert.ok(statusJson.includes('本地模型：closed'), '状态卡应包含「本地模型」熔断状态行');
+    assert.ok(statusJson.includes('note 0'), '命中统计应包含记事规则命中数');
+  } finally {
+    if (prevFetch === undefined) delete globalThis.__dshFeishuAgentOllamaFetch;
+    else globalThis.__dshFeishuAgentOllamaFetch = prevFetch;
+    env.restoreEnv();
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('速记模式：/note on 开窗，普通消息直接写入待整理且不触发 CLI', async () => {
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  const env = await boot({
+    config: { router: { enabled: false, routes: { obsidian: { inboxDir } } } },
+  });
+  try {
+    await env.message({ text: '/note on', messageId: 'om-nm-on' });
+    const onCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '速记模式已开启'),
+      '等待速记模式开启卡',
+    );
+    const onJson = JSON.stringify(onCard.card);
+    assert.ok(onJson.includes('"action":"off"'), '开启卡应带结束速记');
+    assert.ok(onJson.includes('"action":"extend"'), '开启卡应带延长');
+    assert.deepEqual(await readdir(inboxDir).catch(() => []), [], '开启本身不应写文件');
+
+    await env.message({ text: '我开了那个暖气，我觉得好干。', messageId: 'om-nm-msg-1' });
+    const noteFile = join(inboxDir, `${localDateStamp()}.md`);
+    await waitFor(async () => {
+      try {
+        return (await readFile(noteFile, 'utf8')).includes('我开了那个暖气');
+      } catch {
+        return false;
+      }
+    }, '等待速记模式写入待整理');
+
+    const reply = await waitFor(
+      () => env.feishu.sent.find((item) => item.kind === 'reply' && item.replyTo === 'om-nm-msg-1'),
+      '等待速记模式的确认卡',
+    );
+    assert.ok(reply.card.header.title.content.includes('速记中'), '速记模式的确认卡标题应标明速记中');
+    assert.ok(JSON.stringify(reply.card).includes('"action":"off"'), '确认卡应带结束速记按钮');
+    assert.ok(JSON.stringify(reply.card).includes('"name":"undo_note"'), '确认卡仍应带撤销');
+    assert.equal((await cliCalls(env)).length, 0, '速记模式不应触发 CLI');
+    assert.equal(env.host.sessions.size, 0, '速记模式不应创建宿主会话');
+  } finally {
+    env.restoreEnv();
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('速记模式：卡片「开启速记」按钮与「结束速记」按钮都能用', async () => {
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  const env = await boot({
+    config: { router: { enabled: false, routes: { obsidian: { inboxDir } } } },
+  });
+  try {
+    const res = await env.clickCard({ tag: 'note-mode', action: 'on' });
+    assert.equal(res?.toast?.content, '速记模式已开启');
+    assert.equal(res?.card?.data?.header?.title?.content, '速记模式已开启');
+
+    await env.message({ text: '卡片开启后这条也要记下来', messageId: 'om-nm-card-1' });
+    const noteFile = join(inboxDir, `${localDateStamp()}.md`);
+    await waitFor(async () => {
+      try {
+        return (await readFile(noteFile, 'utf8')).includes('卡片开启后这条也要记下来');
+      } catch {
+        return false;
+      }
+    }, '等待卡片开启后的写入');
+
+    const off = await env.clickCard({ tag: 'note-mode', action: 'off' });
+    assert.equal(off?.toast?.content, '速记模式已结束');
+    assert.equal(off?.card?.data?.header?.title?.content, '速记模式已结束');
+    assert.match(off?.card?.data?.body?.elements?.[0]?.content ?? '', /共写入 1 条/);
+  } finally {
+    env.restoreEnv();
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('速记模式：/note off 结束后，后续消息回到正常路由', async () => {
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  const env = await boot({
+    config: { router: { enabled: false, routes: { obsidian: { inboxDir } } } },
+  });
+  try {
+    await env.message({ text: '/note on', messageId: 'om-nm-on-2' });
+    await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '速记模式已开启'),
+      '等待速记模式开启卡',
+    );
+
+    await env.message({ text: '/note off', messageId: 'om-nm-off-2' });
+    const offCard = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '速记模式已结束'),
+      '等待速记模式结束卡',
+    );
+    assert.ok(JSON.stringify(offCard.card).includes('"action":"on"'), '结束卡应带再开启入口');
+
+    const noteFile = join(inboxDir, `${localDateStamp()}.md`);
+    const before = await readFile(noteFile, 'utf8').catch(() => '');
+    await env.message({ text: '这句不该进笔记', messageId: 'om-nm-after-off' });
+    await waitFor(async () => (await cliCalls(env)).length > 0, '关闭速记模式后应回到 CLI 主会话');
+    const after = await readFile(noteFile, 'utf8').catch(() => '');
+    assert.equal(after, before, '关闭速记模式后普通消息不应再写进待整理');
+  } finally {
+    env.restoreEnv();
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('速记模式：/status 与 /help 的卡片上带开启入口', async () => {
+  const env = await boot({ config: { router: { enabled: false } } });
+  try {
+    await env.message({ text: '/help', messageId: 'om-help-nm' });
+    const help = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '可用命令'),
+      '等待帮助卡',
+    );
+    const helpJson = JSON.stringify(help.card);
+    assert.ok(helpJson.includes('"tag":"note-mode"'), '帮助卡应带速记入口按钮');
+    assert.ok(helpJson.includes('/note on|off|status'), '帮助卡应说明速记模式');
+
+    await env.message({ text: '/status', messageId: 'om-status-nm' });
+    const status = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '状态'),
+      '等待状态卡',
+    );
+    assert.ok(JSON.stringify(status.card).includes('"tag":"note-mode"'), '状态卡应带速记入口按钮');
+
+    // 未开启时点 /note status 应提示未开启，且不写文件。
+    await env.message({ text: '/note status', messageId: 'om-nm-status' });
+    const state = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '速记模式未开启'),
+      '等待速记状态卡',
+    );
+    assert.ok(JSON.stringify(state.card).includes('"action":"on"'));
+  } finally {
+    env.restoreEnv();
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('速记模式：群聊里 /note on 被拒绝，不开窗也不写文件', async () => {
+  const inboxDir = await mkdtemp(join(tmpdir(), 'dsh-feishu-inbox-'));
+  const env = await boot({
+    config: {
+      chats: { oc_group: { workspacePath: join(tmpdir(), 'dsh-feishu-group-nm-ws'), chatType: 'group' } },
+      router: { enabled: false, routes: { obsidian: { inboxDir } } },
+    },
+  });
+  try {
+    await env.message({
+      text: '/note on',
+      chatId: 'oc_group',
+      chatType: 'group',
+      mentions: [{ openId: 'ou_bot', name: 'fake-bot' }],
+    });
+    const card = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '群聊不支持速记模式'),
+      '等待群聊拒绝速记模式',
+    );
+    assert.ok(card);
+    assert.deepEqual(await readdir(inboxDir).catch(() => []), [], '群聊开启速记不应写文件');
+  } finally {
+    env.restoreEnv();
+    await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    await rm(inboxDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+  }
+});
+
+test('速记模式：未配置待整理目录时拒绝开窗', async () => {
+  const env = await boot({ config: { router: { enabled: false } } });
+  try {
+    await env.message({ text: '/note on', messageId: 'om-nm-noinbox' });
+    const card = await waitFor(
+      () => env.feishu.sent.find((item) => item.card?.header?.title?.content === '无法开启速记模式'),
+      '等待拒绝开窗卡',
+    );
+    assert.match(card.card.body.elements[0].content, /inboxDir/);
+
+    // 拒绝后普通消息不应被当速记处理
+    await env.message({ text: '这句不该进笔记', messageId: 'om-nm-noinbox-msg' });
+    await waitFor(async () => (await cliCalls(env)).length > 0, '未开窗时消息应走 CLI');
+  } finally {
+    env.restoreEnv();
     await rm(env.dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }
 });

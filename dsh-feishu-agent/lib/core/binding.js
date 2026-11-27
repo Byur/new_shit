@@ -125,6 +125,7 @@ export function createBinder({ logger, store, host, config }) {
       workspaceId: workspace.workspaceId,
       workspacePath: workspace.workspacePath,
       dshSessionId: '',
+      localSessionId: '',
       agentPreset: channelConfig.agentPreset,
       permissionPreset: channelConfig.permissionPreset,
       allowSenders: channelConfig.allowSenders,
@@ -238,19 +239,36 @@ export function createBinder({ logger, store, host, config }) {
   }
 
   /**
-   * 把 CLI 跑出来的 sessionId 记到绑定上（新会话第一次执行完成后调用）。
+   * 把会话 ID 记到绑定上（支持主会话 `dsh` 与本地会话 `local` 两个槽位）。
    *
    * @param key 绑定键
-   * @param sessionId CLI 返回的会话 ID
+   * @param sessionId 会话 ID（空串忽略，清空请用 `clearSessionId`）
+   * @param slot `'dsh'`（默认）或 `'local'`
    */
-  function attachSessionId(key, sessionId) {
+  function attachSessionId(key, sessionId, slot = 'dsh') {
     const binding = get(key);
     if (binding === undefined || typeof sessionId !== 'string' || sessionId === '') return;
-    binding.dshSessionId = sessionId;
+    const field = slot === 'local' ? 'localSessionId' : 'dshSessionId';
+    binding[field] = sessionId;
     binding.updatedAt = new Date().toISOString();
     store.touch();
-    logger.info(`绑定 ${key} 记下 CLI 会话 ${sessionId}`);
+    logger.info(`绑定 ${key} 记下${slot === 'local' ? '本地' : ' CLI '}会话 ${sessionId}`);
   }
 
-  return { get, ensureBinding, registerGroup, resetSession, switchSession, chatConfigOf, attachSessionId };
+  /**
+   * 清空绑定的会话 ID（`/new` 或会话失效重置时用）。
+   *
+   * @param key 绑定键
+   * @param slot `'dsh'`（默认）或 `'local'`
+   */
+  function clearSessionId(key, slot = 'dsh') {
+    const binding = get(key);
+    if (binding === undefined) return;
+    const field = slot === 'local' ? 'localSessionId' : 'dshSessionId';
+    binding[field] = '';
+    binding.updatedAt = new Date().toISOString();
+    store.touch();
+  }
+
+  return { get, ensureBinding, registerGroup, resetSession, switchSession, chatConfigOf, attachSessionId, clearSessionId };
 }

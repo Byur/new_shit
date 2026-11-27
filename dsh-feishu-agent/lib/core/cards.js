@@ -108,14 +108,17 @@ export function buttonRow(buttons) {
  * @param options.title 标题
  * @param options.content 正文（markdown）
  * @param options.color 标题栏颜色
+ * @param options.buttons 正文下方的按钮（可选，排成一行）
  * @returns 卡片对象
  */
-export function textCard({ title, content, color = CARD_COLORS.notice }) {
-  return buildCard({ title, color, elements: content === '' ? [markdown(' ')] : [markdown(content)] });
+export function textCard({ title, content, color = CARD_COLORS.notice, buttons }) {
+  const elements = content === '' ? [markdown(' ')] : [markdown(content)];
+  if (Array.isArray(buttons) && buttons.length > 0) elements.push(buttonRow(buttons));
+  return buildCard({ title, color, elements });
 }
 
 /**
- * 造回答卡：标题随状态变，正文是已产出的回答；排队中带「撤回」，处理中带「停止」。
+ * 造回答卡：标题随状态变，正文是已产出的回答；排队中带「撤回」，处理中带「停止」，终态可带额外按钮。
  *
  * @param options.messageId 触发这次回答的飞书消息 ID（按钮回传要用）
  * @param options.title 状态标题
@@ -124,9 +127,10 @@ export function textCard({ title, content, color = CARD_COLORS.notice }) {
  * @param options.action 按钮：`stop` / `withdraw` / 无
  * @param options.activity 工具活动的单行摘要（放在正文之后，别抢回答的位置）
  * @param options.elements 已经排好的正文元素（图文混排用；给了就不看 `content`）
+ * @param options.footerButtons 终态底部附加按钮（如一键切换模型重答）
  * @returns 卡片对象
  */
-export function answerCard({ messageId, title, color, content, action, activity, elements: body }) {
+export function answerCard({ messageId, title, color, content, action, activity, elements: body, footerButtons }) {
   const elements = body === undefined
     ? [markdown(content === '' ? '…' : content)]
     : [...body];
@@ -140,6 +144,9 @@ export function answerCard({ messageId, title, color, content, action, activity,
     elements.push(buttonRow([
       button({ name: 'withdraw', text: '撤回', value: { tag: 'answer', action: 'withdraw', messageId } }),
     ]));
+  }
+  if (action === undefined && Array.isArray(footerButtons) && footerButtons.length > 0) {
+    elements.push(buttonRow(footerButtons));
   }
   return buildCard({ title, color, elements });
 }

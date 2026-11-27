@@ -1,6 +1,7 @@
 /** 宿主会话事件：认领轮次、累加工具、追加正文、收尾卡片。 */
 
 import { TURN_END_TITLES } from '../common/constants.js';
+import { button } from '../core/cards.js';
 import { textOfAssistantMessage } from '../core/text.js';
 import { errorMessage } from './services.js';
 
@@ -11,9 +12,10 @@ import { errorMessage } from './services.js';
  * @param deps.cards 回答卡句柄
  * @param deps.answerers 反问/审批应答句柄
  * @param deps.logger 日志
+ * @param deps.onTurnFinished 轮次结束回调（记录跨路由历史用，可选）
  * @returns 处理函数 `(session, event) => void`
  */
-export function createSessionEventHandler({ turns, cards, answerers, logger }) {
+export function createSessionEventHandler({ turns, cards, answerers, logger, onTurnFinished }) {
   return function onSessionEvent(session, event) {
     const sessionId = String(session?.id ?? session?.header?.id ?? '');
     const type = event?.type ?? '';
@@ -45,7 +47,11 @@ export function createSessionEventHandler({ turns, cards, answerers, logger }) {
       if (type === 'assistant/message') {
         const turn = turns.turnOf(sessionId, Number(data?.turn ?? 0));
         if (turn === undefined) return;
-        cards.append(turn.feishuMessageId, textOfAssistantMessage(data?.message));
+        const chunk = textOfAssistantMessage(data?.message);
+        if (chunk !== '') {
+          turn.assistantText = turn.assistantText ? `${turn.assistantText}\n\n${chunk}` : chunk;
+        }
+        cards.append(turn.feishuMessageId, chunk);
         return;
       }
       if (type === 'turn/end') {
@@ -53,13 +59,26 @@ export function createSessionEventHandler({ turns, cards, answerers, logger }) {
         const turn = turns.turnOf(sessionId, turnNo);
         if (turn === undefined) return;
         const kind = String(data?.reason?.kind ?? 'completed');
-        const title = TURN_END_TITLES[kind] ?? '已完成';
+        const baseTitle = TURN_END_TITLES[kind] ?? '已完成';
+        const title = turn.routeLabel ? `${baseTitle} · ${turn.routeLabel}` : baseTitle;
         const color = kind === 'error' ? 'red' : kind === 'aborted' ? 'orange' : 'green';
-        const note = kind === 'error' ? `结束原因：${data?.reason?.message ?? data?.reason?.code ?? 'error'}` : '';
-        void cards.finish(turn.feishuMessageId, { title, color, note });
+        const reason = kind === 'error' ? `结束原因：${data?.reason?.message ?? data?.reason?.code ?? 'error'}` : '';
+        // 降级/规则说明放在正文最前面（与 CLI 路径一致），空行分隔。
+        const note = [turn.note ?? '', reason].filter((part) => part !== '').join('\n\n');
+        const footerButtons = turn.canEscalate === true
+          ? [
+              button({
+                name: 'route_escalate',
+                text: `改用 ${turn.escalateLabel || '4.1 Flash'} 重答`,
+                value: { tag: 'route', action: 'escalate', messageId: turn.feishuMessageId },
+              }),
+            ]
+          : undefined;
+        void cards.finish(turn.feishuMessageId, { title, color, note, footerButtons });
         answerers.question.settleTurn(turn);
         answerers.approval.settleTurn(turn);
         turns.finish(turn, kind);
+        onTurnFinished?.({ turn, kind, text: turn.assistantText ?? '' });
       }
     } catch (error) {
       logger.warn(`处理会话事件 ${type} 失败：${errorMessage(error)}`);

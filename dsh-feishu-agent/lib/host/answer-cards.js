@@ -173,6 +173,7 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
       action: record.action,
       activity,
       elements: body,
+      footerButtons: record.footerButtons,
     });
     if (cardBytes(card) > CARD_MAX_BYTES) {
       record.tooLong = true;
@@ -195,6 +196,17 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
   }
 
   /**
+   * 给标题加路由前缀（前缀与标题之间留一个空格；没有前缀时原样返回）。
+   *
+   * @param prefix 标题前缀
+   * @param title 标题
+   * @returns 展示用标题
+   */
+  function withPrefix(prefix, title) {
+    return typeof prefix === 'string' && prefix !== '' ? `${prefix} ${title}` : title;
+  }
+
+  /**
    * 开一张卡：回复在用户那条消息上，先把标题摆对。
    *
    * @param options.messageId 触发它的飞书消息 ID
@@ -202,17 +214,22 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
    * @param options.title 初始标题
    * @param options.action 初始按钮
    * @param options.turn turn 号（已经开跑时）
+   * @param options.workspacePath 会话工作区（相对图片路径按它解析）
+   * @param options.titlePrefix 标题前缀（降级/规则路由的可见标记）
    * @returns 卡片消息 ID；失败 undefined
    */
-  async function open({ messageId, chatId, title, action, turn = 0, workspacePath = '' }) {
+  async function open({ messageId, chatId, title, action, turn = 0, workspacePath = '', titlePrefix = '' }) {
     if (cards.has(messageId)) return cards.get(messageId).cardId;
+    const displayTitle = withPrefix(titlePrefix, title);
     const record = {
       cardId: '',
-      title,
+      title: displayTitle,
+      titlePrefix,
       content: '',
       color: CARD_COLORS.queued,
       action,
       turn,
+      queued: true,
       tooLong: false,
       sendFailed: false,
       tools: {},
@@ -221,8 +238,8 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
     };
     cards.set(messageId, record);
     const card = action === undefined
-      ? textCard({ title, content: '…', color: record.color })
-      : answerCard({ messageId, title, color: record.color, content: '…', action });
+      ? textCard({ title: displayTitle, content: '…', color: record.color })
+      : answerCard({ messageId, title: displayTitle, color: record.color, content: '…', action });
     const cardId = await outbound.replyCard({ chatId, messageId, card });
     if (!cardId) {
       cards.delete(messageId);
@@ -231,7 +248,7 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
     }
     record.cardId = cardId;
     record.workspacePath = workspacePath;
-    logger.info(`回答卡已开出（${messageId}，${title}，cardId=${cardId}）`);
+    logger.info(`回答卡已开出（${messageId}，${displayTitle}，cardId=${cardId}）`);
     scheduleSave();
     return cardId;
   }
@@ -245,11 +262,11 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
   function markRunning(messageId, turn) {
     void enqueue(messageId, async () => {
       const record = cards.get(messageId);
-      if (record === undefined) return;
+      if (record === undefined || record.queued !== true) return;
+      record.queued = false;
       record.turn = turn;
       if (record.startedAt === 0) record.startedAt = Date.now();
-      if (record.title !== '排队中') return;
-      await paint(messageId, { title: '处理中', color: CARD_COLORS.running, action: 'stop' });
+      await paint(messageId, { title: withPrefix(record.titlePrefix, '处理中'), color: CARD_COLORS.running, action: 'stop' });
     });
   }
 
@@ -323,14 +340,15 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
   }
 
   /**
-   * 收尾：按 turn 结束原因换成终态标题，摘掉按钮。
+   * 收尾：按 turn 结束原因换成终态标题，摘掉运行中按钮（可附终态纠错按钮）。
    *
    * @param messageId 飞书消息 ID
    * @param options.title 终态标题
    * @param options.color 颜色
    * @param options.note 追加的说明
+   * @param options.footerButtons 终态底部按钮数组（可选）
    */
-  async function finish(messageId, { title, color, note = '' }) {
+  async function finish(messageId, { title, color, note = '', footerButtons } = {}) {
     const timer = debounces.get(messageId);
     if (timer !== undefined) {
       clearTimeout(timer);
@@ -339,11 +357,18 @@ export function createAnswerCards({ logger, outbound, stateDir }) {
     await enqueue(messageId, async () => {
       const record = cards.get(messageId);
       if (record === undefined) return;
+      const displayTitle = withPrefix(record.titlePrefix, title);
       const content = [record.content, note].filter((part) => part !== '').join('\n\n');
-      await paint(messageId, { title, color, action: undefined, content: content === '' ? '（这一轮没有可显示的正文）' : content });
+      await paint(messageId, {
+        title: displayTitle,
+        color,
+        action: undefined,
+        footerButtons: Array.isArray(footerButtons) && footerButtons.length > 0 ? footerButtons : undefined,
+        content: content === '' ? '（这一轮没有可显示的正文）' : content,
+      });
       // 飞书的消息 API 只把卡片读成「标题 + 降级占位」，所以自己留一份正文给引用回复用。
       if (typeof record.cardId === 'string' && record.cardId !== '') {
-        recent.set(record.cardId, { title, content: record.content ?? '', at: Date.now() });
+        recent.set(record.cardId, { title: displayTitle, content: record.content ?? '', at: Date.now() });
         while (recent.size > RECENT_CARD_LIMIT) {
           const oldest = recent.keys().next().value;
           if (oldest === undefined) break;
