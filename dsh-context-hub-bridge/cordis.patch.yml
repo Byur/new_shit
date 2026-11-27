@@ -1,0 +1,18 @@
+# context-hub 桥的 bundle patch：把插件插进 profile 的 loader 栈。
+#
+# 这一行是插件出现在 boot manifest 里的必要条件；同一 profile 里不要重复 insert
+# 同一个 id。
+#
+# 这里只放通用默认值，不带本机路径和密钥。真实配置在 profile 自己的
+# cordis.patch.yml 里按 id 追加：
+#
+#   - id: context-hub-bridge
+#     config:
+#       stateFile: /Users/you/.dsh/context-hub-bridge.json
+#       secretFile: /Users/you/.dsh/context-hub-bridge.secret
+#
+# 没配 secret 时插件照常挂载，但所有请求一律 403——宁可不可用，也不开一个
+# 无鉴权的本地执行入口。
+- insert:
+    - id: context-hub-bridge
+      name: dsh-context-hub-bridge
